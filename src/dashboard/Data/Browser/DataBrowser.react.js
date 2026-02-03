@@ -255,20 +255,22 @@ export default class DataBrowser extends React.Component {
     this.stopAutoScroll = this.stopAutoScroll.bind(this);
     this.performAutoScrollStep = this.performAutoScrollStep.bind(this);
     this.pauseAutoScrollWithResume = this.pauseAutoScrollWithResume.bind(this);
-    this.handleNativeContextMenu = this.handleNativeContextMenu.bind(this);
-    this.handleNativeContextMenuClose = this.handleNativeContextMenuClose.bind(this);
     this.handlePanelMouseEnter = this.handlePanelMouseEnter.bind(this);
     this.handlePanelMouseLeave = this.handlePanelMouseLeave.bind(this);
     this.handlePanelHeaderMouseEnter = this.handlePanelHeaderMouseEnter.bind(this);
     this.handlePanelHeaderMouseLeave = this.handlePanelHeaderMouseLeave.bind(this);
     this.handleOptionKeyDown = this.handleOptionKeyDown.bind(this);
     this.handleOptionKeyUp = this.handleOptionKeyUp.bind(this);
+    this.handleMouseButtonDown = this.handleMouseButtonDown.bind(this);
+    this.handleMouseButtonUp = this.handleMouseButtonUp.bind(this);
     this.saveOrderTimeout = null;
     this.aggregationPanelRef = React.createRef();
     this.autoScrollIntervalId = null;
     this.autoScrollTimeoutId = null;
     this.autoScrollResumeTimeoutId = null;
     this.autoScrollAnimationId = null;
+    this.mouseButtonPressed = false;
+    this.nativeContextMenuTracker = null;
     this.panelHeaderLeaveTimeoutId = null;
     this.panelColumnRefs = [];
     this.activePanelIndex = -1;
@@ -355,18 +357,11 @@ export default class DataBrowser extends React.Component {
     // Option key listeners for pausing auto-scroll
     document.body.addEventListener('keydown', this.handleOptionKeyDown);
     document.body.addEventListener('keyup', this.handleOptionKeyUp);
+    // Left mouse button listener for pausing auto-scroll
+    window.addEventListener('mousedown', this.handleMouseButtonDown);
+    window.addEventListener('mouseup', this.handleMouseButtonUp);
     // Native context menu detection for auto-scroll pause
-    // Use capture phase to ensure we detect the event before the menu handles it
-    document.addEventListener('contextmenu', this.handleNativeContextMenu, true);
-    // Listen for events that indicate the context menu was closed:
-    // - mousemove: user moved mouse after menu closed (most reliable)
-    // - keydown: Escape key closes the menu
-    // - blur: switching windows/tabs closes the menu
-    // NOTE: click/mousedown don't fire while native context menu is open
-    // NOTE: scroll is not used because auto-scroll itself triggers it
-    window.addEventListener('mousemove', this.handleNativeContextMenuClose);
-    window.addEventListener('keydown', this.handleNativeContextMenuClose, true);
-    window.addEventListener('blur', this.handleNativeContextMenuClose);
+    this.nativeContextMenuTracker = this.setupNativeContextMenuDetection();
 
     // Load keyboard shortcuts from server
     try {
@@ -408,10 +403,11 @@ export default class DataBrowser extends React.Component {
     // Option key listeners cleanup
     document.body.removeEventListener('keydown', this.handleOptionKeyDown);
     document.body.removeEventListener('keyup', this.handleOptionKeyUp);
-    document.removeEventListener('contextmenu', this.handleNativeContextMenu, true);
-    window.removeEventListener('mousemove', this.handleNativeContextMenuClose);
-    window.removeEventListener('keydown', this.handleNativeContextMenuClose, true);
-    window.removeEventListener('blur', this.handleNativeContextMenuClose);
+    window.removeEventListener('mousedown', this.handleMouseButtonDown);
+    window.removeEventListener('mouseup', this.handleMouseButtonUp);
+    if (this.nativeContextMenuTracker) {
+      this.nativeContextMenuTracker.dispose();
+    }
     if (this.autoScrollTimeoutId) {
       clearTimeout(this.autoScrollTimeoutId);
     }
@@ -1467,7 +1463,8 @@ export default class DataBrowser extends React.Component {
       nativeContextMenuOpen ||
       disableKeyControls ||
       hoverBlocked ||
-      optionKeyPressed
+      optionKeyPressed ||
+      this.mouseButtonPressed
     );
   }
 
@@ -1582,31 +1579,67 @@ export default class DataBrowser extends React.Component {
     // Schedule resume after 1000ms of inactivity
     this.autoScrollResumeTimeoutId = setTimeout(() => {
       if (this.state.isAutoScrolling && this.state.autoScrollPaused) {
+        // Clear so the 2-second post-block delay doesn't stack on top
+        this.autoScrollWasBlocked = false;
         this.setState({ autoScrollPaused: false });
       }
     }, 1000);
   }
 
-  handleNativeContextMenu() {
-    // Pause auto-scroll when native browser context menu is opened
-    if (this.state.isAutoScrolling && !this.state.nativeContextMenuOpen) {
+  setupNativeContextMenuDetection() {
+    let cleanup = () => {};
+
+    const onContextMenu = () => {
       this.setState({ nativeContextMenuOpen: true });
-    }
-  }
 
-  handleNativeContextMenuClose(e) {
-    // Only process if native context menu is open
-    if (!this.state.nativeContextMenuOpen) {
-      return;
-    }
+      // Remove previous close listeners if any
+      cleanup();
 
-    // For keydown events, only handle Escape key
-    if (e && e.type === 'keydown' && e.key !== 'Escape') {
-      return;
-    }
+      const close = () => {
+        cleanup();
+        this.setState({ nativeContextMenuOpen: false });
+      };
 
-    // mousemove, Escape key, or blur all indicate the menu is closed
-    this.setState({ nativeContextMenuOpen: false });
+      const onPointerDown = () => close();
+      const onPointerMove = () => close();
+      const onKey = () => close();
+      const onVisibility = () => {
+        if (document.visibilityState === 'hidden') {
+          close();
+        }
+      };
+      const onBlur = () => close();
+
+      window.addEventListener('pointerdown', onPointerDown, true);
+      window.addEventListener('keydown', onKey, true);
+      document.addEventListener('visibilitychange', onVisibility, true);
+      window.addEventListener('blur', onBlur, true);
+
+      // Delay pointermove registration to skip movement during the right-click gesture
+      const pointerMoveTimerId = setTimeout(() => {
+        window.addEventListener('pointermove', onPointerMove, true);
+      }, 300);
+
+      cleanup = () => {
+        clearTimeout(pointerMoveTimerId);
+        window.removeEventListener('pointerdown', onPointerDown, true);
+        window.removeEventListener('pointermove', onPointerMove, true);
+        window.removeEventListener('keydown', onKey, true);
+        document.removeEventListener('visibilitychange', onVisibility, true);
+        window.removeEventListener('blur', onBlur, true);
+        cleanup = () => {};
+      };
+    };
+
+    window.addEventListener('contextmenu', onContextMenu, true);
+
+    return {
+      isOpen: () => this.state.nativeContextMenuOpen,
+      dispose: () => {
+        window.removeEventListener('contextmenu', onContextMenu, true);
+        cleanup();
+      },
+    };
   }
 
   handlePanelMouseEnter() {
@@ -1661,11 +1694,24 @@ export default class DataBrowser extends React.Component {
     }
   }
 
+  handleMouseButtonDown(e) {
+    if (e.button === 0) {
+      this.mouseButtonPressed = true;
+    }
+  }
+
+  handleMouseButtonUp(e) {
+    if (e.button === 0) {
+      this.mouseButtonPressed = false;
+    }
+  }
+
   startAutoScroll() {
     if (this.state.isAutoScrolling) {
       return;
     }
 
+    this.autoScrollWasBlocked = false;
     this.setState({ isAutoScrolling: true, autoScrollPaused: false }, () => {
       this.performAutoScrollStep();
     });
@@ -1684,6 +1730,7 @@ export default class DataBrowser extends React.Component {
       cancelAnimationFrame(this.autoScrollAnimationId);
       this.autoScrollAnimationId = null;
     }
+    this.autoScrollWasBlocked = false;
     this.setState({
       isAutoScrolling: false,
       autoScrollPaused: false,
@@ -1701,10 +1748,19 @@ export default class DataBrowser extends React.Component {
     }
 
     if (this.isAutoScrollBlocked()) {
-      // When blocked (modal, context menu, editing, or manual pause), keep checking but don't scroll
+      this.autoScrollWasBlocked = true;
       this.autoScrollTimeoutId = setTimeout(() => {
         this.performAutoScrollStep();
       }, 100);
+      return;
+    }
+
+    // After unblocking, wait 2 seconds before resuming
+    if (this.autoScrollWasBlocked) {
+      this.autoScrollWasBlocked = false;
+      this.autoScrollTimeoutId = setTimeout(() => {
+        this.performAutoScrollStep();
+      }, 2000);
       return;
     }
 
@@ -1738,6 +1794,7 @@ export default class DataBrowser extends React.Component {
 
     const animateScroll = (currentTime) => {
       if (!this.state.isAutoScrolling || this.isAutoScrollBlocked()) {
+        this.autoScrollWasBlocked = true;
         // If stopped or blocked during animation, schedule next check
         this.autoScrollTimeoutId = setTimeout(() => {
           this.performAutoScrollStep();
