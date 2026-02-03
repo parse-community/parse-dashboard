@@ -1761,17 +1761,17 @@ export default class DataBrowser extends React.Component {
       return;
     }
 
-    // Record when block cleared; wait 2 seconds from the most recent unblock
+    // Wait 1 second from the most recent unblock before scrolling
     if (this.autoScrollIsBlocked) {
       this.autoScrollIsBlocked = false;
       this.autoScrollLastUnblockedAt = Date.now();
     }
     if (this.autoScrollLastUnblockedAt) {
       const elapsed = Date.now() - this.autoScrollLastUnblockedAt;
-      if (elapsed < 2000) {
+      if (elapsed < 1000) {
         this.autoScrollTimeoutId = setTimeout(() => {
           this.performAutoScrollStep();
-        }, 2000 - elapsed);
+        }, 1000 - elapsed);
         return;
       }
       this.autoScrollLastUnblockedAt = 0;
