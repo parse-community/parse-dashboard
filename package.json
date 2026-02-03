@@ -115,7 +115,7 @@
     "mongodb-runner": "^5.7.0",
     "null-loader": "4.0.1",
     "parse-server": "9.1.1",
-    "prettier": "3.7.4",
+    "prettier": "3.8.1",
     "puppeteer": "24.36.1",
     "react-test-renderer": "16.13.1",
     "request": "2.88.2",
