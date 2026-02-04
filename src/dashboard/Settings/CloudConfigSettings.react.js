@@ -119,7 +119,7 @@ export default class CloudConfigSettings extends DashboardView {
   renderContent() {
     const message = this.state.message;
     const serverConfigEnabled = this.serverStorage && this.serverStorage.isServerConfigEnabled();
-    const notAvailableMessage = !serverConfigEnabled
+    const notAvailableMessage = !this.state.loading && !serverConfigEnabled
       ? 'Server configuration is not enabled for this app. Please add a \'config\' section to your app configuration.'
       : null;
 
@@ -153,7 +153,7 @@ export default class CloudConfigSettings extends DashboardView {
               }
               input={
                 <TextInput
-                  placeholder="100"
+                  placeholder={this.state.loading ? 'Loading...' : '100'}
                   value={isOverriddenByConfigFile ? String(configFileLimit) : this.state.cloudConfigHistoryLimit}
                   disabled={!serverConfigEnabled || this.state.loading || isOverriddenByConfigFile}
                   onChange={this.handleCloudConfigHistoryLimitChange.bind(this)}

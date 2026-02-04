@@ -28,6 +28,7 @@ export default class KeyboardShortcutsSettings extends DashboardView {
       dataBrowserToggleInfoPanels: '',
       hasChanges: false,
       message: undefined,
+      loading: true,
     };
 
     this.manager = null;
@@ -55,10 +56,12 @@ export default class KeyboardShortcutsSettings extends DashboardView {
         dataBrowserReloadData: shortcuts.dataBrowserReloadData?.key || '',
         dataBrowserToggleInfoPanels: shortcuts.dataBrowserToggleInfoPanels?.key || '',
         hasChanges: false,
+        loading: false,
       });
     } catch (error) {
       console.error('Failed to load keyboard shortcuts:', error);
       this.showNote('Failed to load keyboard shortcuts', true);
+      this.setState({ loading: false });
     }
   }
 
@@ -146,7 +149,7 @@ export default class KeyboardShortcutsSettings extends DashboardView {
 
   renderContent() {
     // Show error if server config is not enabled
-    const serverConfigError = this.manager && !this.manager.isServerConfigEnabled()
+    const serverConfigError = !this.state.loading && this.manager && !this.manager.isServerConfigEnabled()
       ? 'Server configuration is not enabled for this app. Please add a \'config\' section to your app configuration to use keyboard shortcuts.'
       : null;
 
@@ -173,8 +176,9 @@ export default class KeyboardShortcutsSettings extends DashboardView {
               }
               input={
                 <TextInput
-                  placeholder={DEFAULT_SHORTCUTS.dataBrowserReloadData.key}
+                  placeholder={this.state.loading ? 'Loading...' : DEFAULT_SHORTCUTS.dataBrowserReloadData.key}
                   value={this.state.dataBrowserReloadData}
+                  disabled={this.state.loading}
                   onChange={this.handleFieldChange.bind(this, 'dataBrowserReloadData')}
                   onFocus={this.handleInputFocus.bind(this)}
                   maxLength={1}
@@ -191,8 +195,9 @@ export default class KeyboardShortcutsSettings extends DashboardView {
               }
               input={
                 <TextInput
-                  placeholder={DEFAULT_SHORTCUTS.dataBrowserToggleInfoPanels.key}
+                  placeholder={this.state.loading ? 'Loading...' : DEFAULT_SHORTCUTS.dataBrowserToggleInfoPanels.key}
                   value={this.state.dataBrowserToggleInfoPanels}
+                  disabled={this.state.loading}
                   onChange={this.handleFieldChange.bind(this, 'dataBrowserToggleInfoPanels')}
                   onFocus={this.handleInputFocus.bind(this)}
                   maxLength={1}
