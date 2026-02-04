@@ -230,6 +230,10 @@ export default class DashboardView extends React.Component {
         name: 'Keyboard Shortcuts',
         link: '/settings/keyboard-shortcuts',
       },
+      {
+        name: 'Cloud Config',
+        link: '/settings/cloud-config',
+      },
     ];
 
     if (this.context.enableSecurityChecks) {

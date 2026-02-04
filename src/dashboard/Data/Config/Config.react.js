@@ -27,6 +27,7 @@ import { CurrentApp } from 'context/currentApp';
 import Modal from 'components/Modal/Modal.react';
 import equal from 'fast-deep-equal';
 import Notification from 'dashboard/Data/Browser/Notification.react';
+import ServerConfigStorage from 'lib/ServerConfigStorage';
 
 @subscribeTo('Config', 'config')
 class Config extends TableView {
@@ -76,8 +77,27 @@ class Config extends TableView {
     try {
       await this.props.config.dispatch(ActionTypes.FETCH);
       this.cacheData = new Map(this.props.config.data);
+      await this.loadCloudConfigSettings();
     } finally {
       this.setState({ loading: false });
+    }
+  }
+
+  async loadCloudConfigSettings() {
+    try {
+      const serverStorage = new ServerConfigStorage(this.context);
+      if (!serverStorage.isServerConfigEnabled()) {
+        return;
+      }
+      const settings = await serverStorage.getConfig(
+        'config.settings',
+        this.context.applicationId
+      );
+      if (settings && settings.historyLimit !== undefined) {
+        this.context.cloudConfigHistoryLimit = settings.historyLimit;
+      }
+    } catch {
+      // Fall back to existing context value
     }
   }
 
