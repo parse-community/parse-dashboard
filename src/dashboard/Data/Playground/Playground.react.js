@@ -11,6 +11,7 @@ import Icon from 'components/Icon/Icon.react';
 import { CurrentApp } from 'context/currentApp';
 import browserStyles from 'dashboard/Data/Browser/Browser.scss';
 import Separator from 'components/BrowserMenu/Separator.react';
+import Notification from 'dashboard/Data/Browser/Notification.react';
 import ScriptManager from 'lib/ScriptManager';
 
 import styles from './Playground.scss';
@@ -187,6 +188,7 @@ export default function Playground() {
   const [savedTabs, setSavedTabs] = useState([]); // All saved tabs including closed ones
   const [, setCurrentMenu] = useState(null); // Track which menu is currently open
   const [, setForceUpdate] = useState({}); // Force re-render for unsaved changes detection
+  const [noteMessage, setNoteMessage] = useState(null);
   const renamingInputRef = useRef(null);
 
   // Drag and drop state
@@ -992,8 +994,13 @@ export default function Playground() {
       if (window.localStorage) {
         try {
           window.localStorage.setItem(historyKey, JSON.stringify(newHistory));
-        } catch (e) {
-          console.warn('Failed to save execution history:', e);
+        } catch {
+          window.localStorage.removeItem(historyKey);
+          try {
+            window.localStorage.setItem(historyKey, JSON.stringify([code]));
+          } catch {
+            setNoteMessage('Unable to save execution history: browser storage is full.');
+          }
         }
       }
     } catch (e) {
@@ -1504,6 +1511,7 @@ export default function Playground() {
           </section>
         </div>
       </div>
+      <Notification note={noteMessage} isErrorNote={true} />
     </div>
   );
 }
