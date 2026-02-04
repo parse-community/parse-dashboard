@@ -65,7 +65,6 @@ export default class CloudConfigSettings extends DashboardView {
           CONFIG_KEY,
           this.context.applicationId
         );
-        this.context.cloudConfigHistoryLimit = undefined;
         this.showNote('Cloud Config history limit reset to default.');
       } catch {
         this.showNote('Failed to reset setting.', true);
@@ -85,7 +84,6 @@ export default class CloudConfigSettings extends DashboardView {
         { historyLimit: parsed },
         this.context.applicationId
       );
-      this.context.cloudConfigHistoryLimit = parsed;
       this.setState({ cloudConfigHistoryLimit: String(parsed) });
       this.showNote(`Cloud Config history limit set to ${parsed}.`);
     } catch {
@@ -114,6 +112,14 @@ export default class CloudConfigSettings extends DashboardView {
       ? 'Server configuration is not enabled for this app. Please add a \'config\' section to your app configuration.'
       : null;
 
+    const configFileLimit = this.context.cloudConfigHistoryLimit;
+    const isOverriddenByConfigFile = configFileLimit !== undefined && configFileLimit !== null;
+
+    let description = 'Maximum number of history entries stored per Cloud Config parameter. Leave empty to use the default (100).';
+    if (isOverriddenByConfigFile) {
+      description = `This value is overridden by the dashboard config file (${configFileLimit}). Remove the "cloudConfigHistoryLimit" option from the config file to use this setting.`;
+    }
+
     return (
       <div>
         <Toolbar section="Settings" subsection="Cloud Config" />
@@ -131,14 +137,14 @@ export default class CloudConfigSettings extends DashboardView {
               label={
                 <Label
                   text="History Limit"
-                  description="Maximum number of history entries stored per Cloud Config parameter. Leave empty to use the default (100)."
+                  description={description}
                 />
               }
               input={
                 <TextInput
                   placeholder="100"
-                  value={this.state.cloudConfigHistoryLimit}
-                  disabled={!serverConfigEnabled || this.state.loading}
+                  value={isOverriddenByConfigFile ? String(configFileLimit) : this.state.cloudConfigHistoryLimit}
+                  disabled={!serverConfigEnabled || this.state.loading || isOverriddenByConfigFile}
                   onChange={this.handleCloudConfigHistoryLimitChange.bind(this)}
                   onBlur={this.saveCloudConfigHistoryLimit.bind(this)}
                 />

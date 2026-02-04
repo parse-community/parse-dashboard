@@ -54,6 +54,7 @@ class Config extends TableView {
       showRemoveEntryDialog: false,
       removeEntryParam: '',
       removeEntryArrayValue: [],
+      serverHistoryLimit: undefined,
     };
     this.noteTimeout = null;
   }
@@ -94,10 +95,34 @@ class Config extends TableView {
         this.context.applicationId
       );
       if (settings && settings.historyLimit !== undefined) {
-        this.context.cloudConfigHistoryLimit = settings.historyLimit;
+        this.setState({ serverHistoryLimit: settings.historyLimit });
       }
     } catch {
       // Fall back to existing context value
+    }
+  }
+
+  addToConfigHistory(name, value) {
+    const limit = this.context.cloudConfigHistoryLimit ?? this.state.serverHistoryLimit;
+    const applicationId = this.context.applicationId;
+    const configHistory = localStorage.getItem(`${applicationId}_configHistory`);
+    const newHistoryEntry = { time: new Date(), value };
+
+    if (!configHistory) {
+      localStorage.setItem(
+        `${applicationId}_configHistory`,
+        JSON.stringify({ [name]: [newHistoryEntry] })
+      );
+    } else {
+      const oldConfigHistory = JSON.parse(configHistory);
+      const updatedHistory = !oldConfigHistory[name]
+        ? [newHistoryEntry]
+        : [newHistoryEntry, ...oldConfigHistory[name]].slice(0, limit || 100);
+
+      localStorage.setItem(
+        `${applicationId}_configHistory`,
+        JSON.stringify({ ...oldConfigHistory, [name]: updatedHistory })
+      );
     }
   }
 
@@ -458,44 +483,14 @@ class Config extends TableView {
       this.setState({ modalOpen: false });
 
       // Update config history in localStorage
-      const limit = this.context.cloudConfigHistoryLimit;
-      const applicationId = this.context.applicationId;
       let transformedValue = value;
-
       if (type === 'Date') {
         transformedValue = { __type: 'Date', iso: value };
       }
       if (type === 'File') {
         transformedValue = { name: value._name, url: value._url };
       }
-
-      const configHistory = localStorage.getItem(`${applicationId}_configHistory`);
-      const newHistoryEntry = {
-        time: new Date(),
-        value: transformedValue,
-      };
-
-      if (!configHistory) {
-        localStorage.setItem(
-          `${applicationId}_configHistory`,
-          JSON.stringify({
-            [name]: [newHistoryEntry],
-          })
-        );
-      } else {
-        const oldConfigHistory = JSON.parse(configHistory);
-        const updatedHistory = !oldConfigHistory[name]
-          ? [newHistoryEntry]
-          : [newHistoryEntry, ...oldConfigHistory[name]].slice(0, limit || 100);
-
-        localStorage.setItem(
-          `${applicationId}_configHistory`,
-          JSON.stringify({
-            ...oldConfigHistory,
-            [name]: updatedHistory,
-          })
-        );
-      }
+      this.addToConfigHistory(name, transformedValue);
     } catch (error) {
       this.context.showError?.(
         `Failed to save parameter: ${error.message || 'Unknown error occurred'}`
@@ -605,37 +600,7 @@ class Config extends TableView {
       await this.props.config.dispatch(ActionTypes.FETCH);
 
       // Update config history
-      const limit = this.context.cloudConfigHistoryLimit;
-      const applicationId = this.context.applicationId;
-      const params = this.props.config.data.get('params');
-      const updatedValue = params.get(param);
-      const configHistory = localStorage.getItem(`${applicationId}_configHistory`);
-      const newHistoryEntry = {
-        time: new Date(),
-        value: updatedValue,
-      };
-
-      if (!configHistory) {
-        localStorage.setItem(
-          `${applicationId}_configHistory`,
-          JSON.stringify({
-            [param]: [newHistoryEntry],
-          })
-        );
-      } else {
-        const oldConfigHistory = JSON.parse(configHistory);
-        const updatedHistory = !oldConfigHistory[param]
-          ? [newHistoryEntry]
-          : [newHistoryEntry, ...oldConfigHistory[param]].slice(0, limit || 100);
-
-        localStorage.setItem(
-          `${applicationId}_configHistory`,
-          JSON.stringify({
-            ...oldConfigHistory,
-            [param]: updatedHistory,
-          })
-        );
-      }
+      this.addToConfigHistory(param, this.props.config.data.get('params').get(param));
 
       this.showNote(`Entry added to ${param}`);
     } catch (e) {
@@ -717,37 +682,7 @@ class Config extends TableView {
       await this.props.config.dispatch(ActionTypes.FETCH);
 
       // Update config history
-      const limit = this.context.cloudConfigHistoryLimit;
-      const applicationId = this.context.applicationId;
-      const params = this.props.config.data.get('params');
-      const updatedValue = params.get(param);
-      const configHistory = localStorage.getItem(`${applicationId}_configHistory`);
-      const newHistoryEntry = {
-        time: new Date(),
-        value: updatedValue,
-      };
-
-      if (!configHistory) {
-        localStorage.setItem(
-          `${applicationId}_configHistory`,
-          JSON.stringify({
-            [param]: [newHistoryEntry],
-          })
-        );
-      } else {
-        const oldConfigHistory = JSON.parse(configHistory);
-        const updatedHistory = !oldConfigHistory[param]
-          ? [newHistoryEntry]
-          : [newHistoryEntry, ...oldConfigHistory[param]].slice(0, limit || 100);
-
-        localStorage.setItem(
-          `${applicationId}_configHistory`,
-          JSON.stringify({
-            ...oldConfigHistory,
-            [param]: updatedHistory,
-          })
-        );
-      }
+      this.addToConfigHistory(param, this.props.config.data.get('params').get(param));
 
       const removedCount = objectsToRemove.length;
       const message = removedCount === 1
