@@ -47,7 +47,7 @@ export default class CloudConfigSettings extends DashboardView {
           this.setState({ cloudConfigHistoryLimit: String(settings.historyLimit) });
         }
       }
-    } catch (error) {
+    } catch {
       this.showNote('Failed to load Cloud Config settings.', true);
     } finally {
       this.setState({ loading: false });
