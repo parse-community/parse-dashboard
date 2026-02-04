@@ -204,7 +204,13 @@ export default class DashboardSettings extends DashboardView {
       return { paramCount: 0 };
     }
 
-    const localHistory = JSON.parse(raw);
+    let localHistory;
+    try {
+      localHistory = JSON.parse(raw);
+    } catch {
+      this.showNote('Failed to parse Cloud Config history from browser storage.');
+      return { paramCount: 0 };
+    }
     const paramNames = Object.keys(localHistory);
     let paramCount = 0;
 
