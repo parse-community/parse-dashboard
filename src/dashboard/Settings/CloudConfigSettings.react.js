@@ -42,13 +42,33 @@ export default class CloudConfigSettings extends DashboardView {
         CONFIG_KEY,
         this.context.applicationId
       );
-      if (settings && settings.historyLimit !== undefined) {
-        this.setState({ cloudConfigHistoryLimit: String(settings.historyLimit) });
+      if (settings) {
+        if (settings.historyLimit !== undefined) {
+          this.setState({ cloudConfigHistoryLimit: String(settings.historyLimit) });
+        }
       }
     } catch (error) {
       this.showNote('Failed to load Cloud Config settings.', true);
     } finally {
       this.setState({ loading: false });
+    }
+  }
+
+  async saveSettings(updates) {
+    try {
+      const current = await this.serverStorage.getConfig(
+        CONFIG_KEY,
+        this.context.applicationId
+      );
+      const settings = { ...(current || {}), ...updates };
+      await this.serverStorage.setConfig(
+        CONFIG_KEY,
+        settings,
+        this.context.applicationId
+      );
+      return true;
+    } catch {
+      return false;
     }
   }
 
@@ -60,13 +80,9 @@ export default class CloudConfigSettings extends DashboardView {
     const value = this.state.cloudConfigHistoryLimit.trim();
 
     if (value === '') {
-      try {
-        await this.serverStorage.deleteConfig(
-          CONFIG_KEY,
-          this.context.applicationId
-        );
+      if (await this.saveSettings({ historyLimit: undefined })) {
         this.showNote('Cloud Config history limit reset to default.');
-      } catch {
+      } else {
         this.showNote('Failed to reset setting.', true);
       }
       return;
@@ -78,15 +94,10 @@ export default class CloudConfigSettings extends DashboardView {
       return;
     }
 
-    try {
-      await this.serverStorage.setConfig(
-        CONFIG_KEY,
-        { historyLimit: parsed },
-        this.context.applicationId
-      );
+    if (await this.saveSettings({ historyLimit: parsed })) {
       this.setState({ cloudConfigHistoryLimit: String(parsed) });
       this.showNote(`Cloud Config history limit set to ${parsed}.`);
-    } catch {
+    } else {
       this.showNote('Failed to save setting.', true);
     }
   }
@@ -115,9 +126,9 @@ export default class CloudConfigSettings extends DashboardView {
     const configFileLimit = this.context.cloudConfigHistoryLimit;
     const isOverriddenByConfigFile = configFileLimit !== undefined && configFileLimit !== null;
 
-    let description = 'Maximum number of history entries stored per Cloud Config parameter. Leave empty to use the default (100).';
+    let limitDescription = 'Maximum number of history entries stored per Cloud Config parameter. Leave empty to use the default (100).';
     if (isOverriddenByConfigFile) {
-      description = `This value is overridden by the dashboard config file (${configFileLimit}). Remove the "cloudConfigHistoryLimit" option from the config file to use this setting.`;
+      limitDescription = `This value is overridden by the dashboard config file (${configFileLimit}). Remove the "cloudConfigHistoryLimit" option from the config file to use this setting.`;
     }
 
     return (
@@ -130,14 +141,14 @@ export default class CloudConfigSettings extends DashboardView {
         <div className={styles.settings_page}>
           <Fieldset
             legend="History"
-            description="Cloud Config parameter change history is stored in the browser."
+            description="Cloud Config parameter change history tracks value changes over time."
           >
             <Field
               labelWidth={62}
               label={
                 <Label
                   text="History Limit"
-                  description={description}
+                  description={limitDescription}
                 />
               }
               input={

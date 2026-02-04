@@ -214,11 +214,7 @@ export default class ConfigDialog extends React.Component {
         ))}
       </Dropdown>
     );
-    const configHistory =
-      localStorage.getItem(`${this.context.applicationId}_configHistory`) &&
-      JSON.parse(localStorage.getItem(`${this.context.applicationId}_configHistory`))[
-        this.state.name
-      ];
+    const configHistory = this.props.configHistory;
     const handleIndexChange = index => {
       if (this.state.type === 'Date') {
         return;
