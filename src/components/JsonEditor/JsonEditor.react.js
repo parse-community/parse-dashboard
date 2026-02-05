@@ -112,6 +112,36 @@ export default class JsonEditor extends React.Component {
     }
   }
 
+  getSyntaxColorStyles() {
+    const { syntaxColors } = this.props;
+    if (!syntaxColors) {
+      return null;
+    }
+
+    // Generate CSS custom properties for syntax colors
+    const colorVars = Object.entries(syntaxColors)
+      .filter(([, color]) => color)
+      .map(([token, color]) => `--syntax-${token}: ${color};`)
+      .join(' ');
+
+    if (!colorVars) {
+      return null;
+    }
+
+    // Return a style tag with scoped CSS overrides
+    return (
+      <style>{`
+        .${styles.highlightLayer} .token.property { color: ${syntaxColors.property || '#005cc5'} !important; }
+        .${styles.highlightLayer} .token.string { color: ${syntaxColors.string || '#000000'} !important; }
+        .${styles.highlightLayer} .token.number { color: ${syntaxColors.number || '#098658'} !important; }
+        .${styles.highlightLayer} .token.boolean { color: ${syntaxColors.boolean || '#d73a49'} !important; }
+        .${styles.highlightLayer} .token.null { color: ${syntaxColors.null || '#d73a49'} !important; }
+        .${styles.highlightLayer} .token.punctuation { color: ${syntaxColors.punctuation || '#24292e'} !important; }
+        .${styles.highlightLayer} .token.operator { color: ${syntaxColors.operator || '#24292e'} !important; }
+      `}</style>
+    );
+  }
+
   render() {
     const { value, placeholder, wordWrap = false } = this.props;
 
@@ -121,6 +151,7 @@ export default class JsonEditor extends React.Component {
 
     return (
       <div className={styles.container}>
+        {this.getSyntaxColorStyles()}
         <pre
           ref={this.preRef}
           className={styles.highlightLayer}

@@ -25,7 +25,10 @@ import styles from 'dashboard/Data/Browser/Browser.scss';
 import semver from 'semver/preload.js';
 import { dateStringUTC } from 'lib/DateUtils';
 import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
+import ServerConfigStorage from 'lib/ServerConfigStorage';
 import { CurrentApp } from 'context/currentApp';
+
+const FORMATTING_CONFIG_KEY = 'config.formatting.syntax';
 
 const PARAM_TYPES = ['Boolean', 'String', 'Number', 'Date', 'Object', 'Array', 'GeoPoint', 'File'];
 
@@ -55,20 +58,22 @@ const EDITORS = {
     <TextInput value={value || ''} onChange={numberValidator(onChange)} />
   ),
   Date: (value, onChange) => <DateTimeInput fixed={true} value={value} onChange={onChange} />,
-  Object: (value, onChange, wordWrap) => (
+  Object: (value, onChange, wordWrap, syntaxColors) => (
     <JsonEditor
       value={value || ''}
       onChange={onChange}
       placeholder={'{\n  ...\n}'}
       wordWrap={wordWrap}
+      syntaxColors={syntaxColors}
     />
   ),
-  Array: (value, onChange, wordWrap) => (
+  Array: (value, onChange, wordWrap, syntaxColors) => (
     <JsonEditor
       value={value || ''}
       onChange={onChange}
       placeholder={'[\n  ...\n]'}
       wordWrap={wordWrap}
+      syntaxColors={syntaxColors}
     />
   ),
   GeoPoint: (value, onChange) => <GeoPointInput value={value} onChange={onChange} />,
@@ -107,6 +112,7 @@ export default class ConfigDialog extends React.Component {
       selectedIndex: null,
       wordWrap: false,
       error: null,
+      syntaxColors: null,
     };
     if (props.param.length > 0) {
       // Auto-format JSON values on initial open
@@ -127,7 +133,29 @@ export default class ConfigDialog extends React.Component {
         selectedIndex: 0,
         wordWrap: false,
         error: null,
+        syntaxColors: null,
       };
+    }
+  }
+
+  componentDidMount() {
+    this.loadSyntaxColors();
+  }
+
+  async loadSyntaxColors() {
+    try {
+      const serverStorage = new ServerConfigStorage(this.context);
+      if (serverStorage.isServerConfigEnabled()) {
+        const settings = await serverStorage.getConfig(
+          FORMATTING_CONFIG_KEY,
+          this.context.applicationId
+        );
+        if (settings?.colors) {
+          this.setState({ syntaxColors: settings.colors });
+        }
+      }
+    } catch {
+      // Silently fail - use default colors from CSS
     }
   }
 
@@ -304,7 +332,8 @@ export default class ConfigDialog extends React.Component {
           input={EDITORS[this.state.type](
             this.state.value,
             value => this.setState({ value, error: null }),
-            this.state.wordWrap
+            this.state.wordWrap,
+            this.state.syntaxColors
           )}
         />
 
