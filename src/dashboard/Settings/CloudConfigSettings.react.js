@@ -132,12 +132,6 @@ export default class CloudConfigSettings extends DashboardView {
     }));
   }
 
-  allColorsMatchDefaults(colors) {
-    return Object.entries(DEFAULT_SYNTAX_COLORS).every(
-      ([key, defaultColor]) => colors[key]?.toLowerCase() === defaultColor.toLowerCase()
-    );
-  }
-
   async saveSyntaxColor(tokenType) {
     const color = this.state.syntaxColors[tokenType];
 
@@ -161,10 +155,17 @@ export default class CloudConfigSettings extends DashboardView {
         return;
       }
 
-      const colors = { ...(current?.colors || {}), [tokenType]: color };
+      // Build the new colors object, only including non-default values
+      const colors = { ...(current?.colors || {}) };
+      if (color.toLowerCase() === defaultColor.toLowerCase()) {
+        // Remove from storage if it matches the default
+        delete colors[tokenType];
+      } else {
+        colors[tokenType] = color;
+      }
 
-      // If all colors match defaults, delete the config entry instead
-      if (this.allColorsMatchDefaults(colors)) {
+      // If no custom colors remain, delete the config entry
+      if (Object.keys(colors).length === 0) {
         await this.serverStorage.deleteConfig(
           FORMATTING_CONFIG_KEY,
           this.context.applicationId
