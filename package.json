@@ -45,7 +45,7 @@
     "commander": "13.1.0",
     "connect-flash": "0.1.1",
     "copy-to-clipboard": "3.3.3",
-    "core-js": "3.47.0",
+    "core-js": "3.48.0",
     "csurf": "1.11.0",
     "expr-eval-fork": "3.0.1",
     "express": "4.21.2",
