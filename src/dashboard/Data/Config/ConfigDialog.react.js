@@ -106,6 +106,7 @@ export default class ConfigDialog extends React.Component {
       masterKeyOnly: false,
       selectedIndex: null,
       wordWrap: false,
+      error: null,
     };
     if (props.param.length > 0) {
       // Auto-format JSON values on initial open
@@ -125,6 +126,7 @@ export default class ConfigDialog extends React.Component {
         masterKeyOnly: props.masterKeyOnly,
         selectedIndex: 0,
         wordWrap: false,
+        error: null,
       };
     }
   }
@@ -200,9 +202,21 @@ export default class ConfigDialog extends React.Component {
     try {
       const parsed = JSON.parse(this.state.value);
       const formatted = JSON.stringify(parsed, null, 2);
-      this.setState({ value: formatted });
-    } catch {
-      // Value is not valid JSON, do nothing
+      this.setState({ value: formatted, error: null });
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      this.setState({ error: `Invalid JSON: ${message}` });
+    }
+  }
+
+  compactValue() {
+    try {
+      const parsed = JSON.parse(this.state.value);
+      const compacted = JSON.stringify(parsed);
+      this.setState({ value: compacted, error: null });
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      this.setState({ error: `Invalid JSON: ${message}` });
     }
   }
 
@@ -289,7 +303,7 @@ export default class ConfigDialog extends React.Component {
           }
           input={EDITORS[this.state.type](
             this.state.value,
-            value => this.setState({ value }),
+            value => this.setState({ value, error: null }),
             this.state.wordWrap
           )}
         />
@@ -354,6 +368,11 @@ export default class ConfigDialog extends React.Component {
                 onClick={this.formatValue.bind(this)}
                 disabled={!this.canFormatValue()}
               />
+              <Button
+                value="Compact"
+                onClick={this.compactValue.bind(this)}
+                disabled={!this.canFormatValue()}
+              />
               <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                 <Toggle
                   type={Toggle.Types.HIDE_LABELS}
@@ -363,6 +382,9 @@ export default class ConfigDialog extends React.Component {
                 />
                 <span>Word wrap</span>
               </label>
+              {this.state.error && (
+                <span style={{ color: '#d73a49', fontSize: '13px' }}>{this.state.error}</span>
+              )}
             </>
           )}
         </div>
