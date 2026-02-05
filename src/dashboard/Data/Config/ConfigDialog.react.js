@@ -18,6 +18,7 @@ import Parse from 'parse';
 import React from 'react';
 import TextInput from 'components/TextInput/TextInput.react';
 import Toggle from 'components/Toggle/Toggle.react';
+import Button from 'components/Button/Button.react';
 import validateNumeric from 'lib/validateNumeric';
 import styles from 'dashboard/Data/Browser/Browser.scss';
 import semver from 'semver/preload.js';
@@ -188,6 +189,28 @@ export default class ConfigDialog extends React.Component {
     });
   }
 
+  formatValue() {
+    try {
+      const parsed = JSON.parse(this.state.value);
+      const formatted = JSON.stringify(parsed, null, 2);
+      this.setState({ value: formatted });
+    } catch {
+      // Value is not valid JSON, do nothing
+    }
+  }
+
+  canFormatValue() {
+    if (this.state.type !== 'Object' && this.state.type !== 'Array') {
+      return false;
+    }
+    try {
+      JSON.parse(this.state.value);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   componentDidUpdate(prevProps) {
     // Update parameter value or masterKeyOnly if they have changed
     if (this.props.value !== prevProps.value || this.props.masterKeyOnly !== prevProps.masterKeyOnly) {
@@ -254,7 +277,20 @@ export default class ConfigDialog extends React.Component {
           label={
             <Label
               text="Value"
-              description="Use this to configure your app. You can change it at any time."
+              description={
+                <>
+                  Use this to configure your app. You can change it at any time.
+                  {(this.state.type === 'Object' || this.state.type === 'Array') && (
+                    <div style={{ marginTop: '10px' }}>
+                      <Button
+                        value="Format"
+                        onClick={this.formatValue.bind(this)}
+                        disabled={!this.canFormatValue()}
+                      />
+                    </div>
+                  )}
+                </>
+              }
             />
           }
           input={EDITORS[this.state.type](this.state.value, value => {
