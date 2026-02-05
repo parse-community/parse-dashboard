@@ -29,6 +29,7 @@
   box-sizing: border-box;
   text-align: left;
   direction: ltr;
+  overscroll-behavior: none; // Disable rubber band / bounce effect in Safari
 }
 
 // The syntax-highlighted layer (behind, absolutely positioned)
