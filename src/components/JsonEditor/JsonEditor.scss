@@ -12,7 +12,7 @@
   display: inline-block;
   width: 100%;
   font-family: 'Source Code Pro', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.5;
   background: $inputBackgroundColor;
 }
@@ -50,34 +50,34 @@
     line-height: inherit;
   }
 
-  // Prism token colors (matching CodeSnippet.css)
+  // Prism token colors (GitHub light theme)
   :global {
     .token.property {
-      color: #FF395E;
+      color: #005cc5; // Blue - JSON keys
     }
 
     .token.string {
-      color: #00D275;
+      color: #000000; // Black - string values
     }
 
     .token.number {
-      color: #FF395E;
+      color: #098658; // Dark green - numbers
     }
 
     .token.boolean {
-      color: #169CEE;
+      color: #d73a49; // Red - true/false
     }
 
     .token.null {
-      color: #169CEE;
+      color: #d73a49; // Red - null
     }
 
     .token.punctuation {
-      color: #555572;
+      color: #24292e; // Dark gray - brackets, commas
     }
 
     .token.operator {
-      color: #555572;
+      color: #24292e; // Dark gray - colons
     }
   }
 }
