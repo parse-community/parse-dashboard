@@ -118,26 +118,50 @@ export default class JsonEditor extends React.Component {
       return null;
     }
 
-    // Generate CSS custom properties for syntax colors
-    const colorVars = Object.entries(syntaxColors)
-      .filter(([, color]) => color)
-      .map(([token, color]) => `--syntax-${token}: ${color};`)
-      .join(' ');
+    // Safe default colors for each token type
+    const defaults = {
+      property: '#005cc5',
+      string: '#000000',
+      number: '#098658',
+      boolean: '#d73a49',
+      null: '#d73a49',
+      punctuation: '#24292e',
+      operator: '#24292e',
+    };
 
-    if (!colorVars) {
+    // Validate hex color: only accept #RGB or #RRGGBB (case-insensitive)
+    const isValidHexColor = (color) => {
+      if (typeof color !== 'string') {
+        return false;
+      }
+      return /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(color);
+    };
+
+    // Get sanitized color for a token, falling back to default if invalid
+    const getSafeColor = (token) => {
+      const color = syntaxColors[token];
+      return isValidHexColor(color) ? color : defaults[token];
+    };
+
+    // Check if any custom colors are provided and valid
+    const hasCustomColors = Object.keys(defaults).some(
+      token => syntaxColors[token] && isValidHexColor(syntaxColors[token])
+    );
+
+    if (!hasCustomColors) {
       return null;
     }
 
-    // Return a style tag with scoped CSS overrides
+    // Return a style tag with sanitized CSS overrides
     return (
       <style>{`
-        .${styles.highlightLayer} .token.property { color: ${syntaxColors.property || '#005cc5'} !important; }
-        .${styles.highlightLayer} .token.string { color: ${syntaxColors.string || '#000000'} !important; }
-        .${styles.highlightLayer} .token.number { color: ${syntaxColors.number || '#098658'} !important; }
-        .${styles.highlightLayer} .token.boolean { color: ${syntaxColors.boolean || '#d73a49'} !important; }
-        .${styles.highlightLayer} .token.null { color: ${syntaxColors.null || '#d73a49'} !important; }
-        .${styles.highlightLayer} .token.punctuation { color: ${syntaxColors.punctuation || '#24292e'} !important; }
-        .${styles.highlightLayer} .token.operator { color: ${syntaxColors.operator || '#24292e'} !important; }
+        .${styles.highlightLayer} .token.property { color: ${getSafeColor('property')} !important; }
+        .${styles.highlightLayer} .token.string { color: ${getSafeColor('string')} !important; }
+        .${styles.highlightLayer} .token.number { color: ${getSafeColor('number')} !important; }
+        .${styles.highlightLayer} .token.boolean { color: ${getSafeColor('boolean')} !important; }
+        .${styles.highlightLayer} .token.null { color: ${getSafeColor('null')} !important; }
+        .${styles.highlightLayer} .token.punctuation { color: ${getSafeColor('punctuation')} !important; }
+        .${styles.highlightLayer} .token.operator { color: ${getSafeColor('operator')} !important; }
       `}</style>
     );
   }
