@@ -54,7 +54,7 @@ const EDITORS = {
     <TextInput value={value || ''} onChange={numberValidator(onChange)} />
   ),
   Date: (value, onChange) => <DateTimeInput fixed={true} value={value} onChange={onChange} />,
-  Object: (value, onChange) => (
+  Object: (value, onChange, style) => (
     <NonPrintableHighlighter value={value} isJson={true} detectNonAlphanumeric={true}>
       <TextInput
         multiline={true}
@@ -62,10 +62,11 @@ const EDITORS = {
         placeholder={'{\n  ...\n}'}
         value={value || ''}
         onChange={onChange}
+        style={style}
       />
     </NonPrintableHighlighter>
   ),
-  Array: (value, onChange) => (
+  Array: (value, onChange, style) => (
     <NonPrintableHighlighter value={value} isJson={true} detectNonAlphanumeric={true}>
       <TextInput
         multiline={true}
@@ -73,6 +74,7 @@ const EDITORS = {
         placeholder={'[\n  ...\n]'}
         value={value}
         onChange={onChange}
+        style={style}
       />
     </NonPrintableHighlighter>
   ),
@@ -110,6 +112,7 @@ export default class ConfigDialog extends React.Component {
       name: '',
       masterKeyOnly: false,
       selectedIndex: null,
+      wordWrap: true,
     };
     if (props.param.length > 0) {
       this.state = {
@@ -118,6 +121,7 @@ export default class ConfigDialog extends React.Component {
         value: props.value,
         masterKeyOnly: props.masterKeyOnly,
         selectedIndex: 0,
+        wordWrap: true,
       };
     }
   }
@@ -281,21 +285,34 @@ export default class ConfigDialog extends React.Component {
                 <>
                   Use this to configure your app. You can change it at any time.
                   {(this.state.type === 'Object' || this.state.type === 'Array') && (
-                    <div style={{ marginTop: '10px' }}>
+                    <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '15px' }}>
                       <Button
                         value="Format"
                         onClick={this.formatValue.bind(this)}
                         disabled={!this.canFormatValue()}
                       />
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                        <Toggle
+                          type={Toggle.Types.HIDE_LABELS}
+                          value={this.state.wordWrap}
+                          onChange={wordWrap => this.setState({ wordWrap })}
+                          additionalStyles={{ margin: '0px' }}
+                        />
+                        <span>Word wrap</span>
+                      </label>
                     </div>
                   )}
                 </>
               }
             />
           }
-          input={EDITORS[this.state.type](this.state.value, value => {
-            this.setState({ value });
-          })}
+          input={EDITORS[this.state.type](
+            this.state.value,
+            value => this.setState({ value }),
+            (this.state.type === 'Object' || this.state.type === 'Array')
+              ? { whiteSpace: this.state.wordWrap ? 'pre-wrap' : 'pre', overflowX: 'auto' }
+              : undefined
+          )}
         />
 
         {
