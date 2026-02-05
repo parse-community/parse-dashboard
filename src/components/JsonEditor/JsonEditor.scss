@@ -45,9 +45,13 @@
   overflow: auto;
 
   code {
+    display: block;
     font-family: inherit;
     font-size: inherit;
     line-height: inherit;
+    white-space: inherit;
+    word-wrap: inherit;
+    overflow-wrap: inherit;
   }
 
   // Prism token colors (GitHub light theme)

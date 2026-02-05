@@ -115,7 +115,7 @@ export default class JsonEditor extends React.Component {
     const { value, placeholder, wordWrap = false } = this.props;
 
     const wrapStyle = wordWrap
-      ? { whiteSpace: 'pre-wrap', wordWrap: 'break-word' }
+      ? { whiteSpace: 'pre-wrap', wordWrap: 'break-word', overflowWrap: 'break-word' }
       : { whiteSpace: 'pre' };
 
     return (
