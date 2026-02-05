@@ -21,14 +21,31 @@ export default class JsonEditor extends React.Component {
     super(props);
     this.textareaRef = React.createRef();
     this.preRef = React.createRef();
+    this.pendingCursorPosition = null;
   }
 
   componentDidMount() {
     this.syncScroll();
+    // Use native event listener for keydown to handle Enter auto-indent
+    if (this.textareaRef.current) {
+      this.textareaRef.current.addEventListener('keydown', this.handleKeyDown);
+    }
   }
 
   componentDidUpdate() {
     this.syncScroll();
+    // Restore cursor position after key insertion
+    if (this.pendingCursorPosition !== null && this.textareaRef.current) {
+      this.textareaRef.current.selectionStart = this.pendingCursorPosition;
+      this.textareaRef.current.selectionEnd = this.pendingCursorPosition;
+      this.pendingCursorPosition = null;
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.textareaRef.current) {
+      this.textareaRef.current.removeEventListener('keydown', this.handleKeyDown);
+    }
   }
 
   syncScroll = () => {
@@ -49,6 +66,32 @@ export default class JsonEditor extends React.Component {
     const { onChange } = this.props;
     if (onChange) {
       onChange(e.target.value);
+    }
+  };
+
+  handleKeyDown = (e) => {
+    // Enter key - auto-indent to match current line
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const textarea = this.textareaRef.current;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const value = this.props.value || '';
+
+      // Find the start of the current line
+      const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+      const line = value.substring(lineStart, start);
+      // Get leading whitespace from current line
+      const indent = line.match(/^[\t ]*/)[0];
+
+      const newValue = value.substring(0, start) + '\n' + indent + value.substring(end);
+      this.pendingCursorPosition = start + 1 + indent.length;
+
+      if (this.props.onChange) {
+        this.props.onChange(newValue);
+      }
     }
   };
 
