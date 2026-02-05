@@ -38,7 +38,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "7.28.6",
-    "@babel/runtime-corejs3": "7.28.3",
+    "@babel/runtime-corejs3": "7.29.0",
     "expr-eval-fork": "3.0.1",
     "bcryptjs": "3.0.3",
     "body-parser": "2.2.1",
