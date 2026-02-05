@@ -59,11 +59,12 @@ export default class SliderWrap extends React.Component {
       style.margin = '0 0 0 auto';
     }
     return (
-      <div className={styles.slider} style={style}>
+      <div className={styles.slider} style={style} tabIndex={-1}>
         <div
           className={styles.metrics}
           style={this.props.block ? { display: 'block' } : {}}
           ref={this.metricsRef}
+          tabIndex={-1}
         >
           {this.props.children}
         </div>
