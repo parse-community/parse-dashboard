@@ -152,6 +152,15 @@ export default class CloudConfigSettings extends DashboardView {
         FORMATTING_CONFIG_KEY,
         this.context.applicationId
       );
+      const storedColor = current?.colors?.[tokenType];
+      const defaultColor = DEFAULT_SYNTAX_COLORS[tokenType];
+
+      // Skip if color hasn't changed from stored value (or default if not stored)
+      const previousColor = storedColor || defaultColor;
+      if (color.toLowerCase() === previousColor.toLowerCase()) {
+        return;
+      }
+
       const colors = { ...(current?.colors || {}), [tokenType]: color };
 
       // If all colors match defaults, delete the config entry instead
