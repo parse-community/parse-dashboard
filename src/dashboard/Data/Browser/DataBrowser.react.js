@@ -2849,6 +2849,7 @@ export default class DataBrowser extends React.Component {
           stopAutoScroll={this.stopAutoScroll}
           toggleGraphPanel={this.toggleGraphPanelVisibility}
           isGraphPanelVisible={this.state.isGraphPanelVisible}
+          runScriptShortcut={this.state.keyboardShortcuts?.dataBrowserRunScriptOnSelectedRows?.key?.toUpperCase()}
           {...other}
           onRefresh={this.handleRefresh}
         />

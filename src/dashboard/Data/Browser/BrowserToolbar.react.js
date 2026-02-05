@@ -104,6 +104,7 @@ const BrowserToolbar = ({
   stopAutoScroll,
   toggleGraphPanel,
   isGraphPanelVisible,
+  runScriptShortcut,
 }) => {
   const selectionLength = Object.keys(selection).length;
   const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
@@ -623,6 +624,7 @@ const BrowserToolbar = ({
               : `Run script on ${selectionLength} selected rows...`
           }
           onClick={() => onExecuteScriptRows(selection)}
+          shortcut={runScriptShortcut}
         />
       </BrowserMenu>
       <div className={styles.toolbarSeparator} />
