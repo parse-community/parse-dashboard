@@ -19,6 +19,7 @@ import React from 'react';
 import TextInput from 'components/TextInput/TextInput.react';
 import Toggle from 'components/Toggle/Toggle.react';
 import Button from 'components/Button/Button.react';
+import JsonEditor from 'components/JsonEditor/JsonEditor.react';
 import validateNumeric from 'lib/validateNumeric';
 import styles from 'dashboard/Data/Browser/Browser.scss';
 import semver from 'semver/preload.js';
@@ -54,29 +55,21 @@ const EDITORS = {
     <TextInput value={value || ''} onChange={numberValidator(onChange)} />
   ),
   Date: (value, onChange) => <DateTimeInput fixed={true} value={value} onChange={onChange} />,
-  Object: (value, onChange, style) => (
-    <NonPrintableHighlighter value={value} isJson={true} detectNonAlphanumeric={true}>
-      <TextInput
-        multiline={true}
-        monospace={true}
-        placeholder={'{\n  ...\n}'}
-        value={value || ''}
-        onChange={onChange}
-        style={style}
-      />
-    </NonPrintableHighlighter>
+  Object: (value, onChange, wordWrap) => (
+    <JsonEditor
+      value={value || ''}
+      onChange={onChange}
+      placeholder={'{\n  ...\n}'}
+      wordWrap={wordWrap}
+    />
   ),
-  Array: (value, onChange, style) => (
-    <NonPrintableHighlighter value={value} isJson={true} detectNonAlphanumeric={true}>
-      <TextInput
-        multiline={true}
-        monospace={true}
-        placeholder={'[\n  ...\n]'}
-        value={value}
-        onChange={onChange}
-        style={style}
-      />
-    </NonPrintableHighlighter>
+  Array: (value, onChange, wordWrap) => (
+    <JsonEditor
+      value={value || ''}
+      onChange={onChange}
+      placeholder={'[\n  ...\n]'}
+      wordWrap={wordWrap}
+    />
   ),
   GeoPoint: (value, onChange) => <GeoPointInput value={value} onChange={onChange} />,
   File: (value, onChange) => (
@@ -297,9 +290,7 @@ export default class ConfigDialog extends React.Component {
           input={EDITORS[this.state.type](
             this.state.value,
             value => this.setState({ value }),
-            (this.state.type === 'Object' || this.state.type === 'Array')
-              ? { whiteSpace: this.state.wordWrap ? 'pre-wrap' : 'pre', overflowX: 'auto' }
-              : undefined
+            this.state.wordWrap
           )}
         />
 

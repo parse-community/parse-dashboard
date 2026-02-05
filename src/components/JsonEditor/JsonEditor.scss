@@ -1,0 +1,101 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  font-family: 'Source Code Pro', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  background: $inputBackgroundColor;
+}
+
+// Shared text styles
+.highlightLayer,
+.inputLayer {
+  padding: 10px;
+  margin: 0;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  box-sizing: border-box;
+  text-align: left;
+  direction: ltr;
+}
+
+// The syntax-highlighted layer (behind, absolutely positioned)
+.highlightLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: transparent;
+  color: #555572;
+  overflow: auto;
+
+  code {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  // Prism token colors (matching CodeSnippet.css)
+  :global {
+    .token.property {
+      color: #FF395E;
+    }
+
+    .token.string {
+      color: #00D275;
+    }
+
+    .token.number {
+      color: #FF395E;
+    }
+
+    .token.boolean {
+      color: #169CEE;
+    }
+
+    .token.null {
+      color: #169CEE;
+    }
+
+    .token.punctuation {
+      color: #555572;
+    }
+
+    .token.operator {
+      color: #555572;
+    }
+  }
+}
+
+// The editable textarea layer (in normal flow, controls container size)
+.inputLayer {
+  display: block;
+  width: 100%;
+  min-width: calc(var(--modal-min-width) * (1 - var(--modal-label-ratio)));
+  background: transparent;
+  color: transparent;
+  caret-color: #333;
+  resize: both;
+  outline: none;
+  min-height: 80px;
+  height: 200px;
+  overflow: auto;
+
+  &::placeholder {
+    color: #bbb;
+  }
+}
