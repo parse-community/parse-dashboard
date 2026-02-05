@@ -112,16 +112,26 @@ export default class ConfigDialog extends React.Component {
       name: '',
       masterKeyOnly: false,
       selectedIndex: null,
-      wordWrap: true,
+      wordWrap: false,
     };
     if (props.param.length > 0) {
+      // Auto-format JSON values on initial open
+      let initialValue = props.value;
+      if ((props.type === 'Object' || props.type === 'Array') && initialValue) {
+        try {
+          const parsed = JSON.parse(initialValue);
+          initialValue = JSON.stringify(parsed, null, 2);
+        } catch {
+          // Value is not valid JSON, keep original
+        }
+      }
       this.state = {
         name: props.param,
         type: props.type,
-        value: props.value,
+        value: initialValue,
         masterKeyOnly: props.masterKeyOnly,
         selectedIndex: 0,
-        wordWrap: true,
+        wordWrap: false,
       };
     }
   }
