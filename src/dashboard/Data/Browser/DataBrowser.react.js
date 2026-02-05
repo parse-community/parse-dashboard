@@ -808,6 +808,19 @@ export default class DataBrowser extends React.Component {
       return;
     }
 
+    // Handle "Run script on selected rows" shortcut before input element check
+    // This allows the shortcut to work even when a checkbox is focused
+    const shortcuts = this.state.keyboardShortcuts;
+    if (shortcuts && matchesShortcut(e, shortcuts.dataBrowserRunScriptOnSelectedRows)) {
+      const selection = this.props.selection || {};
+      const selectionLength = Object.keys(selection).length;
+      if (selectionLength > 0 && this.props.onExecuteScriptRows) {
+        this.props.onExecuteScriptRows(selection);
+        e.preventDefault();
+        return;
+      }
+    }
+
     // Check if the event target is an input, textarea, or select element
     const target = e.target;
     const isInputElement = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT');
@@ -898,19 +911,6 @@ export default class DataBrowser extends React.Component {
       if (e.keyCode === 27) {
         this.props.onAbortAddRow();
         e.preventDefault();
-      }
-    }
-
-    // Handle "Run script on selected rows" shortcut early, before cell selection check
-    // This allows the shortcut to work when rows are selected via checkbox without a cell being focused
-    const shortcuts = this.state.keyboardShortcuts;
-    if (shortcuts && matchesShortcut(e, shortcuts.dataBrowserRunScriptOnSelectedRows)) {
-      const selection = this.props.selection || {};
-      const selectionLength = Object.keys(selection).length;
-      if (selectionLength > 0 && this.props.onExecuteScriptRows) {
-        this.props.onExecuteScriptRows(selection);
-        e.preventDefault();
-        return;
       }
     }
 
