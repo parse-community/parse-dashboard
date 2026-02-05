@@ -29,6 +29,8 @@ export default class CloudConfigSettings extends DashboardView {
     this.section = 'App Settings';
     this.subsection = 'Cloud Config';
     this.serverStorage = null;
+    // Queue to serialize syntax color saves and prevent race conditions
+    this.pendingSyntaxColorSave = Promise.resolve();
 
     this.state = {
       cloudConfigHistoryLimit: '',
@@ -135,52 +137,61 @@ export default class CloudConfigSettings extends DashboardView {
   async saveSyntaxColor(tokenType) {
     const color = this.state.syntaxColors[tokenType];
 
-    // Validate hex color
+    // Validate hex color synchronously before queuing
     if (!/^#[0-9A-Fa-f]{6}$/.test(color)) {
       this.showNote(`Invalid color format for ${tokenType}. Use hex format like #ff0000.`, true);
       return;
     }
 
-    try {
-      const current = await this.serverStorage.getConfig(
-        FORMATTING_CONFIG_KEY,
-        this.context.applicationId
-      );
-      const storedColor = current?.colors?.[tokenType];
-      const defaultColor = DEFAULT_SYNTAX_COLORS[tokenType];
-
-      // Skip if color hasn't changed from stored value (or default if not stored)
-      const previousColor = storedColor || defaultColor;
-      if (color.toLowerCase() === previousColor.toLowerCase()) {
-        return;
-      }
-
-      // Build the new colors object, only including non-default values
-      const colors = { ...(current?.colors || {}) };
-      if (color.toLowerCase() === defaultColor.toLowerCase()) {
-        // Remove from storage if it matches the default
-        delete colors[tokenType];
-      } else {
-        colors[tokenType] = color;
-      }
-
-      // If no custom colors remain, delete the config entry
-      if (Object.keys(colors).length === 0) {
-        await this.serverStorage.deleteConfig(
+    // Chain onto the pending save to serialize read-modify-write operations
+    const saveOperation = this.pendingSyntaxColorSave.then(async () => {
+      try {
+        const current = await this.serverStorage.getConfig(
           FORMATTING_CONFIG_KEY,
           this.context.applicationId
         );
-      } else {
-        await this.serverStorage.setConfig(
-          FORMATTING_CONFIG_KEY,
-          { colors },
-          this.context.applicationId
-        );
+        const storedColor = current?.colors?.[tokenType];
+        const defaultColor = DEFAULT_SYNTAX_COLORS[tokenType];
+
+        // Skip if color hasn't changed from stored value (or default if not stored)
+        const previousColor = storedColor || defaultColor;
+        if (color.toLowerCase() === previousColor.toLowerCase()) {
+          return;
+        }
+
+        // Build the new colors object, only including non-default values
+        const colors = { ...(current?.colors || {}) };
+        if (color.toLowerCase() === defaultColor.toLowerCase()) {
+          // Remove from storage if it matches the default
+          delete colors[tokenType];
+        } else {
+          colors[tokenType] = color;
+        }
+
+        // If no custom colors remain, delete the config entry
+        if (Object.keys(colors).length === 0) {
+          await this.serverStorage.deleteConfig(
+            FORMATTING_CONFIG_KEY,
+            this.context.applicationId
+          );
+        } else {
+          await this.serverStorage.setConfig(
+            FORMATTING_CONFIG_KEY,
+            { colors },
+            this.context.applicationId
+          );
+        }
+        this.showNote(`${tokenType} color saved.`);
+      } catch {
+        this.showNote(`Failed to save ${tokenType} color.`, true);
       }
-      this.showNote(`${tokenType} color saved.`);
-    } catch {
-      this.showNote(`Failed to save ${tokenType} color.`, true);
-    }
+    });
+
+    // Update the queue with the new operation (catch to prevent queue breakage)
+    this.pendingSyntaxColorSave = saveOperation.catch(() => {});
+
+    // Await the operation for this call
+    await saveOperation;
   }
 
   async resetSyntaxColors() {
