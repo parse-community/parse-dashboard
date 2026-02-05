@@ -281,29 +281,7 @@ export default class ConfigDialog extends React.Component {
           label={
             <Label
               text="Value"
-              description={
-                <>
-                  Use this to configure your app. You can change it at any time.
-                  {(this.state.type === 'Object' || this.state.type === 'Array') && (
-                    <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '15px' }}>
-                      <Button
-                        value="Format"
-                        onClick={this.formatValue.bind(this)}
-                        disabled={!this.canFormatValue()}
-                      />
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                        <Toggle
-                          type={Toggle.Types.HIDE_LABELS}
-                          value={this.state.wordWrap}
-                          onChange={wordWrap => this.setState({ wordWrap })}
-                          additionalStyles={{ margin: '0px' }}
-                        />
-                        <span>Word wrap</span>
-                      </label>
-                    </div>
-                  )}
-                </>
-              }
+              description="Use this to configure your app. You can change it at any time."
             />
           }
           input={EDITORS[this.state.type](
@@ -364,6 +342,42 @@ export default class ConfigDialog extends React.Component {
       </div>
     );
 
+    const isJsonType = this.state.type === 'Object' || this.state.type === 'Array';
+    const customFooter = (
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '17px 28px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          {isJsonType && (
+            <>
+              <Button
+                value="Format"
+                onClick={this.formatValue.bind(this)}
+                disabled={!this.canFormatValue()}
+              />
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                <Toggle
+                  type={Toggle.Types.HIDE_LABELS}
+                  value={this.state.wordWrap}
+                  onChange={wordWrap => this.setState({ wordWrap })}
+                  additionalStyles={{ margin: '0px' }}
+                />
+                <span>Word wrap</span>
+              </label>
+            </>
+          )}
+        </div>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <Button value="Cancel" onClick={this.props.onCancel} />
+          <Button
+            primary={true}
+            color="blue"
+            value={newParam ? 'Create' : 'Save'}
+            onClick={this.submit.bind(this)}
+            disabled={!this.valid() || this.props.loading}
+          />
+        </div>
+      </div>
+    );
+
     return (
       <Modal
         type={Modal.Types.INFO}
@@ -371,11 +385,7 @@ export default class ConfigDialog extends React.Component {
         icon="gear-solid"
         iconSize={30}
         subtitle={'Dynamically configure parts of your app'}
-        disabled={!this.valid() || this.props.loading}
-        confirmText={newParam ? 'Create' : 'Save'}
-        cancelText="Cancel"
-        onCancel={this.props.onCancel}
-        onConfirm={this.submit.bind(this)}
+        customFooter={customFooter}
       >
         <LoaderContainer loading={this.props.loading}>
           {dialogContent}
