@@ -71,7 +71,8 @@ export default class JsonEditor extends React.Component {
 
   handleKeyDown = (e) => {
     // Enter key - auto-indent to match current line
-    if (e.key === 'Enter') {
+    // Skip if Cmd/Ctrl is pressed (let it bubble up for modal confirm)
+    if (e.key === 'Enter' && !e.metaKey && !e.ctrlKey) {
       e.preventDefault();
       e.stopPropagation();
 
