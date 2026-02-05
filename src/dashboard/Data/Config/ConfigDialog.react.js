@@ -379,8 +379,10 @@ export default class ConfigDialog extends React.Component {
                   value={this.state.wordWrap}
                   onChange={wordWrap => this.setState({ wordWrap })}
                   additionalStyles={{ margin: '0px' }}
+                  colorLeft="#cbcbcb"
+                  colorRight="#00db7c"
                 />
-                <span>Word wrap</span>
+                <span style={{ color: this.state.wordWrap ? '#333' : '#999' }}>Wrap</span>
               </label>
               {this.state.error && (
                 <span style={{ color: '#d73a49', fontSize: '13px' }}>{this.state.error}</span>
