@@ -196,10 +196,17 @@ export default class CloudConfigSettings extends DashboardView {
 
   async resetSyntaxColors() {
     try {
+      // Wait for any in-flight saves to complete before deleting
+      await (this.pendingSyntaxColorSave || Promise.resolve());
+
       await this.serverStorage.deleteConfig(
         FORMATTING_CONFIG_KEY,
         this.context.applicationId
       );
+
+      // Reset the queue so future saves start fresh
+      this.pendingSyntaxColorSave = Promise.resolve();
+
       this.setState({ syntaxColors: { ...DEFAULT_SYNTAX_COLORS } });
       this.showNote('Syntax colors reset to defaults.');
     } catch {
