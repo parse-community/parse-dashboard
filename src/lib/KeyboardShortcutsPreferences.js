@@ -12,8 +12,9 @@ import ServerConfigStorage from './ServerConfigStorage';
  * Default keyboard shortcuts
  */
 export const DEFAULT_SHORTCUTS = {
-  dataBrowserReloadData: { key: 'r', ctrl: false, shift: false, alt: false },
-  dataBrowserToggleInfoPanels: { key: 'p', ctrl: false, shift: false, alt: false },
+  dataBrowserReloadData: { key: 'r', ctrl: false, shift: false, alt: false, meta: false },
+  dataBrowserToggleInfoPanels: { key: 'p', ctrl: false, shift: false, alt: false, meta: false },
+  dataBrowserRunScriptOnSelectedRows: { key: 's', ctrl: false, shift: false, alt: false, meta: false },
 };
 
 /**
@@ -142,7 +143,6 @@ export function isValidShortcut(shortcut) {
   }
 
   // Modifier keys are optional booleans
-  // Note: Meta/Cmd key support could be added in the future
   if (shortcut.ctrl !== undefined && typeof shortcut.ctrl !== 'boolean') {
     return false;
   }
@@ -152,6 +152,9 @@ export function isValidShortcut(shortcut) {
   if (shortcut.alt !== undefined && typeof shortcut.alt !== 'boolean') {
     return false;
   }
+  if (shortcut.meta !== undefined && typeof shortcut.meta !== 'boolean') {
+    return false;
+  }
 
   return true;
 }
@@ -159,13 +162,14 @@ export function isValidShortcut(shortcut) {
 /**
  * Creates a shortcut object from a key string
  * @param {string} key - The key character
+ * @param {boolean} meta - Whether to include meta/cmd modifier
  * @returns {Object} Shortcut object
  */
-export function createShortcut(key) {
+export function createShortcut(key, meta = false) {
   if (!key || key.length !== 1) {
     return null;
   }
-  return { key, ctrl: false, shift: false, alt: false };
+  return { key, ctrl: false, shift: false, alt: false, meta };
 }
 
 /**
@@ -185,6 +189,7 @@ export function matchesShortcut(event, shortcut) {
   const ctrlMatches = !!event.ctrlKey === !!shortcut.ctrl;
   const shiftMatches = !!event.shiftKey === !!shortcut.shift;
   const altMatches = !!event.altKey === !!shortcut.alt;
+  const metaMatches = !!event.metaKey === !!shortcut.meta;
 
-  return keyMatches && ctrlMatches && shiftMatches && altMatches;
+  return keyMatches && ctrlMatches && shiftMatches && altMatches && metaMatches;
 }

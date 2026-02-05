@@ -900,6 +900,20 @@ export default class DataBrowser extends React.Component {
         e.preventDefault();
       }
     }
+
+    // Handle "Run script on selected rows" shortcut early, before cell selection check
+    // This allows the shortcut to work when rows are selected via checkbox without a cell being focused
+    const shortcuts = this.state.keyboardShortcuts;
+    if (shortcuts && matchesShortcut(e, shortcuts.dataBrowserRunScriptOnSelectedRows)) {
+      const selection = this.props.selection || {};
+      const selectionLength = Object.keys(selection).length;
+      if (selectionLength > 0 && this.props.onExecuteScriptRows) {
+        this.props.onExecuteScriptRows(selection);
+        e.preventDefault();
+        return;
+      }
+    }
+
     if (this.state.editing) {
       switch (e.keyCode) {
         case 27: // ESC
