@@ -1,3 +1,10 @@
+# [8.3.0-alpha.41](https://github.com/parse-community/parse-dashboard/compare/8.3.0-alpha.40...8.3.0-alpha.41) (2026-02-05)
+
+
+### Features
+
+* Add keyboard shortcut for executing script on selected rows in data browser ([#3171](https://github.com/parse-community/parse-dashboard/issues/3171)) ([75389ad](https://github.com/parse-community/parse-dashboard/commit/75389ad78e30fb38ea99bdce7550b59a7142c5f1))
+
 # [8.3.0-alpha.40](https://github.com/parse-community/parse-dashboard/compare/8.3.0-alpha.39...8.3.0-alpha.40) (2026-02-04)
 
 
