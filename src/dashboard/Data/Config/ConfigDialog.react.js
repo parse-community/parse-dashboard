@@ -102,6 +102,17 @@ const GET_VALUE = {
 
 export default class ConfigDialog extends React.Component {
   static contextType = CurrentApp;
+
+  static formatJSON(value) {
+    try {
+      const parsed = JSON.parse(value);
+      return { value: JSON.stringify(parsed, null, 2), error: null };
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      return { value, error: `Invalid JSON: ${message}` };
+    }
+  }
+
   constructor(props) {
     super();
     this.state = {
@@ -115,15 +126,10 @@ export default class ConfigDialog extends React.Component {
       syntaxColors: null,
     };
     if (props.param.length > 0) {
-      // Auto-format JSON values on initial open
       let initialValue = props.value;
+      let initialError = null;
       if ((props.type === 'Object' || props.type === 'Array') && initialValue) {
-        try {
-          const parsed = JSON.parse(initialValue);
-          initialValue = JSON.stringify(parsed, null, 2);
-        } catch {
-          // Value is not valid JSON, keep original
-        }
+        ({ value: initialValue, error: initialError } = ConfigDialog.formatJSON(initialValue));
       }
       this.state = {
         name: props.param,
@@ -132,7 +138,7 @@ export default class ConfigDialog extends React.Component {
         masterKeyOnly: props.masterKeyOnly,
         selectedIndex: 0,
         wordWrap: false,
-        error: null,
+        error: initialError,
         syntaxColors: null,
       };
     }
@@ -227,14 +233,8 @@ export default class ConfigDialog extends React.Component {
   }
 
   formatValue() {
-    try {
-      const parsed = JSON.parse(this.state.value);
-      const formatted = JSON.stringify(parsed, null, 2);
-      this.setState({ value: formatted, error: null });
-    } catch (e) {
-      const message = e instanceof Error ? e.message : String(e);
-      this.setState({ error: `Invalid JSON: ${message}` });
-    }
+    const { value, error } = ConfigDialog.formatJSON(this.state.value);
+    this.setState({ value, error });
   }
 
   compactValue() {
@@ -263,8 +263,16 @@ export default class ConfigDialog extends React.Component {
   componentDidUpdate(prevProps) {
     // Update parameter value or masterKeyOnly if they have changed
     if (this.props.value !== prevProps.value || this.props.masterKeyOnly !== prevProps.masterKeyOnly) {
+      let updatedValue = this.props.value;
+      let error = null;
+
+      if ((this.props.type === 'Object' || this.props.type === 'Array') && updatedValue) {
+        ({ value: updatedValue, error } = ConfigDialog.formatJSON(updatedValue));
+      }
+
       this.setState({
-        value: this.props.value,
+        value: updatedValue,
+        error,
         masterKeyOnly: this.props.masterKeyOnly,
       });
     }
