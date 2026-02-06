@@ -66,8 +66,8 @@ export default class EditViewDialog extends React.Component {
         type={Modal.Types.INFO}
         icon="edit-solid"
         iconSize={40}
-        title="Edit view?"
-        subtitle="Update the data source configuration."
+        title="Edit view"
+        subtitle="Update the data source configuration"
         confirmText="Save"
         cancelText="Cancel"
         disabled={!this.valid()}

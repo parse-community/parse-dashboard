@@ -46,42 +46,48 @@ const Modal = ({
 }) => {
   const modalRef = React.useRef(null);
 
+  // Selector for all focusable elements (excluding buttons - they're handled via Enter key)
+  const focusableSelector = [
+    'input:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    'a[href]',
+    '[tabindex]:not([tabindex="-1"])',
+  ].join(', ');
+
+  const getFocusableElements = React.useCallback(() => {
+    const modal = modalRef.current;
+    if (!modal) {
+      return [];
+    }
+    return Array.from(modal.querySelectorAll(focusableSelector)).filter(el => {
+      // Filter out elements that are hidden or not visible
+      // offsetParent is null for hidden elements (display:none or in hidden ancestors)
+      // Also check for zero dimensions (collapsed elements)
+      if (el.offsetParent === null && el.tagName !== 'BODY') {
+        return false;
+      }
+      const rect = el.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) {
+        return false;
+      }
+      return true;
+    });
+  }, []);
+
+  // Focus the first focusable element only when modal mounts
+  React.useEffect(() => {
+    const focusableElements = getFocusableElements();
+    if (focusableElements.length > 0) {
+      focusableElements[0].focus();
+    }
+  }, []);
+
   // Focus trap and keyboard handling
   React.useEffect(() => {
     const modal = modalRef.current;
     if (!modal) {
       return;
-    }
-
-    // Selector for all focusable elements (excluding buttons - they're handled via Enter key)
-    const focusableSelector = [
-      'input:not([disabled])',
-      'select:not([disabled])',
-      'textarea:not([disabled])',
-      'a[href]',
-      '[tabindex]:not([tabindex="-1"])',
-    ].join(', ');
-
-    const getFocusableElements = () => {
-      return Array.from(modal.querySelectorAll(focusableSelector)).filter(el => {
-        // Filter out elements that are hidden or not visible
-        // offsetParent is null for hidden elements (display:none or in hidden ancestors)
-        // Also check for zero dimensions (collapsed elements)
-        if (el.offsetParent === null && el.tagName !== 'BODY') {
-          return false;
-        }
-        const rect = el.getBoundingClientRect();
-        if (rect.width === 0 || rect.height === 0) {
-          return false;
-        }
-        return true;
-      });
-    };
-
-    // Focus the first focusable element when modal opens
-    const focusableElements = getFocusableElements();
-    if (focusableElements.length > 0) {
-      focusableElements[0].focus();
     }
 
     const handleKeyDown = (e) => {
