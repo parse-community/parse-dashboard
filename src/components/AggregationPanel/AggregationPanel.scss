@@ -164,8 +164,26 @@
 
 .loader {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.reloadButton {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    color: $blue;
+    font-size: 13px;
+    margin-top: 8px;
+
+    &:hover {
+        color: $darkBlue;
+    }
 }
 
 .segmentContainer {

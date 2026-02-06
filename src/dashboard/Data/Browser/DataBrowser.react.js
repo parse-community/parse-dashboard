@@ -2681,6 +2681,7 @@ export default class DataBrowser extends React.Component {
                             appName={this.props.appName}
                             className={this.props.className}
                             onContextMenu={this.handleAggregationPanelTextContextMenu}
+                            onReload={() => this.props.callCloudFunction(this.state.selectedObjectId, this.props.className, this.props.app.applicationId)}
                           />
                         );
                       }
@@ -2744,6 +2745,7 @@ export default class DataBrowser extends React.Component {
                                 appName={this.props.appName}
                                 className={this.props.className}
                                 onContextMenu={this.handleAggregationPanelTextContextMenu}
+                                onReload={() => this.props.callCloudFunction(objectId, this.props.className, this.props.app.applicationId)}
                               />
                             </div>
                             {index < this.state.displayedObjectIds.length - 1 && (
@@ -2767,6 +2769,7 @@ export default class DataBrowser extends React.Component {
                     appName={this.props.appName}
                     className={this.props.className}
                     onContextMenu={this.handleAggregationPanelTextContextMenu}
+                    onReload={() => this.props.callCloudFunction(this.state.selectedObjectId, this.props.className, this.props.app.applicationId)}
                   />
                 )}
               </div>
