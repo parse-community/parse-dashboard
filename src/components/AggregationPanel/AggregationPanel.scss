@@ -169,6 +169,15 @@
     justify-content: center;
 }
 
+.elapsedTimer {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #999;
+    font-size: 12px;
+    margin-top: 6px;
+}
+
 .reloadButton {
     position: absolute;
     left: 50%;
@@ -179,7 +188,7 @@
     cursor: pointer;
     color: $blue;
     font-size: 13px;
-    margin-top: 8px;
+    margin-top: 16px;
 
     &:hover {
         color: $darkBlue;

@@ -36,7 +36,9 @@ const AggregationPanel = ({
   const [isLoadingNested, setIsLoadingNested] = useState(false);
   const [showReloadButton, setShowReloadButton] = useState(false);
   const [reloadCount, setReloadCount] = useState(0);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const reloadTimerRef = useRef(null);
+  const elapsedIntervalRef = useRef(null);
 
   useEffect(() => {
     if (Object.keys(errorAggregatedData).length !== 0) {
@@ -54,13 +56,20 @@ const AggregationPanel = ({
 
   useEffect(() => {
     clearTimeout(reloadTimerRef.current);
+    clearInterval(elapsedIntervalRef.current);
     if (isLoading) {
       setShowReloadButton(false);
-      reloadTimerRef.current = setTimeout(() => setShowReloadButton(true), 5_000);
+      setElapsedSeconds(0);
+      elapsedIntervalRef.current = setInterval(() => setElapsedSeconds(s => s + 1), 1_000);
+      reloadTimerRef.current = setTimeout(() => setShowReloadButton(true), 3_000);
     } else {
       setShowReloadButton(false);
+      setElapsedSeconds(0);
     }
-    return () => clearTimeout(reloadTimerRef.current);
+    return () => {
+      clearTimeout(reloadTimerRef.current);
+      clearInterval(elapsedIntervalRef.current);
+    };
   }, [isLoading, reloadCount]);
 
   const shouldShowAggregatedData = useMemo(
@@ -207,6 +216,7 @@ const AggregationPanel = ({
             {isLoadingNested ? (
               <div className={styles.loader}>
                 <LoaderDots />
+                {showReloadButton && <span className={styles.elapsedTimer}>{elapsedSeconds}s</span>}
                 {showReloadButton && (
                   <button
                     onClick={handleReload}
@@ -249,6 +259,7 @@ const AggregationPanel = ({
       {isLoadingInfoPanel ? (
         <div className={styles.center}>
           <LoaderDots />
+          {showReloadButton && onReload && <span className={styles.elapsedTimer}>{elapsedSeconds}s</span>}
           {showReloadButton && onReload && (
             <button
               onClick={handleReload}
