@@ -448,6 +448,7 @@ export default class ConfigDialog extends React.Component {
         iconSize={30}
         subtitle={'Dynamically configure parts of your app'}
         customFooter={customFooter}
+        disabled={!this.valid() || this.props.loading}
         onCancel={this.props.onCancel}
         onConfirm={this.submit.bind(this)}
       >

@@ -191,6 +191,7 @@ export default class EditViewDialog extends React.Component {
         title="Edit view"
         subtitle="Update the data source configuration"
         customFooter={customFooter}
+        disabled={!this.valid()}
         onCancel={onCancel}
         onConfirm={this.submit.bind(this)}
       >
