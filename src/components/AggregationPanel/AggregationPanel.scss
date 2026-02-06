@@ -176,6 +176,7 @@
     color: #999;
     font-size: 12px;
     margin-top: 6px;
+    animation: fadeIn 0.5s ease-in;
 }
 
 .reloadButton {
@@ -189,14 +190,20 @@
     color: $blue;
     font-size: 13px;
     margin-top: 16px;
+    animation: fadeIn 0.5s ease-in;
 
     &:hover {
         color: $darkBlue;
     }
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 .segmentContainer {
-    border-left: 1px solid #e3e3ea;    
+    border-left: 1px solid #e3e3ea;
     border-bottom: 1px solid #e3e3ea;
     margin-bottom: 16px;
   }
