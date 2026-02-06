@@ -1,3 +1,10 @@
+## [8.4.1-alpha.2](https://github.com/parse-community/parse-dashboard/compare/8.4.1-alpha.1...8.4.1-alpha.2) (2026-02-06)
+
+
+### Bug Fixes
+
+* View configuration dialog looses focus while typing and lacks syntax highlighting ([#3183](https://github.com/parse-community/parse-dashboard/issues/3183)) ([715fe8d](https://github.com/parse-community/parse-dashboard/commit/715fe8d60cfe1dcb82012d290e8b95c4a5fc1446))
+
 ## [8.4.1-alpha.1](https://github.com/parse-community/parse-dashboard/compare/8.4.0...8.4.1-alpha.1) (2026-02-06)
 
 
