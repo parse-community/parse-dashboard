@@ -170,28 +170,30 @@
     justify-content: center;
 }
 
-.elapsedTimer {
+.reloadControls {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    color: #999;
-    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-top: 6px;
     animation: fadeIn 0.5s ease-in;
 }
 
+.elapsedTimer {
+    color: #999;
+    font-size: 12px;
+}
+
 .reloadButton {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
     background: none;
     border: none;
     padding: 8px 12px;
     cursor: pointer;
     color: $blue;
     font-size: 13px;
-    margin-top: 16px;
-    animation: fadeIn 0.5s ease-in;
+    margin-top: 10px;
 
     &:hover {
         color: $darkBlue;

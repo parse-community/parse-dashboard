@@ -216,14 +216,16 @@ const AggregationPanel = ({
             {isLoadingNested ? (
               <div className={styles.loader}>
                 <LoaderDots />
-                {showReloadButton && <span className={styles.elapsedTimer}>{elapsedSeconds}s</span>}
                 {showReloadButton && (
-                  <button
-                    onClick={handleReload}
-                    className={styles.reloadButton}
-                  >
-                    <Icon name="refresh-solid" width={20} height={20} fill="#169cee" />
-                  </button>
+                  <div className={styles.reloadControls}>
+                    <span className={styles.elapsedTimer}>{elapsedSeconds}s</span>
+                    <button
+                      onClick={handleReload}
+                      className={styles.reloadButton}
+                    >
+                      <Icon name="refresh-solid" width={20} height={20} fill="#169cee" />
+                    </button>
+                  </div>
                 )}
               </div>
             ) : (
@@ -259,14 +261,16 @@ const AggregationPanel = ({
       {isLoadingInfoPanel ? (
         <div className={styles.center}>
           <LoaderDots />
-          {showReloadButton && onReload && <span className={styles.elapsedTimer}>{elapsedSeconds}s</span>}
           {showReloadButton && onReload && (
-            <button
-              onClick={handleReload}
-              className={styles.reloadButton}
-            >
-              <Icon name="refresh-outline" width={20} height={20} fill="#169cee" />
-            </button>
+            <div className={styles.reloadControls}>
+              <span className={styles.elapsedTimer}>{elapsedSeconds}s</span>
+              <button
+                onClick={handleReload}
+                className={styles.reloadButton}
+              >
+                <Icon name="refresh-outline" width={20} height={20} fill="#169cee" />
+              </button>
+            </div>
           )}
         </div>
       ) : shouldShowAggregatedData ? (
