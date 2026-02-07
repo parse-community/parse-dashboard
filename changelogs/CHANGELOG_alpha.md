@@ -1,3 +1,10 @@
+# [8.5.0-alpha.3](https://github.com/parse-community/parse-dashboard/compare/8.5.0-alpha.2...8.5.0-alpha.3) (2026-02-07)
+
+
+### Bug Fixes
+
+* Clicking reload button in info panel may display fetched data in incorrect panel ([#3189](https://github.com/parse-community/parse-dashboard/issues/3189)) ([b348ef5](https://github.com/parse-community/parse-dashboard/commit/b348ef5dad5731c66e50f3b4c67ff0afd3884a86))
+
 # [8.5.0-alpha.2](https://github.com/parse-community/parse-dashboard/compare/8.5.0-alpha.1...8.5.0-alpha.2) (2026-02-07)
 
 
