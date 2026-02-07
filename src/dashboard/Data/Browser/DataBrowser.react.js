@@ -561,13 +561,13 @@ export default class DataBrowser extends React.Component {
     // Store the fetched panel data in multiPanelData when it changes
     if (
       this.props.AggregationPanelData !== prevProps.AggregationPanelData &&
-      this.state.selectedObjectId &&
+      this.props.lastFetchedObjectId &&
       Object.keys(this.props.AggregationPanelData).length > 0
     ) {
       this.setState(prev => ({
         multiPanelData: {
           ...prev.multiPanelData,
-          [this.state.selectedObjectId]: this.props.AggregationPanelData
+          [this.props.lastFetchedObjectId]: this.props.AggregationPanelData
         }
       }));
     }
