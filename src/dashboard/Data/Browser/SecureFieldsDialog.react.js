@@ -46,7 +46,7 @@ function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
     };
 
     const user = text.substring(5);
-    userQuery = new Parse.Query.or(
+    userQuery = Parse.Query.or(
       new Parse.Query(Parse.User).equalTo('username', user),
       new Parse.Query(Parse.User).equalTo('objectId', user)
     );
@@ -56,7 +56,7 @@ function validateEntry(pointers, text, parseServerSupportsPointerPermissions) {
       find: () => Promise.resolve([]),
     };
     const role = text.substring(5);
-    roleQuery = new Parse.Query.or(
+    roleQuery = Parse.Query.or(
       new Parse.Query(Parse.Role).equalTo('name', role),
       new Parse.Query(Parse.Role).equalTo('objectId', role)
     );

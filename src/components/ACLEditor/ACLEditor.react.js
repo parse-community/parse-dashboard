@@ -28,7 +28,7 @@ function validateEntry(text, returnInvalid = true) {
 
     const user = text.substring(5);
     entry = user;
-    userQuery = new Parse.Query.or(
+    userQuery = Parse.Query.or(
       new Parse.Query(Parse.User).equalTo('username', user),
       new Parse.Query(Parse.User).equalTo('objectId', user)
     );
@@ -40,7 +40,7 @@ function validateEntry(text, returnInvalid = true) {
     };
     const role = text.substring(5);
     entry = role;
-    roleQuery = new Parse.Query.or(
+    roleQuery = Parse.Query.or(
       new Parse.Query(Parse.Role).equalTo('name', role),
       new Parse.Query(Parse.Role).equalTo('objectId', role)
     );
