@@ -48,7 +48,7 @@
     "core-js": "3.48.0",
     "csurf": "1.11.0",
     "expr-eval-fork": "3.0.1",
-    "express": "4.21.2",
+    "express": "5.2.1",
     "express-session": "1.18.2",
     "fast-deep-equal": "3.1.3",
     "graphiql": "2.0.8",

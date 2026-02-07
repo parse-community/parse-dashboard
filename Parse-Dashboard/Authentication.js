@@ -27,7 +27,7 @@ function initialize(app, options) {
       const match = self.authenticate({
         name: username,
         pass: password,
-        otpCode: req.body.otpCode
+        otpCode: req.body?.otpCode
       });
       if (!match.matchingUsername) {
         return cb(null, false, { message: JSON.stringify({ text: 'Invalid username or password' }) });
@@ -85,7 +85,7 @@ function initialize(app, options) {
     (req,res,next) => {
       let redirect = 'apps';
       let originalRedirect = null;
-      if (req.body.redirect) {
+      if (req.body?.redirect) {
         originalRedirect = req.body.redirect;
         // Validate redirect to prevent open redirect vulnerability
         if (originalRedirect.includes('://') || originalRedirect.startsWith('//')) {
