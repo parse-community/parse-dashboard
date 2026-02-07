@@ -38,6 +38,7 @@ export default class TableView extends DashboardView {
         if (data.length === 0) {
           content = <div className={styles.empty}>{this.renderEmpty()}</div>;
         } else {
+          headers = this.renderHeaders();
           content = (
             <div className={styles.rows}>
               <table>
@@ -46,7 +47,6 @@ export default class TableView extends DashboardView {
               {footer}
             </div>
           );
-          headers = this.renderHeaders();
         }
       }
     }
@@ -55,10 +55,12 @@ export default class TableView extends DashboardView {
     return (
       <div>
         <LoaderContainer loading={loading}>
-          <div className={styles.content}>{content}</div>
+          <div className={styles.content}>
+            <div className={styles.headers}>{headers}</div>
+            {content}
+          </div>
         </LoaderContainer>
         {toolbar}
-        <div className={styles.headers}>{headers}</div>
         {extras}
       </div>
     );

@@ -10,6 +10,7 @@ import Button from 'components/Button/Button.react';
 import ConfigDialog from 'dashboard/Data/Config/ConfigDialog.react';
 import DeleteParameterDialog from 'dashboard/Data/Config/DeleteParameterDialog.react';
 import AddArrayEntryDialog from 'dashboard/Data/Config/AddArrayEntryDialog.react';
+import RemoveArrayEntryDialog from 'dashboard/Data/Config/RemoveArrayEntryDialog.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Icon from 'components/Icon/Icon.react';
 import { isDate } from 'lib/DateUtils';
@@ -26,6 +27,8 @@ import { CurrentApp } from 'context/currentApp';
 import Modal from 'components/Modal/Modal.react';
 import equal from 'fast-deep-equal';
 import Notification from 'dashboard/Data/Browser/Notification.react';
+import ServerConfigStorage from 'lib/ServerConfigStorage';
+import { prefersServerStorage } from 'lib/StoragePreferences';
 
 @subscribeTo('Config', 'config')
 class Config extends TableView {
@@ -49,8 +52,14 @@ class Config extends TableView {
       showAddEntryDialog: false,
       addEntryParam: '',
       addEntryLastType: null,
+      showRemoveEntryDialog: false,
+      removeEntryParam: '',
+      removeEntryArrayValue: [],
+      serverHistoryLimit: undefined,
+      currentParamHistory: null,
     };
     this.noteTimeout = null;
+    this.serverStorage = null;
   }
 
   componentWillMount() {
@@ -72,9 +81,86 @@ class Config extends TableView {
     try {
       await this.props.config.dispatch(ActionTypes.FETCH);
       this.cacheData = new Map(this.props.config.data);
+      await this.loadCloudConfigSettings();
     } finally {
       this.setState({ loading: false });
     }
+  }
+
+  async loadCloudConfigSettings() {
+    try {
+      this.serverStorage = new ServerConfigStorage(this.context);
+      if (!this.serverStorage.isServerConfigEnabled()) {
+        return;
+      }
+      const settings = await this.serverStorage.getConfig(
+        'config.settings',
+        this.context.applicationId
+      );
+      if (settings) {
+        if (settings.historyLimit !== undefined) {
+          this.setState({ serverHistoryLimit: settings.historyLimit });
+        }
+      }
+    } catch {
+      // Fall back to existing context value
+    }
+  }
+
+  async addToConfigHistory(name, value) {
+    const limit = this.context.cloudConfigHistoryLimit ?? this.state.serverHistoryLimit;
+    const newHistoryEntry = { time: new Date(), value };
+    const applicationId = this.context.applicationId;
+
+    if (prefersServerStorage(applicationId) && this.serverStorage) {
+      try {
+        const key = `config.history.parameters.${name}`;
+        const existing = await this.serverStorage.getConfig(key, applicationId);
+        const values = existing?.values || [];
+        const history = [newHistoryEntry, ...values].slice(0, limit || 100);
+        await this.serverStorage.setConfig(key, { values: history }, applicationId);
+      } catch {
+        // Fall back silently
+      }
+    } else {
+      const configHistory = localStorage.getItem(`${applicationId}_configHistory`);
+      if (!configHistory) {
+        localStorage.setItem(
+          `${applicationId}_configHistory`,
+          JSON.stringify({ [name]: [newHistoryEntry] })
+        );
+      } else {
+        const oldConfigHistory = JSON.parse(configHistory);
+        const updatedHistory = !oldConfigHistory[name]
+          ? [newHistoryEntry]
+          : [newHistoryEntry, ...oldConfigHistory[name]].slice(0, limit || 100);
+
+        localStorage.setItem(
+          `${applicationId}_configHistory`,
+          JSON.stringify({ ...oldConfigHistory, [name]: updatedHistory })
+        );
+      }
+    }
+  }
+
+  async loadConfigHistory(name) {
+    const applicationId = this.context.applicationId;
+
+    if (prefersServerStorage(applicationId) && this.serverStorage) {
+      try {
+        const key = `config.history.parameters.${name}`;
+        const result = await this.serverStorage.getConfig(key, applicationId);
+        return result?.values || [];
+      } catch {
+        return [];
+      }
+    }
+
+    const raw = localStorage.getItem(`${applicationId}_configHistory`);
+    if (!raw) {
+      return [];
+    }
+    return JSON.parse(raw)[name] || [];
   }
 
   renderToolbar() {
@@ -106,6 +192,7 @@ class Config extends TableView {
           masterKeyOnly={this.state.modalMasterKeyOnly}
           parseServerVersion={this.context.serverInfo?.parseServerVersion}
           loading={this.state.loading}
+          configHistory={this.state.currentParamHistory}
         />
       );
     } else if (this.state.showDeleteParameterDialog) {
@@ -125,6 +212,17 @@ class Config extends TableView {
           }
           lastType={this.state.addEntryLastType}
           param={this.state.addEntryParam}
+        />
+      );
+    } else if (this.state.showRemoveEntryDialog) {
+      extras = (
+        <RemoveArrayEntryDialog
+          onCancel={this.closeRemoveEntryDialog.bind(this)}
+          onConfirm={removeConfig =>
+            this.removeArrayEntry(this.state.removeEntryParam, removeConfig)
+          }
+          param={this.state.removeEntryParam}
+          arrayValue={this.state.removeEntryArrayValue}
         />
       );
     }
@@ -236,10 +334,14 @@ class Config extends TableView {
         modalType: type,
         modalValue: modalValue,
         modalMasterKeyOnly: data.masterKeyOnly,
+        currentParamHistory: null,
       });
 
-      // Fetch config data
-      await this.loadData();
+      // Fetch config data and history in parallel
+      const [, history] = await Promise.all([
+        this.loadData(),
+        this.loadConfigHistory(data.param),
+      ]);
 
       // Get latest param values
       const fetchedParams = this.props.config.data.get('params');
@@ -254,6 +356,7 @@ class Config extends TableView {
       this.setState({
         modalValue: fetchedModalValue,
         modalMasterKeyOnly: fetchedMasterKeyOnly,
+        currentParamHistory: history,
         loading: false,
       });
     };
@@ -290,12 +393,20 @@ class Config extends TableView {
         </td>
         <td style={columnStyleAction}>
           {type === 'Array' && (
-            <a
-              className={configStyles.configActionIcon}
-              onClick={() => this.openAddEntryDialog(data.param)}
-            >
-              <Icon width={18} height={18} name="plus-solid" />
-            </a>
+            <>
+              <a
+                className={configStyles.configActionIcon}
+                onClick={() => this.openAddEntryDialog(data.param)}
+              >
+                <Icon width={18} height={18} name="plus-solid" />
+              </a>
+              <a
+                className={configStyles.configActionIcon}
+                onClick={() => this.openRemoveEntryDialog(data.param)}
+              >
+                <Icon width={18} height={18} name="minus-solid" />
+              </a>
+            </>
           )}
         </td>
         <td style={columnStyleSmall} onClick={openModal}>
@@ -415,44 +526,14 @@ class Config extends TableView {
       this.setState({ modalOpen: false });
 
       // Update config history in localStorage
-      const limit = this.context.cloudConfigHistoryLimit;
-      const applicationId = this.context.applicationId;
       let transformedValue = value;
-
       if (type === 'Date') {
         transformedValue = { __type: 'Date', iso: value };
       }
       if (type === 'File') {
         transformedValue = { name: value._name, url: value._url };
       }
-
-      const configHistory = localStorage.getItem(`${applicationId}_configHistory`);
-      const newHistoryEntry = {
-        time: new Date(),
-        value: transformedValue,
-      };
-
-      if (!configHistory) {
-        localStorage.setItem(
-          `${applicationId}_configHistory`,
-          JSON.stringify({
-            [name]: [newHistoryEntry],
-          })
-        );
-      } else {
-        const oldConfigHistory = JSON.parse(configHistory);
-        const updatedHistory = !oldConfigHistory[name]
-          ? [newHistoryEntry]
-          : [newHistoryEntry, ...oldConfigHistory[name]].slice(0, limit || 100);
-
-        localStorage.setItem(
-          `${applicationId}_configHistory`,
-          JSON.stringify({
-            ...oldConfigHistory,
-            [name]: updatedHistory,
-          })
-        );
-      }
+      this.addToConfigHistory(name, transformedValue);
     } catch (error) {
       this.context.showError?.(
         `Failed to save parameter: ${error.message || 'Unknown error occurred'}`
@@ -466,14 +547,26 @@ class Config extends TableView {
     this.props.config.dispatch(ActionTypes.DELETE, { param: name }).then(() => {
       this.setState({ showDeleteParameterDialog: false });
     });
+
+    // Delete history from server
+    if (prefersServerStorage(this.context.applicationId) && this.serverStorage) {
+      this.serverStorage.deleteConfig(
+        `config.history.parameters.${name}`,
+        this.context.applicationId
+      ).catch(() => {});
+    }
+
+    // Delete history from localStorage
+    const applicationId = this.context.applicationId;
     const configHistory =
-      localStorage.getItem('configHistory') && JSON.parse(localStorage.getItem('configHistory'));
+      localStorage.getItem(`${applicationId}_configHistory`) &&
+      JSON.parse(localStorage.getItem(`${applicationId}_configHistory`));
     if (configHistory) {
       delete configHistory[name];
       if (Object.keys(configHistory).length === 0) {
-        localStorage.removeItem('configHistory');
+        localStorage.removeItem(`${applicationId}_configHistory`);
       } else {
-        localStorage.setItem('configHistory', JSON.stringify(configHistory));
+        localStorage.setItem(`${applicationId}_configHistory`, JSON.stringify(configHistory));
       }
     }
   }
@@ -485,6 +578,7 @@ class Config extends TableView {
       modalType: 'String',
       modalValue: '',
       modalMasterKeyOnly: false,
+      currentParamHistory: null,
     });
   }
 
@@ -525,6 +619,24 @@ class Config extends TableView {
     });
   }
 
+  openRemoveEntryDialog(param) {
+    const params = this.props.config.data.get('params');
+    const arr = params?.get(param);
+    this.setState({
+      showRemoveEntryDialog: true,
+      removeEntryParam: param,
+      removeEntryArrayValue: Array.isArray(arr) ? arr : [],
+    });
+  }
+
+  closeRemoveEntryDialog() {
+    this.setState({
+      showRemoveEntryDialog: false,
+      removeEntryParam: '',
+      removeEntryArrayValue: [],
+    });
+  }
+
   async addArrayEntry(param, value) {
     try {
       this.setState({ loading: true });
@@ -544,37 +656,7 @@ class Config extends TableView {
       await this.props.config.dispatch(ActionTypes.FETCH);
 
       // Update config history
-      const limit = this.context.cloudConfigHistoryLimit;
-      const applicationId = this.context.applicationId;
-      const params = this.props.config.data.get('params');
-      const updatedValue = params.get(param);
-      const configHistory = localStorage.getItem(`${applicationId}_configHistory`);
-      const newHistoryEntry = {
-        time: new Date(),
-        value: updatedValue,
-      };
-
-      if (!configHistory) {
-        localStorage.setItem(
-          `${applicationId}_configHistory`,
-          JSON.stringify({
-            [param]: [newHistoryEntry],
-          })
-        );
-      } else {
-        const oldConfigHistory = JSON.parse(configHistory);
-        const updatedHistory = !oldConfigHistory[param]
-          ? [newHistoryEntry]
-          : [newHistoryEntry, ...oldConfigHistory[param]].slice(0, limit || 100);
-
-        localStorage.setItem(
-          `${applicationId}_configHistory`,
-          JSON.stringify({
-            ...oldConfigHistory,
-            [param]: updatedHistory,
-          })
-        );
-      }
+      this.addToConfigHistory(param, this.props.config.data.get('params').get(param));
 
       this.showNote(`Entry added to ${param}`);
     } catch (e) {
@@ -583,6 +665,92 @@ class Config extends TableView {
       this.setState({ loading: false });
     }
     this.closeAddEntryDialog();
+  }
+
+  /**
+   * Gets a nested value from an object using a dot-notation path.
+   * @param {Object} obj - The object to extract from
+   * @param {string} path - The dot-notation path (e.g., "a.b.c")
+   * @returns {*} - The value at the path, or undefined if not found
+   */
+  getValueAtPath(obj, path) {
+    if (obj === null || typeof obj !== 'object') {
+      return undefined;
+    }
+    const parts = path.split('.');
+    let current = obj;
+    for (const part of parts) {
+      if (current === null || typeof current !== 'object') {
+        return undefined;
+      }
+      current = current[part];
+    }
+    return current;
+  }
+
+  async removeArrayEntry(param, removeConfig) {
+    try {
+      this.setState({ loading: true });
+
+      // Fetch latest config data to ensure we have the current array value
+      await this.props.config.dispatch(ActionTypes.FETCH);
+
+      const masterKeyOnlyMap = this.props.config.data.get('masterKeyOnly');
+      const masterKeyOnly = masterKeyOnlyMap?.get(param) || false;
+
+      let objectsToRemove;
+
+      if (removeConfig.filterByKey) {
+        // Filter mode: find all objects where keyPath matches the value
+        const { keyPath, value } = removeConfig;
+        const params = this.props.config.data.get('params');
+        const currentArray = params?.get(param) || [];
+
+        objectsToRemove = currentArray.filter(item => {
+          if (item === null || typeof item !== 'object' || Array.isArray(item)) {
+            return false;
+          }
+          const itemValue = this.getValueAtPath(item, keyPath);
+          return equal(itemValue, value);
+        });
+
+        if (objectsToRemove.length === 0) {
+          this.showNote(`No matching entries found for ${keyPath} = ${JSON.stringify(value)}`, true);
+          this.closeRemoveEntryDialog();
+          return;
+        }
+      } else {
+        // Direct mode: remove the exact value
+        objectsToRemove = [removeConfig.value];
+      }
+
+      await Parse._request(
+        'PUT',
+        'config',
+        {
+          params: {
+            [param]: { __op: 'Remove', objects: objectsToRemove.map(v => Parse._encode(v)) },
+          },
+          masterKeyOnly: { [param]: masterKeyOnly },
+        },
+        { useMasterKey: true }
+      );
+      await this.props.config.dispatch(ActionTypes.FETCH);
+
+      // Update config history
+      this.addToConfigHistory(param, this.props.config.data.get('params').get(param));
+
+      const removedCount = objectsToRemove.length;
+      const message = removedCount === 1
+        ? `Entry removed from ${param}`
+        : `${removedCount} entries removed from ${param}`;
+      this.showNote(message);
+    } catch (e) {
+      this.showNote(`Failed to remove entry: ${e.message}`, true);
+    } finally {
+      this.setState({ loading: false });
+    }
+    this.closeRemoveEntryDialog();
   }
 }
 

@@ -12,6 +12,9 @@ import BrowserToolbar from 'dashboard/Data/Browser/BrowserToolbar.react';
 import * as ColumnPreferences from 'lib/ColumnPreferences';
 import { CurrentApp } from 'context/currentApp';
 import { dateStringUTC } from 'lib/DateUtils';
+import GraphDialog from 'dashboard/Data/Browser/GraphDialog.react';
+import GraphPanel from 'components/GraphPanel/GraphPanel.react';
+import GraphPreferencesManager from 'lib/GraphPreferencesManager';
 import getFileName from 'lib/getFileName';
 import { getValidScripts, executeScript } from '../../../lib/ScriptUtils';
 import Parse from 'parse';
@@ -22,6 +25,7 @@ import styles from './Databrowser.scss';
 import KeyboardShortcutsManager, { matchesShortcut } from 'lib/KeyboardShortcutsPreferences';
 
 import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
+import { buildRelatedTextFieldsMenuItem } from '../../../lib/RelatedRecordsUtils';
 
 const BROWSER_SHOW_ROW_NUMBER = 'browserShowRowNumber';
 const AGGREGATION_PANEL_VISIBLE = 'aggregationPanelVisible';
@@ -32,6 +36,10 @@ const AGGREGATION_PANEL_BATCH_NAVIGATE = 'aggregationPanelBatchNavigate';
 const AGGREGATION_PANEL_SHOW_CHECKBOX = 'aggregationPanelShowCheckbox';
 const AGGREGATION_PANEL_WIDTH = 'aggregationPanelWidth';
 const AGGREGATION_PANEL_COUNT = 'aggregationPanelCount';
+const GRAPH_PANEL_VISIBLE = 'graphPanelVisible';
+const GRAPH_PANEL_WIDTH = 'graphPanelWidth';
+const AGGREGATION_PANEL_AUTO_SCROLL = 'aggregationPanelAutoScroll';
+const AGGREGATION_PANEL_AUTO_SCROLL_REQUIRE_HOVER = 'aggregationPanelAutoScrollRequireHover';
 
 function formatValueForCopy(value, type) {
   if (value === undefined) {
@@ -114,6 +122,19 @@ export default class DataBrowser extends React.Component {
       props.classwiseCloudFunctions?.[
         `${props.app.applicationId}${props.appName}`
       ]?.[props.className];
+    const storedAutoScroll =
+      window.localStorage?.getItem(AGGREGATION_PANEL_AUTO_SCROLL) === 'true';
+    const storedAutoScrollRequireHover =
+      window.localStorage?.getItem(AGGREGATION_PANEL_AUTO_SCROLL_REQUIRE_HOVER) !== 'false';
+    const storedGraphPanelVisible =
+      window.localStorage?.getItem(GRAPH_PANEL_VISIBLE) === 'true';
+    const storedGraphPanelWidth = window.localStorage?.getItem(GRAPH_PANEL_WIDTH);
+    const parsedWidth = storedGraphPanelWidth ? parseInt(storedGraphPanelWidth, 10) : 400;
+    const parsedGraphPanelWidth = !isNaN(parsedWidth) && parsedWidth > 0 ? parsedWidth : 400;
+
+    // Note: We don't load graphConfig from localStorage here anymore.
+    // Graphs are now loaded from server/localStorage via GraphPreferencesManager in componentDidMount
+    // and componentDidUpdate. This ensures we use the new server-based storage system.
 
     this.state = {
       order: order,
@@ -130,7 +151,8 @@ export default class DataBrowser extends React.Component {
       selectedData: [],
       prevClassName: props.className,
       panelWidth: parsedPanelWidth,
-      isResizing: false,
+      isAggregationPanelResizing: false,
+      isGraphPanelResizing: false,
       maxWidth: window.innerWidth - 300,
       showAggregatedData: true,
       frozenColumnIndex: -1,
@@ -155,6 +177,28 @@ export default class DataBrowser extends React.Component {
       contextMenuItems: null,
       panelCheckboxDragging: false,
       draggedPanelSelection: false,
+      isGraphPanelVisible: storedGraphPanelVisible,
+      graphPanelWidth: parsedGraphPanelWidth,
+      graphConfig: null, // Will be loaded from server in componentDidMount
+      availableGraphs: [],
+      showGraphDialog: false,
+      isCreatingNewGraph: false,
+      // Auto-scroll feature state
+      autoScrollEnabled: storedAutoScroll, // Whether auto-scroll feature is enabled (menu setting)
+      autoScrollRequireHover: storedAutoScrollRequireHover, // Whether auto-scroll requires mouse hover over panel
+      isAutoScrolling: false, // Whether auto-scroll is currently active
+      isRecordingAutoScroll: false, // Whether we're recording (Command key held during scroll)
+      autoScrollAmount: 0, // The registered scroll amount (pixels)
+      autoScrollDelay: 1000, // The registered wait time (ms)
+      autoScrollPaused: false, // Whether auto-scroll is currently paused
+      recordingScrollStart: null, // Timestamp when scroll recording started
+      recordingScrollEnd: null, // Timestamp when scrolling ended (before Command key release)
+      recordedScrollDelta: 0, // Accumulated scroll delta during recording
+      nativeContextMenuOpen: false, // Whether the browser's native context menu is open
+      mouseOutsidePanel: true, // Whether the mouse is outside the AggregationPanel
+      mouseOverPanelHeader: false, // Whether the mouse is over the panel header row
+      commandKeyPressed: false, // Whether the Command/Meta key is currently pressed
+      optionKeyPressed: false, // Whether the Option/Alt key is currently pressed (pauses auto-scroll)
     };
 
     this.handleResizeDiv = this.handleResizeDiv.bind(this);
@@ -187,17 +231,53 @@ export default class DataBrowser extends React.Component {
     this.removePanel = this.removePanel.bind(this);
     this.handlePanelScroll = this.handlePanelScroll.bind(this);
     this.handlePanelHeaderContextMenu = this.handlePanelHeaderContextMenu.bind(this);
+    this.handleAggregationPanelTextContextMenu = this.handleAggregationPanelTextContextMenu.bind(this);
     this.handleWrapperWheel = this.handleWrapperWheel.bind(this);
     this.onMouseDownPanelCheckBox = this.onMouseDownPanelCheckBox.bind(this);
     this.onMouseUpPanelCheckBox = this.onMouseUpPanelCheckBox.bind(this);
     this.onMouseEnterPanelCheckBox = this.onMouseEnterPanelCheckBox.bind(this);
+    this.toggleGraphPanelVisibility = this.toggleGraphPanelVisibility.bind(this);
+    this.handleGraphResizeStart = this.handleGraphResizeStart.bind(this);
+    this.handleGraphResizeStop = this.handleGraphResizeStop.bind(this);
+    this.handleGraphResizeDiv = this.handleGraphResizeDiv.bind(this);
+    this.showGraphDialog = this.showGraphDialog.bind(this);
+    this.showNewGraphDialog = this.showNewGraphDialog.bind(this);
+    this.hideGraphDialog = this.hideGraphDialog.bind(this);
+    this.saveGraphConfig = this.saveGraphConfig.bind(this);
+    this.deleteGraphConfig = this.deleteGraphConfig.bind(this);
+    this.selectGraph = this.selectGraph.bind(this);
+    this.toggleAutoScroll = this.toggleAutoScroll.bind(this);
+    this.toggleAutoScrollRequireHover = this.toggleAutoScrollRequireHover.bind(this);
+    this.handleAutoScrollKeyDown = this.handleAutoScrollKeyDown.bind(this);
+    this.handleAutoScrollKeyUp = this.handleAutoScrollKeyUp.bind(this);
+    this.handleAutoScrollWheel = this.handleAutoScrollWheel.bind(this);
+    this.startAutoScroll = this.startAutoScroll.bind(this);
+    this.stopAutoScroll = this.stopAutoScroll.bind(this);
+    this.performAutoScrollStep = this.performAutoScrollStep.bind(this);
+    this.pauseAutoScrollWithResume = this.pauseAutoScrollWithResume.bind(this);
+    this.handlePanelMouseEnter = this.handlePanelMouseEnter.bind(this);
+    this.handlePanelMouseLeave = this.handlePanelMouseLeave.bind(this);
+    this.handlePanelHeaderMouseEnter = this.handlePanelHeaderMouseEnter.bind(this);
+    this.handlePanelHeaderMouseLeave = this.handlePanelHeaderMouseLeave.bind(this);
+    this.handleOptionKeyDown = this.handleOptionKeyDown.bind(this);
+    this.handleOptionKeyUp = this.handleOptionKeyUp.bind(this);
+    this.handleMouseButtonDown = this.handleMouseButtonDown.bind(this);
+    this.handleMouseButtonUp = this.handleMouseButtonUp.bind(this);
     this.saveOrderTimeout = null;
     this.aggregationPanelRef = React.createRef();
+    this.autoScrollIntervalId = null;
+    this.autoScrollTimeoutId = null;
+    this.autoScrollResumeTimeoutId = null;
+    this.autoScrollAnimationId = null;
+    this.mouseButtonPressed = false;
+    this.nativeContextMenuTracker = null;
+    this.panelHeaderLeaveTimeoutId = null;
     this.panelColumnRefs = [];
     this.activePanelIndex = -1;
     this.isWheelScrolling = false;
     this.multiPanelWrapperElement = null;
     this.setMultiPanelWrapperRef = this.setMultiPanelWrapperRef.bind(this);
+    this.graphPreferencesManager = new GraphPreferencesManager(props.app);
   }
 
   setMultiPanelWrapperRef(element) {
@@ -271,6 +351,17 @@ export default class DataBrowser extends React.Component {
     document.body.addEventListener('keydown', this.handleKey);
     window.addEventListener('resize', this.updateMaxWidth);
     window.addEventListener('mouseup', this.onMouseUpPanelCheckBox);
+    // Auto-scroll event listeners
+    document.body.addEventListener('keydown', this.handleAutoScrollKeyDown);
+    document.body.addEventListener('keyup', this.handleAutoScrollKeyUp);
+    // Option key listeners for pausing auto-scroll
+    document.body.addEventListener('keydown', this.handleOptionKeyDown);
+    document.body.addEventListener('keyup', this.handleOptionKeyUp);
+    // Left mouse button listener for pausing auto-scroll
+    window.addEventListener('mousedown', this.handleMouseButtonDown);
+    window.addEventListener('mouseup', this.handleMouseButtonUp);
+    // Native context menu detection for auto-scroll pause
+    this.nativeContextMenuTracker = this.setupNativeContextMenuDetection();
 
     // Load keyboard shortcuts from server
     try {
@@ -279,6 +370,23 @@ export default class DataBrowser extends React.Component {
       this.setState({ keyboardShortcuts: shortcuts });
     } catch (error) {
       console.warn('Failed to load keyboard shortcuts:', error);
+    }
+
+    // Load graphs on initial mount
+    try {
+      const graphs = await this.graphPreferencesManager.getGraphs(
+        this.props.app.applicationId,
+        this.props.className
+      );
+      // Set the first graph as the current graph if any exist
+      const graphConfig = graphs && graphs.length > 0 ? graphs[0] : null;
+      this.setState({
+        availableGraphs: graphs || [],
+        graphConfig: graphConfig
+      });
+    } catch (error) {
+      console.error('Failed to load graphs on mount:', error);
+      this.setState({ availableGraphs: [], graphConfig: null });
     }
   }
 
@@ -289,9 +397,57 @@ export default class DataBrowser extends React.Component {
     if (this.multiPanelWrapperElement) {
       this.multiPanelWrapperElement.removeEventListener('wheel', this.handleWrapperWheel);
     }
+    // Auto-scroll cleanup
+    document.body.removeEventListener('keydown', this.handleAutoScrollKeyDown);
+    document.body.removeEventListener('keyup', this.handleAutoScrollKeyUp);
+    // Option key listeners cleanup
+    document.body.removeEventListener('keydown', this.handleOptionKeyDown);
+    document.body.removeEventListener('keyup', this.handleOptionKeyUp);
+    window.removeEventListener('mousedown', this.handleMouseButtonDown);
+    window.removeEventListener('mouseup', this.handleMouseButtonUp);
+    if (this.nativeContextMenuTracker) {
+      this.nativeContextMenuTracker.dispose();
+    }
+    if (this.autoScrollTimeoutId) {
+      clearTimeout(this.autoScrollTimeoutId);
+    }
+    if (this.autoScrollResumeTimeoutId) {
+      clearTimeout(this.autoScrollResumeTimeoutId);
+    }
+    if (this.autoScrollAnimationId) {
+      cancelAnimationFrame(this.autoScrollAnimationId);
+    }
+    if (this.panelHeaderLeaveTimeoutId) {
+      clearTimeout(this.panelHeaderLeaveTimeoutId);
+    }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
+    // Reload graphConfig when className changes
+    if (this.props.className !== prevProps.className) {
+      // Try to load from server first, fallback to localStorage
+      try {
+        const graphs = await this.graphPreferencesManager.getGraphs(
+          this.props.app.applicationId,
+          this.props.className
+        );
+        // Use the first graph if any exists, or null
+        const graphConfig = graphs && graphs.length > 0 ? graphs[0] : null;
+        this.setState({
+          graphConfig,
+          availableGraphs: graphs || []
+        });
+      } catch (error) {
+        console.error('Failed to load graphs on className change:', error);
+        // GraphPreferencesManager handles its own localStorage fallback
+        // Just clear the state on error
+        this.setState({
+          graphConfig: null,
+          availableGraphs: []
+        });
+      }
+    }
+
     // Clear panels when className changes, data becomes null, or data reloads
     const shouldClearPanels = this.state.isPanelVisible && (
       // Class changed
@@ -375,19 +531,43 @@ export default class DataBrowser extends React.Component {
     ) {
       if (this.state.scrollToTop) {
         this.aggregationPanelRef.current.scrollTop = 0;
+        // If auto-scrolling and scrollToTop is enabled, restart animation from top
+        if (this.state.isAutoScrolling && this.state.selectedObjectId !== prevState.selectedObjectId) {
+          // Cancel current animation and restart from top
+          if (this.autoScrollAnimationId) {
+            cancelAnimationFrame(this.autoScrollAnimationId);
+            this.autoScrollAnimationId = null;
+          }
+          if (this.autoScrollTimeoutId) {
+            clearTimeout(this.autoScrollTimeoutId);
+            this.autoScrollTimeoutId = null;
+          }
+          // Also reset multi-panel scroll positions
+          if (this.state.panelCount > 1 && this.state.syncPanelScroll) {
+            this.panelColumnRefs.forEach((ref) => {
+              if (ref && ref.current) {
+                ref.current.scrollTop = 0;
+              }
+            });
+          }
+          // Schedule next auto-scroll step
+          this.autoScrollTimeoutId = setTimeout(() => {
+            this.performAutoScrollStep();
+          }, this.state.autoScrollDelay);
+        }
       }
     }
 
     // Store the fetched panel data in multiPanelData when it changes
     if (
       this.props.AggregationPanelData !== prevProps.AggregationPanelData &&
-      this.state.selectedObjectId &&
+      this.props.lastFetchedObjectId &&
       Object.keys(this.props.AggregationPanelData).length > 0
     ) {
       this.setState(prev => ({
         multiPanelData: {
           ...prev.multiPanelData,
-          [this.state.selectedObjectId]: this.props.AggregationPanelData
+          [this.props.lastFetchedObjectId]: this.props.AggregationPanelData
         }
       }));
     }
@@ -408,7 +588,7 @@ export default class DataBrowser extends React.Component {
   }
 
   handleResizeStart() {
-    this.setState({ isResizing: true });
+    this.setState({ isAggregationPanelResizing: true });
   }
 
   handleResizeStop(event, { size }) {
@@ -421,7 +601,7 @@ export default class DataBrowser extends React.Component {
     }
 
     this.setState({
-      isResizing: false,
+      isAggregationPanelResizing: false,
       panelWidth: newPanelWidth,
     });
     window.localStorage?.setItem(AGGREGATION_PANEL_WIDTH, newPanelWidth);
@@ -506,6 +686,10 @@ export default class DataBrowser extends React.Component {
       this.props.setLoadingInfoPanel(false);
       if (this.props.errorAggregatedData != {}) {
         this.props.setErrorAggregatedData({});
+      }
+      // Stop auto-scroll when panels are hidden
+      if (this.state.isAutoScrolling) {
+        this.stopAutoScroll();
       }
     }
 
@@ -624,13 +808,44 @@ export default class DataBrowser extends React.Component {
       return;
     }
 
-    // Check if the event target is an input, textarea, or select element
-    const target = e.target;
-    const isInputElement = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT');
+    // Ignore keyboard events when a modal is open
+    // Modals handle their own keyboard navigation and should not affect the data browser
+    if (document.querySelector('[data-modal="true"]')) {
+      return;
+    }
 
-    // Ignore all keyboard events when focus is on input/textarea/select elements
+    // Check if the event target is an input, textarea, or select element
+    // Allow checkboxes since they don't accept text input
+    const target = e.target;
+    const isTextInputElement = target && (
+      target.tagName === 'TEXTAREA' ||
+      target.tagName === 'SELECT' ||
+      (target.tagName === 'INPUT' && target.type !== 'checkbox')
+    );
+
+    // Ignore most keyboard events when focus is on text input elements
     // This allows normal text editing behavior in filter inputs and dropdown navigation
-    if (isInputElement) {
+    if (isTextInputElement) {
+      return;
+    }
+
+    // Handle "Run script on selected rows" shortcut
+    // Only works when in editable mode (onEditSelectedRow exists) and rows are selected
+    const shortcuts = this.state.keyboardShortcuts;
+    if (shortcuts && matchesShortcut(e, shortcuts.dataBrowserRunScriptOnSelectedRows)) {
+      const selection = this.props.selection || {};
+      const selectionLength = Object.keys(selection).length;
+      if (selectionLength > 0 && this.props.onExecuteScriptRows && this.props.onEditSelectedRow) {
+        this.props.onExecuteScriptRows(selection);
+        e.preventDefault();
+        return;
+      }
+    }
+
+    // Escape key stops auto-scrolling
+    if (e.keyCode === 27 && this.state.isAutoScrolling) {
+      e.preventDefault();
+      this.stopAutoScroll();
       return;
     }
 
@@ -709,6 +924,7 @@ export default class DataBrowser extends React.Component {
         e.preventDefault();
       }
     }
+
     if (this.state.editing) {
       switch (e.keyCode) {
         case 27: // ESC
@@ -1031,14 +1247,17 @@ export default class DataBrowser extends React.Component {
 
     const menuItems = [];
 
-    // Add "Get related records from..." menu item
+    // Group 1: Navigation
     const relatedRecordsMenuItem = this.getRelatedObjectsMenuItemForPanel(objectId, className);
     if (relatedRecordsMenuItem) {
       menuItems.push(relatedRecordsMenuItem);
     }
 
-    // Add Scripts menu if there are valid scripts
+    // Group 4: Automation
     if (validScripts.length && this.props.onEditSelectedRow) {
+      if (menuItems.length > 0) {
+        menuItems.push({ type: 'separator' });
+      }
       menuItems.push({
         text: 'Scripts',
         items: validScripts.map(script => {
@@ -1073,6 +1292,63 @@ export default class DataBrowser extends React.Component {
     }
   }
 
+  handleAggregationPanelTextContextMenu(event) {
+    // Only show custom menu when Alt/Option key is held
+    if (!event.altKey) {
+      return;
+    }
+
+    // Check if there's selected text
+    const selection = window.getSelection();
+    const selectedText = selection ? selection.toString().trim() : '';
+
+    if (!selectedText) {
+      return;
+    }
+
+    // Build context menu items
+    const menuItems = [];
+
+    // Add "Add to config parameter" option if available
+    const arrayParams = this.props.arrayConfigParams || [];
+    if (arrayParams.length > 0) {
+      menuItems.push({
+        text: 'Add to config parameter',
+        items: arrayParams.map(param => ({
+          text: param.name,
+          callback: () => {
+            if (this.props.onAddToArrayConfig) {
+              this.props.onAddToArrayConfig(param.name, selectedText);
+            }
+          },
+        })),
+      });
+    }
+
+    // Add "Related records" option if available (search text in String fields)
+    const relatedRecordsItem = buildRelatedTextFieldsMenuItem(
+      this.props.schema,
+      selectedText,
+      this.props.onPointerCmdClick
+    );
+    if (relatedRecordsItem) {
+      if (menuItems.length > 0) {
+        menuItems.push({ type: 'separator' });
+      }
+      menuItems.push(relatedRecordsItem);
+    }
+
+    // Only show context menu if there are items
+    if (menuItems.length === 0) {
+      return;
+    }
+
+    // Prevent default context menu
+    event.preventDefault();
+
+    this.setContextMenu(event.pageX, event.pageY, menuItems);
+  }
+
   getRelatedObjectsMenuItemForPanel(objectId, pointerClassName) {
     const { schema, onPointerCmdClick } = this.props;
 
@@ -1081,21 +1357,22 @@ export default class DataBrowser extends React.Component {
     }
 
     const relatedRecordsMenuItem = {
-      text: 'Get related records from...',
+      text: 'Related records',
       items: [],
     };
 
     schema.data
       .get('classes')
-      .sortBy((v, k) => k)
+      .sortBy((_v, k) => k)
       .forEach((cl, className) => {
+        const classFields = [];
+
         cl.forEach((column, field) => {
           if (column.targetClass !== pointerClassName) {
             return;
           }
-          relatedRecordsMenuItem.items.push({
-            text: `${className}`,
-            subtext: `${field}`,
+          classFields.push({
+            text: field,
             callback: () => {
               const relatedObject = new Parse.Object(pointerClassName);
               relatedObject.id = objectId;
@@ -1107,6 +1384,14 @@ export default class DataBrowser extends React.Component {
             },
           });
         });
+
+        if (classFields.length > 0) {
+          classFields.sort((a, b) => a.text.localeCompare(b.text));
+          relatedRecordsMenuItem.items.push({
+            text: className,
+            items: classFields,
+          });
+        }
       });
 
     return relatedRecordsMenuItem.items.length ? relatedRecordsMenuItem : undefined;
@@ -1163,6 +1448,578 @@ export default class DataBrowser extends React.Component {
       window.localStorage?.setItem(AGGREGATION_PANEL_SHOW_CHECKBOX, String(newShowPanelCheckbox));
       return { showPanelCheckbox: newShowPanelCheckbox };
     });
+  }
+
+  /**
+   * Checks if auto-scroll should be blocked due to user interactions.
+   * Auto-scroll pauses when:
+   * - A modal is displayed (script confirmation, graph dialog)
+   * - A context menu is displayed (custom or native browser menu)
+   * - The user is editing a cell in the databrowser table
+   * - Manual scroll pause is active
+   * - The Option/Alt key is pressed
+   */
+  isAutoScrollBlocked() {
+    const {
+      autoScrollPaused,
+      editing,
+      contextMenuItems,
+      showScriptConfirmationDialog,
+      showGraphDialog,
+      nativeContextMenuOpen,
+      mouseOutsidePanel,
+      mouseOverPanelHeader,
+      autoScrollRequireHover,
+      optionKeyPressed,
+    } = this.state;
+
+    // disableKeyControls is true when parent Browser has a modal open
+    const { disableKeyControls } = this.props;
+
+    // Check hover-related blocking only if autoScrollRequireHover is enabled
+    const hoverBlocked = autoScrollRequireHover && (mouseOutsidePanel || mouseOverPanelHeader);
+
+    return (
+      autoScrollPaused ||
+      editing ||
+      (contextMenuItems && contextMenuItems.length > 0) ||
+      showScriptConfirmationDialog ||
+      showGraphDialog ||
+      nativeContextMenuOpen ||
+      disableKeyControls ||
+      hoverBlocked ||
+      optionKeyPressed ||
+      this.mouseButtonPressed
+    );
+  }
+
+  toggleAutoScroll() {
+    this.setState(prevState => {
+      const newAutoScroll = !prevState.autoScrollEnabled;
+      window.localStorage?.setItem(AGGREGATION_PANEL_AUTO_SCROLL, String(newAutoScroll));
+      // If disabling auto-scroll while it's active, stop it
+      if (!newAutoScroll && prevState.isAutoScrolling) {
+        this.stopAutoScroll();
+      }
+      return { autoScrollEnabled: newAutoScroll };
+    });
+  }
+
+  toggleAutoScrollRequireHover() {
+    this.setState(prevState => {
+      const newRequireHover = !prevState.autoScrollRequireHover;
+      window.localStorage?.setItem(AGGREGATION_PANEL_AUTO_SCROLL_REQUIRE_HOVER, String(newRequireHover));
+      return { autoScrollRequireHover: newRequireHover };
+    });
+  }
+
+  handleAutoScrollKeyDown(e) {
+    // Command/Meta key = keyCode 91 (left) or 93 (right)
+    // Only track that Command key is held; don't stop auto-scroll or enter
+    // recording mode until the user actually scrolls (handled in handleAutoScrollWheel)
+    if ((e.keyCode === 91 || e.keyCode === 93) && this.state.autoScrollEnabled && this.state.isPanelVisible && !this.state.isRecordingAutoScroll) {
+      this.setState({ commandKeyPressed: true });
+    }
+  }
+
+  handleAutoScrollKeyUp(e) {
+    // Command/Meta key = keyCode 91 (left) or 93 (right)
+    if (e.keyCode === 91 || e.keyCode === 93) {
+      if (this.state.isRecordingAutoScroll) {
+        const { recordedScrollDelta, recordingScrollStart, recordingScrollEnd } = this.state;
+
+        // Only start auto-scroll if we actually recorded some scrolling
+        if (recordedScrollDelta !== 0 && recordingScrollStart !== null) {
+          // Calculate delay: time between scroll end and key release
+          const scrollEndTime = recordingScrollEnd || Date.now();
+          const delay = Math.max(200, Date.now() - scrollEndTime); // Minimum 200ms delay
+
+          this.setState({
+            commandKeyPressed: false,
+            isRecordingAutoScroll: false,
+            autoScrollAmount: recordedScrollDelta,
+            autoScrollDelay: delay,
+          }, () => {
+            this.startAutoScroll();
+          });
+        } else {
+          // No scroll was recorded, just reset
+          this.setState({
+            commandKeyPressed: false,
+            isRecordingAutoScroll: false,
+            recordedScrollDelta: 0,
+            recordingScrollStart: null,
+            recordingScrollEnd: null,
+          });
+        }
+      } else {
+        // Command key released without entering recording mode (no scroll occurred);
+        // just clear the key state, auto-scroll continues undisturbed
+        this.setState({ commandKeyPressed: false });
+      }
+    }
+  }
+
+  handleAutoScrollWheel(e) {
+    if (this.state.isRecordingAutoScroll) {
+      // Extract deltaY immediately to avoid synthetic event pooling issues
+      const deltaY = e.deltaY;
+      const now = Date.now();
+      this.setState(prevState => ({
+        recordedScrollDelta: prevState.recordedScrollDelta + deltaY,
+        recordingScrollStart: prevState.recordingScrollStart || now,
+        recordingScrollEnd: now,
+      }));
+    } else if (this.state.commandKeyPressed) {
+      // First scroll while Command key is held: stop any existing auto-scroll
+      // and enter recording mode
+      if (this.state.isAutoScrolling) {
+        this.stopAutoScroll();
+      }
+      const deltaY = e.deltaY;
+      const now = Date.now();
+      this.setState({
+        isRecordingAutoScroll: true,
+        recordedScrollDelta: deltaY,
+        recordingScrollStart: now,
+        recordingScrollEnd: now,
+      });
+    } else if (this.state.isAutoScrolling) {
+      // User manually scrolled during auto-scroll, pause it and schedule resume
+      this.pauseAutoScrollWithResume();
+    }
+  }
+
+  pauseAutoScrollWithResume() {
+    // Clear any existing resume timeout
+    if (this.autoScrollResumeTimeoutId) {
+      clearTimeout(this.autoScrollResumeTimeoutId);
+    }
+
+    // Pause auto-scroll
+    if (!this.state.autoScrollPaused) {
+      this.setState({ autoScrollPaused: true });
+    }
+
+    // Schedule resume after 1000ms of inactivity
+    this.autoScrollResumeTimeoutId = setTimeout(() => {
+      if (this.state.isAutoScrolling && this.state.autoScrollPaused) {
+        // Clear so the 2-second post-block delay doesn't stack on top
+        this.autoScrollLastUnblockedAt = 0;
+        this.autoScrollIsBlocked = false;
+        this.setState({ autoScrollPaused: false });
+      }
+    }, 1000);
+  }
+
+  setupNativeContextMenuDetection() {
+    let cleanup = () => {};
+
+    const onContextMenu = () => {
+      this.setState({ nativeContextMenuOpen: true });
+
+      // Remove previous close listeners if any
+      cleanup();
+
+      const close = () => {
+        cleanup();
+        this.setState({ nativeContextMenuOpen: false });
+      };
+
+      const onPointerDown = () => close();
+      const onPointerMove = () => close();
+      const onKey = () => close();
+      const onVisibility = () => {
+        if (document.visibilityState === 'hidden') {
+          close();
+        }
+      };
+      const onBlur = () => close();
+
+      window.addEventListener('pointerdown', onPointerDown, true);
+      window.addEventListener('keydown', onKey, true);
+      document.addEventListener('visibilitychange', onVisibility, true);
+      window.addEventListener('blur', onBlur, true);
+
+      // Delay pointermove registration to skip movement during the right-click gesture
+      const pointerMoveTimerId = setTimeout(() => {
+        window.addEventListener('pointermove', onPointerMove, true);
+      }, 300);
+
+      cleanup = () => {
+        clearTimeout(pointerMoveTimerId);
+        window.removeEventListener('pointerdown', onPointerDown, true);
+        window.removeEventListener('pointermove', onPointerMove, true);
+        window.removeEventListener('keydown', onKey, true);
+        document.removeEventListener('visibilitychange', onVisibility, true);
+        window.removeEventListener('blur', onBlur, true);
+        cleanup = () => {};
+      };
+    };
+
+    window.addEventListener('contextmenu', onContextMenu, true);
+
+    return {
+      isOpen: () => this.state.nativeContextMenuOpen,
+      dispose: () => {
+        window.removeEventListener('contextmenu', onContextMenu, true);
+        cleanup();
+      },
+    };
+  }
+
+  handlePanelMouseEnter() {
+    if (this.state.mouseOutsidePanel) {
+      this.setState({ mouseOutsidePanel: false });
+    }
+  }
+
+  handlePanelMouseLeave() {
+    if (!this.state.mouseOutsidePanel) {
+      this.setState({ mouseOutsidePanel: true });
+    }
+  }
+
+  handlePanelHeaderMouseEnter() {
+    // Cancel any pending leave timeout
+    if (this.panelHeaderLeaveTimeoutId) {
+      clearTimeout(this.panelHeaderLeaveTimeoutId);
+      this.panelHeaderLeaveTimeoutId = null;
+    }
+    if (!this.state.mouseOverPanelHeader) {
+      this.setState({ mouseOverPanelHeader: true });
+    }
+  }
+
+  handlePanelHeaderMouseLeave() {
+    // Use a small delay to allow moving between adjacent headers without resuming scroll
+    if (this.panelHeaderLeaveTimeoutId) {
+      clearTimeout(this.panelHeaderLeaveTimeoutId);
+    }
+    this.panelHeaderLeaveTimeoutId = setTimeout(() => {
+      this.panelHeaderLeaveTimeoutId = null;
+      if (this.state.mouseOverPanelHeader) {
+        this.setState({ mouseOverPanelHeader: false });
+      }
+    }, 50);
+  }
+
+  handleOptionKeyDown(e) {
+    // Option/Alt key = keyCode 18
+    // Track Option key state to pause auto-scroll while held
+    if (e.keyCode === 18 && !this.state.optionKeyPressed) {
+      this.setState({ optionKeyPressed: true });
+    }
+  }
+
+  handleOptionKeyUp(e) {
+    // Option/Alt key = keyCode 18
+    // Track Option key release to resume auto-scroll
+    if (e.keyCode === 18 && this.state.optionKeyPressed) {
+      this.setState({ optionKeyPressed: false });
+    }
+  }
+
+  handleMouseButtonDown(e) {
+    if (e.button === 0) {
+      this.mouseButtonPressed = true;
+    }
+  }
+
+  handleMouseButtonUp(e) {
+    if (e.button === 0) {
+      this.mouseButtonPressed = false;
+      if (this.state.isAutoScrolling) {
+        this.autoScrollLastUnblockedAt = Date.now();
+      }
+    }
+  }
+
+  startAutoScroll() {
+    if (this.state.isAutoScrolling) {
+      return;
+    }
+
+    this.autoScrollLastUnblockedAt = 0;
+    this.autoScrollIsBlocked = false;
+    this.setState({ isAutoScrolling: true, autoScrollPaused: false }, () => {
+      this.performAutoScrollStep();
+    });
+  }
+
+  stopAutoScroll() {
+    if (this.autoScrollTimeoutId) {
+      clearTimeout(this.autoScrollTimeoutId);
+      this.autoScrollTimeoutId = null;
+    }
+    if (this.autoScrollResumeTimeoutId) {
+      clearTimeout(this.autoScrollResumeTimeoutId);
+      this.autoScrollResumeTimeoutId = null;
+    }
+    if (this.autoScrollAnimationId) {
+      cancelAnimationFrame(this.autoScrollAnimationId);
+      this.autoScrollAnimationId = null;
+    }
+    this.autoScrollLastUnblockedAt = 0;
+    this.autoScrollIsBlocked = false;
+    this.setState({
+      isAutoScrolling: false,
+      autoScrollPaused: false,
+      commandKeyPressed: false,
+      isRecordingAutoScroll: false,
+      recordedScrollDelta: 0,
+      recordingScrollStart: null,
+      recordingScrollEnd: null,
+    });
+  }
+
+  performAutoScrollStep() {
+    if (!this.state.isAutoScrolling) {
+      return;
+    }
+
+    if (this.isAutoScrollBlocked()) {
+      this.autoScrollIsBlocked = true;
+      this.autoScrollTimeoutId = setTimeout(() => {
+        this.performAutoScrollStep();
+      }, 100);
+      return;
+    }
+
+    // Wait 1 second from the most recent unblock before scrolling
+    if (this.autoScrollIsBlocked) {
+      this.autoScrollIsBlocked = false;
+      this.autoScrollLastUnblockedAt = Date.now();
+    }
+    if (this.autoScrollLastUnblockedAt) {
+      const elapsed = Date.now() - this.autoScrollLastUnblockedAt;
+      if (elapsed < 1000) {
+        this.autoScrollTimeoutId = setTimeout(() => {
+          this.performAutoScrollStep();
+        }, 1000 - elapsed);
+        return;
+      }
+      this.autoScrollLastUnblockedAt = 0;
+    }
+
+    // Get the scrollable container
+    const container = this.aggregationPanelRef?.current;
+    if (!container) {
+      this.autoScrollTimeoutId = setTimeout(() => {
+        this.performAutoScrollStep();
+      }, this.state.autoScrollDelay);
+      return;
+    }
+
+    // Animate scroll smoothly using requestAnimationFrame
+    const scrollAmount = this.state.autoScrollAmount;
+    // Animation duration: 300ms base, scaled by scroll amount (max 500ms)
+    const duration = Math.min(300 + Math.abs(scrollAmount) * 0.5, 500);
+    const startTime = performance.now();
+    const startScrollTop = container.scrollTop;
+
+    // Get starting positions for multi-panel sync
+    const panelStartPositions = [];
+    if (this.state.panelCount > 1 && this.state.syncPanelScroll) {
+      this.panelColumnRefs.forEach((ref) => {
+        if (ref && ref.current) {
+          panelStartPositions.push(ref.current.scrollTop);
+        } else {
+          panelStartPositions.push(null);
+        }
+      });
+    }
+
+    const animateScroll = (currentTime) => {
+      if (!this.state.isAutoScrolling || this.isAutoScrollBlocked()) {
+        this.autoScrollIsBlocked = true;
+        // If stopped or blocked during animation, schedule next check
+        this.autoScrollTimeoutId = setTimeout(() => {
+          this.performAutoScrollStep();
+        }, 100);
+        return;
+      }
+
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Ease-out function for smooth deceleration
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+
+      // Apply scroll to main container
+      const newScrollTop = startScrollTop + (scrollAmount * easeOut);
+      container.scrollTop = newScrollTop;
+
+      // Sync scroll to other panels
+      if (this.state.panelCount > 1 && this.state.syncPanelScroll) {
+        this.panelColumnRefs.forEach((ref, index) => {
+          if (ref && ref.current && panelStartPositions[index] !== null) {
+            ref.current.scrollTop = panelStartPositions[index] + (scrollAmount * easeOut);
+          }
+        });
+      }
+
+      if (progress < 1) {
+        this.autoScrollAnimationId = requestAnimationFrame(animateScroll);
+      } else {
+        // Animation complete, wait the full recorded delay before next step
+        this.autoScrollTimeoutId = setTimeout(() => {
+          this.performAutoScrollStep();
+        }, this.state.autoScrollDelay);
+      }
+    };
+
+    this.autoScrollAnimationId = requestAnimationFrame(animateScroll);
+  }
+
+  toggleGraphPanelVisibility() {
+    this.setState(prevState => {
+      const newVisibility = !prevState.isGraphPanelVisible;
+      window.localStorage?.setItem(GRAPH_PANEL_VISIBLE, newVisibility);
+      return { isGraphPanelVisible: newVisibility };
+    });
+  }
+
+  handleGraphResizeStart() {
+    this.setState({ isGraphPanelResizing: true });
+  }
+
+  handleGraphResizeStop(event, { size }) {
+    this.setState({
+      isGraphPanelResizing: false,
+      graphPanelWidth: size.width,
+    });
+    window.localStorage?.setItem(GRAPH_PANEL_WIDTH, size.width);
+  }
+
+  handleGraphResizeDiv(event, { size }) {
+    this.setState({ graphPanelWidth: size.width });
+  }
+
+  showGraphDialog(isNewGraph = false) {
+    this.setState({
+      showGraphDialog: true,
+      isCreatingNewGraph: isNewGraph
+    });
+  }
+
+  showNewGraphDialog() {
+    this.setState({
+      showGraphDialog: true,
+      isCreatingNewGraph: true
+    });
+  }
+
+  hideGraphDialog() {
+    this.setState({ showGraphDialog: false });
+  }
+
+  async saveGraphConfig(config) {
+    // Ensure config has an ID for server storage
+    const configWithId = {
+      ...config,
+      id: config.id || this.graphPreferencesManager.generateGraphId()
+    };
+
+    // Store previous state for potential rollback
+    const previousGraphConfig = this.state.graphConfig;
+    const previousAvailableGraphs = this.state.availableGraphs;
+
+    // Optimistically update availableGraphs to include the new/updated graph
+    const existingGraphIndex = this.state.availableGraphs.findIndex(g => g.id === configWithId.id);
+    let updatedAvailableGraphs;
+    if (existingGraphIndex >= 0) {
+      // Update existing graph
+      updatedAvailableGraphs = [...this.state.availableGraphs];
+      updatedAvailableGraphs[existingGraphIndex] = configWithId;
+    } else {
+      // Add new graph
+      updatedAvailableGraphs = [...this.state.availableGraphs, configWithId];
+    }
+
+    this.setState({
+      graphConfig: configWithId,
+      showGraphDialog: false,
+      availableGraphs: updatedAvailableGraphs,
+    });
+
+    // Try to save to server/localStorage
+    try {
+      await this.graphPreferencesManager.saveGraph(
+        this.props.app.applicationId,
+        this.props.className,
+        configWithId,
+        [] // allGraphs not needed for single save
+      );
+
+      // Reload all graphs to update the dropdown from server
+      const graphs = await this.graphPreferencesManager.getGraphs(
+        this.props.app.applicationId,
+        this.props.className
+      );
+      this.setState({ availableGraphs: graphs || [] });
+    } catch (error) {
+      console.error('Failed to save graph:', error);
+      // Revert optimistic update on error
+      this.setState({
+        graphConfig: previousGraphConfig,
+        availableGraphs: previousAvailableGraphs
+      });
+      // Show error notification to user
+      if (this.props.showNote) {
+        this.props.showNote('Failed to save graph. Please try again.', true);
+      }
+    }
+  }
+
+  selectGraph(graph) {
+    this.setState({ graphConfig: graph });
+  }
+
+  async deleteGraphConfig(graphId) {
+    // Store previous state for potential rollback
+    const previousGraphConfig = this.state.graphConfig;
+    const previousAvailableGraphs = this.state.availableGraphs;
+    const previousIsGraphPanelVisible = this.state.isGraphPanelVisible;
+
+    // Optimistically update UI
+    this.setState({
+      graphConfig: null,
+      showGraphDialog: false,
+      isGraphPanelVisible: false,
+    });
+
+    // Try to delete from server/localStorage
+    try {
+      await this.graphPreferencesManager.deleteGraph(
+        this.props.app.applicationId,
+        this.props.className,
+        graphId,
+        [] // allGraphs not needed for single delete
+      );
+
+      // Reload all graphs to update the dropdown
+      const graphs = await this.graphPreferencesManager.getGraphs(
+        this.props.app.applicationId,
+        this.props.className
+      );
+      this.setState({ availableGraphs: graphs || [] });
+
+      // Clear the graph panel visibility from localStorage
+      window.localStorage?.setItem(GRAPH_PANEL_VISIBLE, 'false');
+    } catch (error) {
+      console.error('Failed to delete graph:', error);
+      // Revert optimistic update on error
+      this.setState({
+        graphConfig: previousGraphConfig,
+        availableGraphs: previousAvailableGraphs,
+        isGraphPanelVisible: previousIsGraphPanelVisible
+      });
+      // Show error notification to user
+      if (this.props.showNote) {
+        this.props.showNote('Failed to delete graph. Please try again.', true);
+      }
+    }
   }
 
   handlePanelScroll(event, index) {
@@ -1686,9 +2543,12 @@ export default class DataBrowser extends React.Component {
           },
           selectedObjectId: undefined,
           selectedData,
+        }, () => {
+          this.props.onCellSelectionChange?.(newSelection.size, selectedData);
         });
       } else {
         this.setCurrent({ row, col });
+        this.props.onCellSelectionChange?.(0, []);
       }
     } else {
       this.setState({
@@ -1696,6 +2556,8 @@ export default class DataBrowser extends React.Component {
         selectedData: [],
         current: { row, col },
         firstSelectedCell: clickedCellKey,
+      }, () => {
+        this.props.onCellSelectionChange?.(0, []);
       });
     }
   }
@@ -1722,6 +2584,12 @@ export default class DataBrowser extends React.Component {
       effectivePanelWidth = (this.state.panelWidth / this.state.panelCount) * actualPanelCount;
     }
 
+    // Calculate max width for aggregation panel, accounting for graph panel's minimum width when visible
+    const graphPanelMinWidth = 300;
+    const aggregationMaxWidth = this.state.isGraphPanelVisible && this.state.graphConfig
+      ? this.state.maxWidth - graphPanelMinWidth
+      : this.state.maxWidth;
+
     return (
       <div>
         <div>
@@ -1742,6 +2610,11 @@ export default class DataBrowser extends React.Component {
             setSelectedObjectId={this.setSelectedObjectId}
             callCloudFunction={this.handleCallCloudFunction}
             setContextMenu={this.setContextMenu}
+            getRelatedRecordsMenuItem={(textValue) => buildRelatedTextFieldsMenuItem(
+              this.props.schema,
+              textValue,
+              this.props.onPointerCmdClick
+            )}
             freezeIndex={this.state.frozenColumnIndex}
             freezeColumns={this.freezeColumns}
             unfreezeColumns={this.unfreezeColumns}
@@ -1751,13 +2624,15 @@ export default class DataBrowser extends React.Component {
             handleCellClick={this.handleCellClick}
             isPanelVisible={this.state.isPanelVisible}
             panelWidth={effectivePanelWidth}
-            isResizing={this.state.isResizing}
+            isResizing={this.state.isAggregationPanelResizing || this.state.isGraphPanelResizing}
             setShowAggregatedData={this.setShowAggregatedData}
             showRowNumber={this.state.showRowNumber}
             setShowRowNumber={this.setShowRowNumber}
             skip={this.props.skip}
             limit={this.props.limit}
             firstSelectedCell={this.state.firstSelectedCell}
+            isGraphPanelVisible={this.state.isGraphPanelVisible && !!this.state.graphConfig}
+            graphPanelWidth={this.state.graphPanelWidth}
             {...other}
           />
           {this.state.isPanelVisible && (
@@ -1765,7 +2640,7 @@ export default class DataBrowser extends React.Component {
               width={effectivePanelWidth}
               height={Infinity}
               minConstraints={[100, Infinity]}
-              maxConstraints={[this.state.maxWidth, Infinity]}
+              maxConstraints={[aggregationMaxWidth, Infinity]}
               onResizeStart={this.handleResizeStart} // Handle start of resizing
               onResizeStop={this.handleResizeStop} // Handle end of resizing
               onResize={this.handleResizeDiv}
@@ -1775,6 +2650,9 @@ export default class DataBrowser extends React.Component {
               <div
                 className={styles.aggregationPanelContainer}
                 ref={this.aggregationPanelRef}
+                onWheel={this.handleAutoScrollWheel}
+                onMouseEnter={this.handlePanelMouseEnter}
+                onMouseLeave={this.handlePanelMouseLeave}
               >
                 {this.state.panelCount > 1 ? (
                   <div
@@ -1802,6 +2680,8 @@ export default class DataBrowser extends React.Component {
                             selectedObjectId={this.state.selectedObjectId}
                             appName={this.props.appName}
                             className={this.props.className}
+                            onContextMenu={this.handleAggregationPanelTextContextMenu}
+                            onReload={() => this.props.callCloudFunction(this.state.selectedObjectId, this.props.className, this.props.app.applicationId)}
                           />
                         );
                       }
@@ -1836,7 +2716,11 @@ export default class DataBrowser extends React.Component {
                                     this.onMouseDownPanelCheckBox(objectId, isRowSelected);
                                   }}
                                   onMouseUp={this.onMouseUpPanelCheckBox}
-                                  onMouseEnter={() => this.onMouseEnterPanelCheckBox(objectId)}
+                                  onMouseEnter={() => {
+                                    this.onMouseEnterPanelCheckBox(objectId);
+                                    this.handlePanelHeaderMouseEnter();
+                                  }}
+                                  onMouseLeave={this.handlePanelHeaderMouseLeave}
                                   onContextMenu={(e) => {
                                     e.preventDefault();
                                     this.handlePanelHeaderContextMenu(e, objectId);
@@ -1860,6 +2744,8 @@ export default class DataBrowser extends React.Component {
                                 selectedObjectId={objectId}
                                 appName={this.props.appName}
                                 className={this.props.className}
+                                onContextMenu={this.handleAggregationPanelTextContextMenu}
+                                onReload={() => this.props.callCloudFunction(objectId, this.props.className, this.props.app.applicationId)}
                               />
                             </div>
                             {index < this.state.displayedObjectIds.length - 1 && (
@@ -1882,11 +2768,50 @@ export default class DataBrowser extends React.Component {
                     selectedObjectId={this.state.selectedObjectId}
                     appName={this.props.appName}
                     className={this.props.className}
+                    onContextMenu={this.handleAggregationPanelTextContextMenu}
+                    onReload={() => this.props.callCloudFunction(this.state.selectedObjectId, this.props.className, this.props.app.applicationId)}
                   />
                 )}
               </div>
             </ResizableBox>
           )}
+          {this.state.isGraphPanelVisible && (() => {
+            // Calculate max width for graph panel, accounting for aggregation panel when visible
+            const aggregationPanelWidth = this.state.isPanelVisible ? effectivePanelWidth : 0;
+            const graphMaxWidth = Math.max(300, this.state.maxWidth - aggregationPanelWidth);
+            // Clamp the graph panel width to the available space
+            const graphPanelWidth = Math.min(this.state.graphPanelWidth, graphMaxWidth);
+
+            return (
+              <ResizableBox
+                width={graphPanelWidth}
+                height={Infinity}
+                minConstraints={[300, Infinity]}
+                maxConstraints={[graphMaxWidth, Infinity]}
+                onResizeStart={this.handleGraphResizeStart}
+                onResizeStop={this.handleGraphResizeStop}
+                onResize={this.handleGraphResizeDiv}
+                resizeHandles={['w']}
+                className={styles.resizablePanel}
+                style={{ right: aggregationPanelWidth }}
+              >
+                <div className={styles.graphPanelContainer}>
+                  <GraphPanel
+                    graphConfig={this.state.graphConfig}
+                    data={this.props.data}
+                    columns={this.props.columns}
+                    isLoading={!this.props.data}
+                    onRefresh={this.handleRefresh}
+                    onEdit={this.showGraphDialog}
+                    onClose={this.toggleGraphPanelVisibility}
+                    availableGraphs={this.state.availableGraphs}
+                    onGraphSelect={this.selectGraph}
+                    onNewGraph={this.showNewGraphDialog}
+                  />
+                </div>
+              </ResizableBox>
+            );
+          })()}
         </div>
 
         <BrowserToolbar
@@ -1911,7 +2836,6 @@ export default class DataBrowser extends React.Component {
           editCloneRows={editCloneRows}
           onCancelPendingEditRows={onCancelPendingEditRows}
           order={this.state.order}
-          selectedData={this.state.selectedData}
           allClasses={Object.keys(this.props.schema.data.get('classes').toObject())}
           allClassesSchema={this.state.allClassesSchema}
           togglePanel={this.togglePanelVisibility}
@@ -1931,6 +2855,15 @@ export default class DataBrowser extends React.Component {
           toggleBatchNavigate={this.toggleBatchNavigate}
           showPanelCheckbox={this.state.showPanelCheckbox}
           toggleShowPanelCheckbox={this.toggleShowPanelCheckbox}
+          autoScrollEnabled={this.state.autoScrollEnabled}
+          toggleAutoScroll={this.toggleAutoScroll}
+          autoScrollRequireHover={this.state.autoScrollRequireHover}
+          toggleAutoScrollRequireHover={this.toggleAutoScrollRequireHover}
+          isAutoScrolling={this.state.isAutoScrolling}
+          stopAutoScroll={this.stopAutoScroll}
+          toggleGraphPanel={this.toggleGraphPanelVisibility}
+          isGraphPanelVisible={this.state.isGraphPanelVisible}
+          runScriptShortcut={this.state.keyboardShortcuts?.dataBrowserRunScriptOnSelectedRows?.key?.toUpperCase()}
           {...other}
           onRefresh={this.handleRefresh}
         />
@@ -1940,6 +2873,7 @@ export default class DataBrowser extends React.Component {
             x={this.state.contextMenuX}
             y={this.state.contextMenuY}
             items={this.state.contextMenuItems}
+            onHide={() => this.setState({ contextMenuX: null, contextMenuY: null, contextMenuItems: null })}
           />
         )}
         {this.state.showScriptConfirmationDialog && (
@@ -1956,6 +2890,16 @@ export default class DataBrowser extends React.Component {
               );
               this.setState({ showScriptConfirmationDialog: false, selectedScript: null });
             }}
+          />
+        )}
+        {this.state.showGraphDialog && (
+          <GraphDialog
+            columns={this.props.columns}
+            className={this.props.className}
+            initialConfig={this.state.isCreatingNewGraph ? null : this.state.graphConfig}
+            onConfirm={this.saveGraphConfig}
+            onCancel={this.hideGraphDialog}
+            onDelete={this.deleteGraphConfig}
           />
         )}
       </div>

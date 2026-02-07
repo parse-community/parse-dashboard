@@ -12,8 +12,9 @@ import ServerConfigStorage from './ServerConfigStorage';
  * Default keyboard shortcuts
  */
 export const DEFAULT_SHORTCUTS = {
-  dataBrowserReloadData: { key: 'r', ctrl: false, shift: false, alt: false },
-  dataBrowserToggleInfoPanels: { key: 'p', ctrl: false, shift: false, alt: false },
+  dataBrowserReloadData: { key: 'r', ctrl: false, shift: false, alt: false, meta: false },
+  dataBrowserToggleInfoPanels: { key: 'p', ctrl: false, shift: false, alt: false, meta: false },
+  dataBrowserRunScriptOnSelectedRows: { key: 's', ctrl: false, shift: false, alt: false, meta: false },
 };
 
 /**
@@ -88,11 +89,27 @@ export default class KeyboardShortcutsManager {
     }
 
     try {
-      // Save each shortcut as a separate config entry
+      // Save or delete each shortcut depending on whether it matches the default
       const promises = [];
       for (const [shortcutName, value] of Object.entries(shortcuts)) {
         const key = `settings.keyboard.binding.${shortcutName}`;
-        promises.push(this.serverStorage.setConfig(key, value, appId));
+        const defaultValue = DEFAULT_SHORTCUTS[shortcutName];
+
+        // Check if the value matches the default (compare key and modifiers)
+        const isDefault = defaultValue && value &&
+          value.key?.toLowerCase() === defaultValue.key?.toLowerCase() &&
+          !!value.ctrl === !!defaultValue.ctrl &&
+          !!value.shift === !!defaultValue.shift &&
+          !!value.alt === !!defaultValue.alt &&
+          !!value.meta === !!defaultValue.meta;
+
+        if (isDefault) {
+          // Delete the entry if it matches the default (no need to store it)
+          promises.push(this.serverStorage.deleteConfig(key, appId));
+        } else {
+          // Save the entry if it differs from the default
+          promises.push(this.serverStorage.setConfig(key, value, appId));
+        }
       }
 
       await Promise.all(promises);
@@ -103,12 +120,27 @@ export default class KeyboardShortcutsManager {
   }
 
   /**
-   * Resets keyboard shortcuts to defaults
+   * Resets keyboard shortcuts to defaults by deleting stored entries
    * @param {string} appId - The application ID
    * @returns {Promise}
    */
   async resetKeyboardShortcuts(appId) {
-    return this.saveKeyboardShortcuts(appId, DEFAULT_SHORTCUTS);
+    if (!this.serverStorage.isServerConfigEnabled()) {
+      return; // Nothing to delete if server config is not enabled
+    }
+
+    try {
+      // Delete all keyboard shortcut entries so defaults will be used
+      const promises = [];
+      for (const shortcutName of Object.keys(DEFAULT_SHORTCUTS)) {
+        const key = `settings.keyboard.binding.${shortcutName}`;
+        promises.push(this.serverStorage.deleteConfig(key, appId));
+      }
+      await Promise.all(promises);
+    } catch (error) {
+      console.error('Failed to reset keyboard shortcuts:', error);
+      throw error;
+    }
   }
 
   /**
@@ -142,7 +174,6 @@ export function isValidShortcut(shortcut) {
   }
 
   // Modifier keys are optional booleans
-  // Note: Meta/Cmd key support could be added in the future
   if (shortcut.ctrl !== undefined && typeof shortcut.ctrl !== 'boolean') {
     return false;
   }
@@ -152,6 +183,9 @@ export function isValidShortcut(shortcut) {
   if (shortcut.alt !== undefined && typeof shortcut.alt !== 'boolean') {
     return false;
   }
+  if (shortcut.meta !== undefined && typeof shortcut.meta !== 'boolean') {
+    return false;
+  }
 
   return true;
 }
@@ -159,13 +193,14 @@ export function isValidShortcut(shortcut) {
 /**
  * Creates a shortcut object from a key string
  * @param {string} key - The key character
+ * @param {boolean} meta - Whether to include meta/cmd modifier
  * @returns {Object} Shortcut object
  */
-export function createShortcut(key) {
+export function createShortcut(key, meta = false) {
   if (!key || key.length !== 1) {
     return null;
   }
-  return { key, ctrl: false, shift: false, alt: false };
+  return { key, ctrl: false, shift: false, alt: false, meta };
 }
 
 /**
@@ -185,6 +220,7 @@ export function matchesShortcut(event, shortcut) {
   const ctrlMatches = !!event.ctrlKey === !!shortcut.ctrl;
   const shiftMatches = !!event.shiftKey === !!shortcut.shift;
   const altMatches = !!event.altKey === !!shortcut.alt;
+  const metaMatches = !!event.metaKey === !!shortcut.meta;
 
-  return keyMatches && ctrlMatches && shiftMatches && altMatches;
+  return keyMatches && ctrlMatches && shiftMatches && altMatches && metaMatches;
 }

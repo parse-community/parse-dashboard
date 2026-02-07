@@ -191,6 +191,8 @@ export default class BrowserRow extends Component {
               setShowAggregatedData={this.props.setShowAggregatedData}
               setErrorAggregatedData={this.props.setErrorAggregatedData}
               firstSelectedCell={this.props.firstSelectedCell}
+              arrayConfigParams={this.props.arrayConfigParams}
+              onAddToArrayConfig={this.props.onAddToArrayConfig}
             />
           );
         })}

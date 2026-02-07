@@ -21,6 +21,7 @@ import * as ClassPreferences from 'lib/ClassPreferences';
 import ViewPreferencesManager from 'lib/ViewPreferencesManager';
 import FilterPreferencesManager from 'lib/FilterPreferencesManager';
 import ScriptManager from 'lib/ScriptManager';
+import ServerConfigStorage from 'lib/ServerConfigStorage';
 import bcrypt from 'bcryptjs';
 import * as OTPAuth from 'otpauth';
 import QRCode from 'qrcode';
@@ -72,6 +73,7 @@ export default class DashboardSettings extends DashboardView {
       this.viewPreferencesManager = new ViewPreferencesManager(this.context);
       this.filterPreferencesManager = new FilterPreferencesManager(this.context);
       this.scriptManager = new ScriptManager(this.context);
+      this.serverStorage = new ServerConfigStorage(this.context);
       this.loadStoragePreference();
     }
   }
@@ -131,6 +133,9 @@ export default class DashboardSettings extends DashboardView {
       // Migrate scripts
       const scriptsResult = await this.scriptManager.migrateToServer(this.context.applicationId, overwriteConflicts);
 
+      // Migrate Cloud Config history
+      const configHistoryResult = await this.migrateConfigHistoryToServer();
+
       // Check for conflicts
       const allConflicts = [
         ...(viewsResult.conflicts || []),
@@ -144,7 +149,7 @@ export default class DashboardSettings extends DashboardView {
         return;
       }
 
-      const totalItems = viewsResult.viewCount + filtersResult.filterCount + scriptsResult.scriptCount;
+      const totalItems = viewsResult.viewCount + filtersResult.filterCount + scriptsResult.scriptCount + configHistoryResult.paramCount;
 
       if (viewsResult.success && filtersResult.success && scriptsResult.success) {
         if (totalItems > 0) {
@@ -158,9 +163,12 @@ export default class DashboardSettings extends DashboardView {
           if (scriptsResult.scriptCount > 0) {
             messages.push(`${scriptsResult.scriptCount} script(s)`);
           }
+          if (configHistoryResult.paramCount > 0) {
+            messages.push(`${configHistoryResult.paramCount} config history parameter(s)`);
+          }
           this.showNote(`Successfully migrated ${messages.join(', ')} to server storage.`);
         } else {
-          this.showNote('No views, filters, or scripts found to migrate.');
+          this.showNote('No views, filters, scripts, or config history found to migrate.');
         }
       }
     } catch (error) {
@@ -189,6 +197,38 @@ export default class DashboardSettings extends DashboardView {
     this.showNote('Migration aborted. Server settings were not modified.');
   }
 
+  async migrateConfigHistoryToServer() {
+    const applicationId = this.context.applicationId;
+    const raw = localStorage.getItem(`${applicationId}_configHistory`);
+    if (!raw) {
+      return { paramCount: 0 };
+    }
+
+    let localHistory;
+    try {
+      localHistory = JSON.parse(raw);
+    } catch {
+      this.showNote('Failed to parse Cloud Config history from browser storage.');
+      return { paramCount: 0 };
+    }
+    const paramNames = Object.keys(localHistory);
+    let paramCount = 0;
+
+    for (const name of paramNames) {
+      const entries = localHistory[name];
+      if (entries && entries.length > 0) {
+        await this.serverStorage.setConfig(
+          `config.history.parameters.${name}`,
+          { values: entries },
+          applicationId
+        );
+        paramCount++;
+      }
+    }
+
+    return { paramCount };
+  }
+
   async deleteFromBrowser() {
     if (!window.confirm('Are you sure you want to delete all dashboard settings from browser storage? This action cannot be undone.')) {
       return;
@@ -212,6 +252,7 @@ export default class DashboardSettings extends DashboardView {
     const viewsSuccess = this.viewPreferencesManager.deleteFromBrowser(this.context.applicationId);
     const filtersSuccess = this.filterPreferencesManager.deleteFromBrowser(this.context.applicationId);
     const scriptsSuccess = this.scriptManager.deleteFromBrowser(this.context.applicationId);
+    localStorage.removeItem(`${this.context.applicationId}_configHistory`);
 
     if (viewsSuccess && filtersSuccess && scriptsSuccess) {
       this.showNote('Successfully deleted dashboard settings from browser storage.');
@@ -553,7 +594,7 @@ export default class DashboardSettings extends DashboardView {
         {this.viewPreferencesManager && this.scriptManager && this.viewPreferencesManager.isServerConfigEnabled() && (
           <Fieldset legend="Settings Storage">
             <div style={{ marginBottom: '20px', color: '#666', fontSize: '14px', textAlign: 'center' }}>
-              Storing dashboard settings on the server rather than locally in the browser storage makes the settings available across devices and browsers. It also prevents them from getting lost when resetting the browser website data. Settings that can be stored on the server are currently Data Browser Filters, Views, Keyboard Shortcuts and JS Console scripts.
+              Storing dashboard settings on the server rather than locally in the browser storage makes the settings available across devices and browsers. It also prevents them from getting lost when resetting the browser website data. Settings that can be stored on the server are currently Data Browser Filters, Data Browser Graphs, Views, Keyboard Shortcuts, JS Console scripts, and Cloud Config history.
             </div>
             <Field
               label={

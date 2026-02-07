@@ -41,12 +41,17 @@ module.exports = (options) => {
   const configSSLCert = options.sslCert || process.env.PARSE_DASHBOARD_SSL_CERT;
   const configAgent = options.agent || process.env.PARSE_DASHBOARD_AGENT;
 
-  function handleSIGs(server) {
+  function handleSIGs(server, browserControlSetup) {
     const signals = {
       'SIGINT': 2,
       'SIGTERM': 15
     };
     function shutdown(signal, value) {
+      // Cleanup browser control resources if enabled
+      if (browserControlSetup && browserControlSetup.cleanup) {
+        browserControlSetup.cleanup();
+      }
+
       server.close(function () {
         console.log('server stopped by ' + signal);
         process.exit(128 + value);
@@ -169,12 +174,33 @@ module.exports = (options) => {
     cookieSessionMaxAge,
     cookieSessionStore: config.data.cookieSessionStore
   };
+
+  // Browser Control API for AI agent verification (development only)
+  // NOTE: Must be mounted BEFORE parseDashboard middleware to bypass authentication
+  let browserControlSetup = null;
+  try {
+    const setupBrowserControl = require('./browser-control/setup');
+    browserControlSetup = setupBrowserControl(app, config);
+  } catch (error) {
+    // Silently ignore if browser-control module doesn't exist (production build)
+    if (error.code !== 'MODULE_NOT_FOUND') {
+      console.warn('Failed to load Browser Control:', error.message);
+    }
+  }
+
+  // Mount parseDashboard with authentication
   app.use(mountPath, parseDashboard(config.data, dashboardOptions));
+
   let server;
   if(!configSSLKey || !configSSLCert){
     // Start the server.
     server = app.listen(port, host, function () {
       console.log(`The dashboard is now available at http://${server.address().address}:${server.address().port}${mountPath}`);
+
+      // Initialize browser control WebSocket if enabled
+      if (browserControlSetup) {
+        browserControlSetup.initializeWebSocket(server);
+      }
     });
   } else {
     // Start the server using SSL.
@@ -186,7 +212,12 @@ module.exports = (options) => {
       cert: certificate
     }, app).listen(port, host, function () {
       console.log(`The dashboard is now available at https://${server.address().address}:${server.address().port}${mountPath}`);
+
+      // Initialize browser control WebSocket if enabled
+      if (browserControlSetup) {
+        browserControlSetup.initializeWebSocket(server);
+      }
     });
   }
-  handleSIGs(server);
+  handleSIGs(server, browserControlSetup);
 };

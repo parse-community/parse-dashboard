@@ -208,6 +208,8 @@ export default class BrowserTable extends React.Component {
                     setShowAggregatedData={this.props.setShowAggregatedData}
                     setErrorAggregatedData={this.props.setErrorAggregatedData}
                     firstSelectedCell={this.props.firstSelectedCell}
+                    arrayConfigParams={this.props.arrayConfigParams}
+                    onAddToArrayConfig={this.props.onAddToArrayConfig}
                   />
                   <Button
                     value="Clone"
@@ -294,6 +296,8 @@ export default class BrowserTable extends React.Component {
               setShowAggregatedData={this.props.setShowAggregatedData}
               setErrorAggregatedData={this.props.setErrorAggregatedData}
               firstSelectedCell={this.props.firstSelectedCell}
+              arrayConfigParams={this.props.arrayConfigParams}
+              onAddToArrayConfig={this.props.onAddToArrayConfig}
             />
             <Button
               value="Add"
@@ -389,6 +393,8 @@ export default class BrowserTable extends React.Component {
             setShowAggregatedData={this.props.setShowAggregatedData}
             setErrorAggregatedData={this.props.setErrorAggregatedData}
             firstSelectedCell={this.props.firstSelectedCell}
+            arrayConfigParams={this.props.arrayConfigParams}
+            onAddToArrayConfig={this.props.onAddToArrayConfig}
           />
         );
       }
@@ -484,6 +490,10 @@ export default class BrowserTable extends React.Component {
                   this.props.setEditing(false);
                 }}
                 onCancel={() => this.props.setEditing(false)}
+                setContextMenu={this.props.setContextMenu}
+                arrayConfigParams={this.props.arrayConfigParams}
+                onAddToArrayConfig={this.props.onAddToArrayConfig}
+                getRelatedRecordsMenuItem={this.props.getRelatedRecordsMenuItem}
               />
             );
           }
@@ -565,8 +575,12 @@ export default class BrowserTable extends React.Component {
         );
       }
     }
-    const rightValue =
-      this.props.panelWidth && this.props.isPanelVisible ? `${this.props.panelWidth}px` : '0px';
+    const aggregationPanelWidth =
+      this.props.panelWidth && this.props.isPanelVisible ? this.props.panelWidth : 0;
+    const graphPanelWidth =
+      this.props.graphPanelWidth && this.props.isGraphPanelVisible ? this.props.graphPanelWidth : 0;
+    const totalRightOffset = aggregationPanelWidth + graphPanelWidth;
+    const rightValue = `${totalRightOffset}px`;
 
     return (
       <div

@@ -17,7 +17,6 @@ import Popover from 'components/Popover/Popover.react';
 import TextInput from 'components/TextInput/TextInput.react';
 import { CurrentApp } from 'context/currentApp';
 import { List, Map as ImmutableMap } from 'immutable';
-import * as ClassPreferences from 'lib/ClassPreferences';
 import * as Filters from 'lib/Filters';
 import Position from 'lib/Position';
 import React from 'react';
@@ -81,12 +80,36 @@ export default class BrowserFilter extends React.Component {
     }
   }
 
-  componentWillReceiveProps(props) {
-    if (props.className !== this.props.className) {
+  updateFilterInfoIfNeeded() {
+    // If dialog is open in showMore mode and we don't have a filter name yet,
+    // but now we have savedFilters available, update the filter info
+    if (this.state.open && this.state.showMore && !this.state.name) {
+      const currentFilter = this.getCurrentFilterInfo();
+
+      if (currentFilter.name) {
+        this.setState({
+          name: currentFilter.name,
+          originalFilterName: currentFilter.name,
+          relativeDates: currentFilter.hasRelativeDates || false,
+          originalRelativeDates: currentFilter.hasRelativeDates || false,
+        });
+      }
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    // Close dialog when className changes
+    if (prevProps.className !== this.props.className) {
       this.setState({ open: false });
     }
 
+    // Reinitialize edit mode when props change
     this.initializeEditFilterMode();
+
+    // Update filter info when savedFilters prop changes (async loading completed)
+    if (prevProps.savedFilters !== this.props.savedFilters) {
+      this.updateFilterInfoIfNeeded();
+    }
   }
 
   componentDidMount() {
@@ -100,18 +123,14 @@ export default class BrowserFilter extends React.Component {
 
     const urlClassName = this.getClassNameFromURL();
 
-    if (filterId) {
-      const preferences = ClassPreferences.getPreferences(
-        this.context.applicationId,
-        urlClassName
-      );
+    // Use savedFilters prop instead of ClassPreferences
+    const savedFilters = this.props.savedFilters || [];
 
-      if (preferences.filters) {
-        // If filterId exists in saved filters, it's definitely a saved filter
-        const savedFilter = preferences.filters.find(filter => filter.id === filterId);
-        if (savedFilter) {
-          return true;
-        }
+    if (filterId) {
+      // If filterId exists in saved filters, it's definitely a saved filter
+      const savedFilter = savedFilters.find(filter => filter.id === filterId);
+      if (savedFilter) {
+        return true;
       }
       // If filterId is in URL but not found in saved filters, it's not saved
       return false;
@@ -120,50 +139,43 @@ export default class BrowserFilter extends React.Component {
     // Check for legacy filters (filters parameter without filterId)
     const filtersParam = urlParams.get('filters');
     if (filtersParam) {
-      const preferences = ClassPreferences.getPreferences(
-        this.context.applicationId,
-        urlClassName
-      );
+      // Parse the URL filters parameter to get the actual filter data
+      let urlFilters;
+      try {
+        urlFilters = JSON.parse(filtersParam);
+      } catch {
+        return false;
+      }
 
-      if (preferences.filters) {
-        // Parse the URL filters parameter to get the actual filter data
-        let urlFilters;
+      // Normalize URL filters for comparison (remove class property if it matches current className)
+      const normalizedUrlFilters = urlFilters.map(filter => {
+        const normalizedFilter = { ...filter };
+        if (normalizedFilter.class === urlClassName) {
+          delete normalizedFilter.class;
+        }
+        return normalizedFilter;
+      });
+      const urlFiltersString = JSON.stringify(normalizedUrlFilters);
+
+      const matchingFilter = savedFilters.find(savedFilter => {
         try {
-          urlFilters = JSON.parse(filtersParam);
+          const parsedFilterData = JSON.parse(savedFilter.filter);
+          // Normalize saved filters for comparison (remove class property if it matches current className)
+          const normalizedSavedFilters = parsedFilterData.map(filter => {
+            const normalizedFilter = { ...filter };
+            if (normalizedFilter.class === urlClassName) {
+              delete normalizedFilter.class;
+            }
+            return normalizedFilter;
+          });
+          const savedFiltersString = JSON.stringify(normalizedSavedFilters);
+          return savedFiltersString === urlFiltersString;
         } catch {
           return false;
         }
+      });
 
-        // Normalize URL filters for comparison (remove class property if it matches current className)
-        const normalizedUrlFilters = urlFilters.map(filter => {
-          const normalizedFilter = { ...filter };
-          if (normalizedFilter.class === urlClassName) {
-            delete normalizedFilter.class;
-          }
-          return normalizedFilter;
-        });
-        const urlFiltersString = JSON.stringify(normalizedUrlFilters);
-
-        const matchingFilter = preferences.filters.find(savedFilter => {
-          try {
-            const savedFilters = JSON.parse(savedFilter.filter);
-            // Normalize saved filters for comparison (remove class property if it matches current className)
-            const normalizedSavedFilters = savedFilters.map(filter => {
-              const normalizedFilter = { ...filter };
-              if (normalizedFilter.class === urlClassName) {
-                delete normalizedFilter.class;
-              }
-              return normalizedFilter;
-            });
-            const savedFiltersString = JSON.stringify(normalizedSavedFilters);
-            return savedFiltersString === urlFiltersString;
-          } catch {
-            return false;
-          }
-        });
-
-        return !!matchingFilter;
-      }
+      return !!matchingFilter;
     }
 
     return false;
@@ -177,110 +189,99 @@ export default class BrowserFilter extends React.Component {
 
     const urlClassName = this.getClassNameFromURL();
 
+    // Use savedFilters prop instead of ClassPreferences
+    const savedFilters = this.props.savedFilters || [];
+
     if (filterId) {
-      const preferences = ClassPreferences.getPreferences(
-        this.context.applicationId,
-        urlClassName
-      );
-
-      if (preferences.filters) {
-        const savedFilter = preferences.filters.find(filter => filter.id === filterId);
-        if (savedFilter) {
-          // Check if the filter has relative dates
-          let hasRelativeDates = false;
-          try {
-            const filterData = JSON.parse(savedFilter.filter);
-            hasRelativeDates = filterData.some(filter =>
-              filter.compareTo && filter.compareTo.__type === 'RelativeDate'
-            );
-          } catch (error) {
-            // Log parsing errors for debugging
-            console.warn('Failed to parse saved filter:', error);
-            hasRelativeDates = false;
-          }
-
-          return {
-            id: savedFilter.id,
-            name: savedFilter.name,
-            isApplied: true,
-            hasRelativeDates: hasRelativeDates
-          };
+      const savedFilter = savedFilters.find(filter => filter.id === filterId);
+      if (savedFilter) {
+        // Check if the filter has relative dates
+        let hasRelativeDates = false;
+        try {
+          const filterData = JSON.parse(savedFilter.filter);
+          hasRelativeDates = filterData.some(filter =>
+            filter.compareTo && filter.compareTo.__type === 'RelativeDate'
+          );
+        } catch (error) {
+          // Log parsing errors for debugging
+          console.warn('Failed to parse saved filter:', error);
+          hasRelativeDates = false;
         }
+
+        return {
+          id: savedFilter.id,
+          name: savedFilter.name,
+          isApplied: true,
+          hasRelativeDates: hasRelativeDates
+        };
       }
     }
 
     // Check for legacy filters (filters parameter without filterId)
     if (filtersParam) {
-      const preferences = ClassPreferences.getPreferences(
-        this.context.applicationId,
-        urlClassName
-      );
+      // Parse the URL filters parameter to get the actual filter data
+      let urlFilters;
+      try {
+        urlFilters = JSON.parse(filtersParam);
+      } catch (error) {
+        console.warn('Failed to parse URL filters:', error);
+        return {
+          id: null,
+          name: '',
+          isApplied: false,
+          hasRelativeDates: false,
+          isLegacy: false
+        };
+      }
 
-      if (preferences.filters) {
-        // Parse the URL filters parameter to get the actual filter data
-        let urlFilters;
+      // Normalize URL filters for comparison (remove class property if it matches current className)
+      const normalizedUrlFilters = urlFilters.map(filter => {
+        const normalizedFilter = { ...filter };
+        if (normalizedFilter.class === urlClassName) {
+          delete normalizedFilter.class;
+        }
+        return normalizedFilter;
+      });
+      const urlFiltersString = JSON.stringify(normalizedUrlFilters);
+
+      const matchingFilter = savedFilters.find(savedFilter => {
         try {
-          urlFilters = JSON.parse(filtersParam);
+          const parsedFilterData = JSON.parse(savedFilter.filter);
+          // Normalize saved filters for comparison (remove class property if it matches current className)
+          const normalizedSavedFilters = parsedFilterData.map(filter => {
+            const normalizedFilter = { ...filter };
+            if (normalizedFilter.class === urlClassName) {
+              delete normalizedFilter.class;
+            }
+            return normalizedFilter;
+          });
+          const savedFiltersString = JSON.stringify(normalizedSavedFilters);
+          return savedFiltersString === urlFiltersString;
+        } catch {
+          return false;
+        }
+      });
+
+      if (matchingFilter) {
+        // Check if the filter has relative dates
+        let hasRelativeDates = false;
+        try {
+          const filterData = JSON.parse(matchingFilter.filter);
+          hasRelativeDates = filterData.some(filter =>
+            filter.compareTo && filter.compareTo.__type === 'RelativeDate'
+          );
         } catch (error) {
-          console.warn('Failed to parse URL filters:', error);
-          return {
-            id: null,
-            name: '',
-            isApplied: false,
-            hasRelativeDates: false,
-            isLegacy: false
-          };
+          console.warn('Failed to parse saved filter:', error);
+          hasRelativeDates = false;
         }
 
-        // Normalize URL filters for comparison (remove class property if it matches current className)
-        const normalizedUrlFilters = urlFilters.map(filter => {
-          const normalizedFilter = { ...filter };
-          if (normalizedFilter.class === urlClassName) {
-            delete normalizedFilter.class;
-          }
-          return normalizedFilter;
-        });
-        const urlFiltersString = JSON.stringify(normalizedUrlFilters);
-
-        const matchingFilter = preferences.filters.find(savedFilter => {
-          try {
-            const savedFilters = JSON.parse(savedFilter.filter);
-            // Normalize saved filters for comparison (remove class property if it matches current className)
-            const normalizedSavedFilters = savedFilters.map(filter => {
-              const normalizedFilter = { ...filter };
-              if (normalizedFilter.class === urlClassName) {
-                delete normalizedFilter.class;
-              }
-              return normalizedFilter;
-            });
-            const savedFiltersString = JSON.stringify(normalizedSavedFilters);
-            return savedFiltersString === urlFiltersString;
-          } catch {
-            return false;
-          }
-        });
-
-        if (matchingFilter) {
-          // Check if the filter has relative dates
-          let hasRelativeDates = false;
-          try {
-            const filterData = JSON.parse(matchingFilter.filter);
-            hasRelativeDates = filterData.some(filter =>
-              filter.compareTo && filter.compareTo.__type === 'RelativeDate'
-            );
-          } catch (error) {
-            console.warn('Failed to parse saved filter:', error);
-            hasRelativeDates = false;
-          }
-
-          return {
-            id: matchingFilter.id || null, // Legacy filters might not have an id
-            name: matchingFilter.name,
-            isApplied: true,
-            hasRelativeDates: hasRelativeDates,
-            isLegacy: !matchingFilter.id // Mark as legacy if no id
-          };
-        }
+        return {
+          id: matchingFilter.id || null, // Legacy filters might not have an id
+          name: matchingFilter.name,
+          isApplied: true,
+          hasRelativeDates: hasRelativeDates,
+          isLegacy: !matchingFilter.id // Mark as legacy if no id
+        };
       }
     }
 
@@ -300,25 +301,21 @@ export default class BrowserFilter extends React.Component {
 
     const urlClassName = this.getClassNameFromURL();
 
+    // Use savedFilters prop instead of ClassPreferences
+    const savedFilters = this.props.savedFilters || [];
+
     // If we have a filterId, load from saved filters
     if (filterId) {
-      const preferences = ClassPreferences.getPreferences(
-        this.context.applicationId,
-        urlClassName
-      );
-
-      if (preferences.filters) {
-        const savedFilter = preferences.filters.find(filter => filter.id === filterId);
-        if (savedFilter) {
-          try {
-            const filterData = JSON.parse(savedFilter.filter);
-            return new List(filterData.map(filter => {
-              const processedFilter = { ...filter, class: filter.class || urlClassName };
-              return new ImmutableMap(processedFilter);
-            }));
-          } catch (error) {
-            console.warn('Failed to parse saved filter:', error);
-          }
+      const savedFilter = savedFilters.find(filter => filter.id === filterId);
+      if (savedFilter) {
+        try {
+          const filterData = JSON.parse(savedFilter.filter);
+          return new List(filterData.map(filter => {
+            const processedFilter = { ...filter, class: filter.class || urlClassName };
+            return new ImmutableMap(processedFilter);
+          }));
+        } catch (error) {
+          console.warn('Failed to parse saved filter:', error);
         }
       }
     }
@@ -376,16 +373,12 @@ export default class BrowserFilter extends React.Component {
   }
 
   isFilterNameExists(name) {
-    const urlClassName = this.getClassNameFromURL();
+    // Use savedFilters prop instead of ClassPreferences
+    const savedFilters = this.props.savedFilters || [];
 
-    const preferences = ClassPreferences.getPreferences(
-      this.context.applicationId,
-      urlClassName
-    );
-
-    if (preferences.filters && name) {
+    if (savedFilters && name) {
       const currentFilterInfo = this.getCurrentFilterInfo();
-      return preferences.filters.some(filter => {
+      return savedFilters.some(filter => {
         // For filters with the same name, check if it's not the current filter
         if (filter.name === name) {
           // If current filter has an ID, exclude it by ID
@@ -535,42 +528,42 @@ export default class BrowserFilter extends React.Component {
     if (this.props.onDeleteFilter) {
       // For legacy filters, we need to pass the entire filter object for the parent to match
       if (currentFilterInfo.isLegacy) {
-        const preferences = ClassPreferences.getPreferences(this.context.applicationId, this.props.className);
-        if (preferences.filters) {
-          // Normalize current filters for comparison
-          const currentFilters = this.props.filters.toJS().map(filter => {
-            const normalizedFilter = { ...filter };
-            if (normalizedFilter.class === this.props.className) {
-              delete normalizedFilter.class;
-            }
-            return normalizedFilter;
-          });
-          const currentFiltersString = JSON.stringify(currentFilters);
+        // Use savedFilters prop instead of ClassPreferences
+        const savedFilters = this.props.savedFilters || [];
 
-          const matchingFilter = preferences.filters.find(filter => {
-            if (!filter.id && filter.name === currentFilterInfo.name) {
-              try {
-                const savedFilters = JSON.parse(filter.filter);
-                // Normalize saved filters for comparison
-                const normalizedSavedFilters = savedFilters.map(savedFilter => {
-                  const normalizedFilter = { ...savedFilter };
-                  if (normalizedFilter.class === this.props.className) {
-                    delete normalizedFilter.class;
-                  }
-                  return normalizedFilter;
-                });
-                const savedFiltersString = JSON.stringify(normalizedSavedFilters);
-                return savedFiltersString === currentFiltersString;
-              } catch {
-                return false;
-              }
-            }
-            return false;
-          });
-
-          if (matchingFilter) {
-            this.props.onDeleteFilter(matchingFilter);
+        // Normalize current filters for comparison
+        const currentFilters = this.props.filters.toJS().map(filter => {
+          const normalizedFilter = { ...filter };
+          if (normalizedFilter.class === this.props.className) {
+            delete normalizedFilter.class;
           }
+          return normalizedFilter;
+        });
+        const currentFiltersString = JSON.stringify(currentFilters);
+
+        const matchingFilter = savedFilters.find(filter => {
+          if (!filter.id && filter.name === currentFilterInfo.name) {
+            try {
+              const parsedFilterData = JSON.parse(filter.filter);
+              // Normalize saved filters for comparison
+              const normalizedSavedFilters = parsedFilterData.map(savedFilter => {
+                const normalizedFilter = { ...savedFilter };
+                if (normalizedFilter.class === this.props.className) {
+                  delete normalizedFilter.class;
+                }
+                return normalizedFilter;
+              });
+              const savedFiltersString = JSON.stringify(normalizedSavedFilters);
+              return savedFiltersString === currentFiltersString;
+            } catch {
+              return false;
+            }
+          }
+          return false;
+        });
+
+        if (matchingFilter) {
+          this.props.onDeleteFilter(matchingFilter);
         }
       } else if (currentFilterInfo.id) {
         // For modern filters with ID, just pass the ID
@@ -687,7 +680,7 @@ export default class BrowserFilter extends React.Component {
     this.props.onChange(formatted);
   }
 
-  save() {
+  async save() {
     // Store the original UI-friendly filters before any conversion
     const originalUIFilters = this.state.filters;
 
@@ -737,7 +730,7 @@ export default class BrowserFilter extends React.Component {
       filterId = `legacy:${currentFilterInfo.name}`;
     }
 
-    const savedFilterId = this.props.onSaveFilter(formatted, this.state.name, this.state.relativeDates, filterId);
+    const savedFilterId = await this.props.onSaveFilter(formatted, this.state.name, this.state.relativeDates, filterId);
 
     // Only close the dialog if we're not in edit mode (showMore)
     if (!this.state.showMore) {

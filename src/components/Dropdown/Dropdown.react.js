@@ -19,43 +19,140 @@ export default class Dropdown extends React.Component {
     this.state = {
       open: false,
       position: null,
+      highlightedIndex: -1,
     };
 
     this.dropdownRef = React.createRef();
+    this.menuRef = React.createRef();
+    this.triggerRef = React.createRef();
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+  }
+
+  getOptions() {
+    const options = [];
+    React.Children.forEach(this.props.children, c => {
+      if (c) {
+        options.push(c.props.value);
+      }
+    });
+    return options;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // When dropdown opens, scroll to the selected item and set highlight
+    if (this.state.open && !prevState.open) {
+      const options = this.getOptions();
+      const selectedIndex = options.indexOf(this.props.value);
+      this.setState({ highlightedIndex: selectedIndex >= 0 ? selectedIndex : 0 });
+
+      if (this.menuRef.current) {
+        const menu = this.menuRef.current;
+        const selectedButton = menu.querySelector('button[data-selected="true"]');
+        if (selectedButton) {
+          menu.scrollTop = selectedButton.offsetTop;
+        }
+      }
+    }
+
+    // Scroll highlighted item into view
+    if (this.state.open && this.state.highlightedIndex !== prevState.highlightedIndex && this.menuRef.current) {
+      const buttons = this.menuRef.current.querySelectorAll('button');
+      const highlightedButton = buttons[this.state.highlightedIndex];
+      if (highlightedButton) {
+        highlightedButton.scrollIntoView({ block: 'nearest' });
+      }
+    }
+  }
+
+  handleKeyDown(e) {
+    const options = this.getOptions();
+
+    // Don't handle Enter with Command key - let it bubble up for modal submit
+    const isEnterWithMeta = e.key === 'Enter' && e.metaKey;
+
+    if (!this.state.open) {
+      // Dropdown is closed
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || ((e.key === 'Enter' || e.key === ' ') && !isEnterWithMeta)) {
+        e.preventDefault();
+        e.stopPropagation(); // Prevent event from reaching other handlers
+        this.open();
+      }
+    } else {
+      // Dropdown is open
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        e.stopPropagation(); // Prevent event from reaching other handlers
+        this.setState(state => ({
+          highlightedIndex: Math.min(state.highlightedIndex + 1, options.length - 1)
+        }));
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        e.stopPropagation(); // Prevent event from reaching other handlers
+        this.setState(state => ({
+          highlightedIndex: Math.max(state.highlightedIndex - 1, 0)
+        }));
+      } else if ((e.key === 'Enter' || e.key === ' ') && !isEnterWithMeta) {
+        e.preventDefault();
+        e.stopPropagation(); // Prevent event from reaching other handlers
+        if (this.state.highlightedIndex >= 0 && this.state.highlightedIndex < options.length) {
+          this.select(options[this.state.highlightedIndex]);
+        }
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation(); // Prevent modal from closing
+        this.close();
+        // Return focus to trigger
+        if (this.triggerRef.current) {
+          this.triggerRef.current.focus();
+        }
+      }
+    }
+  }
+
+  open() {
+    if (this.state.open || this.props.disabled) {
+      return;
+    }
+    let pos = Position.inDocument(this.dropdownRef.current);
+    if (this.props.fixed) {
+      pos = Position.inWindow(this.dropdownRef.current);
+    }
+    this.setState({
+      open: true,
+      position: pos,
+    });
   }
 
   toggle() {
-    this.setState(() => {
-      if (this.state.open) {
-        return { open: false };
-      }
-      let pos = Position.inDocument(this.dropdownRef.current);
-      if (this.props.fixed) {
-        pos = Position.inWindow(this.dropdownRef.current);
-      }
-      return {
-        open: true,
-        position: pos,
-      };
-    });
+    if (this.state.open) {
+      this.close();
+    } else {
+      this.open();
+    }
   }
 
   close() {
     this.setState({
       open: false,
+      highlightedIndex: -1,
     });
   }
 
   select(value) {
     if (value === this.props.value) {
-      return this.setState({ open: false });
+      return this.setState({ open: false, highlightedIndex: -1 });
     }
     this.setState(
       {
         open: false,
+        highlightedIndex: -1,
       },
       () => {
         this.props.onChange(value);
+        // Return focus to trigger after selection
+        if (this.triggerRef.current) {
+          this.triggerRef.current.focus();
+        }
       }
     );
   }
@@ -64,14 +161,32 @@ export default class Dropdown extends React.Component {
     let popover = null;
     if (this.state.open && !this.props.disabled) {
       const width = this.dropdownRef.current.clientWidth;
+      let optionIndex = 0;
       const popoverChildren = (
         <SliderWrap direction={Directions.DOWN} expanded={true}>
-          <div style={{ width }} className={styles.menu}>
-            {React.Children.map(this.props.children, c => (
-              <button type="button" onClick={this.select.bind(this, c.props.value)}>
-                {c}
-              </button>
-            ))}
+          <div style={{ width }} className={styles.menu} ref={this.menuRef} role="listbox">
+            {React.Children.map(this.props.children, c => {
+              if (!c) {
+                return null;
+              }
+              const index = optionIndex++;
+              const isHighlighted = index === this.state.highlightedIndex;
+              const isSelected = c.props.value === this.props.value;
+              return (
+                <button
+                  type="button"
+                  onClick={this.select.bind(this, c.props.value)}
+                  onMouseEnter={() => this.setState({ highlightedIndex: index })}
+                  data-selected={isSelected ? 'true' : undefined}
+                  data-highlighted={isHighlighted ? 'true' : undefined}
+                  role="option"
+                  aria-selected={isSelected}
+                  style={isHighlighted ? { backgroundColor: 'rgba(0, 0, 0, 0.1)' } : undefined}
+                >
+                  {c}
+                </button>
+              );
+            })}
           </div>
         </SliderWrap>
       );
@@ -87,7 +202,7 @@ export default class Dropdown extends React.Component {
     }
     let content = null;
     React.Children.forEach(this.props.children, c => {
-      if (!content && c.props.value === this.props.value) {
+      if (!content && c && c.props.value === this.props.value) {
         content = c;
       }
     });
@@ -108,8 +223,14 @@ export default class Dropdown extends React.Component {
     return (
       <div style={dropdownStyle} className={dropdownClasses.join(' ')} ref={this.dropdownRef}>
         <div
+          ref={this.triggerRef}
           className={[styles.current, this.props.hideArrow ? styles.hideArrow : ''].join(' ')}
           onClick={this.toggle.bind(this)}
+          onKeyDown={this.handleKeyDown}
+          tabIndex={this.props.disabled ? -1 : 0}
+          role="combobox"
+          aria-expanded={this.state.open}
+          aria-haspopup="listbox"
         >
           {content}
         </div>

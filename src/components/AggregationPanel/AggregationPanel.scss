@@ -163,13 +163,50 @@
 }
 
 .loader {
+    position: relative;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
+.reloadControls {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 6px;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.elapsedTimer {
+    color: #999;
+    font-size: 12px;
+}
+
+.reloadButton {
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    color: $blue;
+    font-size: 13px;
+    margin-top: 10px;
+
+    &:hover {
+        color: $darkBlue;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 .segmentContainer {
-    border-left: 1px solid #e3e3ea;    
+    border-left: 1px solid #e3e3ea;
     border-bottom: 1px solid #e3e3ea;
     margin-bottom: 16px;
   }

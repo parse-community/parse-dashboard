@@ -96,10 +96,22 @@ function getPointerField(allClassesSchema, fromClassName, toClassName) {
   return null;
 }
 
-function addQueryConstraintFromObject(query, filter, constraintType) {
-  const compareTo = JSON.parse(filter.get('compareTo'));
-  for (const key of Object.keys(compareTo)) {
-    query[constraintType](filter.get('field') + '.' + key, compareTo[key]);
+function addQueryConstraintFromObject(query, field, compareTo, constraintType) {
+  let parsedCompareTo;
+  try {
+    parsedCompareTo = typeof compareTo === 'string' ? JSON.parse(compareTo) : compareTo;
+  } catch (e) {
+    console.error('Invalid JSON in object constraint compareTo:', e);
+    return;
+  }
+
+  if (typeof parsedCompareTo !== 'object' || parsedCompareTo === null) {
+    console.error('Object constraint compareTo must be an object');
+    return;
+  }
+
+  for (const key of Object.keys(parsedCompareTo)) {
+    query[constraintType](field + '.' + key, parsedCompareTo[key]);
   }
 }
 
@@ -109,37 +121,83 @@ function isPointer(value) {
   );
 }
 
-function addConstraint(query, filter) {
-  switch (filter.get('constraint')) {
+function isParseDate(value) {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    value.__type === 'Date' &&
+    typeof value.iso === 'string'
+  );
+}
+
+function isRelativeDate(value) {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    value.__type === 'RelativeDate' &&
+    typeof value.value === 'number'
+  );
+}
+
+function toDate(value) {
+  if (isRelativeDate(value)) {
+    // RelativeDate stores offset in seconds from current time
+    const now = new Date();
+    return new Date(now.getTime() + value.value * 1000);
+  }
+  if (isParseDate(value)) {
+    return new Date(value.iso);
+  }
+  if (value instanceof Date) {
+    return value;
+  }
+  return new Date(value);
+}
+
+/**
+ * Applies a filter constraint to a Parse Query using plain values.
+ * This is the shared implementation used by both DataBrowser and Canvas.
+ *
+ * @param {Parse.Query} query - The Parse Query to apply the constraint to
+ * @param {string} field - The field name to filter on
+ * @param {string} constraint - The constraint type (e.g., 'eq', 'lt', 'onOrAfter')
+ * @param {*} compareTo - The value to compare against
+ * @param {string} [modifiers] - Optional modifiers (used for regex 'matches' constraint)
+ * @returns {Parse.Query} The query with the constraint applied
+ */
+export function addConstraintFromValues(query, field, constraint, compareTo, modifiers) {
+  switch (constraint) {
     case 'exists':
-      query.exists(filter.get('field'));
+      query.exists(field);
       break;
     case 'dne':
-      query.doesNotExist(filter.get('field'));
+      query.doesNotExist(field);
       break;
     case 'eq':
-      query.equalTo(filter.get('field'), filter.get('compareTo'));
+      query.equalTo(field, compareTo);
       break;
     case 'neq':
-      query.notEqualTo(filter.get('field'), filter.get('compareTo'));
+      query.notEqualTo(field, compareTo);
       break;
     case 'lt':
-      query.lessThan(filter.get('field'), filter.get('compareTo'));
+      query.lessThan(field, compareTo);
       break;
     case 'lte':
+      query.lessThanOrEqualTo(field, compareTo);
+      break;
     case 'onOrBefore':
-      query.lessThanOrEqualTo(filter.get('field'), filter.get('compareTo'));
+      query.lessThanOrEqualTo(field, toDate(compareTo));
       break;
     case 'gt':
-      query.greaterThan(filter.get('field'), filter.get('compareTo'));
+      query.greaterThan(field, compareTo);
       break;
     case 'gte':
+      query.greaterThanOrEqualTo(field, compareTo);
+      break;
     case 'onOrAfter':
-      query.greaterThanOrEqualTo(filter.get('field'), filter.get('compareTo'));
+      query.greaterThanOrEqualTo(field, toDate(compareTo));
       break;
     case 'starts':
-      const field = filter.get('field');
-      const compareTo = filter.get('compareTo');
       if (isPointer(compareTo)) {
         const pointerQuery = new Parse.Query(compareTo.className);
         pointerQuery.startsWith('objectId', compareTo.objectId);
@@ -149,52 +207,65 @@ function addConstraint(query, filter) {
       }
       break;
     case 'ends':
-      query.endsWith(filter.get('field'), filter.get('compareTo'));
+      query.endsWith(field, compareTo);
       break;
     case 'before':
-      query.lessThan(filter.get('field'), filter.get('compareTo'));
+      query.lessThan(field, toDate(compareTo));
       break;
     case 'after':
-      query.greaterThan(filter.get('field'), filter.get('compareTo'));
+      query.greaterThan(field, toDate(compareTo));
       break;
     case 'containsString':
     case 'containsNumber':
-      query.equalTo(filter.get('field'), filter.get('compareTo'));
+      query.equalTo(field, compareTo);
       break;
     case 'doesNotContainString':
     case 'doesNotContainNumber':
-      query.notEqualTo(filter.get('field'), filter.get('compareTo'));
+      query.notEqualTo(field, compareTo);
       break;
     case 'containedIn':
-      query.containedIn(filter.get('field'), filter.get('compareTo'));
+      query.containedIn(field, compareTo);
+      break;
+    case 'containsAny':
+      query.containedIn(field, compareTo);
       break;
     case 'matches':
-      query.matches(filter.get('field'), String(filter.get('compareTo')), filter.get('modifiers'));
+      query.matches(field, String(compareTo), modifiers);
       break;
     case 'keyExists':
-      query.exists(filter.get('field') + '.' + filter.get('compareTo'));
+      query.exists(field + '.' + compareTo);
       break;
     case 'keyDne':
-      query.doesNotExist(filter.get('field') + '.' + filter.get('compareTo'));
+      query.doesNotExist(field + '.' + compareTo);
       break;
     case 'keyEq':
-      addQueryConstraintFromObject(query, filter, 'equalTo');
+      addQueryConstraintFromObject(query, field, compareTo, 'equalTo');
       break;
     case 'keyNeq':
-      addQueryConstraintFromObject(query, filter, 'notEqualTo');
+      addQueryConstraintFromObject(query, field, compareTo, 'notEqualTo');
       break;
     case 'keyGt':
-      addQueryConstraintFromObject(query, filter, 'greaterThan');
+      addQueryConstraintFromObject(query, field, compareTo, 'greaterThan');
       break;
     case 'keyGte':
-      addQueryConstraintFromObject(query, filter, 'greaterThanOrEqualTo');
+      addQueryConstraintFromObject(query, field, compareTo, 'greaterThanOrEqualTo');
       break;
     case 'keyLt':
-      addQueryConstraintFromObject(query, filter, 'lessThan');
+      addQueryConstraintFromObject(query, field, compareTo, 'lessThan');
       break;
     case 'keyLte':
-      addQueryConstraintFromObject(query, filter, 'lessThanOrEqualTo');
+      addQueryConstraintFromObject(query, field, compareTo, 'lessThanOrEqualTo');
       break;
   }
   return query;
+}
+
+function addConstraint(query, filter) {
+  return addConstraintFromValues(
+    query,
+    filter.get('field'),
+    filter.get('constraint'),
+    filter.get('compareTo'),
+    filter.get('modifiers')
+  );
 }

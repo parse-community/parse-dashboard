@@ -1,0 +1,40 @@
+@import 'stylesheets/globals.scss';
+
+.staticText {
+  color: #0e0e1a;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-top: 12px;
+}
+
+.body {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.h1 {
+  font-size: 32px;
+  line-height: 1.2;
+}
+
+.h2 {
+  font-size: 24px;
+  line-height: 1.3;
+}
+
+.h3 {
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.italic {
+  font-style: italic;
+}

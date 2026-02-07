@@ -2,7 +2,6 @@
 
 const express = require('express');
 const path = require('path');
-const csrf = require('csurf');
 const Authentication = require('./Authentication.js');
 const fs = require('fs');
 const ConfigKeyCache = require('./configKeyCache.js');
@@ -201,7 +200,7 @@ module.exports = function(config, options) {
     // Agent API endpoint for handling AI requests - scoped to specific app
     app.post('/apps/:appId/agent', async (req, res) => {
       try {
-        const { message, modelName, conversationId, permissions } = req.body;
+        const { message, modelName, conversationId, permissions } = req.body || {};
         const { appId } = req.params;
 
         if (!message || typeof message !== 'string' || message.trim() === '') {
@@ -1065,7 +1064,7 @@ You have direct access to the Parse database through function calls, so you can 
       }
     }
 
-    app.get('/login', csrf(), function(req, res) {
+    app.get('/login', Authentication.csrfProtection, function(req, res) {
       let redirectURL = null;
       try {
         const url = new URL(req.url, 'http://localhost');
@@ -1116,7 +1115,7 @@ You have direct access to the Parse database through function calls, so you can 
     });
 
     // For every other request, go to index.html. Let client-side handle the rest.
-    app.get('/*', function(req, res) {
+    app.get('{*splat}', function(req, res) {
       if (users && (!req.user || !req.user.isAuthenticated)) {
         const redirect = req.url.replace('/login', '');
         if (redirect.length > 1) {

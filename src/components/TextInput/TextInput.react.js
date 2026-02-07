@@ -48,7 +48,9 @@ class TextInput extends React.Component {
           className={classes.join(' ')}
           rows={this.props.rows && this.props.rows > 3 ? this.props.rows : null}
           style={
-            this.props.rows && this.props.rows > 3 ? null : { height: this.props.height || 80 }
+            this.props.rows && this.props.rows > 3
+              ? this.props.style
+              : { height: this.props.height || 80, ...this.props.style }
           }
           placeholder={this.props.placeholder}
           value={this.props.value}
@@ -64,7 +66,7 @@ class TextInput extends React.Component {
         type={this.props.hidden ? 'password' : 'text'}
         disabled={!!this.props.disabled}
         className={classes.join(' ')}
-        style={{ height: this.props.height || 80 }}
+        style={{ height: this.props.height || 80, ...this.props.style }}
         placeholder={this.props.placeholder}
         value={this.props.value}
         onChange={this.changeValue.bind(this)}
@@ -96,6 +98,7 @@ TextInput.propTypes = {
     'The height of the field. Can be a string containing any CSS unit, or a number of pixels. Default is 80px.'
   ),
   maxLength: PropTypes.number.describe('The maximum length of the input.'),
+  style: PropTypes.object.describe('Custom inline styles to apply to the input element.'),
 };
 
 export default withForwardedRef(TextInput);

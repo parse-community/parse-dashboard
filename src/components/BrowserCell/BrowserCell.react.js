@@ -10,6 +10,7 @@ import { List, Map } from 'immutable';
 import { dateStringUTC } from 'lib/DateUtils';
 import getFileName from 'lib/getFileName';
 import { getValidScripts, executeScript } from 'lib/ScriptUtils';
+import { buildRelatedTextFieldsMenuItem } from 'lib/RelatedRecordsUtils';
 import Parse from 'parse';
 import Pill from 'components/Pill/Pill.react';
 import React, { Component } from 'react';
@@ -134,16 +135,15 @@ export default class BrowserCell extends Component {
             />
           );
         });
-        this.copyableValue = content = (
-          <ul>
-            {array.map(a => (
-              <li key={a}>{a}</li>
+        content = (
+          <ul className={styles.pointerList}>
+            {array.map((a, i) => (
+              <li key={i}>{a}</li>
             ))}
           </ul>
         );
-        if (array.length > 1) {
-          classes.push(styles.hasMore);
-        }
+        // Set copyableValue to JSON string, not JSX (to avoid infinite render loop)
+        this.copyableValue = JSON.stringify(this.props.value);
       } else {
         this.copyableValue = content = JSON.stringify(this.props.value);
       }
@@ -317,17 +317,36 @@ export default class BrowserCell extends Component {
     const { onEditSelectedRow, readonly } = this.props;
     const contextMenuOptions = [];
 
-    const setFilterContextMenuOption = this.getSetFilterContextMenuOption(constraints);
-    setFilterContextMenuOption && contextMenuOptions.push(setFilterContextMenuOption);
-
-    const addFilterContextMenuOption = this.getAddFilterContextMenuOption(constraints);
-    addFilterContextMenuOption && contextMenuOptions.push(addFilterContextMenuOption);
-
+    // Group 1: Navigation
     const relatedObjectsContextMenuOption = this.getRelatedObjectsContextMenuOption();
     relatedObjectsContextMenuOption && contextMenuOptions.push(relatedObjectsContextMenuOption);
 
-    !readonly &&
-      onEditSelectedRow &&
+    const relatedTextFieldsContextMenuOption = this.getRelatedTextFieldsContextMenuOption();
+    !relatedObjectsContextMenuOption && relatedTextFieldsContextMenuOption && contextMenuOptions.push(relatedTextFieldsContextMenuOption);
+
+    const relatedNumberFieldsContextMenuOption = this.getRelatedNumberFieldsContextMenuOption();
+    !relatedObjectsContextMenuOption && !relatedTextFieldsContextMenuOption && relatedNumberFieldsContextMenuOption && contextMenuOptions.push(relatedNumberFieldsContextMenuOption);
+
+    // Group 2: Filter
+    const addFilterContextMenuOption = this.getAddFilterContextMenuOption(constraints);
+    const setFilterContextMenuOption = this.getSetFilterContextMenuOption(constraints);
+
+    if (addFilterContextMenuOption || setFilterContextMenuOption) {
+      if (contextMenuOptions.length > 0) {
+        contextMenuOptions.push({ type: 'separator' });
+      }
+      addFilterContextMenuOption && contextMenuOptions.push(addFilterContextMenuOption);
+      setFilterContextMenuOption && contextMenuOptions.push(setFilterContextMenuOption);
+    }
+
+    // Group 3: Row Action
+    const hasEditRow = !readonly && onEditSelectedRow;
+
+    if (hasEditRow) {
+      if (contextMenuOptions.length > 0) {
+        contextMenuOptions.push({ type: 'separator' });
+      }
+
       contextMenuOptions.push({
         text: 'Edit row',
         callback: () => {
@@ -335,23 +354,19 @@ export default class BrowserCell extends Component {
           onEditSelectedRow(true, objectId);
         },
       });
-
-    if (this.props.type === 'Pointer') {
-      onEditSelectedRow &&
-        contextMenuOptions.push({
-          text: 'Open pointer in new tab',
-          callback: () => {
-            const { value, onPointerCmdClick } = this.props;
-            onPointerCmdClick(value);
-          },
-        });
     }
 
+    // Group 4: Automation
     const { className, objectId, field, scripts = [], rowValue } = this.props;
     const { validScripts, validator } = getValidScripts(scripts, className, field);
+    const addToConfigOption = this.getAddToConfigContextMenuOption();
 
-    if (validScripts.length) {
-      onEditSelectedRow &&
+    if ((validScripts.length && onEditSelectedRow) || addToConfigOption) {
+      if (contextMenuOptions.length > 0) {
+        contextMenuOptions.push({ type: 'separator' });
+      }
+
+      if (validScripts.length && onEditSelectedRow) {
         contextMenuOptions.push({
           text: 'Scripts',
           items: validScripts.map(script => {
@@ -369,6 +384,11 @@ export default class BrowserCell extends Component {
             };
           }),
         });
+      }
+
+      if (addToConfigOption) {
+        contextMenuOptions.push(addToConfigOption);
+      }
     }
 
     return contextMenuOptions;
@@ -393,7 +413,7 @@ export default class BrowserCell extends Component {
   getSetFilterContextMenuOption(constraints) {
     if (constraints) {
       return {
-        text: 'Set filter...',
+        text: 'Set filter',
         items: constraints.map(constraint => {
           const definition = Filters.Constraints[constraint];
           const copyableValue = String(this.copyableValue);
@@ -419,7 +439,7 @@ export default class BrowserCell extends Component {
   getAddFilterContextMenuOption(constraints) {
     if (constraints && this.props.filters && this.props.filters.size > 0) {
       return {
-        text: 'Add filter...',
+        text: 'Add filter',
         items: constraints.map(constraint => {
           const definition = Filters.Constraints[constraint];
           const text = `${this.props.field} ${definition.name}${
@@ -435,8 +455,9 @@ export default class BrowserCell extends Component {
   }
 
   /**
-   * Returns "Get related records from..." context menu item if cell holds a Pointer
+   * Returns "Related records" context menu item if cell holds a Pointer
    * or objectId and there's a class in relation.
+   * Groups fields by class name in a hierarchical submenu structure.
    */
   getRelatedObjectsContextMenuOption() {
     const { value, schema, onPointerClick } = this.props;
@@ -445,20 +466,23 @@ export default class BrowserCell extends Component {
       (value && value.className) || (this.props.field === 'objectId' && this.props.className);
     if (pointerClassName) {
       const relatedRecordsMenuItem = {
-        text: 'Get related records from...',
+        text: 'Related records',
         items: [],
       };
+
+      // Group fields by class name for hierarchical navigation
       schema.data
         .get('classes')
-        .sortBy((v, k) => k)
+        .sortBy((_v, k) => k)
         .forEach((cl, className) => {
+          const classFields = [];
+
           cl.forEach((column, field) => {
             if (column.targetClass !== pointerClassName) {
               return;
             }
-            relatedRecordsMenuItem.items.push({
-              text: `${className}`,
-              subtext: `${field}`,
+            classFields.push({
+              text: field,
               callback: () => {
                 let relatedObject = value;
                 if (this.props.field === 'objectId') {
@@ -473,10 +497,122 @@ export default class BrowserCell extends Component {
               },
             });
           });
+
+          if (classFields.length > 0) {
+            // Sort fields alphabetically
+            classFields.sort((a, b) => a.text.localeCompare(b.text));
+            relatedRecordsMenuItem.items.push({
+              text: className,
+              items: classFields,
+            });
+          }
         });
 
       return relatedRecordsMenuItem.items.length ? relatedRecordsMenuItem : undefined;
     }
+  }
+
+  /**
+   * Returns "Related records" context menu item if cell holds a String value
+   * and there are classes with String type fields to filter by.
+   * Groups fields by class name in a hierarchical submenu structure.
+   */
+  getRelatedTextFieldsContextMenuOption() {
+    const { value, type, field, schema, onPointerClick } = this.props;
+
+    // Only show for String type cells with a non-empty value
+    // Exclude objectId field - it uses getRelatedObjectsContextMenuOption() for pointer-based lookups
+    if (type !== 'String' || field === 'objectId') {
+      return;
+    }
+
+    return buildRelatedTextFieldsMenuItem(schema, value, onPointerClick);
+  }
+
+  /**
+   * Returns "Related records" context menu item if cell holds a Number value
+   * and there are classes with Number type fields to filter by.
+   * Groups fields by class name in a hierarchical submenu structure.
+   */
+  getRelatedNumberFieldsContextMenuOption() {
+    const { value, type, schema, onPointerClick } = this.props;
+
+    // Only show for Number type cells with a value
+    if (type !== 'Number' || value === undefined || value === null) {
+      return;
+    }
+
+    const relatedRecordsMenuItem = {
+      text: 'Related records',
+      items: [],
+    };
+
+    // Group fields by class name for hierarchical navigation
+    schema.data
+      .get('classes')
+      .sortBy((_v, k) => k)
+      .forEach((cl, className) => {
+        const classFields = [];
+
+        cl.forEach((column, field) => {
+          if (column.type !== 'Number') {
+            return;
+          }
+          classFields.push({
+            text: field,
+            callback: () => {
+              onPointerClick({
+                className,
+                id: value,
+                field,
+              });
+            },
+          });
+        });
+
+        if (classFields.length > 0) {
+          // Sort fields alphabetically
+          classFields.sort((a, b) => a.text.localeCompare(b.text));
+          relatedRecordsMenuItem.items.push({
+            text: className,
+            items: classFields,
+          });
+        }
+      });
+
+    return relatedRecordsMenuItem.items.length ? relatedRecordsMenuItem : undefined;
+  }
+
+  getAddToConfigContextMenuOption() {
+    const { arrayConfigParams, onAddToArrayConfig, hidden } = this.props;
+
+    // Don't show for hidden cells to prevent leaking sensitive values
+    if (hidden) {
+      return;
+    }
+
+    // Only show if there are array config params and handler is available
+    if (!arrayConfigParams || arrayConfigParams.length === 0 || !onAddToArrayConfig) {
+      return;
+    }
+
+    // Get the cell's copyable value as string
+    const cellValue = this.copyableValue !== undefined ? String(this.copyableValue) : '';
+
+    // Don't show for empty or special values
+    if (!cellValue || cellValue === '(undefined)' || cellValue === '(null)' || cellValue === '(hidden)') {
+      return;
+    }
+
+    return {
+      text: 'Add to config parameter',
+      items: arrayConfigParams.map(param => ({
+        text: param.name,
+        callback: () => {
+          onAddToArrayConfig(param.name, cellValue);
+        },
+      })),
+    };
   }
 
   pickFilter(constraint, addToExistingFilter) {

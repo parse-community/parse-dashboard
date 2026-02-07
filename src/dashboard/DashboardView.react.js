@@ -92,6 +92,11 @@ export default class DashboardView extends React.Component {
     });
 
     coreSubsections.push({
+      name: 'Canvas',
+      link: '/canvas',
+    });
+
+    coreSubsections.push({
       name: 'Agent',
       link: '/agent',
       icon: 'sparkle-solid',
@@ -220,6 +225,10 @@ export default class DashboardView extends React.Component {
       {
         name: 'Dashboard',
         link: '/settings/dashboard',
+      },
+      {
+        name: 'Cloud Config',
+        link: '/settings/cloud-config',
       },
       {
         name: 'Keyboard Shortcuts',

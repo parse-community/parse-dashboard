@@ -45,6 +45,7 @@ import styles from 'dashboard/Apps/AppsIndex.scss';
 import UsersSettings from './Settings/UsersSettings.react';
 import Webhooks from './Data/Webhooks/Webhooks.react';
 import Views from './Data/Views/Views.react';
+import CustomDashboard from './Data/CustomDashboard/CustomDashboard.react';
 import { AsyncStatus } from 'lib/Constants';
 import baseStyles from 'stylesheets/base.scss';
 import { get } from 'lib/AJAX';
@@ -55,6 +56,7 @@ import Playground from './Data/Playground/Playground.react';
 import DashboardSettings from './Settings/DashboardSettings/DashboardSettings.react';
 import Security from './Settings/Security/Security.react';
 import KeyboardShortcutsSettings from './Settings/KeyboardShortcutsSettings.react';
+import CloudConfigSettings from './Settings/CloudConfigSettings.react';
 import semver from 'semver';
 import packageInfo from '../../package.json';
 
@@ -236,6 +238,7 @@ export default class Dashboard extends React.Component {
         <Route path="dashboard" element={<DashboardSettings />} />
         <Route path="security" element={<Security />} />
         <Route path="keyboard-shortcuts" element={<KeyboardShortcutsSettings />} />
+        <Route path="cloud-config" element={<CloudConfigSettings />} />
         <Route path="general" element={<GeneralSettings />} />
         <Route path="keys" element={<SecuritySettings />} />
         <Route path="users" element={<UsersSettings />} />
@@ -291,6 +294,8 @@ export default class Dashboard extends React.Component {
         <Route path="cloud_code/*" element={<CloudCode />} />
         <Route path="views/:name" element={<Views />} />
         <Route path="views" element={<Views />} />
+        <Route path="canvas/:canvasId" element={<CustomDashboard />} />
+        <Route path="canvas" element={<CustomDashboard />} />
         <Route path="agent" element={<Agent agentConfig={this.state.agentConfig} />} />
         <Route path="webhooks" element={<Webhooks />} />
 

@@ -1,0 +1,106 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
+@import 'stylesheets/globals.scss';
+
+.container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  font-family: 'Source Code Pro', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 15px;
+  line-height: 1.5;
+  background: $inputBackgroundColor;
+}
+
+// Shared text styles
+.highlightLayer,
+.inputLayer {
+  padding: 10px;
+  margin: 0;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  box-sizing: border-box;
+  text-align: left;
+  direction: ltr;
+  overscroll-behavior: none; // Disable rubber band / bounce effect in Safari
+}
+
+// The syntax-highlighted layer (behind, absolutely positioned)
+.highlightLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: transparent;
+  color: #555572;
+  overflow: auto;
+
+  code {
+    display: block;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    white-space: inherit;
+    word-wrap: inherit;
+    overflow-wrap: inherit;
+  }
+
+  // Prism token colors (GitHub light theme)
+  :global {
+    .token.property {
+      color: #005cc5; // Blue - JSON keys
+    }
+
+    .token.string {
+      color: #000000; // Black - string values
+    }
+
+    .token.number {
+      color: #098658; // Dark green - numbers
+    }
+
+    .token.boolean {
+      color: #d73a49; // Red - true/false
+    }
+
+    .token.null {
+      color: #d73a49; // Red - null
+    }
+
+    .token.punctuation {
+      color: #24292e; // Dark gray - brackets, commas
+    }
+
+    .token.operator {
+      color: #24292e; // Dark gray - colons
+    }
+  }
+}
+
+// The editable textarea layer (in normal flow, controls container size)
+.inputLayer {
+  display: block;
+  width: 100%;
+  min-width: calc(var(--modal-min-width) * (1 - var(--modal-label-ratio)));
+  background: transparent;
+  color: transparent;
+  caret-color: #333;
+  resize: both;
+  outline: none;
+  min-height: 80px;
+  height: 200px;
+  overflow: auto;
+
+  &::placeholder {
+    color: #bbb;
+  }
+}

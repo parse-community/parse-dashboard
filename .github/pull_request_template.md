@@ -1,26 +1,16 @@
-### New Pull Request Checklist
-<!--
-    Please check the following boxes [x] before submitting your issue.
-    Click the "Preview" tab for better readability.
-    Thanks for contributing to Parse Server!
--->
+## Pull Request
 
-- [ ] I am not disclosing a [vulnerability](https://github.com/parse-community/parse-server/blob/master/SECURITY.md).
-- [ ] I am creating this PR in reference to an [issue](https://github.com/parse-community/parse-dashboard/issues?q=is%3Aissue).
+- Report security issues [confidentially](https://github.com/parse-community/parse-dashboard/security/policy).
+- Any contribution is under this [license](https://github.com/parse-community/parse-dashboard/blob/alpha/LICENSE).
 
-### Issue Description
-<!-- Add a brief description of the issue this PR solves. -->
+## Issue
+<!-- Describe or link the issue that this PR closes. -->
 
-Closes: FILL_THIS_OUT
+## Approach
+<!-- Describe the changes in this PR. -->
 
-### Approach
-<!-- Add a description of the approach in this PR. -->
-
-### TODOs before merging
-<!--
-    Add TODOs that need to be completed before merging this PR.
-    Delete TODOs that do not apply to this PR.
--->
+## Tasks
+<!-- Delete tasks that don't apply. -->
 
 - [ ] Add tests
 - [ ] Add changes to documentation (guides, repository pages, in-code descriptions)

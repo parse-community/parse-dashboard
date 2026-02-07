@@ -1,0 +1,101 @@
+@import 'stylesheets/globals.scss';
+
+.graphElement {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.graphHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #e3e3ea;
+  flex-shrink: 0;
+}
+
+.graphTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0e0e1a;
+}
+
+.expandButton {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  opacity: 0;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+  position: relative;
+  z-index: 10;
+
+  :global(.canvasElementWrapper):hover & {
+    opacity: 1;
+  }
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.refreshButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  opacity: 0;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+  position: relative;
+  z-index: 10;
+  margin-left: -6px;
+
+  :global(.canvasElementWrapper):hover & {
+    opacity: 1;
+  }
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.graphContainer {
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.expandedGraphContainer {
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+}
+
+.noConfig {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666666;
+  gap: 8px;
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}

@@ -96,7 +96,8 @@ export default class Toggle extends React.Component {
     }
 
     const switchClasses = [styles.switch];
-    if (colored) {
+    // Only use default colored class if no custom colors provided
+    if (colored && !this.props.colorLeft && !this.props.colorRight) {
       switchClasses.push(styles.colored);
     }
     if (this.props.switchNoMargin) {
@@ -109,6 +110,20 @@ export default class Toggle extends React.Component {
     if (this.props.darkBg) {
       toggleClasses.push(styles.darkBg);
     }
+
+    // Custom colors for the switch
+    let switchStyle = {};
+    if (this.props.colorLeft || this.props.colorRight) {
+      const colorLeft = this.props.colorLeft || '#999';
+      const colorRight = this.props.colorRight || '#00db7c';
+      switchStyle = {
+        background: `linear-gradient(90deg, ${colorRight}, ${colorRight} 50%, ${colorLeft} 50%, ${colorLeft})`,
+        backgroundSize: '200%',
+        backgroundPosition: left ? '100%' : '0',
+        transition: 'background-position 0.15s ease-out',
+      };
+    }
+
     return (
       <div className={toggleClasses.join(' ')} style={this.props.additionalStyles || {}}>
         {labelLeft && (
@@ -116,7 +131,7 @@ export default class Toggle extends React.Component {
             {labelLeft}
           </span>
         )}
-        <span className={switchClasses.join(' ')} onClick={this.toggle.bind(this)}></span>
+        <span className={switchClasses.join(' ')} style={switchStyle} onClick={this.toggle.bind(this)}></span>
         {labelRight && (
           <span className={styles.label} onClick={this.toRight.bind(this)}>
             {labelRight}
@@ -144,6 +159,8 @@ Toggle.propTypes = {
   colored: PropTypes.bool.describe(
     'Flag describing is toggle is colored. [For Toggle.Type.CUSTOM]'
   ),
+  colorLeft: PropTypes.string.describe('Custom color for the left (off) state of the toggle.'),
+  colorRight: PropTypes.string.describe('Custom color for the right (on) state of the toggle.'),
   darkBg: PropTypes.bool,
   additionalStyles: PropTypes.object.describe('Additional styles for Toggle component.'),
 };

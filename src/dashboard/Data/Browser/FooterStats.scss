@@ -1,0 +1,95 @@
+@import 'stylesheets/globals.scss';
+
+.popover_wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.stats {
+  background: transparent;
+  border-radius: 5px;
+  padding: 0 22px 0 8px;
+  height: 26px;
+  line-height: 26px;
+  font-size: 12px;
+  color: #555;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+
+  &:after {
+    content: '';
+    position: absolute;
+    right: 8px;
+    top: 10px;
+    border-style: solid;
+    border-width: 5px 4px 0 4px;
+    border-top-color: #999;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: #aaa;
+  }
+}
+
+.stats_popover_container {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 4px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 5px;
+  padding: 8px 0;
+  font-size: 14px;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border: 1px solid #ddd;
+  animation: stats-fade-in 0.15s ease-out;
+  min-width: 140px;
+}
+
+@keyframes stats-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stats_popover_item {
+  cursor: pointer;
+  padding: 6px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  white-space: nowrap;
+
+  &:hover {
+    background: #f0f0f0;
+  }
+
+  .stats_label {
+    font-weight: 500;
+    color: #333;
+  }
+
+  .stats_value {
+    color: #888;
+    font-size: 12px;
+  }
+}
+
+.stats_popover_item.active {
+  background: #e8f4fc;
+}

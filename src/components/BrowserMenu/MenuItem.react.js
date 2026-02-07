@@ -8,7 +8,7 @@
 import React from 'react';
 import styles from 'components/BrowserMenu/BrowserMenu.scss';
 
-const MenuItem = ({ text, shortcut, disabled, active, greenActive, onClick, disableMouseDown = false }) => {
+const MenuItem = ({ text, shortcut, disabled, active, greenActive, onClick, disableMouseDown = false, closeMenu, onItemHover }) => {
   const classes = [styles.item];
   if (disabled) {
     classes.push(styles.disabled);
@@ -23,6 +23,10 @@ const MenuItem = ({ text, shortcut, disabled, active, greenActive, onClick, disa
   const handleClick = (e) => {
     if (!disabled && onClick) {
       onClick(e);
+      // If disableMouseDown is true and we have a closeMenu function, close the menu
+      if (disableMouseDown && closeMenu) {
+        closeMenu();
+      }
     }
   };
 
@@ -31,6 +35,7 @@ const MenuItem = ({ text, shortcut, disabled, active, greenActive, onClick, disa
       className={classes.join(' ')}
       onClick={handleClick}
       onMouseDown={disableMouseDown ? undefined : handleClick} // This is needed - onClick alone doesn't work in this context
+      onMouseEnter={onItemHover}
       style={{
         position: 'relative',
         zIndex: 9999,

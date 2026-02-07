@@ -86,46 +86,6 @@ body:global(.expanded) {
   top: 4px;
 }
 
-.stats {
-  position: absolute;
-  right: 20px;
-  bottom: 10px;
-  background: $blue;
-  border-radius: 3px;
-  padding: 2px 6px;
-  font-size: 14px;
-  color: white;
-  box-shadow: none;
-  border: none;
-}
-
-.stats_popover_container {
-  display: flex;
-  flex-direction: column;
-  background: $blue;
-  border-radius: 3px;
-  margin-top: 1px;
-  gap: 2px;
-  padding: 2px 0px;
-  font-size: 14px;
-  color: white;
-}
-
-.stats_popover_item {
-  cursor: pointer;
-  padding: 0px 6px;
-
-  &:hover {
-    color: $blue;
-    background-color: white;
-  }
-}
-
-.active {
-  color: $blue;
-  background-color: white;
-}
-
 .panelButtons {
   position: absolute;
   right: 5px;
@@ -168,5 +128,24 @@ body:global(.expanded) {
         fill: #797592;
       }
     }
+  }
+}
+
+.btnAutoScroll {
+  background-color: #169cee;
+  border-radius: 4px;
+  animation: pulse 1.5s ease-in-out infinite;
+
+  &:hover {
+    background-color: #1486cc;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
   }
 }

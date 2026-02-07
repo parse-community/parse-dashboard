@@ -1,0 +1,123 @@
+@import 'stylesheets/globals.scss';
+
+.wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding-top: 96px;
+}
+
+.canvas {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 96px);
+  background-color: #f5f5f7;
+  overflow: auto;
+  outline: none;
+}
+
+.toolbarButton {
+  @include NotoSansFont;
+  display: inline-block;
+  font-size: 14px;
+  color: #ffffff;
+  cursor: pointer;
+  height: 14px;
+  padding: 0 12px;
+  margin-top: 8px;
+
+  svg {
+    vertical-align: middle;
+    margin-right: 4px;
+    fill: #66637a;
+  }
+
+  &:hover {
+    svg {
+      fill: white;
+    }
+  }
+
+  span {
+    vertical-align: middle;
+    height: 14px;
+    line-height: 14px;
+  }
+}
+
+.toolbarSeparator {
+  display: inline-block;
+  height: 18px;
+  width: 1px;
+  background: #66637a;
+  vertical-align: bottom;
+  margin: 0 4px;
+  margin-top: 8px;
+}
+
+.autoReloadWrapper {
+  display: inline-block;
+  margin-left: 8px;
+  height: 14px;
+  margin-top: 8px;
+  position: relative;
+}
+
+.autoReloadLabel {
+  @include NotoSansFont;
+  font-size: 14px;
+  color: #66637a;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.autoReloadSelect {
+  @include NotoSansFont;
+  font-size: 13px;
+  color: #ffffff;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  vertical-align: middle;
+
+  option {
+    background-color: #1e2b3c;
+    color: #ffffff;
+  }
+}
+
+.autoReloadProgressWrapper {
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #4a4a5a;
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.autoReloadProgress {
+  height: 100%;
+  background-color: #169cee;
+  transition: width 0.1s linear;
+}
+
+.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  padding-top: 0;
+  z-index: 1000;
+
+  .canvas {
+    min-height: 100vh;
+  }
+}
+

@@ -18,6 +18,7 @@ export default class StringEditor extends React.Component {
 
     this.checkExternalClick = this.checkExternalClick.bind(this);
     this.handleKey = this.handleKey.bind(this);
+    this.handleContextMenu = this.handleContextMenu.bind(this);
     this.inputRef = React.createRef();
   }
 
@@ -61,6 +62,67 @@ export default class StringEditor extends React.Component {
     }
   }
 
+  handleContextMenu(e) {
+    const { setContextMenu, arrayConfigParams, onAddToArrayConfig, getRelatedRecordsMenuItem } = this.props;
+
+    // Only show custom context menu when Alt key is held
+    if (!e.altKey) {
+      return;
+    }
+
+    // Check if setContextMenu is available
+    if (!setContextMenu) {
+      return;
+    }
+
+    // Get selected text from the input/textarea
+    const input = this.inputRef.current;
+    const selectedText = input.value.substring(input.selectionStart, input.selectionEnd).trim();
+
+    // Only show if there's selected text
+    if (!selectedText) {
+      return;
+    }
+
+    // Build context menu items
+    const menuItems = [];
+
+    // Add "Add to config parameter" option if available
+    if (arrayConfigParams && arrayConfigParams.length > 0 && onAddToArrayConfig) {
+      menuItems.push({
+        text: 'Add to config parameter...',
+        items: arrayConfigParams.map(param => ({
+          text: param.name,
+          callback: () => {
+            onAddToArrayConfig(param.name, selectedText);
+          },
+        })),
+      });
+    }
+
+    // Add "Related records" option if available (using selected text)
+    if (getRelatedRecordsMenuItem) {
+      const relatedRecordsItem = getRelatedRecordsMenuItem(selectedText);
+      if (relatedRecordsItem) {
+        if (menuItems.length > 0) {
+          menuItems.push({ type: 'separator' });
+        }
+        menuItems.push(relatedRecordsItem);
+      }
+    }
+
+    // Only show context menu if there are items
+    if (menuItems.length === 0) {
+      return;
+    }
+
+    // Prevent default context menu
+    e.preventDefault();
+    e.stopPropagation();
+
+    setContextMenu(e.pageX, e.pageY, menuItems);
+  }
+
   render() {
     const classes = [styles.editor];
     const onChange = this.props.readonly ? () => {} : e => this.setState({ value: e.target.value });
@@ -79,6 +141,7 @@ export default class StringEditor extends React.Component {
             ref={this.inputRef}
             value={this.state.value}
             onChange={onChange}
+            onContextMenu={this.handleContextMenu}
             style={style}
           />
         </div>
@@ -90,6 +153,7 @@ export default class StringEditor extends React.Component {
           ref={this.inputRef}
           value={this.state.value}
           onChange={onChange}
+          onContextMenu={this.handleContextMenu}
           disabled={this.props.readonly}
         />
       </div>

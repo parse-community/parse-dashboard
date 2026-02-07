@@ -44,6 +44,113 @@ const Modal = ({
   showContinue,
   buttonsInCenter = React.Children.count(children) === 0,
 }) => {
+  const modalRef = React.useRef(null);
+
+  // Selector for all focusable elements (excluding buttons - they're handled via Enter key)
+  const focusableSelector = [
+    'input:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    'a[href]',
+    '[tabindex]:not([tabindex="-1"])',
+  ].join(', ');
+
+  const getFocusableElements = React.useCallback(() => {
+    const modal = modalRef.current;
+    if (!modal) {
+      return [];
+    }
+    return Array.from(modal.querySelectorAll(focusableSelector)).filter(el => {
+      // Filter out elements that are hidden or not visible
+      // offsetParent is null for hidden elements (display:none or in hidden ancestors)
+      // Also check for zero dimensions (collapsed elements)
+      if (el.offsetParent === null && el.tagName !== 'BODY') {
+        return false;
+      }
+      const rect = el.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) {
+        return false;
+      }
+      return true;
+    });
+  }, []);
+
+  // Focus the first focusable element only when modal mounts
+  React.useEffect(() => {
+    const focusableElements = getFocusableElements();
+    if (focusableElements.length > 0) {
+      focusableElements[0].focus();
+    }
+  }, []);
+
+  // Focus trap and keyboard handling
+  React.useEffect(() => {
+    const modal = modalRef.current;
+    if (!modal) {
+      return;
+    }
+
+    const handleKeyDown = (e) => {
+      // Handle Escape to close modal
+      if (e.key === 'Escape') {
+        e.stopImmediatePropagation();
+        if (canCancel && onCancel && !progress) {
+          e.preventDefault();
+          onCancel();
+        }
+        return;
+      }
+
+      // Handle Tab for focus trapping
+      if (e.key === 'Tab') {
+        e.stopImmediatePropagation();
+        const focusable = getFocusableElements();
+        if (focusable.length === 0) {
+          return;
+        }
+
+        const firstElement = focusable[0];
+        const lastElement = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+          // Shift+Tab: if on first element, wrap to last
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          // Tab: if on last element, wrap to first
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+        return;
+      }
+
+      // Other keys (like arrow keys) are allowed to propagate normally
+      // The DataBrowser checks for open modals and ignores keyboard events when one is present
+    };
+
+    // Handle Command+Enter to trigger primary button (runs in bubble phase after component handlers)
+    const handleEnterKey = (e) => {
+      if (e.key === 'Enter' && e.metaKey && !e.defaultPrevented && !disabled && !progress && onConfirm) {
+        e.preventDefault();
+        onConfirm();
+      }
+    };
+
+    // Use capture phase on window for Escape and Tab (need to intercept early)
+    window.addEventListener('keydown', handleKeyDown, true);
+    // Use bubble phase on document for Enter (need to run after component handlers)
+    document.addEventListener('keydown', handleEnterKey);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown, true);
+      document.removeEventListener('keydown', handleEnterKey);
+    };
+  }, [canCancel, onCancel, progress, disabled, onConfirm]);
+
   if (children) {
     children = React.Children.map(children, c => {
       if (c && c.type === Field && c.props.label) {
@@ -81,7 +188,7 @@ const Modal = ({
 
   return (
     <Popover fadeIn={true} fixed={true} position={origin} modal={true} color="rgba(17,13,17,0.8)">
-      <div className={[styles.modal, styles[type]].join(' ')} style={{ width }}>
+      <div ref={modalRef} className={[styles.modal, styles[type]].join(' ')} style={{ width }}>
         <div className={styles.header}>
           <div
             style={{

@@ -12,17 +12,23 @@ import FileInput from 'components/FileInput/FileInput.react';
 import GeoPointInput from 'components/GeoPointInput/GeoPointInput.react';
 import Label from 'components/Label/Label.react';
 import Modal from 'components/Modal/Modal.react';
+import NonPrintableHighlighter from 'components/NonPrintableHighlighter/NonPrintableHighlighter.react';
 import Option from 'components/Dropdown/Option.react';
 import Parse from 'parse';
 import React from 'react';
 import TextInput from 'components/TextInput/TextInput.react';
 import Toggle from 'components/Toggle/Toggle.react';
+import Button from 'components/Button/Button.react';
+import JsonEditor from 'components/JsonEditor/JsonEditor.react';
 import validateNumeric from 'lib/validateNumeric';
 import styles from 'dashboard/Data/Browser/Browser.scss';
 import semver from 'semver/preload.js';
 import { dateStringUTC } from 'lib/DateUtils';
 import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
+import ServerConfigStorage from 'lib/ServerConfigStorage';
 import { CurrentApp } from 'context/currentApp';
+
+const FORMATTING_CONFIG_KEY = 'config.formatting.syntax';
 
 const PARAM_TYPES = ['Boolean', 'String', 'Number', 'Date', 'Object', 'Array', 'GeoPoint', 'File'];
 
@@ -44,28 +50,30 @@ const EDITORS = {
     <Toggle type={Toggle.Types.TRUE_FALSE} value={!!value} onChange={onChange} />
   ),
   String: (value, onChange) => (
-    <TextInput multiline={true} value={value || ''} onChange={onChange} />
+    <NonPrintableHighlighter value={value} detectNonAlphanumeric={true}>
+      <TextInput multiline={true} value={value || ''} onChange={onChange} />
+    </NonPrintableHighlighter>
   ),
   Number: (value, onChange) => (
     <TextInput value={value || ''} onChange={numberValidator(onChange)} />
   ),
   Date: (value, onChange) => <DateTimeInput fixed={true} value={value} onChange={onChange} />,
-  Object: (value, onChange) => (
-    <TextInput
-      multiline={true}
-      monospace={true}
-      placeholder={'{\n  ...\n}'}
+  Object: (value, onChange, wordWrap, syntaxColors) => (
+    <JsonEditor
       value={value || ''}
       onChange={onChange}
+      placeholder={'{\n  ...\n}'}
+      wordWrap={wordWrap}
+      syntaxColors={syntaxColors}
     />
   ),
-  Array: (value, onChange) => (
-    <TextInput
-      multiline={true}
-      monospace={true}
-      placeholder={'[\n  ...\n]'}
-      value={value}
+  Array: (value, onChange, wordWrap, syntaxColors) => (
+    <JsonEditor
+      value={value || ''}
       onChange={onChange}
+      placeholder={'[\n  ...\n]'}
+      wordWrap={wordWrap}
+      syntaxColors={syntaxColors}
     />
   ),
   GeoPoint: (value, onChange) => <GeoPointInput value={value} onChange={onChange} />,
@@ -94,6 +102,17 @@ const GET_VALUE = {
 
 export default class ConfigDialog extends React.Component {
   static contextType = CurrentApp;
+
+  static formatJSON(value) {
+    try {
+      const parsed = JSON.parse(value);
+      return { value: JSON.stringify(parsed, null, 2), error: null };
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      return { value, error: `Invalid JSON: ${message}` };
+    }
+  }
+
   constructor(props) {
     super();
     this.state = {
@@ -102,15 +121,47 @@ export default class ConfigDialog extends React.Component {
       name: '',
       masterKeyOnly: false,
       selectedIndex: null,
+      wordWrap: false,
+      error: null,
+      syntaxColors: null,
     };
     if (props.param.length > 0) {
+      let initialValue = props.value;
+      let initialError = null;
+      if ((props.type === 'Object' || props.type === 'Array') && initialValue) {
+        ({ value: initialValue, error: initialError } = ConfigDialog.formatJSON(initialValue));
+      }
       this.state = {
         name: props.param,
         type: props.type,
-        value: props.value,
+        value: initialValue,
         masterKeyOnly: props.masterKeyOnly,
         selectedIndex: 0,
+        wordWrap: false,
+        error: initialError,
+        syntaxColors: null,
       };
+    }
+  }
+
+  componentDidMount() {
+    this.loadSyntaxColors();
+  }
+
+  async loadSyntaxColors() {
+    try {
+      const serverStorage = new ServerConfigStorage(this.context);
+      if (serverStorage.isServerConfigEnabled()) {
+        const settings = await serverStorage.getConfig(
+          FORMATTING_CONFIG_KEY,
+          this.context.applicationId
+        );
+        if (settings?.colors) {
+          this.setState({ syntaxColors: settings.colors });
+        }
+      }
+    } catch {
+      // Silently fail - use default colors from CSS
     }
   }
 
@@ -181,11 +232,47 @@ export default class ConfigDialog extends React.Component {
     });
   }
 
+  formatValue() {
+    const { value, error } = ConfigDialog.formatJSON(this.state.value);
+    this.setState({ value, error });
+  }
+
+  compactValue() {
+    try {
+      const parsed = JSON.parse(this.state.value);
+      const compacted = JSON.stringify(parsed);
+      this.setState({ value: compacted, error: null });
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      this.setState({ error: `Invalid JSON: ${message}` });
+    }
+  }
+
+  canFormatValue() {
+    if (this.state.type !== 'Object' && this.state.type !== 'Array') {
+      return false;
+    }
+    try {
+      JSON.parse(this.state.value);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   componentDidUpdate(prevProps) {
     // Update parameter value or masterKeyOnly if they have changed
     if (this.props.value !== prevProps.value || this.props.masterKeyOnly !== prevProps.masterKeyOnly) {
+      let updatedValue = this.props.value;
+      let error = null;
+
+      if ((this.props.type === 'Object' || this.props.type === 'Array') && updatedValue) {
+        ({ value: updatedValue, error } = ConfigDialog.formatJSON(updatedValue));
+      }
+
       this.setState({
-        value: this.props.value,
+        value: updatedValue,
+        error,
         masterKeyOnly: this.props.masterKeyOnly,
       });
     }
@@ -207,11 +294,7 @@ export default class ConfigDialog extends React.Component {
         ))}
       </Dropdown>
     );
-    const configHistory =
-      localStorage.getItem(`${this.context.applicationId}_configHistory`) &&
-      JSON.parse(localStorage.getItem(`${this.context.applicationId}_configHistory`))[
-        this.state.name
-      ];
+    const configHistory = this.props.configHistory;
     const handleIndexChange = index => {
       if (this.state.type === 'Date') {
         return;
@@ -254,9 +337,12 @@ export default class ConfigDialog extends React.Component {
               description="Use this to configure your app. You can change it at any time."
             />
           }
-          input={EDITORS[this.state.type](this.state.value, value => {
-            this.setState({ value });
-          })}
+          input={EDITORS[this.state.type](
+            this.state.value,
+            value => this.setState({ value, error: null }),
+            this.state.wordWrap,
+            this.state.syntaxColors
+          )}
         />
 
         {
@@ -294,9 +380,9 @@ export default class ConfigDialog extends React.Component {
               />
             }
             input={
-              <Dropdown value={this.state.selectedIndex} onChange={handleIndexChange}>
+              <Dropdown value={String(this.state.selectedIndex)} onChange={index => handleIndexChange(Number(index))}>
                 {configHistory.map((value, i) => (
-                  <Option key={i} value={i}>
+                  <Option key={i} value={String(i)}>
                     {dateStringUTC(new Date(value.time))}
                   </Option>
                 ))}
@@ -308,6 +394,52 @@ export default class ConfigDialog extends React.Component {
       </div>
     );
 
+    const isJsonType = this.state.type === 'Object' || this.state.type === 'Array';
+    const customFooter = (
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '17px 28px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          {isJsonType && (
+            <>
+              <Button
+                value="Format"
+                onClick={this.formatValue.bind(this)}
+                disabled={!this.canFormatValue()}
+              />
+              <Button
+                value="Compact"
+                onClick={this.compactValue.bind(this)}
+                disabled={!this.canFormatValue()}
+              />
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                <Toggle
+                  type={Toggle.Types.HIDE_LABELS}
+                  value={this.state.wordWrap}
+                  onChange={wordWrap => this.setState({ wordWrap })}
+                  additionalStyles={{ margin: '0px' }}
+                  colorLeft="#cbcbcb"
+                  colorRight="#00db7c"
+                />
+                <span style={{ color: this.state.wordWrap ? '#333' : '#999' }}>Wrap</span>
+              </label>
+              {this.state.error && (
+                <span style={{ color: '#d73a49', fontSize: '13px' }}>{this.state.error}</span>
+              )}
+            </>
+          )}
+        </div>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <Button value="Cancel" onClick={this.props.onCancel} />
+          <Button
+            primary={true}
+            color="blue"
+            value={newParam ? 'Create' : 'Save'}
+            onClick={this.submit.bind(this)}
+            disabled={!this.valid() || this.props.loading}
+          />
+        </div>
+      </div>
+    );
+
     return (
       <Modal
         type={Modal.Types.INFO}
@@ -315,9 +447,8 @@ export default class ConfigDialog extends React.Component {
         icon="gear-solid"
         iconSize={30}
         subtitle={'Dynamically configure parts of your app'}
+        customFooter={customFooter}
         disabled={!this.valid() || this.props.loading}
-        confirmText={newParam ? 'Create' : 'Save'}
-        cancelText="Cancel"
         onCancel={this.props.onCancel}
         onConfirm={this.submit.bind(this)}
       >

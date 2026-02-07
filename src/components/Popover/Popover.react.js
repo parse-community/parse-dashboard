@@ -45,6 +45,7 @@ export default class Popover extends React.Component {
     if (this.props.modal) {
       this._popoverLayer.style.right = 0;
       this._popoverLayer.style.bottom = 0;
+      this._popoverLayer.dataset.modal = 'true';
     }
     if (this.props.color) {
       this._popoverLayer.style.background = this.props.color;

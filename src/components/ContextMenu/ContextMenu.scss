@@ -8,6 +8,8 @@
 		background: $purple;
 		@include animation('fade-in .2s linear');
 		opacity: 0;
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 	}
 
 	li {
@@ -26,8 +28,23 @@
 		background: rgba(255, 255, 255, 0.1);
 	}
 
+	.separator {
+		height: 1px;
+		padding: 0;
+		margin: 5px 10px;
+		background: rgba(255, 255, 255, 0.2);
+		cursor: default;
+		pointer-events: none;
+
+		&:hover {
+			background: rgba(255, 255, 255, 0.2);
+		}
+	}
+
 	.category {
 		position: absolute;
+		// Keep above the toolbar (src/components/Toolbar/Toolbar.scss).
+		z-index: 6;
 
 		.item {
 			width: 100%;

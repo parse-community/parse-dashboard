@@ -26,8 +26,10 @@ export default class KeyboardShortcutsSettings extends DashboardView {
     this.state = {
       dataBrowserReloadData: '',
       dataBrowserToggleInfoPanels: '',
+      dataBrowserRunScriptOnSelectedRows: '',
       hasChanges: false,
       message: undefined,
+      loading: true,
     };
 
     this.manager = null;
@@ -54,11 +56,14 @@ export default class KeyboardShortcutsSettings extends DashboardView {
       this.setState({
         dataBrowserReloadData: shortcuts.dataBrowserReloadData?.key || '',
         dataBrowserToggleInfoPanels: shortcuts.dataBrowserToggleInfoPanels?.key || '',
+        dataBrowserRunScriptOnSelectedRows: shortcuts.dataBrowserRunScriptOnSelectedRows?.key || '',
         hasChanges: false,
+        loading: false,
       });
     } catch (error) {
       console.error('Failed to load keyboard shortcuts:', error);
       this.showNote('Failed to load keyboard shortcuts', true);
+      this.setState({ loading: false });
     }
   }
 
@@ -85,6 +90,7 @@ export default class KeyboardShortcutsSettings extends DashboardView {
     const shortcuts = {
       dataBrowserReloadData: this.state.dataBrowserReloadData ? createShortcut(this.state.dataBrowserReloadData) : null,
       dataBrowserToggleInfoPanels: this.state.dataBrowserToggleInfoPanels ? createShortcut(this.state.dataBrowserToggleInfoPanels) : null,
+      dataBrowserRunScriptOnSelectedRows: this.state.dataBrowserRunScriptOnSelectedRows ? createShortcut(this.state.dataBrowserRunScriptOnSelectedRows) : null,
     };
 
     // Validate shortcuts (only if they are set)
@@ -98,7 +104,12 @@ export default class KeyboardShortcutsSettings extends DashboardView {
       return;
     }
 
-    // Check for duplicates (only if both are set)
+    if (shortcuts.dataBrowserRunScriptOnSelectedRows && !isValidShortcut(shortcuts.dataBrowserRunScriptOnSelectedRows)) {
+      this.showNote('Invalid key for "Run Script on Selected Rows". Please enter a valid key.', true);
+      return;
+    }
+
+    // Check for duplicates among shortcuts without meta modifier (only if set)
     if (shortcuts.dataBrowserReloadData && shortcuts.dataBrowserToggleInfoPanels &&
         shortcuts.dataBrowserReloadData.key.toLowerCase() === shortcuts.dataBrowserToggleInfoPanels.key.toLowerCase()) {
       this.showNote('Keyboard shortcuts must be unique. Please use different keys.', true);
@@ -146,7 +157,7 @@ export default class KeyboardShortcutsSettings extends DashboardView {
 
   renderContent() {
     // Show error if server config is not enabled
-    const serverConfigError = this.manager && !this.manager.isServerConfigEnabled()
+    const serverConfigError = !this.state.loading && this.manager && !this.manager.isServerConfigEnabled()
       ? 'Server configuration is not enabled for this app. Please add a \'config\' section to your app configuration to use keyboard shortcuts.'
       : null;
 
@@ -173,8 +184,9 @@ export default class KeyboardShortcutsSettings extends DashboardView {
               }
               input={
                 <TextInput
-                  placeholder={DEFAULT_SHORTCUTS.dataBrowserReloadData.key}
+                  placeholder={this.state.loading ? 'Loading...' : DEFAULT_SHORTCUTS.dataBrowserReloadData.key}
                   value={this.state.dataBrowserReloadData}
+                  disabled={this.state.loading}
                   onChange={this.handleFieldChange.bind(this, 'dataBrowserReloadData')}
                   onFocus={this.handleInputFocus.bind(this)}
                   maxLength={1}
@@ -191,9 +203,29 @@ export default class KeyboardShortcutsSettings extends DashboardView {
               }
               input={
                 <TextInput
-                  placeholder={DEFAULT_SHORTCUTS.dataBrowserToggleInfoPanels.key}
+                  placeholder={this.state.loading ? 'Loading...' : DEFAULT_SHORTCUTS.dataBrowserToggleInfoPanels.key}
                   value={this.state.dataBrowserToggleInfoPanels}
+                  disabled={this.state.loading}
                   onChange={this.handleFieldChange.bind(this, 'dataBrowserToggleInfoPanels')}
+                  onFocus={this.handleInputFocus.bind(this)}
+                  maxLength={1}
+                />
+              }
+            />
+            <Field
+              labelWidth={62}
+              label={
+                <Label
+                  text="Run Script on Selected Rows"
+                  description={'Opens the script dialog for selected rows.'}
+                />
+              }
+              input={
+                <TextInput
+                  placeholder={this.state.loading ? 'Loading...' : DEFAULT_SHORTCUTS.dataBrowserRunScriptOnSelectedRows.key}
+                  value={this.state.dataBrowserRunScriptOnSelectedRows}
+                  disabled={this.state.loading}
+                  onChange={this.handleFieldChange.bind(this, 'dataBrowserRunScriptOnSelectedRows')}
                   onFocus={this.handleInputFocus.bind(this)}
                   maxLength={1}
                 />
