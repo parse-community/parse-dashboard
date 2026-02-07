@@ -65,11 +65,17 @@ export default class ProtectedFieldsDialog extends React.Component {
 
   async componentDidMount() {
     // validate existing entries, also preserve their types (to render correct pills).
-    const rows = await Promise.all(this.state.keys.map(key => this.props.validateEntry(key)));
+    const results = await Promise.allSettled(
+      this.state.keys.map(key => this.props.validateEntry(key))
+    );
 
-    let entryTypes = new Map({});
+    let entryTypes = new Map();
 
-    for (const { entry, type } of rows) {
+    for (const result of results) {
+      if (result.status !== 'fulfilled') {
+        continue;
+      }
+      const { entry, type } = result.value;
       let key;
       const value = {};
 
@@ -97,7 +103,9 @@ export default class ProtectedFieldsDialog extends React.Component {
       entryTypes = entryTypes.set(key, value);
     }
 
-    this.setState({ entryTypes });
+    this.setState(prevState => ({
+      entryTypes: prevState.entryTypes.merge(entryTypes),
+    }));
   }
 
   checkEntry(input) {
