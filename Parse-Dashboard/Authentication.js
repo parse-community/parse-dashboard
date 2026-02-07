@@ -1,9 +1,13 @@
 'use strict';
 const bcrypt = require('bcryptjs');
-const csrf = require('csurf');
+const { csrfSync } = require('csrf-sync');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const OTPAuth = require('otpauth')
+
+const { csrfSynchronisedProtection } = csrfSync({
+  getTokenFromRequest: (req) => req.body._csrf || req.headers['x-csrf-token'],
+});
 
 /**
  * Constructor for Authentication class
@@ -81,7 +85,7 @@ function initialize(app, options) {
   app.use(passport.session());
 
   app.post('/login',
-    csrf(),
+    csrfSynchronisedProtection,
     (req,res,next) => {
       let redirect = 'apps';
       let originalRedirect = null;
@@ -176,5 +180,6 @@ function authenticate(userToTest, usernameOnly) {
 
 Authentication.prototype.initialize = initialize;
 Authentication.prototype.authenticate = authenticate;
+Authentication.csrfProtection = csrfSynchronisedProtection;
 
 module.exports = Authentication;

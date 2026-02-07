@@ -2,7 +2,6 @@
 
 const express = require('express');
 const path = require('path');
-const csrf = require('csurf');
 const Authentication = require('./Authentication.js');
 const fs = require('fs');
 const ConfigKeyCache = require('./configKeyCache.js');
@@ -1065,7 +1064,7 @@ You have direct access to the Parse database through function calls, so you can 
       }
     }
 
-    app.get('/login', csrf(), function(req, res) {
+    app.get('/login', Authentication.csrfProtection, function(req, res) {
       let redirectURL = null;
       try {
         const url = new URL(req.url, 'http://localhost');
