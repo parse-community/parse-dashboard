@@ -289,8 +289,8 @@ class Browser extends DashboardView {
     this.handleAddToArrayConfig = this.handleAddToArrayConfig.bind(this);
     this.handleConfirmAddToConfig = this.handleConfirmAddToConfig.bind(this);
 
-    // Handle for the ongoing info panel cloud function request
-    this.currentInfoPanelQuery = null;
+    // Map of objectId -> promise for ongoing info panel cloud function requests
+    this.infoPanelQueries = {};
 
     this.dataBrowserRef = React.createRef();
 
@@ -382,10 +382,8 @@ class Browser extends DashboardView {
     if (this.currentQuery) {
       this.currentQuery.cancel();
     }
-    if (this.currentInfoPanelQuery) {
-      this.currentInfoPanelQuery.cancel?.();
-      this.currentInfoPanelQuery = null;
-    }
+    Object.values(this.infoPanelQueries).forEach(q => q.cancel?.());
+    this.infoPanelQueries = {};
     this.removeLocation();
     window.removeEventListener('mouseup', this.onMouseUpRowCheckBox);
   }
@@ -447,9 +445,10 @@ class Browser extends DashboardView {
   }
 
   fetchAggregationPanelData(objectId, className, appId) {
-    if (this.currentInfoPanelQuery) {
-      this.currentInfoPanelQuery.cancel?.();
-      this.currentInfoPanelQuery = null;
+    // Cancel any existing request for this specific objectId
+    if (this.infoPanelQueries[objectId]) {
+      this.infoPanelQueries[objectId].cancel?.();
+      delete this.infoPanelQueries[objectId];
     }
 
     this.setState({
@@ -472,14 +471,14 @@ class Browser extends DashboardView {
 
     const promise = Parse.Cloud.run(cloudCodeFunction, params, options);
     promise.cancel = () => requestTask?.abort();
-    this.currentInfoPanelQuery = promise;
+    this.infoPanelQueries[objectId] = promise;
     promise.then(
       result => {
-        if (this.currentInfoPanelQuery !== promise) {
+        if (this.infoPanelQueries[objectId] !== promise) {
           return;
         }
         if (result && result.panel && result.panel && result.panel.segments) {
-          this.setState({ AggregationPanelData: result, isLoadingInfoPanel: false });
+          this.setState({ AggregationPanelData: result, isLoadingInfoPanel: false, lastFetchedObjectId: objectId });
         } else {
           this.setState({
             isLoadingInfoPanel: false,
@@ -489,7 +488,7 @@ class Browser extends DashboardView {
         }
       },
       error => {
-        if (this.currentInfoPanelQuery !== promise) {
+        if (this.infoPanelQueries[objectId] !== promise) {
           return;
         }
         this.setState({
@@ -499,8 +498,8 @@ class Browser extends DashboardView {
         this.showNote(this.state.errorAggregatedData, true);
       }
     ).finally(() => {
-      if (this.currentInfoPanelQuery === promise) {
-        this.currentInfoPanelQuery = null;
+      if (this.infoPanelQueries[objectId] === promise) {
+        delete this.infoPanelQueries[objectId];
       }
     });
   }
@@ -2870,6 +2869,7 @@ class Browser extends DashboardView {
               setLoadingInfoPanel={this.setLoadingInfoPanel}
               AggregationPanelData={this.state.AggregationPanelData}
               setAggregationPanelData={this.setAggregationPanelData}
+              lastFetchedObjectId={this.state.lastFetchedObjectId}
               setErrorAggregatedData={this.setErrorAggregatedData}
               errorAggregatedData={this.state.errorAggregatedData}
               appName={this.props.params.appId}
