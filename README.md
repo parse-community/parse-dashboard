@@ -665,7 +665,9 @@ Return a `ScriptResponse` from the Cloud Function:
 Parse.Cloud.define('assignRole', async (req) => {
   return {
     __type: 'ScriptResponse',
-    payload: { someKey: 'passedThrough' },
+    payload: {
+      requestId: '123-456-789'
+    },
     form: {
       title: 'Assign Role',
       icon: 'gears',
@@ -677,7 +679,6 @@ Parse.Cloud.define('assignRole', async (req) => {
           label: 'Role',
           items: [
             { title: 'Admin', value: 'admin' },
-            { title: 'Team', value: 'moderator' },
             { title: 'User', value: 'user' }
           ]
         }
@@ -693,18 +694,11 @@ Then define the callback Cloud Function that receives the form data:
 
 ```js
 Parse.Cloud.define('assignRoleCallback', async (req) => {
-  const {
-    // Selected Parse Object (pointer)
-    object,
-    // Pass-through data from the initial response
-    payload,
-    // Form values, e.g. { role: 'admin' }
-    formData,
-    } = req.params;
+  const { object, payload, formData } = req.params;
   const role = formData.role;
   object.set('role', role);
   await object.save(null, { useMasterKey: true });
-  return `Assigned role "${role}" to ${object.id}.`;
+  return `Assigned role "${role}" to ${object.id} (request ${payload.requestId}).`;
 }, {
   requireMaster: true
 });
