@@ -479,20 +479,8 @@ export default class DataBrowser extends React.Component {
       }
     }
 
-    if (
-      this.state.current === null &&
-      this.state.selectedObjectId !== undefined &&
-      prevState.selectedObjectId !== undefined
-    ) {
-      this.setState({
-        selectedObjectId: undefined,
-        showAggregatedData: true, // Keep true to show "No object selected" message
-      });
-      this.props.setAggregationPanelData({});
-      if (this.props.errorAggregatedData != {}) {
-        this.props.setErrorAggregatedData({});
-      }
-    }
+    // Note: We intentionally do NOT clear selectedObjectId when current becomes null.
+    // Clicking toolbar menus sets current=null, but the info panel should persist.
 
     if (this.state.current && this.state.current !== prevState.current) {
       if (this.state.current.col !== this.state.lastSelectedCol) {

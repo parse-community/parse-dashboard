@@ -185,7 +185,7 @@ class Browser extends DashboardView {
 
       processedScripts: 0,
 
-      reloadDataTableAfterScript: window.localStorage?.getItem('reloadDataTableAfterScript') !== 'false',
+      reloadDataTableAfterScript: window.localStorage?.getItem('reloadDataTableAfterScript') === 'true',
 
       rowCheckboxDragging: false,
       draggedRowSelection: false,

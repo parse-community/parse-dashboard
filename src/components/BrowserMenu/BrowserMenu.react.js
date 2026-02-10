@@ -145,14 +145,12 @@ export default class BrowserMenu extends React.Component {
           const estimatedSubmenuWidth = 150; // Estimate for edge detection
           const openToLeft = parentRect.right + estimatedSubmenuWidth > window.innerWidth;
           this.setState({ open: true, openToLeft });
-          this.props.setCurrent?.(null);
           // Notify parent that this submenu is now open (to close sibling submenus)
           this.props.onSubmenuOpen?.(this.props.childKey);
         };
       } else {
         entryEvents.onClick = () => {
           this.setState({ open: true, openToLeft: false });
-          this.props.setCurrent(null);
         };
       }
     }

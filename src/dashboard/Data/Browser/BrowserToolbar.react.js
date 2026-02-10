@@ -642,7 +642,7 @@ const BrowserToolbar = ({
                   className="menuCheck"
                 />
               )}
-              Reload data table after script run
+              Reload all rows after run
             </span>
           }
           onClick={() => toggleReloadDataTableAfterScript()}
