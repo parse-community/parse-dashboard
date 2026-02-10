@@ -89,6 +89,8 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
       - [Prefetching](#prefetching)
     - [Scripts](#scripts)
       - [Script Response Form](#script-response-form)
+        - [Response Fields](#response-fields)
+        - [Form Elements](#form-elements)
     - [Graph](#graph)
       - [Calculated Values](#calculated-values)
       - [Formula Operator](#formula-operator)
@@ -1530,7 +1532,7 @@ Parse.Cloud.define('assignRoleCallback', async (req) => {
 });
 ```
 
-**Response fields:**
+##### Response Fields
 
 | Field | Type | Optional | Default | Description |
 |---|---|---|---|---|
@@ -1541,11 +1543,16 @@ Parse.Cloud.define('assignRoleCallback', async (req) => {
 | `form.cloudCodeFunction` | `String` | Yes | Script `cloudCodeFunction` | The callback Cloud Function to invoke on form submission. |
 | `form.elements` | `Array` | No | - | The form elements to display in the modal. |
 
-**Supported form elements:**
+##### Form Elements
 
-| Element | Fields | Description |
-|---|---|---|
-| `dropDown` | `name`, `label`, `items` | A dropdown menu. Each item has a `title` (display text) and `value`. |
+| Property | Type | Optional | Description |
+|------|---|---|---|
+| `dropDown` | - |  - | A dropdown menu. |
+|  `dropDown.name` | `String` | No | The unique field name used to identify this element in the form submission. |
+|  `dropDown.label` | `String` | No | The display label shown above the dropdown. |
+|  `dropDown.items` | `Array` | No | The selectable options. |
+|  `dropDown.items[].title` | `String` | No | The display text of the option. |
+|  `dropDown.items[].value` | `String` | No | The value of the option. |
 
 > [!NOTE]
 > When executing a script on multiple selected rows, the Cloud Function is called for the first object. If the response is a `ScriptResponse`, the modal is shown once. On submission, the callback Cloud Function is called for all selected objects.
