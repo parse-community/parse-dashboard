@@ -2185,9 +2185,10 @@ class Browser extends DashboardView {
     this.setState({ scriptResponseModal: null });
   }
 
-  async confirmScriptResponseModal(formData) {
+  confirmScriptResponseModal(formData) {
     const { form, payload, className, objectIds } = this.state.scriptResponseModal;
-    await executeScriptCallback(
+    this.setState({ scriptResponseModal: null, selection: {} });
+    executeScriptCallback(
       form.cloudCodeFunction,
       className,
       objectIds,
@@ -2197,7 +2198,6 @@ class Browser extends DashboardView {
       this.state.reloadDataTableAfterScript ? this.refresh : null,
       this.state.reloadDataTableAfterScript ? null : (ids) => this.dataBrowserRef.current?.handleRefreshObjects(ids)
     );
-    this.setState({ selection: {} });
   }
 
   async confirmExecuteScriptRows(script) {

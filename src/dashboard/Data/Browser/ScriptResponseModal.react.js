@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 import React from 'react';
-import FormModal from 'components/FormModal/FormModal.react';
+import Modal from 'components/Modal/Modal.react';
 import Field from 'components/Field/Field.react';
 import Label from 'components/Label/Label.react';
 import Dropdown from 'components/Dropdown/Dropdown.react';
@@ -29,7 +29,7 @@ export default class ScriptResponseModal extends React.Component {
   }
 
   handleConfirm() {
-    return this.props.onConfirm(this.state.formData);
+    this.props.onConfirm(this.state.formData);
   }
 
   renderElement(element, index) {
@@ -68,18 +68,17 @@ export default class ScriptResponseModal extends React.Component {
     const { form, onCancel } = this.props;
 
     return (
-      <FormModal
-        open
+      <Modal
+        type={Modal.Types.VALID}
         icon={form.icon || 'gears'}
         iconSize={40}
         title={form.title || 'Script'}
-        submitText="Submit"
-        inProgressText="Submitting\u2026"
-        onClose={onCancel}
-        onSubmit={this.handleConfirm}
+        confirmText="Submit"
+        onConfirm={this.handleConfirm}
+        onCancel={onCancel}
       >
         {(form.elements || []).map((element, index) => this.renderElement(element, index))}
-      </FormModal>
+      </Modal>
     );
   }
 }
