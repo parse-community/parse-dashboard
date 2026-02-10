@@ -2186,10 +2186,10 @@ class Browser extends DashboardView {
   }
 
   confirmScriptResponseModal(formData) {
-    const { form, payload, className, objectIds } = this.state.scriptResponseModal;
+    const { form, payload, script, className, objectIds } = this.state.scriptResponseModal;
     this.setState({ scriptResponseModal: null, selection: {} });
     executeScriptCallback(
-      form.cloudCodeFunction,
+      form.cloudCodeFunction || script.cloudCodeFunction,
       className,
       objectIds,
       payload,

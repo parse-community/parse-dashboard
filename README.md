@@ -52,6 +52,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     - [Persistent Filters](#persistent-filters)
     - [Keyboard Shortcuts](#keyboard-shortcuts)
     - [Scripts](#scripts)
+      - [Script Response Form](#script-response-form)
     - [Resource Cache](#resource-cache)
 - [Running as Express Middleware](#running-as-express-middleware)
   - [Browser Control API (Development Only)](#browser-control-api-development-only)
@@ -653,6 +654,80 @@ Parse.Cloud.define('deleteAccount', async (req) => {
 ```
 
 </details>
+
+#### Script Response Form
+
+A Cloud Function invoked by a script can return a structured response that shows a modal dialog with form elements. When the user submits the form, the values are sent to a callback Cloud Function specified in the response.
+
+Return a `ScriptResponse` from the Cloud Function:
+
+```js
+Parse.Cloud.define('assignRole', async (req) => {
+  return {
+    __type: 'ScriptResponse',
+    payload: { someKey: 'passedThrough' },
+    form: {
+      title: 'Assign Role',
+      icon: 'gears',
+      cloudCodeFunction: 'assignRoleCallback',
+      elements: [
+        {
+          element: 'dropDown',
+          name: 'role',
+          label: 'Role',
+          items: [
+            { title: 'Admin', value: 'admin' },
+            { title: 'Team', value: 'moderator' },
+            { title: 'User', value: 'user' }
+          ]
+        }
+      ]
+    }
+  };
+}, {
+  requireMaster: true
+});
+```
+
+Then define the callback Cloud Function that receives the form data:
+
+```js
+Parse.Cloud.define('assignRoleCallback', async (req) => {
+  const {
+    // Selected Parse Object (pointer)
+    object,
+    // Pass-through data from the initial response
+    payload,
+    // Form values, e.g. { role: 'admin' }
+    formData,
+    } = req.params;
+  const role = formData.role;
+  object.set('role', role);
+  await object.save(null, { useMasterKey: true });
+  return `Assigned role "${role}" to ${object.id}.`;
+}, {
+  requireMaster: true
+});
+```
+
+**Response fields:**
+
+| Field | Type | Optional | Default | Description |
+|---|---|---|---|---|
+| `__type` | `String` | No | - | Must be `"ScriptResponse"` to indicate a structured response. |
+| `payload` | `Object` | Yes | - | Pass-through data forwarded to the callback Cloud Function. |
+| `form.title` | `String` | Yes | `"Script"` | The modal title. |
+| `form.icon` | `String` | Yes | `"gears"` | The modal icon. |
+| `form.cloudCodeFunction` | `String` | Yes | Script `cloudCodeFunction` | The callback Cloud Function to invoke on form submission. |
+| `form.elements` | `Array` | No | - | The form elements to display in the modal. |
+
+**Supported form elements:**
+
+| Element | Fields | Description |
+|---|---|---|
+| `dropDown` | `name`, `label`, `items` | A dropdown menu. Each item has a `title` (display text) and `value`. |
+
+**Batch behavior:** When executing a script on multiple selected rows, the Cloud Function is called for the first object. If the response is a `ScriptResponse`, the modal is shown once. On submission, the callback Cloud Function is called for all selected objects.
 
 ### Resource Cache
 
