@@ -46,7 +46,7 @@
     "connect-flash": "0.1.1",
     "copy-to-clipboard": "3.3.3",
     "core-js": "3.48.0",
-    "csrf-sync": "4.0.3",
+    "csrf-sync": "4.2.1",
     "expr-eval-fork": "3.0.1",
     "express": "5.2.1",
     "express-session": "1.18.2",
