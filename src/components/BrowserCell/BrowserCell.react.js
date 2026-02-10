@@ -401,7 +401,8 @@ export default class BrowserCell extends Component {
       this.props.objectId,
       this.props.showNote,
       this.props.reloadDataTableAfterScript ? this.props.onRefresh : null,
-      this.props.reloadDataTableAfterScript ? null : this.props.onRefreshObjects
+      this.props.reloadDataTableAfterScript ? null : this.props.onRefreshObjects,
+      this.props.onScriptModalResponse
     );
   }
 

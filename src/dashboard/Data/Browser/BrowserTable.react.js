@@ -200,6 +200,7 @@ export default class BrowserTable extends React.Component {
                     onRefresh={this.props.onRefresh}
                     onRefreshObjects={this.props.onRefreshObjects}
                     reloadDataTableAfterScript={this.props.reloadDataTableAfterScript}
+                    onScriptModalResponse={this.props.onScriptModalResponse}
                     scripts={this.context.scripts}
                     selectedCells={this.props.selectedCells}
                     handleCellClick={this.props.handleCellClick}
@@ -387,6 +388,7 @@ export default class BrowserTable extends React.Component {
             onRefresh={this.props.onRefresh}
             onRefreshObjects={this.props.onRefreshObjects}
             reloadDataTableAfterScript={this.props.reloadDataTableAfterScript}
+            onScriptModalResponse={this.props.onScriptModalResponse}
             scripts={this.context.scripts}
             selectedCells={this.props.selectedCells}
             handleCellClick={this.props.handleCellClick}

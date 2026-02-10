@@ -187,6 +187,7 @@ export default class BrowserRow extends Component {
               onRefresh={this.props.onRefresh}
               onRefreshObjects={this.props.onRefreshObjects}
               reloadDataTableAfterScript={this.props.reloadDataTableAfterScript}
+              onScriptModalResponse={this.props.onScriptModalResponse}
               scripts={this.props.scripts}
               handleCellClick={this.props.handleCellClick}
               selectedCells={this.props.selectedCells}

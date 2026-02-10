@@ -53,6 +53,22 @@ export function getValidScripts(scripts, className, field) {
 }
 
 /**
+ * Checks if a script response is a ScriptResponse with a modal definition.
+ * Uses __type: "ScriptResponse" as a discriminator to avoid collisions
+ * with existing cloud functions that may return objects with a "modal" key.
+ * @param {*} response - The response from a cloud function
+ * @returns {boolean}
+ */
+export function isModalResponse(response) {
+  return (
+    response != null &&
+    typeof response === 'object' &&
+    response.__type === 'ScriptResponse' &&
+    response.modal != null
+  );
+}
+
+/**
  * Executes a Parse Cloud Code script
  * @param {Object} script - The script configuration
  * @param {string} className - The Parse class name
@@ -60,8 +76,9 @@ export function getValidScripts(scripts, className, field) {
  * @param {Function} showNote - Callback to show notification
  * @param {Function} onRefresh - Callback to refresh all data
  * @param {Function} onRefreshObjects - Callback to refresh specific objects by IDs
+ * @param {Function} onModalResponse - Callback when response contains a modal definition
  */
-export async function executeScript(script, className, objectId, showNote, onRefresh, onRefreshObjects) {
+export async function executeScript(script, className, objectId, showNote, onRefresh, onRefreshObjects, onModalResponse) {
   try {
     const object = Parse.Object.extend(className).createWithoutData(objectId);
     const response = await Parse.Cloud.run(
@@ -69,9 +86,28 @@ export async function executeScript(script, className, objectId, showNote, onRef
       { object: object.toPointer() },
       { useMasterKey: true }
     );
-    showNote?.(
-      response || `Ran script "${script.title}" on "${className}" object "${object.id}".`
-    );
+    console.log('[ScriptUtils] executeScript response:', JSON.stringify(response));
+    console.log('[ScriptUtils] response type:', typeof response);
+    console.log('[ScriptUtils] response.__type:', response?.__type);
+    console.log('[ScriptUtils] response.modal:', response?.modal);
+    console.log('[ScriptUtils] isModalResponse:', isModalResponse(response));
+    console.log('[ScriptUtils] onModalResponse defined:', !!onModalResponse);
+    console.log('[ScriptUtils] response keys:', response ? Object.keys(response) : 'null');
+    if (isModalResponse(response) && onModalResponse) {
+      console.log('[ScriptUtils] -> showing modal');
+      onModalResponse({
+        response,
+        script,
+        className,
+        objectIds: [objectId],
+      });
+      return;
+    }
+    console.log('[ScriptUtils] -> showing note (no modal)');
+    const note =
+      (typeof response === 'object' ? JSON.stringify(response) : response) ||
+      `Ran script "${script.title}" on "${className}" object "${object.id}".`;
+    showNote?.(note);
     if (onRefreshObjects) {
       onRefreshObjects([objectId]);
     } else {
@@ -80,5 +116,65 @@ export async function executeScript(script, className, objectId, showNote, onRef
   } catch (e) {
     showNote?.(e.message, true);
     console.error(`Could not run ${script.title}:`, e);
+  }
+}
+
+/**
+ * Executes a script callback after modal submission
+ * @param {string} cloudCodeFunction - The callback cloud function name
+ * @param {string} className - The Parse class name
+ * @param {string[]} objectIds - Array of object IDs to execute on
+ * @param {Object} payload - Pass-through payload from the initial response
+ * @param {Object} formData - Form values from the modal
+ * @param {Function} showNote - Callback to show notification
+ * @param {Function} onRefresh - Callback to refresh all data
+ * @param {Function} onRefreshObjects - Callback to refresh specific objects by IDs
+ */
+export async function executeScriptCallback(cloudCodeFunction, className, objectIds, payload, formData, showNote, onRefresh, onRefreshObjects) {
+  try {
+    const objects = objectIds.map(id =>
+      Parse.Object.extend(className).createWithoutData(id)
+    );
+
+    const results = await Promise.all(
+      objects.map(object =>
+        Parse.Cloud.run(
+          cloudCodeFunction,
+          { object: object.toPointer(), payload, formData },
+          { useMasterKey: true }
+        )
+          .then(response => ({ objectId: object.id, response }))
+          .catch(error => ({ objectId: object.id, error }))
+      )
+    );
+
+    let errorCount = 0;
+    results.forEach(({ objectId, response, error }) => {
+      if (error) {
+        errorCount++;
+        showNote?.(`Error running callback on "${objectId}": ${error.message}`, true);
+      } else {
+        const note =
+          (typeof response === 'object' ? JSON.stringify(response) : response) ||
+          `Ran callback on "${objectId}".`;
+        showNote?.(note);
+      }
+    });
+
+    if (objectIds.length > 1) {
+      showNote?.(
+        `Ran callback on ${objectIds.length} objects with ${errorCount} errors.`,
+        errorCount > 0
+      );
+    }
+
+    if (onRefreshObjects) {
+      onRefreshObjects(objectIds);
+    } else {
+      onRefresh?.();
+    }
+  } catch (e) {
+    showNote?.(e.message, true);
+    console.error(`Could not run callback ${cloudCodeFunction}:`, e);
   }
 }

@@ -1342,7 +1342,8 @@ export default class DataBrowser extends React.Component {
                   objectId,
                   this.props.showNote,
                   this.props.reloadDataTableAfterScript ? this.props.onRefresh : null,
-                  this.props.reloadDataTableAfterScript ? null : this.handleRefreshObjects
+                  this.props.reloadDataTableAfterScript ? null : this.handleRefreshObjects,
+                  this.props.onScriptModalResponse
                 );
               }
             },
@@ -2953,7 +2954,8 @@ export default class DataBrowser extends React.Component {
                 this.state.selectedScript.objectId,
                 this.props.showNote,
                 this.props.reloadDataTableAfterScript ? this.props.onRefresh : null,
-                this.props.reloadDataTableAfterScript ? null : this.handleRefreshObjects
+                this.props.reloadDataTableAfterScript ? null : this.handleRefreshObjects,
+                this.props.onScriptModalResponse
               );
               this.setState({ showScriptConfirmationDialog: false, selectedScript: null });
             }}
