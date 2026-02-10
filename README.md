@@ -51,8 +51,6 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     - [Custom order in the filter popup](#custom-order-in-the-filter-popup)
     - [Persistent Filters](#persistent-filters)
     - [Keyboard Shortcuts](#keyboard-shortcuts)
-    - [Scripts](#scripts)
-      - [Script Response Form](#script-response-form)
     - [Resource Cache](#resource-cache)
 - [Running as Express Middleware](#running-as-express-middleware)
   - [Browser Control API (Development Only)](#browser-control-api-development-only)
@@ -89,6 +87,8 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
         - [Panel Item](#panel-item)
       - [Auto-Scroll](#auto-scroll)
       - [Prefetching](#prefetching)
+    - [Scripts](#scripts)
+      - [Script Response Form](#script-response-form)
     - [Graph](#graph)
       - [Calculated Values](#calculated-values)
       - [Formula Operator](#formula-operator)
@@ -550,178 +550,6 @@ You can conveniently create a filter definition without having to write it by ha
 Configure custom keyboard shortcuts for dashboard actions in **App Settings > Keyboard Shortcuts**.
 
 Delete a shortcut key to disable the shortcut.
-
-### Scripts
-
-You can specify scripts to execute Cloud Functions with the `scripts` option:
-
-```json
-"apps": [
-  {
-    "scripts": [
-      {
-        "title": "Delete Account",
-        "classes": ["_User"],
-        "cloudCodeFunction": "deleteAccount",
-        "showConfirmationDialog": true,
-        "confirmationDialogStyle": "critical"
-      }
-    ]
-  }
-]
-```
-
-You can also specify custom fields with the `scrips` option:
-
-```json
-"apps": [
-  {
-    "scripts": [
-      {
-        "title": "Delete account",
-        "classes": [
-          {
-            "name": "_User",
-            "fields": [
-              { "name": "createdAt", "validator": "value => value > new Date(\"2025\")" }
-            ]
-          }
-        ],
-        "cloudCodeFunction": "deleteAccount"
-      }
-    ]
-  }
-]
-
-```
-
-Next, define the Cloud Function in Parse Server that will be called. The object that has been selected in the data browser will be made available as a request parameter:
-
-```js
-Parse.Cloud.define('deleteAccount', async (req) => {
-  req.params.object.set('deleted', true);
-  await req.params.object.save(null, {useMasterKey: true});
-}, {
-  requireMaster: true
-});
-```
-
-The field which the script was invoked on can be accessed by `selectedField`:
-
-```js
-Parse.Cloud.define('deleteAccount', async (req) => {
-  if (req.params.selectedField !== 'objectId') {
-    throw new Parse.Error(Parse.Error.SCRIPT_FAILED, 'Deleting accounts is only available on the objectId field.');
-  }
-  req.params.object.set('deleted', true);
-  await req.params.object.save(null, {useMasterKey: true});
-}, {
-  requireMaster: true
-});
-```
-
-⚠️ Depending on your Parse Server version you may need to set the Parse Server option `encodeParseObjectInCloudFunction` to `true` so that the selected object in the data browser is made available in the Cloud Function as an instance of `Parse.Object`. If the option is not set, is set to `false`, or you are using an older version of Parse Server, the object is made available as a plain JavaScript object and needs to be converted from a JSON object to a `Parse.Object` instance with `req.params.object = Parse.Object.fromJSON(req.params.object);`, before you can call any `Parse.Object` properties and methods on it.
-
-For older versions of Parse Server:
-
-<details>
-<summary>Parse Server &gt;=4.4.0 &lt;6.2.0</summary>
-
-```js
-Parse.Cloud.define('deleteAccount', async (req) => {
-  req.params.object = Parse.Object.fromJSON(req.params.object);
-  req.params.object.set('deleted', true);
-  await req.params.object.save(null, {useMasterKey: true});
-}, {
-  requireMaster: true
-});
-```
-
-</details>
-
-<details>
-<summary>Parse Server &gt;=2.1.4 &lt;4.4.0</summary>
-
-```js
-Parse.Cloud.define('deleteAccount', async (req) => {
-  if (!req.master || !req.params.object) {
-    throw 'Unauthorized';
-  }
-  req.params.object = Parse.Object.fromJSON(req.params.object);
-  req.params.object.set('deleted', true);
-  await req.params.object.save(null, {useMasterKey: true});
-});
-```
-
-</details>
-
-#### Script Response Form
-
-A Cloud Function invoked by a script can return a structured response that shows a modal dialog with form elements. When the user submits the form, the values are sent to a callback Cloud Function specified in the response.
-
-Return a `ScriptResponse` from the Cloud Function:
-
-```js
-Parse.Cloud.define('assignRole', async (req) => {
-  return {
-    __type: 'ScriptResponse',
-    payload: {
-      requestId: '123-456-789'
-    },
-    form: {
-      title: 'Assign Role',
-      icon: 'gears',
-      cloudCodeFunction: 'assignRoleCallback',
-      elements: [
-        {
-          element: 'dropDown',
-          name: 'role',
-          label: 'Role',
-          items: [
-            { title: 'Admin', value: 'admin' },
-            { title: 'User', value: 'user' }
-          ]
-        }
-      ]
-    }
-  };
-}, {
-  requireMaster: true
-});
-```
-
-Then define the callback Cloud Function that receives the form data:
-
-```js
-Parse.Cloud.define('assignRoleCallback', async (req) => {
-  const { object, payload, formData } = req.params;
-  const role = formData.role;
-  object.set('role', role);
-  await object.save(null, { useMasterKey: true });
-  return `Assigned role "${role}" to ${object.id} (request ${payload.requestId}).`;
-}, {
-  requireMaster: true
-});
-```
-
-**Response fields:**
-
-| Field | Type | Optional | Default | Description |
-|---|---|---|---|---|
-| `__type` | `String` | No | - | Must be `"ScriptResponse"` to indicate a structured response. |
-| `payload` | `Object` | Yes | - | Pass-through data forwarded to the callback Cloud Function. |
-| `form.title` | `String` | Yes | `"Script"` | The modal title. |
-| `form.icon` | `String` | Yes | `"gears"` | The modal icon. |
-| `form.cloudCodeFunction` | `String` | Yes | Script `cloudCodeFunction` | The callback Cloud Function to invoke on form submission. |
-| `form.elements` | `Array` | No | - | The form elements to display in the modal. |
-
-**Supported form elements:**
-
-| Element | Fields | Description |
-|---|---|---|
-| `dropDown` | `name`, `label`, `items` | A dropdown menu. Each item has a `title` (display text) and `value`. |
-
-**Batch behavior:** When executing a script on multiple selected rows, the Cloud Function is called for the first object. If the response is a `ScriptResponse`, the modal is shown once. On submission, the callback Cloud Function is called for all selected objects.
 
 ### Resource Cache
 
@@ -1548,6 +1376,179 @@ To reduce the time for info panel data to appear, data can be prefetched.
 Prefetching is particularly useful when navigating through lists of objects. To optimize performance and avoid unnecessary data loading, prefetching is triggered only after the user has moved through 3 consecutive rows using the keyboard down-arrow key or by mouse click.
 
 When `prefetchObjects` is enabled, media content (images, videos, and audio) in the info panel can also be prefetched to improve loading performance. By default, all media types are prefetched, but you can selectively disable prefetching for specific media types using the `prefetchImage`, `prefetchVideo`, and `prefetchAudio` options.
+
+### Scripts
+
+You can specify scripts to execute Cloud Functions with the `scripts` option:
+
+```json
+"apps": [
+  {
+    "scripts": [
+      {
+        "title": "Delete Account",
+        "classes": ["_User"],
+        "cloudCodeFunction": "deleteAccount",
+        "showConfirmationDialog": true,
+        "confirmationDialogStyle": "critical"
+      }
+    ]
+  }
+]
+```
+
+You can also specify custom fields with the `scrips` option:
+
+```json
+"apps": [
+  {
+    "scripts": [
+      {
+        "title": "Delete account",
+        "classes": [
+          {
+            "name": "_User",
+            "fields": [
+              { "name": "createdAt", "validator": "value => value > new Date(\"2025\")" }
+            ]
+          }
+        ],
+        "cloudCodeFunction": "deleteAccount"
+      }
+    ]
+  }
+]
+
+```
+
+Next, define the Cloud Function in Parse Server that will be called. The object that has been selected in the data browser will be made available as a request parameter:
+
+```js
+Parse.Cloud.define('deleteAccount', async (req) => {
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+}, {
+  requireMaster: true
+});
+```
+
+The field which the script was invoked on can be accessed by `selectedField`:
+
+```js
+Parse.Cloud.define('deleteAccount', async (req) => {
+  if (req.params.selectedField !== 'objectId') {
+    throw new Parse.Error(Parse.Error.SCRIPT_FAILED, 'Deleting accounts is only available on the objectId field.');
+  }
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+}, {
+  requireMaster: true
+});
+```
+
+⚠️ Depending on your Parse Server version you may need to set the Parse Server option `encodeParseObjectInCloudFunction` to `true` so that the selected object in the data browser is made available in the Cloud Function as an instance of `Parse.Object`. If the option is not set, is set to `false`, or you are using an older version of Parse Server, the object is made available as a plain JavaScript object and needs to be converted from a JSON object to a `Parse.Object` instance with `req.params.object = Parse.Object.fromJSON(req.params.object);`, before you can call any `Parse.Object` properties and methods on it.
+
+For older versions of Parse Server:
+
+<details>
+<summary>Parse Server &gt;=4.4.0 &lt;6.2.0</summary>
+
+```js
+Parse.Cloud.define('deleteAccount', async (req) => {
+  req.params.object = Parse.Object.fromJSON(req.params.object);
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+}, {
+  requireMaster: true
+});
+```
+
+</details>
+
+<details>
+<summary>Parse Server &gt;=2.1.4 &lt;4.4.0</summary>
+
+```js
+Parse.Cloud.define('deleteAccount', async (req) => {
+  if (!req.master || !req.params.object) {
+    throw 'Unauthorized';
+  }
+  req.params.object = Parse.Object.fromJSON(req.params.object);
+  req.params.object.set('deleted', true);
+  await req.params.object.save(null, {useMasterKey: true});
+});
+```
+
+</details>
+
+#### Script Response Form
+
+A Cloud Function invoked by a script can return a structured response that shows a modal dialog with form elements. When the user submits the form, the values are sent to a callback Cloud Function specified in the response.
+
+Return a `ScriptResponse` from the Cloud Function:
+
+```js
+Parse.Cloud.define('assignRole', async (req) => {
+  return {
+    __type: 'ScriptResponse',
+    payload: {
+      requestId: '123-456-789'
+    },
+    form: {
+      title: 'Assign Role',
+      icon: 'gears',
+      cloudCodeFunction: 'assignRoleCallback',
+      elements: [
+        {
+          element: 'dropDown',
+          name: 'role',
+          label: 'Role',
+          items: [
+            { title: 'Admin', value: 'admin' },
+            { title: 'User', value: 'user' }
+          ]
+        }
+      ]
+    }
+  };
+}, {
+  requireMaster: true
+});
+```
+
+Then define the callback Cloud Function that receives the form data:
+
+```js
+Parse.Cloud.define('assignRoleCallback', async (req) => {
+  const { object, payload, formData } = req.params;
+  const role = formData.role;
+  object.set('role', role);
+  await object.save(null, { useMasterKey: true });
+  return `Assigned role "${role}" to ${object.id} (request ${payload.requestId}).`;
+}, {
+  requireMaster: true
+});
+```
+
+**Response fields:**
+
+| Field | Type | Optional | Default | Description |
+|---|---|---|---|---|
+| `__type` | `String` | No | - | Must be `"ScriptResponse"` to indicate a structured response. |
+| `payload` | `Object` | Yes | - | Pass-through data forwarded to the callback Cloud Function. |
+| `form.title` | `String` | Yes | `"Script"` | The modal title. |
+| `form.icon` | `String` | Yes | `"gears"` | The modal icon. |
+| `form.cloudCodeFunction` | `String` | Yes | Script `cloudCodeFunction` | The callback Cloud Function to invoke on form submission. |
+| `form.elements` | `Array` | No | - | The form elements to display in the modal. |
+
+**Supported form elements:**
+
+| Element | Fields | Description |
+|---|---|---|
+| `dropDown` | `name`, `label`, `items` | A dropdown menu. Each item has a `title` (display text) and `value`. |
+
+> [!NOTE]
+> When executing a script on multiple selected rows, the Cloud Function is called for the first object. If the response is a `ScriptResponse`, the modal is shown once. On submission, the callback Cloud Function is called for all selected objects.
 
 ### Graph
 
