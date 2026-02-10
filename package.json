@@ -130,7 +130,7 @@
     "webpack": "5.104.1",
     "webpack-cli": "6.0.1",
     "ws": "8.18.0",
-    "yaml": "2.8.0"
+    "yaml": "2.8.2"
   },
   "scripts": {
     "ci:check": "node ./ci/ciCheck.js",
