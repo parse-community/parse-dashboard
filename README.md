@@ -91,6 +91,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
       - [Script Response Form](#script-response-form)
         - [Response Fields](#response-fields)
         - [Form Elements](#form-elements)
+          - [Drop-Down](#drop-down)
     - [Graph](#graph)
       - [Calculated Values](#calculated-values)
       - [Formula Operator](#formula-operator)
@@ -1399,7 +1400,7 @@ You can specify scripts to execute Cloud Functions with the `scripts` option:
 ]
 ```
 
-You can also specify custom fields with the `scrips` option:
+You can also specify custom fields with the `scripts` option:
 
 ```json
 "apps": [
@@ -1532,6 +1533,9 @@ Parse.Cloud.define('assignRoleCallback', async (req) => {
 });
 ```
 
+> [!NOTE]
+> When executing a script on multiple selected rows, the Cloud Function is called for the first object. If the response is a `ScriptResponse`, the modal is shown once. On submission, the callback Cloud Function is called for all selected objects.
+
 ##### Response Fields
 
 | Field | Type | Optional | Default | Description |
@@ -1545,17 +1549,21 @@ Parse.Cloud.define('assignRoleCallback', async (req) => {
 
 ##### Form Elements
 
-| Property | Type | Optional | Description |
-|------|---|---|---|
-| `dropDown` | - |  - | A dropdown menu. |
-|  `dropDown.name` | `String` | No | The unique field name used to identify this element in the form submission. |
-|  `dropDown.label` | `String` | No | The display label shown above the dropdown. |
-|  `dropDown.items` | `Array` | No | The selectable options. |
-|  `dropDown.items[].title` | `String` | No | The display text of the option. |
-|  `dropDown.items[].value` | `String` | No | The value of the option. |
+| Parameter | Value  | Optional | Description                      |
+|-----------|--------|----------|----------------------------------|
+|  `elements` | `Array` | No | The form elements. Elements are rendered in the order they are defined. |
 
-> [!NOTE]
-> When executing a script on multiple selected rows, the Cloud Function is called for the first object. If the response is a `ScriptResponse`, the modal is shown once. On submission, the callback Cloud Function is called for all selected objects.
+###### Drop-Down
+
+A drop-down to select a single item from a list.
+
+| Parameter | Value  | Optional | Description                      |
+|-----------|--------|----------|----------------------------------|
+| `element`    | `String` | No       | Must be `"dropDown"`.         |
+| `label`     | `String` | No       | The display label shown next to the dropdown. |
+|  `items` | `Array` | No | The selectable options. |
+|  `items[].title` | `String` | No | The display text of the option. |
+|  `items[].value` | `String` | No | The value of the option. |
 
 ### Graph
 
