@@ -27,6 +27,7 @@ export default class KeyboardShortcutsSettings extends DashboardView {
       dataBrowserReloadData: '',
       dataBrowserToggleInfoPanels: '',
       dataBrowserRunScriptOnSelectedRows: '',
+      dataBrowserScrollInfoPanelsToTop: '',
       hasChanges: false,
       message: undefined,
       loading: true,
@@ -57,6 +58,7 @@ export default class KeyboardShortcutsSettings extends DashboardView {
         dataBrowserReloadData: shortcuts.dataBrowserReloadData?.key || '',
         dataBrowserToggleInfoPanels: shortcuts.dataBrowserToggleInfoPanels?.key || '',
         dataBrowserRunScriptOnSelectedRows: shortcuts.dataBrowserRunScriptOnSelectedRows?.key || '',
+        dataBrowserScrollInfoPanelsToTop: shortcuts.dataBrowserScrollInfoPanelsToTop?.key || '',
         hasChanges: false,
         loading: false,
       });
@@ -91,6 +93,7 @@ export default class KeyboardShortcutsSettings extends DashboardView {
       dataBrowserReloadData: this.state.dataBrowserReloadData ? createShortcut(this.state.dataBrowserReloadData) : null,
       dataBrowserToggleInfoPanels: this.state.dataBrowserToggleInfoPanels ? createShortcut(this.state.dataBrowserToggleInfoPanels) : null,
       dataBrowserRunScriptOnSelectedRows: this.state.dataBrowserRunScriptOnSelectedRows ? createShortcut(this.state.dataBrowserRunScriptOnSelectedRows) : null,
+      dataBrowserScrollInfoPanelsToTop: this.state.dataBrowserScrollInfoPanelsToTop ? createShortcut(this.state.dataBrowserScrollInfoPanelsToTop) : null,
     };
 
     // Validate shortcuts (only if they are set)
@@ -109,11 +112,22 @@ export default class KeyboardShortcutsSettings extends DashboardView {
       return;
     }
 
-    // Check for duplicates among shortcuts without meta modifier (only if set)
-    if (shortcuts.dataBrowserReloadData && shortcuts.dataBrowserToggleInfoPanels &&
-        shortcuts.dataBrowserReloadData.key.toLowerCase() === shortcuts.dataBrowserToggleInfoPanels.key.toLowerCase()) {
-      this.showNote('Keyboard shortcuts must be unique. Please use different keys.', true);
+    if (shortcuts.dataBrowserScrollInfoPanelsToTop && !isValidShortcut(shortcuts.dataBrowserScrollInfoPanelsToTop)) {
+      this.showNote('Invalid key for "Scroll Info Panels to Top". Please enter a valid key.', true);
       return;
+    }
+
+    // Check for duplicates among shortcuts without meta modifier (only if set)
+    const activeShortcuts = Object.entries(shortcuts)
+      .filter(([, v]) => v?.key)
+      .map(([name, v]) => [name, v.key.toLowerCase()]);
+    const seen = new Set();
+    for (const [, key] of activeShortcuts) {
+      if (seen.has(key)) {
+        this.showNote('Keyboard shortcuts must be unique. Please use different keys.', true);
+        return;
+      }
+      seen.add(key);
     }
 
     try {
@@ -226,6 +240,25 @@ export default class KeyboardShortcutsSettings extends DashboardView {
                   value={this.state.dataBrowserRunScriptOnSelectedRows}
                   disabled={this.state.loading}
                   onChange={this.handleFieldChange.bind(this, 'dataBrowserRunScriptOnSelectedRows')}
+                  onFocus={this.handleInputFocus.bind(this)}
+                  maxLength={1}
+                />
+              }
+            />
+            <Field
+              labelWidth={62}
+              label={
+                <Label
+                  text="Scroll Info Panels to Top"
+                  description={'Scrolls the info panels to the top.'}
+                />
+              }
+              input={
+                <TextInput
+                  placeholder={this.state.loading ? 'Loading...' : DEFAULT_SHORTCUTS.dataBrowserScrollInfoPanelsToTop.key}
+                  value={this.state.dataBrowserScrollInfoPanelsToTop}
+                  disabled={this.state.loading}
+                  onChange={this.handleFieldChange.bind(this, 'dataBrowserScrollInfoPanelsToTop')}
                   onFocus={this.handleInputFocus.bind(this)}
                   maxLength={1}
                 />

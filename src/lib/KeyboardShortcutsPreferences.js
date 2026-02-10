@@ -15,6 +15,7 @@ export const DEFAULT_SHORTCUTS = {
   dataBrowserReloadData: { key: 'r', ctrl: false, shift: false, alt: false, meta: false },
   dataBrowserToggleInfoPanels: { key: 'p', ctrl: false, shift: false, alt: false, meta: false },
   dataBrowserRunScriptOnSelectedRows: { key: 's', ctrl: false, shift: false, alt: false, meta: false },
+  dataBrowserScrollInfoPanelsToTop: { key: 'u', ctrl: false, shift: false, alt: false, meta: false },
 };
 
 /**

@@ -829,9 +829,33 @@ export default class DataBrowser extends React.Component {
       return;
     }
 
+    // Handle shortcuts that work regardless of cell selection
+    const shortcuts = this.state.keyboardShortcuts;
+
+    // Scroll info panels to top shortcut (only if panels are visible)
+    if (shortcuts && matchesShortcut(e, shortcuts.dataBrowserScrollInfoPanelsToTop)) {
+      if (this.state.isPanelVisible) {
+        // Scroll outer container
+        if (this.aggregationPanelRef?.current) {
+          this.aggregationPanelRef.current.scrollTop = 0;
+        }
+        // Scroll each individual panel column
+        this.panelColumnRefs.forEach((ref) => {
+          if (ref?.current) {
+            ref.current.scrollTop = 0;
+          }
+        });
+        // Pause auto-scroll with 1s resume delay
+        if (this.state.isAutoScrolling) {
+          this.pauseAutoScrollWithResume();
+        }
+        e.preventDefault();
+      }
+      return;
+    }
+
     // Handle "Run script on selected rows" shortcut
     // Only works when in editable mode (onEditSelectedRow exists) and rows are selected
-    const shortcuts = this.state.keyboardShortcuts;
     if (shortcuts && matchesShortcut(e, shortcuts.dataBrowserRunScriptOnSelectedRows)) {
       const selection = this.props.selection || {};
       const selectionLength = Object.keys(selection).length;
