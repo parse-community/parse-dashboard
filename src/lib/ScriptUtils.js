@@ -53,18 +53,18 @@ export function getValidScripts(scripts, className, field) {
 }
 
 /**
- * Checks if a script response is a ScriptResponse with a modal definition.
+ * Checks if a script response is a ScriptResponse with a form definition.
  * Uses __type: "ScriptResponse" as a discriminator to avoid collisions
- * with existing cloud functions that may return objects with a "modal" key.
+ * with existing cloud functions that may return objects with a "form" key.
  * @param {*} response - The response from a cloud function
  * @returns {boolean}
  */
-export function isModalResponse(response) {
+export function isFormResponse(response) {
   return (
     response != null &&
     typeof response === 'object' &&
     response.__type === 'ScriptResponse' &&
-    response.modal != null
+    response.form != null
   );
 }
 
@@ -76,9 +76,9 @@ export function isModalResponse(response) {
  * @param {Function} showNote - Callback to show notification
  * @param {Function} onRefresh - Callback to refresh all data
  * @param {Function} onRefreshObjects - Callback to refresh specific objects by IDs
- * @param {Function} onModalResponse - Callback when response contains a modal definition
+ * @param {Function} onFormResponse - Callback when response contains a form definition
  */
-export async function executeScript(script, className, objectId, showNote, onRefresh, onRefreshObjects, onModalResponse) {
+export async function executeScript(script, className, objectId, showNote, onRefresh, onRefreshObjects, onFormResponse) {
   try {
     const object = Parse.Object.extend(className).createWithoutData(objectId);
     const response = await Parse.Cloud.run(
@@ -86,16 +86,8 @@ export async function executeScript(script, className, objectId, showNote, onRef
       { object: object.toPointer() },
       { useMasterKey: true }
     );
-    console.log('[ScriptUtils] executeScript response:', JSON.stringify(response));
-    console.log('[ScriptUtils] response type:', typeof response);
-    console.log('[ScriptUtils] response.__type:', response?.__type);
-    console.log('[ScriptUtils] response.modal:', response?.modal);
-    console.log('[ScriptUtils] isModalResponse:', isModalResponse(response));
-    console.log('[ScriptUtils] onModalResponse defined:', !!onModalResponse);
-    console.log('[ScriptUtils] response keys:', response ? Object.keys(response) : 'null');
-    if (isModalResponse(response) && onModalResponse) {
-      console.log('[ScriptUtils] -> showing modal');
-      onModalResponse({
+    if (isFormResponse(response) && onFormResponse) {
+      onFormResponse({
         response,
         script,
         className,
@@ -103,7 +95,6 @@ export async function executeScript(script, className, objectId, showNote, onRef
       });
       return;
     }
-    console.log('[ScriptUtils] -> showing note (no modal)');
     const note =
       (typeof response === 'object' ? JSON.stringify(response) : response) ||
       `Ran script "${script.title}" on "${className}" object "${object.id}".`;
@@ -120,7 +111,7 @@ export async function executeScript(script, className, objectId, showNote, onRef
 }
 
 /**
- * Executes a script callback after modal submission
+ * Executes a script callback after form submission
  * @param {string} cloudCodeFunction - The callback cloud function name
  * @param {string} className - The Parse class name
  * @param {string[]} objectIds - Array of object IDs to execute on

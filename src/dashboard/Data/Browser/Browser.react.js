@@ -44,7 +44,7 @@ import subscribeTo from 'lib/subscribeTo';
 import { withRouter } from 'lib/withRouter';
 import FilterPreferencesManager from 'lib/FilterPreferencesManager';
 import { prefersServerStorage } from 'lib/StoragePreferences';
-import { isModalResponse, executeScriptCallback } from 'lib/ScriptUtils';
+import { isFormResponse, executeScriptCallback } from 'lib/ScriptUtils';
 import Parse from 'parse';
 import React from 'react';
 import { Helmet } from 'react-helmet';
@@ -2172,7 +2172,7 @@ class Browser extends DashboardView {
     this.setState({
       showExecuteScriptRowsDialog: false,
       scriptResponseModal: {
-        modal: response.modal,
+        form: response.form,
         payload: response.payload,
         script,
         className,
@@ -2186,9 +2186,9 @@ class Browser extends DashboardView {
   }
 
   async confirmScriptResponseModal(formData) {
-    const { modal, payload, className, objectIds } = this.state.scriptResponseModal;
+    const { form, payload, className, objectIds } = this.state.scriptResponseModal;
     await executeScriptCallback(
-      modal.cloudCodeFunction,
+      form.cloudCodeFunction,
       className,
       objectIds,
       payload,
@@ -2214,7 +2214,7 @@ class Browser extends DashboardView {
         { useMasterKey: true }
       ).catch(error => ({ __probeError: error }));
 
-      if (isModalResponse(probeResponse)) {
+      if (isFormResponse(probeResponse)) {
         this.handleScriptModalResponse({
           response: probeResponse,
           script,
@@ -3157,7 +3157,7 @@ class Browser extends DashboardView {
     } else if (this.state.scriptResponseModal) {
       extras = (
         <ScriptResponseModal
-          modal={this.state.scriptResponseModal.modal}
+          form={this.state.scriptResponseModal.form}
           onCancel={this.cancelScriptResponseModal}
           onConfirm={this.confirmScriptResponseModal}
         />

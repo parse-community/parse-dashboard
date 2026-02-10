@@ -17,7 +17,7 @@ export default class ScriptResponseModal extends React.Component {
     super(props);
 
     const formData = {};
-    (props.modal?.elements || []).forEach((element, index) => {
+    (props.form?.elements || []).forEach((element, index) => {
       const key = element.name || String(index);
       if (element.element === 'dropDown' && element.items?.length > 0) {
         formData[key] = element.items[0].value;
@@ -65,20 +65,20 @@ export default class ScriptResponseModal extends React.Component {
   }
 
   render() {
-    const { modal, onCancel } = this.props;
+    const { form, onCancel } = this.props;
 
     return (
       <FormModal
         open
-        icon={modal.icon || 'gears'}
+        icon={form.icon || 'gears'}
         iconSize={40}
-        title={modal.title || 'Script'}
+        title={form.title || 'Script'}
         submitText="Submit"
         inProgressText="Submitting\u2026"
         onClose={onCancel}
         onSubmit={this.handleConfirm}
       >
-        {(modal.elements || []).map((element, index) => this.renderElement(element, index))}
+        {(form.elements || []).map((element, index) => this.renderElement(element, index))}
       </FormModal>
     );
   }
