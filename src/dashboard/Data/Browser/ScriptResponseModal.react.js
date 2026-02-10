@@ -65,7 +65,10 @@ export default class ScriptResponseModal extends React.Component {
   }
 
   render() {
-    const { form, onCancel } = this.props;
+    const { form, objectIds, onCancel } = this.props;
+    const subtitle = objectIds.length === 1
+      ? `Running on object ${objectIds[0]}`
+      : `Running on ${objectIds.length} objects`;
 
     return (
       <Modal
@@ -73,6 +76,7 @@ export default class ScriptResponseModal extends React.Component {
         icon={form.icon || 'gears'}
         iconSize={40}
         title={form.title || 'Script'}
+        subtitle={subtitle}
         confirmText="Submit"
         onConfirm={this.handleConfirm}
         onCancel={onCancel}

@@ -17,6 +17,15 @@ export default class FormModal extends React.Component {
       errorMessage: '',
       inProgress: false,
     };
+    this._isMounted = false;
+  }
+
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {
@@ -55,13 +64,17 @@ export default class FormModal extends React.Component {
               onClose();
               clearFields();
               onSuccess(result);
-              this.setState({ inProgress: false });
+              if (this._isMounted) {
+                this.setState({ inProgress: false });
+              }
             })
             .catch(({ message, error, notice, errors = [] }) => {
-              this.setState({
-                errorMessage: errors.join(' ') || message || error || notice || 'An error occurred',
-                inProgress: false,
-              });
+              if (this._isMounted) {
+                this.setState({
+                  errorMessage: errors.join(' ') || message || error || notice || 'An error occurred',
+                  inProgress: false,
+                });
+              }
             });
         }}
         onCancel={() => {

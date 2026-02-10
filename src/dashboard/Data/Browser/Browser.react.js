@@ -3144,6 +3144,15 @@ class Browser extends DashboardView {
           onConfirm={this.confirmAttachSelectedRows}
         />
       );
+    } else if (this.state.scriptResponseModal) {
+      extras = (
+        <ScriptResponseModal
+          form={this.state.scriptResponseModal.form}
+          objectIds={this.state.scriptResponseModal.objectIds}
+          onCancel={this.cancelScriptResponseModal}
+          onConfirm={this.confirmScriptResponseModal}
+        />
+      );
     } else if (this.state.showExecuteScriptRowsDialog) {
       extras = (
         <ExecuteScriptRowsDialog
@@ -3152,14 +3161,6 @@ class Browser extends DashboardView {
           onCancel={this.cancelExecuteScriptRowsDialog}
           onConfirm={this.confirmExecuteScriptRows}
           processedScripts={this.state.processedScripts}
-        />
-      );
-    } else if (this.state.scriptResponseModal) {
-      extras = (
-        <ScriptResponseModal
-          form={this.state.scriptResponseModal.form}
-          onCancel={this.cancelScriptResponseModal}
-          onConfirm={this.confirmScriptResponseModal}
         />
       );
     } else if (this.state.showCloneSelectedRowsDialog) {
