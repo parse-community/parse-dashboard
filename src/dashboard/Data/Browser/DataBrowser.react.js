@@ -709,7 +709,11 @@ export default class DataBrowser extends React.Component {
     this._skipPanelClear = true;
 
     // Refresh the table data for just these objects
-    await this.props.onRefreshObjects(objectIds);
+    try {
+      await this.props.onRefreshObjects(objectIds);
+    } finally {
+      this._skipPanelClear = false;
+    }
   }
 
   togglePanelVisibility() {
