@@ -58,9 +58,10 @@ export function getValidScripts(scripts, className, field) {
  * @param {string} className - The Parse class name
  * @param {string} objectId - The object ID
  * @param {Function} showNote - Callback to show notification
- * @param {Function} onRefresh - Callback to refresh data
+ * @param {Function} onRefresh - Callback to refresh all data
+ * @param {Function} onRefreshObjects - Callback to refresh specific objects by IDs
  */
-export async function executeScript(script, className, objectId, showNote, onRefresh) {
+export async function executeScript(script, className, objectId, showNote, onRefresh, onRefreshObjects) {
   try {
     const object = Parse.Object.extend(className).createWithoutData(objectId);
     const response = await Parse.Cloud.run(
@@ -71,7 +72,11 @@ export async function executeScript(script, className, objectId, showNote, onRef
     showNote?.(
       response || `Ran script "${script.title}" on "${className}" object "${object.id}".`
     );
-    onRefresh?.();
+    if (onRefreshObjects) {
+      onRefreshObjects([objectId]);
+    } else {
+      onRefresh?.();
+    }
   } catch (e) {
     showNote?.(e.message, true);
     console.error(`Could not run ${script.title}:`, e);

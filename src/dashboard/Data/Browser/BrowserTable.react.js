@@ -198,6 +198,8 @@ export default class BrowserTable extends React.Component {
                     markRequiredFieldRow={this.props.markRequiredFieldRow}
                     showNote={this.props.showNote}
                     onRefresh={this.props.onRefresh}
+                    onRefreshObjects={this.props.onRefreshObjects}
+                    reloadDataTableAfterScript={this.props.reloadDataTableAfterScript}
                     scripts={this.context.scripts}
                     selectedCells={this.props.selectedCells}
                     handleCellClick={this.props.handleCellClick}
@@ -383,6 +385,8 @@ export default class BrowserTable extends React.Component {
             onEditSelectedRow={this.props.onEditSelectedRow}
             showNote={this.props.showNote}
             onRefresh={this.props.onRefresh}
+            onRefreshObjects={this.props.onRefreshObjects}
+            reloadDataTableAfterScript={this.props.reloadDataTableAfterScript}
             scripts={this.context.scripts}
             selectedCells={this.props.selectedCells}
             handleCellClick={this.props.handleCellClick}

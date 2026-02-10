@@ -185,6 +185,8 @@ class Browser extends DashboardView {
 
       processedScripts: 0,
 
+      reloadDataTableAfterScript: window.localStorage?.getItem('reloadDataTableAfterScript') !== 'false',
+
       rowCheckboxDragging: false,
       draggedRowSelection: false,
 
@@ -235,6 +237,8 @@ class Browser extends DashboardView {
     this.showExecuteScriptRowsDialog = this.showExecuteScriptRowsDialog.bind(this);
     this.confirmExecuteScriptRows = this.confirmExecuteScriptRows.bind(this);
     this.cancelExecuteScriptRowsDialog = this.cancelExecuteScriptRowsDialog.bind(this);
+    this.refreshObjects = this.refreshObjects.bind(this);
+    this.toggleReloadDataTableAfterScript = this.toggleReloadDataTableAfterScript.bind(this);
     this.confirmAttachSelectedRows = this.confirmAttachSelectedRows.bind(this);
     this.cancelAttachSelectedRows = this.cancelAttachSelectedRows.bind(this);
     this.showCloneSelectedRowsDialog = this.showCloneSelectedRowsDialog.bind(this);
@@ -1229,6 +1233,34 @@ class Browser extends DashboardView {
     return true;
   }
 
+  async refreshObjects(objectIds) {
+    const { useMasterKey } = this.state;
+    const className = this.props.params.className;
+    const query = new Parse.Query(className);
+    query.containedIn('objectId', objectIds);
+    this.excludeFields(query, className);
+    try {
+      const freshObjects = await query.find({ useMasterKey });
+      const freshMap = {};
+      freshObjects.forEach(obj => {
+        freshMap[obj.id] = obj;
+      });
+      this.setState(prevState => ({
+        data: prevState.data.map(obj => freshMap[obj.id] || obj),
+      }));
+    } catch (e) {
+      this.showNote(e.message, true);
+    }
+  }
+
+  toggleReloadDataTableAfterScript() {
+    this.setState(prevState => {
+      const newValue = !prevState.reloadDataTableAfterScript;
+      window.localStorage?.setItem('reloadDataTableAfterScript', newValue);
+      return { reloadDataTableAfterScript: newValue };
+    });
+  }
+
   async fetchParseData(source, filters) {
     if (this.currentQuery) {
       this.currentQuery.cancel();
@@ -2196,10 +2228,18 @@ class Browser extends DashboardView {
           totalErrorCount > 0
         );
       }
-      this.setState(
-        { selection: {}, showExecuteScriptRowsDialog: false },
-        () => this.refresh()
-      );
+      const objectIds = objects.map(obj => obj.id);
+      if (this.state.reloadDataTableAfterScript) {
+        this.setState(
+          { selection: {}, showExecuteScriptRowsDialog: false },
+          () => this.refresh()
+        );
+      } else {
+        this.setState(
+          { selection: {}, showExecuteScriptRowsDialog: false },
+          () => this.dataBrowserRef.current?.handleRefreshObjects(objectIds)
+        );
+      }
     } catch (e) {
       this.showNote(e.message, true);
       console.log(`Could not run ${script.title}: ${e}`);
@@ -2815,6 +2855,9 @@ class Browser extends DashboardView {
               onExport={this.showExport}
               onChangeCLP={this.handleCLPChange}
               onRefresh={this.refresh}
+              onRefreshObjects={this.refreshObjects}
+              reloadDataTableAfterScript={this.state.reloadDataTableAfterScript}
+              toggleReloadDataTableAfterScript={this.toggleReloadDataTableAfterScript}
               onAttachRows={this.showAttachRowsDialog}
               onAttachSelectedRows={this.showAttachSelectedRowsDialog}
               onExecuteScriptRows={this.showExecuteScriptRowsDialog}

@@ -105,6 +105,8 @@ const BrowserToolbar = ({
   toggleGraphPanel,
   isGraphPanelVisible,
   runScriptShortcut,
+  reloadDataTableAfterScript,
+  toggleReloadDataTableAfterScript,
 }) => {
   const selectionLength = Object.keys(selection).length;
   const isPendingEditCloneRows = editCloneRows && editCloneRows.length > 0;
@@ -625,6 +627,25 @@ const BrowserToolbar = ({
           }
           onClick={() => onExecuteScriptRows(selection)}
           shortcut={runScriptShortcut}
+        />
+        <Separator />
+        <MenuItem
+          disableMouseDown={true}
+          text={
+            <span>
+              {reloadDataTableAfterScript && (
+                <Icon
+                  name="check"
+                  width={12}
+                  height={12}
+                  fill="#ffffffff"
+                  className="menuCheck"
+                />
+              )}
+              Reload data table after script run
+            </span>
+          }
+          onClick={() => toggleReloadDataTableAfterScript()}
         />
       </BrowserMenu>
       <div className={styles.toolbarSeparator} />
