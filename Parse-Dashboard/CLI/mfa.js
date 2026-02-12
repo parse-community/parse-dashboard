@@ -145,6 +145,7 @@ const showInstructions = ({ app, username, passwordCopied, encrypt, config }) =>
 
 module.exports = {
   async createUser() {
+    await loadInquirer();
     const data = {};
 
     console.log('');
@@ -214,6 +215,7 @@ module.exports = {
     showInstructions({ app: data.app, username, passwordCopied: true, encrypt, config });
   },
   async createMFA() {
+    await loadInquirer();
     console.log('');
     const { username, app } = await inquirer.prompt([
       {
