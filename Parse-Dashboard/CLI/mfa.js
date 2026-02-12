@@ -1,8 +1,11 @@
 const crypto = require('crypto');
-let inquirer = require('inquirer');
-if (inquirer.default) {
-  inquirer = inquirer.default;
-}
+let inquirer;
+const loadInquirer = async () => {
+  if (!inquirer) {
+    const mod = await import('inquirer');
+    inquirer = mod.default || mod;
+  }
+};
 const OTPAuth = require('otpauth');
 const { copy } = require('./utils.js');
 const phrases = {
@@ -11,9 +14,10 @@ const phrases = {
   enterAppName: 'Enter the app name:',
 }
 const getAlgorithm = async () => {
+  await loadInquirer();
   let { algorithm } = await inquirer.prompt([
     {
-      type: 'list',
+      type: 'select',
       name: 'algorithm',
       message: 'Which hashing algorithm do you want to use?',
       default: 'SHA1',
