@@ -29,9 +29,9 @@ module.exports = {
       const rel = path.relative(path.dirname(filename), srcDir);
       relPrefix = rel ? rel.replace(/\\/g, '/') + '/' : './';
     }
-    src = src.replace(/from 'stylesheets/g, "from '" + relPrefix + 'stylesheets');
-    src = src.replace(/from 'lib/g, "from '" + relPrefix + 'lib');
-    src = src.replace(/from 'components/g, "from '" + relPrefix + 'components');
+    src = src.replace(/from 'stylesheets/g, 'from \'' + relPrefix + 'stylesheets');
+    src = src.replace(/from 'lib/g, 'from \'' + relPrefix + 'lib');
+    src = src.replace(/from 'components/g, 'from \'' + relPrefix + 'components');
 
     // Ignore all files within node_modules
     // babel files can be .js, .es, .jsx or .es6
