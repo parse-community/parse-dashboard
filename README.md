@@ -1559,6 +1559,7 @@ A drop-down to select a single item from a list.
 | Parameter | Value  | Optional | Description                      |
 |-----------|--------|----------|----------------------------------|
 | `element`    | `String` | No       | Must be `"dropDown"`.         |
+| `name`       | `String` | No       | The key used in `formData`.   |
 | `label`     | `String` | No       | The display label shown next to the dropdown. |
 | `description` | `String` | Yes      | Secondary text below the label. |
 |  `items` | `Array` | No | The selectable options. |
