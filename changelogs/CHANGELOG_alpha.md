@@ -1,3 +1,10 @@
+# [9.0.0-alpha.2](https://github.com/parse-community/parse-dashboard/compare/9.0.0-alpha.1...9.0.0-alpha.2) (2026-02-13)
+
+
+### Bug Fixes
+
+* Non-printable character box missing when editing Cloud Config parameter ([#3218](https://github.com/parse-community/parse-dashboard/issues/3218)) ([719ac09](https://github.com/parse-community/parse-dashboard/commit/719ac0948344c8956ccc9bbf8a0242131fc01962))
+
 # [9.0.0-alpha.1](https://github.com/parse-community/parse-dashboard/compare/8.5.0...9.0.0-alpha.1) (2026-02-12)
 
 
