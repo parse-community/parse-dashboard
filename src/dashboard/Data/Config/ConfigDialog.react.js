@@ -59,22 +59,26 @@ const EDITORS = {
   ),
   Date: (value, onChange) => <DateTimeInput fixed={true} value={value} onChange={onChange} />,
   Object: (value, onChange, wordWrap, syntaxColors) => (
-    <JsonEditor
-      value={value || ''}
-      onChange={onChange}
-      placeholder={'{\n  ...\n}'}
-      wordWrap={wordWrap}
-      syntaxColors={syntaxColors}
-    />
+    <NonPrintableHighlighter value={value} isJson={true} detectNonAlphanumeric={true}>
+      <JsonEditor
+        value={value || ''}
+        onChange={onChange}
+        placeholder={'{\n  ...\n}'}
+        wordWrap={wordWrap}
+        syntaxColors={syntaxColors}
+      />
+    </NonPrintableHighlighter>
   ),
   Array: (value, onChange, wordWrap, syntaxColors) => (
-    <JsonEditor
-      value={value || ''}
-      onChange={onChange}
-      placeholder={'[\n  ...\n]'}
-      wordWrap={wordWrap}
-      syntaxColors={syntaxColors}
-    />
+    <NonPrintableHighlighter value={value} isJson={true} detectNonAlphanumeric={true}>
+      <JsonEditor
+        value={value || ''}
+        onChange={onChange}
+        placeholder={'[\n  ...\n]'}
+        wordWrap={wordWrap}
+        syntaxColors={syntaxColors}
+      />
+    </NonPrintableHighlighter>
   ),
   GeoPoint: (value, onChange) => <GeoPointInput value={value} onChange={onChange} />,
   File: (value, onChange) => (
