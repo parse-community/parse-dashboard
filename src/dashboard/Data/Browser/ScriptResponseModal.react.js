@@ -94,25 +94,25 @@ export default class ScriptResponseModal extends React.Component {
       const hasCustomLabels = element.labelTrue || element.labelFalse;
       const toggleProps = hasCustomLabels
         ? {
-            type: Toggle.Types.TWO_WAY,
-            optionLeft: element.labelFalse || 'No',
-            optionRight: element.labelTrue || 'Yes',
-            value: this.state.formData[key]
-              ? (element.labelTrue || 'Yes')
-              : (element.labelFalse || 'No'),
-            onChange: value =>
-              this.setState(prev => ({
-                formData: { ...prev.formData, [key]: value === (element.labelTrue || 'Yes') },
-              })),
-          }
+          type: Toggle.Types.TWO_WAY,
+          optionLeft: element.labelFalse || 'No',
+          optionRight: element.labelTrue || 'Yes',
+          value: this.state.formData[key]
+            ? (element.labelTrue || 'Yes')
+            : (element.labelFalse || 'No'),
+          onChange: value =>
+            this.setState(prev => ({
+              formData: { ...prev.formData, [key]: value === (element.labelTrue || 'Yes') },
+            })),
+        }
         : {
-            type: Toggle.Types.YES_NO,
-            value: this.state.formData[key],
-            onChange: value =>
-              this.setState(prev => ({
-                formData: { ...prev.formData, [key]: value },
-              })),
-          };
+          type: Toggle.Types.YES_NO,
+          value: this.state.formData[key],
+          onChange: value =>
+            this.setState(prev => ({
+              formData: { ...prev.formData, [key]: value },
+            })),
+        };
 
       return (
         <Field
