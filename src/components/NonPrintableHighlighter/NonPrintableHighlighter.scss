@@ -10,6 +10,8 @@
 .container {
   position: relative;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .warningContainer {
@@ -105,7 +107,7 @@
 
 // Info badge styles for non-alphanumeric character detection
 .infoContainer {
-  margin-top: -4px;
+  margin-top: 0;
 }
 
 .infoBadge {
