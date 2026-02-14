@@ -23,6 +23,7 @@ import { ResizableBox } from 'react-resizable';
 import ScriptConfirmationModal from '../../../components/ScriptConfirmationModal/ScriptConfirmationModal.react';
 import styles from './Databrowser.scss';
 import KeyboardShortcutsManager, { matchesShortcut } from 'lib/KeyboardShortcutsPreferences';
+import ServerConfigStorage from 'lib/ServerConfigStorage';
 
 import AggregationPanel from '../../../components/AggregationPanel/AggregationPanel';
 import { buildRelatedTextFieldsMenuItem } from '../../../lib/RelatedRecordsUtils';
@@ -40,7 +41,6 @@ const GRAPH_PANEL_VISIBLE = 'graphPanelVisible';
 const GRAPH_PANEL_WIDTH = 'graphPanelWidth';
 const AGGREGATION_PANEL_AUTO_SCROLL = 'aggregationPanelAutoScroll';
 const AGGREGATION_PANEL_AUTO_SCROLL_REQUIRE_HOVER = 'aggregationPanelAutoScrollRequireHover';
-const REVERSE_AUTO_SCROLL_SPEED_FACTOR = 0.5;
 
 function formatValueForCopy(value, type) {
   if (value === undefined) {
@@ -200,7 +200,8 @@ export default class DataBrowser extends React.Component {
       mouseOverPanelHeader: false, // Whether the mouse is over the panel header row
       commandKeyPressed: false, // Whether the Command/Meta key is currently pressed
       optionKeyPressed: false, // Whether the Option/Alt key is currently pressed (pauses auto-scroll)
-      reverseAutoScrollActive: false, // Whether Cmd+Option are both held (reverses auto-scroll at half speed)
+      reverseAutoScrollActive: false, // Whether Cmd+Option are both held (reverses auto-scroll direction)
+      reverseAutoScrollSpeedFactor: 1, // Speed multiplier for reverse auto-scroll
     };
 
     // Flag to skip panel clearing in componentDidUpdate during selective object refresh
@@ -378,6 +379,20 @@ export default class DataBrowser extends React.Component {
       this.setState({ keyboardShortcuts: shortcuts });
     } catch (error) {
       console.warn('Failed to load keyboard shortcuts:', error);
+    }
+
+    // Load data browser settings from server
+    try {
+      const serverStorage = new ServerConfigStorage(this.props.app);
+      const panelSettings = await serverStorage.getConfig(
+        'browser.panels.settings',
+        this.props.app.applicationId
+      );
+      if (panelSettings !== null && typeof panelSettings === 'object' && typeof panelSettings.reverseAutoScrollSpeedFactor === 'number' && panelSettings.reverseAutoScrollSpeedFactor > 0) {
+        this.setState({ reverseAutoScrollSpeedFactor: panelSettings.reverseAutoScrollSpeedFactor });
+      }
+    } catch (error) {
+      console.warn('Failed to load data browser settings:', error);
     }
 
     // Load graphs on initial mount
@@ -1921,7 +1936,7 @@ export default class DataBrowser extends React.Component {
     // Animate scroll smoothly using requestAnimationFrame
     let scrollAmount = this.state.autoScrollAmount;
     if (this.state.reverseAutoScrollActive) {
-      scrollAmount = -scrollAmount * REVERSE_AUTO_SCROLL_SPEED_FACTOR;
+      scrollAmount = -scrollAmount * this.state.reverseAutoScrollSpeedFactor;
     }
     // Animation duration: 300ms base, scaled by scroll amount (max 500ms)
     const duration = Math.min(300 + Math.abs(scrollAmount) * 0.5, 500);

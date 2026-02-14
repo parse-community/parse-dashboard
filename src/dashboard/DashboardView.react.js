@@ -227,6 +227,10 @@ export default class DashboardView extends React.Component {
         link: '/settings/dashboard',
       },
       {
+        name: 'Data Browser',
+        link: '/settings/data-browser',
+      },
+      {
         name: 'Cloud Config',
         link: '/settings/cloud-config',
       },
