@@ -1934,8 +1934,11 @@ export default class DataBrowser extends React.Component {
     }
 
     // Animate scroll smoothly using requestAnimationFrame
+    // Capture reverse state at step start so it stays consistent with scrollAmount
+    // throughout the animation (prevents jump if state changes mid-frame)
+    const isReversing = this.state.reverseAutoScrollActive;
     let scrollAmount = this.state.autoScrollAmount;
-    if (this.state.reverseAutoScrollActive) {
+    if (isReversing) {
       scrollAmount = -scrollAmount * this.state.reverseAutoScrollSpeedFactor;
     }
     // Animation duration: 300ms base, scaled by scroll amount (max 500ms)
@@ -1969,6 +1972,13 @@ export default class DataBrowser extends React.Component {
         return;
       }
 
+      // If reverse state changed mid-animation, restart the step immediately
+      // from the current scroll position with the correct direction
+      if (this.state.reverseAutoScrollActive !== isReversing) {
+        this.performAutoScrollStep();
+        return;
+      }
+
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
 
@@ -1981,7 +1991,7 @@ export default class DataBrowser extends React.Component {
 
       // Sync scroll to other panels
       if (this.state.panelCount > 1 && this.state.syncPanelScroll) {
-        if (this.state.reverseAutoScrollActive) {
+        if (isReversing) {
           // During reverse auto-scroll, use the max scrollTop as the base for all panels
           // so that shorter panels stay put until the longest panel catches up,
           // matching the behavior of manual wheel scrolling (handleWrapperWheel)
