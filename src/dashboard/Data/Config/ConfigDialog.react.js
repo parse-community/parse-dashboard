@@ -28,6 +28,7 @@ import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
 import ServerConfigStorage from 'lib/ServerConfigStorage';
 import { CurrentApp } from 'context/currentApp';
 
+const CONFIG_KEY = 'config.settings';
 const FORMATTING_CONFIG_KEY = 'config.formatting.syntax';
 
 const PARAM_TYPES = ['Boolean', 'String', 'Number', 'Date', 'Object', 'Array', 'GeoPoint', 'File'];
@@ -49,8 +50,8 @@ const EDITORS = {
   Boolean: (value, onChange) => (
     <Toggle type={Toggle.Types.TRUE_FALSE} value={!!value} onChange={onChange} />
   ),
-  String: (value, onChange) => (
-    <NonPrintableHighlighter value={value} detectNonAlphanumeric={true}>
+  String: (value, onChange, wordWrap, syntaxColors, options = {}) => (
+    <NonPrintableHighlighter value={value} detectNonAlphanumeric={true} detectRegex={!!options.detectRegex}>
       <TextInput multiline={true} value={value || ''} onChange={onChange} />
     </NonPrintableHighlighter>
   ),
@@ -58,8 +59,8 @@ const EDITORS = {
     <TextInput value={value || ''} onChange={numberValidator(onChange)} />
   ),
   Date: (value, onChange) => <DateTimeInput fixed={true} value={value} onChange={onChange} />,
-  Object: (value, onChange, wordWrap, syntaxColors) => (
-    <NonPrintableHighlighter value={value} isJson={true} detectNonAlphanumeric={true}>
+  Object: (value, onChange, wordWrap, syntaxColors, options = {}) => (
+    <NonPrintableHighlighter value={value} isJson={true} detectNonAlphanumeric={true} detectRegex={!!options.detectRegex}>
       <JsonEditor
         value={value || ''}
         onChange={onChange}
@@ -69,8 +70,8 @@ const EDITORS = {
       />
     </NonPrintableHighlighter>
   ),
-  Array: (value, onChange, wordWrap, syntaxColors) => (
-    <NonPrintableHighlighter value={value} isJson={true} detectNonAlphanumeric={true}>
+  Array: (value, onChange, wordWrap, syntaxColors, options = {}) => (
+    <NonPrintableHighlighter value={value} isJson={true} detectNonAlphanumeric={true} detectRegex={!!options.detectRegex}>
       <JsonEditor
         value={value || ''}
         onChange={onChange}
@@ -128,6 +129,7 @@ export default class ConfigDialog extends React.Component {
       wordWrap: false,
       error: null,
       syntaxColors: null,
+      detectRegex: false,
     };
     if (props.param.length > 0) {
       let initialValue = props.value;
@@ -144,12 +146,14 @@ export default class ConfigDialog extends React.Component {
         wordWrap: false,
         error: initialError,
         syntaxColors: null,
+        detectRegex: false,
       };
     }
   }
 
   componentDidMount() {
     this.loadSyntaxColors();
+    this.loadDetectRegexSetting();
   }
 
   async loadSyntaxColors() {
@@ -166,6 +170,23 @@ export default class ConfigDialog extends React.Component {
       }
     } catch {
       // Silently fail - use default colors from CSS
+    }
+  }
+
+  async loadDetectRegexSetting() {
+    try {
+      const serverStorage = new ServerConfigStorage(this.context);
+      if (serverStorage.isServerConfigEnabled()) {
+        const settings = await serverStorage.getConfig(
+          CONFIG_KEY,
+          this.context.applicationId
+        );
+        if (settings?.detectRegex !== undefined) {
+          this.setState({ detectRegex: !!settings.detectRegex });
+        }
+      }
+    } catch {
+      // Silently fail - keep default (false)
     }
   }
 
@@ -345,7 +366,8 @@ export default class ConfigDialog extends React.Component {
             this.state.value,
             value => this.setState({ value, error: null }),
             this.state.wordWrap,
-            this.state.syntaxColors
+            this.state.syntaxColors,
+            { detectRegex: this.state.detectRegex }
           )}
         />
 

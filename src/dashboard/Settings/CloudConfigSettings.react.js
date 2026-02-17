@@ -5,6 +5,7 @@ import Fieldset from 'components/Fieldset/Fieldset.react';
 import Label from 'components/Label/Label.react';
 import React from 'react';
 import TextInput from 'components/TextInput/TextInput.react';
+import Toggle from 'components/Toggle/Toggle.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import Notification from 'dashboard/Data/Browser/Notification.react';
 import ServerConfigStorage from 'lib/ServerConfigStorage';
@@ -35,6 +36,7 @@ export default class CloudConfigSettings extends DashboardView {
     this.state = {
       cloudConfigHistoryLimit: '',
       syntaxColors: { ...DEFAULT_SYNTAX_COLORS },
+      detectRegex: false,
       message: undefined,
       loading: true,
     };
@@ -60,6 +62,9 @@ export default class CloudConfigSettings extends DashboardView {
       if (settings) {
         if (settings.historyLimit !== undefined) {
           this.setState({ cloudConfigHistoryLimit: String(settings.historyLimit) });
+        }
+        if (settings.detectRegex !== undefined) {
+          this.setState({ detectRegex: !!settings.detectRegex });
         }
       }
 
@@ -100,6 +105,16 @@ export default class CloudConfigSettings extends DashboardView {
 
   handleCloudConfigHistoryLimitChange(value) {
     this.setState({ cloudConfigHistoryLimit: value });
+  }
+
+  async handleDetectRegexChange(value) {
+    this.setState({ detectRegex: value });
+    if (await this.saveSettings({ detectRegex: value })) {
+      this.showNote(`Regex validation display ${value ? 'enabled' : 'disabled'}.`);
+    } else {
+      this.setState({ detectRegex: !value });
+      this.showNote('Failed to save setting.', true);
+    }
   }
 
   async saveCloudConfigHistoryLimit() {
@@ -325,6 +340,29 @@ export default class CloudConfigSettings extends DashboardView {
                 disabled={!serverConfigEnabled || this.state.loading}
               />
             </div>
+          </Fieldset>
+          <Fieldset
+            legend="Value Analysis"
+            description="Configure value analysis options for the Cloud Config editor."
+          >
+            <Field
+              labelWidth={62}
+              label={
+                <Label
+                  text="Regex Validation"
+                  description="When enabled, the parameter editor shows whether string values are valid regular expression patterns. Patterns are tested with default, /u (unicode), and /v (unicodeSets) flags."
+                />
+              }
+              input={
+                <Toggle
+                  type={Toggle.Types.YES_NO}
+                  value={this.state.detectRegex}
+                  onChange={this.handleDetectRegexChange.bind(this)}
+                  disabled={!serverConfigEnabled || this.state.loading}
+                  additionalStyles={{ margin: '0px' }}
+                />
+              }
+            />
           </Fieldset>
         </div>
       </div>

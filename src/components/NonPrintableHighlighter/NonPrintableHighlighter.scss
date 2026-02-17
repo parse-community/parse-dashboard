@@ -159,3 +159,67 @@
   font-weight: 600;
   color: #1565c0;
 }
+
+// Regex validation badge styles
+.regexContainer {
+  margin-top: 0;
+}
+
+.regexBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 10px;
+  background: #e8f5e9;
+  border: 1px solid #4caf50;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: #c8e6c9;
+  }
+
+  &.expanded {
+    border-radius: 4px 4px 0 0;
+    border-bottom: 1px solid #4caf50;
+  }
+}
+
+.regexIcon {
+  color: #2e7d32;
+  font-size: 14px;
+  font-family: monospace;
+  font-weight: 700;
+}
+
+.regexText {
+  color: #2e7d32;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.regexDetailsPanel {
+  padding: 10px 12px;
+  background: #f1f8e9;
+  border: 1px solid #a5d6a7;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+}
+
+.regexLabelValid {
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+.regexLabelInvalid {
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: #d32f2f;
+}

@@ -130,6 +130,7 @@ const NON_PRINTABLE_REGEX = new RegExp(
 // Regex for non-alphanumeric characters (anything not a-z, A-Z, 0-9)
 const NON_ALPHANUMERIC_REGEX = /[^a-zA-Z0-9]/g;
 
+
 /**
  * Check if a string contains non-printable characters
  */
@@ -444,14 +445,82 @@ export function getNonPrintableCharsFromJson(jsonStr) {
 }
 
 /**
+ * Check if a string is a valid regular expression pattern
+ * Tests without flags, with 'u' (unicode), and with 'v' (unicodeSets) since some
+ * patterns are only valid with specific flags (e.g., \p{L} requires 'u') and others
+ * become invalid with 'u' (e.g., lone surrogates). The 'u' and 'v' flags are mutually
+ * exclusive with overlapping but different validity sets.
+ * Returns { isValid: boolean, requiredFlag: string | null, error: string | null }
+ * - isValid: true if the pattern is valid in at least one mode
+ * - requiredFlag: null if valid without flags, 'unicode' or 'unicodeSets' if a flag is needed
+ *   (picks the least restrictive flag: prefers unicode over unicodeSets)
+ * - error: error message if invalid in all modes, null otherwise
+ */
+export function getRegexValidation(str) {
+  if (!str || typeof str !== 'string') {
+    return { isValid: false, requiredFlag: null, error: 'Empty value' };
+  }
+
+  // Test modes in order of preference: no flags first, then /u, then /v
+  const modes = [
+    { flags: '', flag: null },
+    { flags: 'u', flag: 'unicode' },
+    { flags: 'v', flag: 'unicodeSets' },
+  ];
+
+  let lastError = null;
+
+  for (const { flags, flag } of modes) {
+    try {
+      new RegExp(str, flags);
+      return { isValid: true, requiredFlag: flag, error: null };
+    } catch (e) {
+      lastError = e.message;
+    }
+  }
+
+  return { isValid: false, requiredFlag: null, error: lastError };
+}
+
+/**
+ * Check regex validity for all string values within a parsed JSON object/array
+ * Returns { results: [{ path, value, isValid, error }] }
+ * Only includes string values; non-string values are skipped.
+ */
+export function getRegexValidationFromJson(jsonStr) {
+  if (!jsonStr || typeof jsonStr !== 'string') {
+    return { results: [] };
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(jsonStr);
+  } catch {
+    return { results: [] };
+  }
+
+  const stringValuesWithPaths = extractStringValuesWithPaths(parsed);
+  const results = [];
+
+  for (const { value, path } of stringValuesWithPaths) {
+    const { isValid, requiredFlag, error } = getRegexValidation(value);
+    results.push({ path, value, isValid, requiredFlag, error });
+  }
+
+  return { results };
+}
+
+/**
  * NonPrintableHighlighter component
  * Displays a warning indicator when non-printable characters are detected in the value
  * Optionally displays an info indicator when non-alphanumeric characters are detected
+ * Optionally displays a regex validation indicator when detectRegex is enabled
  *
  * Props:
  * - value: The string value to check
  * - isJson: If true, only check string values within the parsed JSON (for Array/Object types)
  * - detectNonAlphanumeric: If true, also detect and display non-alphanumeric characters
+ * - detectRegex: If true, detect and display regex validation status for string values
  * - children: The input element to wrap
  */
 export default class NonPrintableHighlighter extends React.Component {
@@ -460,11 +529,12 @@ export default class NonPrintableHighlighter extends React.Component {
     this.state = {
       showDetails: false,
       showNonAlphanumericDetails: false,
+      showRegexDetails: false,
     };
   }
 
   render() {
-    const { value, children, isJson, detectNonAlphanumeric } = this.props;
+    const { value, children, isJson, detectNonAlphanumeric, detectRegex } = this.props;
     const { totalCount, chars } = isJson
       ? getNonPrintableCharsFromJson(value)
       : getNonPrintableChars(value);
@@ -475,6 +545,27 @@ export default class NonPrintableHighlighter extends React.Component {
       ? (isJson ? getNonAlphanumericCharsFromJson(value) : getNonAlphanumericChars(value))
       : { totalCount: 0, chars: [] };
     const hasNonAlphanumeric = nonAlphanumericResult.totalCount > 0;
+
+    // Get regex validation if detection is enabled
+    const regexResult = detectRegex
+      ? (isJson
+        ? getRegexValidationFromJson(value)
+        : (value && typeof value === 'string'
+          ? { results: [{ path: null, value, ...getRegexValidation(value) }] }
+          : { results: [] }))
+      : { results: [] };
+    const hasRegexResults = regexResult.results.length > 0;
+    const requiredFlags = hasRegexResults
+      ? [...new Set(regexResult.results
+        .filter(r => r.isValid && r.requiredFlag)
+        .map(r => r.requiredFlag))]
+      : [];
+    const invalidCount = hasRegexResults
+      ? regexResult.results.filter(r => !r.isValid).length
+      : 0;
+    const regexNotes = [
+      ...(requiredFlags.length > 0 ? [`${requiredFlags.join(', ')}`] : []),
+    ];
 
     return (
       <div className={styles.container}>
@@ -545,6 +636,46 @@ export default class NonPrintableHighlighter extends React.Component {
                         <span className={styles.charPositions}>
                           in {locations.length <= 3 ? locations.join(', ') : `${locations.slice(0, 3).join(', ')}...`}
                         </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+        {hasRegexResults && (
+          <div className={styles.regexContainer}>
+            <div
+              className={`${styles.regexBadge} ${this.state.showRegexDetails ? styles.expanded : ''}`}
+              onClick={() => this.setState({ showRegexDetails: !this.state.showRegexDetails })}
+              title="Click for details"
+            >
+              <span className={styles.regexIcon}>ℛ</span>
+              <span className={styles.regexText}>
+                <span className={invalidCount > 0 ? styles.regexLabelInvalid : undefined}>
+                  {isJson
+                    ? `${regexResult.results.filter(r => r.isValid).length}/${regexResult.results.length} valid regex pattern${regexResult.results.length > 1 ? 's' : ''}`
+                    : (regexResult.results[0].isValid ? 'Valid regex pattern' : 'Invalid regex pattern')
+                  }
+                </span>
+                {regexNotes.length > 0 && ` (${regexNotes.join(', ')})`}
+              </span>
+            </div>
+            {this.state.showRegexDetails && (
+              <div className={styles.regexDetailsPanel}>
+                <div className={styles.charList}>
+                  {regexResult.results.map(({ path, isValid, requiredFlag, error }, i) => (
+                    <div key={i} className={styles.charItem}>
+                      {path && <span className={styles.charCode}>{path}</span>}
+                      <span className={isValid ? styles.regexLabelValid : styles.regexLabelInvalid}>
+                        {isValid ? 'Valid' : 'Invalid'}
+                      </span>
+                      {isValid && requiredFlag && (
+                        <span className={styles.charPositions}>{requiredFlag}</span>
+                      )}
+                      {!isValid && error && (
+                        <span className={styles.charPositions}>{error}</span>
                       )}
                     </div>
                   ))}
