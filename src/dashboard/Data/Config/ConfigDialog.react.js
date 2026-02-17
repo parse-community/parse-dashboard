@@ -155,7 +155,7 @@ export default class ConfigDialog extends React.Component {
 
   componentDidMount() {
     this.loadSyntaxColors();
-    this.loadDetectRegexSetting();
+    this.loadValueAnalysisSettings();
   }
 
   async loadSyntaxColors() {
@@ -175,7 +175,7 @@ export default class ConfigDialog extends React.Component {
     }
   }
 
-  async loadDetectRegexSetting() {
+  async loadValueAnalysisSettings() {
     try {
       const serverStorage = new ServerConfigStorage(this.context);
       if (serverStorage.isServerConfigEnabled()) {
@@ -191,7 +191,7 @@ export default class ConfigDialog extends React.Component {
         }
       }
     } catch {
-      // Silently fail - keep default (false)
+      // Silently fail - keep defaults (true)
     }
   }
 
