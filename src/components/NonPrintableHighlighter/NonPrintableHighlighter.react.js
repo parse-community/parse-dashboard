@@ -519,6 +519,7 @@ export function getRegexValidationFromJson(jsonStr) {
  * Props:
  * - value: The string value to check
  * - isJson: If true, only check string values within the parsed JSON (for Array/Object types)
+ * - detectNonPrintable: If true, detect and display non-printable characters
  * - detectNonAlphanumeric: If true, also detect and display non-alphanumeric characters
  * - detectRegex: If true, detect and display regex validation status for string values
  * - children: The input element to wrap
@@ -534,10 +535,10 @@ export default class NonPrintableHighlighter extends React.Component {
   }
 
   render() {
-    const { value, children, isJson, detectNonAlphanumeric, detectRegex } = this.props;
-    const { totalCount, chars } = isJson
-      ? getNonPrintableCharsFromJson(value)
-      : getNonPrintableChars(value);
+    const { value, children, isJson, detectNonPrintable, detectNonAlphanumeric, detectRegex } = this.props;
+    const { totalCount, chars } = detectNonPrintable
+      ? (isJson ? getNonPrintableCharsFromJson(value) : getNonPrintableChars(value))
+      : { totalCount: 0, chars: [] };
     const hasNonPrintable = totalCount > 0;
 
     // Get non-alphanumeric characters if detection is enabled

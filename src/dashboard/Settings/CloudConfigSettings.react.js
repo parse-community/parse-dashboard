@@ -36,7 +36,8 @@ export default class CloudConfigSettings extends DashboardView {
     this.state = {
       cloudConfigHistoryLimit: '',
       syntaxColors: { ...DEFAULT_SYNTAX_COLORS },
-      detectRegex: false,
+      detectNonPrintable: true,
+      detectRegex: true,
       message: undefined,
       loading: true,
     };
@@ -62,6 +63,9 @@ export default class CloudConfigSettings extends DashboardView {
       if (settings) {
         if (settings.historyLimit !== undefined) {
           this.setState({ cloudConfigHistoryLimit: String(settings.historyLimit) });
+        }
+        if (settings.detectNonPrintable !== undefined) {
+          this.setState({ detectNonPrintable: !!settings.detectNonPrintable });
         }
         if (settings.detectRegex !== undefined) {
           this.setState({ detectRegex: !!settings.detectRegex });
@@ -107,9 +111,21 @@ export default class CloudConfigSettings extends DashboardView {
     this.setState({ cloudConfigHistoryLimit: value });
   }
 
+  async handleDetectNonPrintableChange(value) {
+    this.setState({ detectNonPrintable: value });
+    // Don't store default value (true) on server
+    if (await this.saveSettings({ detectNonPrintable: value === true ? undefined : value })) {
+      this.showNote(`Non-printable character detection ${value ? 'enabled' : 'disabled'}.`);
+    } else {
+      this.setState({ detectNonPrintable: !value });
+      this.showNote('Failed to save setting.', true);
+    }
+  }
+
   async handleDetectRegexChange(value) {
     this.setState({ detectRegex: value });
-    if (await this.saveSettings({ detectRegex: value })) {
+    // Don't store default value (true) on server
+    if (await this.saveSettings({ detectRegex: value === true ? undefined : value })) {
       this.showNote(`Regex validation display ${value ? 'enabled' : 'disabled'}.`);
     } else {
       this.setState({ detectRegex: !value });
@@ -290,6 +306,47 @@ export default class CloudConfigSettings extends DashboardView {
             />
           </Fieldset>
           <Fieldset
+            legend="Value Analysis"
+            description="Configure value analysis options for the Cloud Config editor."
+          >
+            <Field
+              labelWidth={62}
+              label={
+                <Label
+                  text="Non-Printable Characters"
+                  description="When enabled, the parameter editor highlights non-printable characters such as zero-width spaces and control characters."
+                />
+              }
+              input={
+                <Toggle
+                  type={Toggle.Types.YES_NO}
+                  value={this.state.detectNonPrintable}
+                  onChange={this.handleDetectNonPrintableChange.bind(this)}
+                  disabled={!serverConfigEnabled || this.state.loading}
+                  additionalStyles={{ margin: '0px' }}
+                />
+              }
+            />
+            <Field
+              labelWidth={62}
+              label={
+                <Label
+                  text="Regex Validation"
+                  description="When enabled, the parameter editor shows whether string values are valid regular expression patterns. Patterns are tested with default, /u (unicode), and /v (unicodeSets) flags."
+                />
+              }
+              input={
+                <Toggle
+                  type={Toggle.Types.YES_NO}
+                  value={this.state.detectRegex}
+                  onChange={this.handleDetectRegexChange.bind(this)}
+                  disabled={!serverConfigEnabled || this.state.loading}
+                  additionalStyles={{ margin: '0px' }}
+                />
+              }
+            />
+          </Fieldset>
+          <Fieldset
             legend="Formatting"
             description="Customize JSON syntax highlighting colors for the Cloud Config editor."
           >
@@ -340,29 +397,6 @@ export default class CloudConfigSettings extends DashboardView {
                 disabled={!serverConfigEnabled || this.state.loading}
               />
             </div>
-          </Fieldset>
-          <Fieldset
-            legend="Value Analysis"
-            description="Configure value analysis options for the Cloud Config editor."
-          >
-            <Field
-              labelWidth={62}
-              label={
-                <Label
-                  text="Regex Validation"
-                  description="When enabled, the parameter editor shows whether string values are valid regular expression patterns. Patterns are tested with default, /u (unicode), and /v (unicodeSets) flags."
-                />
-              }
-              input={
-                <Toggle
-                  type={Toggle.Types.YES_NO}
-                  value={this.state.detectRegex}
-                  onChange={this.handleDetectRegexChange.bind(this)}
-                  disabled={!serverConfigEnabled || this.state.loading}
-                  additionalStyles={{ margin: '0px' }}
-                />
-              }
-            />
           </Fieldset>
         </div>
       </div>

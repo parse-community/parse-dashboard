@@ -51,7 +51,7 @@ const EDITORS = {
     <Toggle type={Toggle.Types.TRUE_FALSE} value={!!value} onChange={onChange} />
   ),
   String: (value, onChange, wordWrap, syntaxColors, options = {}) => (
-    <NonPrintableHighlighter value={value} detectNonAlphanumeric={true} detectRegex={!!options.detectRegex}>
+    <NonPrintableHighlighter value={value} detectNonPrintable={!!options.detectNonPrintable} detectNonAlphanumeric={true} detectRegex={!!options.detectRegex}>
       <TextInput multiline={true} value={value || ''} onChange={onChange} />
     </NonPrintableHighlighter>
   ),
@@ -60,7 +60,7 @@ const EDITORS = {
   ),
   Date: (value, onChange) => <DateTimeInput fixed={true} value={value} onChange={onChange} />,
   Object: (value, onChange, wordWrap, syntaxColors, options = {}) => (
-    <NonPrintableHighlighter value={value} isJson={true} detectNonAlphanumeric={true} detectRegex={!!options.detectRegex}>
+    <NonPrintableHighlighter value={value} isJson={true} detectNonPrintable={!!options.detectNonPrintable} detectNonAlphanumeric={true} detectRegex={!!options.detectRegex}>
       <JsonEditor
         value={value || ''}
         onChange={onChange}
@@ -71,7 +71,7 @@ const EDITORS = {
     </NonPrintableHighlighter>
   ),
   Array: (value, onChange, wordWrap, syntaxColors, options = {}) => (
-    <NonPrintableHighlighter value={value} isJson={true} detectNonAlphanumeric={true} detectRegex={!!options.detectRegex}>
+    <NonPrintableHighlighter value={value} isJson={true} detectNonPrintable={!!options.detectNonPrintable} detectNonAlphanumeric={true} detectRegex={!!options.detectRegex}>
       <JsonEditor
         value={value || ''}
         onChange={onChange}
@@ -129,7 +129,8 @@ export default class ConfigDialog extends React.Component {
       wordWrap: false,
       error: null,
       syntaxColors: null,
-      detectRegex: false,
+      detectNonPrintable: true,
+      detectRegex: true,
     };
     if (props.param.length > 0) {
       let initialValue = props.value;
@@ -146,7 +147,8 @@ export default class ConfigDialog extends React.Component {
         wordWrap: false,
         error: initialError,
         syntaxColors: null,
-        detectRegex: false,
+        detectNonPrintable: true,
+        detectRegex: true,
       };
     }
   }
@@ -181,6 +183,9 @@ export default class ConfigDialog extends React.Component {
           CONFIG_KEY,
           this.context.applicationId
         );
+        if (settings?.detectNonPrintable !== undefined) {
+          this.setState({ detectNonPrintable: !!settings.detectNonPrintable });
+        }
         if (settings?.detectRegex !== undefined) {
           this.setState({ detectRegex: !!settings.detectRegex });
         }
@@ -367,7 +372,7 @@ export default class ConfigDialog extends React.Component {
             value => this.setState({ value, error: null }),
             this.state.wordWrap,
             this.state.syntaxColors,
-            { detectRegex: this.state.detectRegex }
+            { detectNonPrintable: this.state.detectNonPrintable, detectRegex: this.state.detectRegex }
           )}
         />
 
