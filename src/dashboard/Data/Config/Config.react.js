@@ -57,6 +57,12 @@ class Config extends TableView {
       removeEntryArrayValue: [],
       serverHistoryLimit: undefined,
       currentParamHistory: null,
+      detectNonPrintable: false,
+      detectRegex: false,
+      nonPrintableBlockSave: [],
+      nonPrintableShowOnlyFor: [],
+      regexBlockSave: [],
+      regexShowOnlyFor: [],
     };
     this.noteTimeout = null;
     this.serverStorage = null;
@@ -98,12 +104,31 @@ class Config extends TableView {
         this.context.applicationId
       );
       if (settings) {
+        const updates = {
+          detectNonPrintable: settings.detectNonPrintable !== undefined ? !!settings.detectNonPrintable : true,
+          detectRegex: settings.detectRegex !== undefined ? !!settings.detectRegex : true,
+        };
         if (settings.historyLimit !== undefined) {
-          this.setState({ serverHistoryLimit: settings.historyLimit });
+          updates.serverHistoryLimit = settings.historyLimit;
         }
+        if (Array.isArray(settings.nonPrintableBlockSave)) {
+          updates.nonPrintableBlockSave = settings.nonPrintableBlockSave;
+        }
+        if (Array.isArray(settings.nonPrintableShowOnlyFor)) {
+          updates.nonPrintableShowOnlyFor = settings.nonPrintableShowOnlyFor;
+        }
+        if (Array.isArray(settings.regexBlockSave)) {
+          updates.regexBlockSave = settings.regexBlockSave;
+        }
+        if (Array.isArray(settings.regexShowOnlyFor)) {
+          updates.regexShowOnlyFor = settings.regexShowOnlyFor;
+        }
+        this.setState(updates);
+      } else {
+        this.setState({ detectNonPrintable: true, detectRegex: true });
       }
     } catch {
-      // Fall back to existing context value
+      this.setState({ detectNonPrintable: true, detectRegex: true });
     }
   }
 
@@ -193,6 +218,12 @@ class Config extends TableView {
           parseServerVersion={this.context.serverInfo?.parseServerVersion}
           loading={this.state.loading}
           configHistory={this.state.currentParamHistory}
+          detectNonPrintable={this.state.detectNonPrintable}
+          detectRegex={this.state.detectRegex}
+          nonPrintableBlockSave={this.state.nonPrintableBlockSave}
+          nonPrintableShowOnlyFor={this.state.nonPrintableShowOnlyFor}
+          regexBlockSave={this.state.regexBlockSave}
+          regexShowOnlyFor={this.state.regexShowOnlyFor}
         />
       );
     } else if (this.state.showDeleteParameterDialog) {
