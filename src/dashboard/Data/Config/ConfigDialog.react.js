@@ -12,7 +12,7 @@ import FileInput from 'components/FileInput/FileInput.react';
 import GeoPointInput from 'components/GeoPointInput/GeoPointInput.react';
 import Label from 'components/Label/Label.react';
 import Modal from 'components/Modal/Modal.react';
-import NonPrintableHighlighter from 'components/NonPrintableHighlighter/NonPrintableHighlighter.react';
+import NonPrintableHighlighter, { hasNonPrintableChars, getNonPrintableCharsFromJson, getRegexValidation, getRegexValidationFromJson } from 'components/NonPrintableHighlighter/NonPrintableHighlighter.react';
 import Option from 'components/Dropdown/Option.react';
 import Parse from 'parse';
 import React from 'react';
@@ -131,6 +131,10 @@ export default class ConfigDialog extends React.Component {
       syntaxColors: null,
       detectNonPrintable: true,
       detectRegex: true,
+      nonPrintableBlockSave: [],
+      nonPrintableShowOnlyFor: [],
+      regexBlockSave: [],
+      regexShowOnlyFor: [],
     };
     if (props.param.length > 0) {
       let initialValue = props.value;
@@ -149,6 +153,10 @@ export default class ConfigDialog extends React.Component {
         syntaxColors: null,
         detectNonPrintable: true,
         detectRegex: true,
+        nonPrintableBlockSave: [],
+        nonPrintableShowOnlyFor: [],
+        regexBlockSave: [],
+        regexShowOnlyFor: [],
       };
     }
   }
@@ -189,6 +197,18 @@ export default class ConfigDialog extends React.Component {
         if (settings?.detectRegex !== undefined) {
           this.setState({ detectRegex: !!settings.detectRegex });
         }
+        if (Array.isArray(settings?.nonPrintableBlockSave)) {
+          this.setState({ nonPrintableBlockSave: settings.nonPrintableBlockSave });
+        }
+        if (Array.isArray(settings?.nonPrintableShowOnlyFor)) {
+          this.setState({ nonPrintableShowOnlyFor: settings.nonPrintableShowOnlyFor });
+        }
+        if (Array.isArray(settings?.regexBlockSave)) {
+          this.setState({ regexBlockSave: settings.regexBlockSave });
+        }
+        if (Array.isArray(settings?.regexShowOnlyFor)) {
+          this.setState({ regexShowOnlyFor: settings.regexShowOnlyFor });
+        }
       }
     } catch {
       // Silently fail - keep defaults (true)
@@ -201,32 +221,41 @@ export default class ConfigDialog extends React.Component {
     }
     switch (this.state.type) {
       case 'String':
-        return !!this.state.value;
+        if (!this.state.value) {
+          return false;
+        }
+        break;
       case 'Number':
-        return !isNaN(parseFloat(this.state.value));
+        if (isNaN(parseFloat(this.state.value))) {
+          return false;
+        }
+        break;
       case 'Date':
-        return !isNaN(new Date(this.state.value));
+        if (isNaN(new Date(this.state.value))) {
+          return false;
+        }
+        break;
       case 'Object':
         try {
           const obj = JSON.parse(this.state.value);
-          if (obj && typeof obj === 'object') {
-            return true;
+          if (!obj || typeof obj !== 'object') {
+            return false;
           }
-          return false;
         } catch {
           return false;
         }
+        break;
       case 'Array':
         try {
           const obj = JSON.parse(this.state.value);
-          if (obj && Array.isArray(obj)) {
-            return true;
+          if (!obj || !Array.isArray(obj)) {
+            return false;
           }
-          return false;
         } catch {
           return false;
         }
-      case 'GeoPoint':
+        break;
+      case 'GeoPoint': {
         const val = this.state.value;
         if (!val || typeof val !== 'object') {
           return false;
@@ -242,14 +271,58 @@ export default class ConfigDialog extends React.Component {
         ) {
           return false;
         }
-        return true;
-      case 'File':
+        break;
+      }
+      case 'File': {
         const fileVal = this.state.value;
-        if (fileVal && fileVal.url()) {
-          return true;
+        if (!fileVal || !fileVal.url()) {
+          return false;
         }
-        return false;
+        break;
+      }
     }
+
+    // Block save if non-printable characters detected for this param
+    if (
+      this.state.detectNonPrintable &&
+      this.props.param.length > 0 &&
+      this.state.nonPrintableBlockSave.includes(this.props.param)
+    ) {
+      const value = this.state.value;
+      if (value && typeof value === 'string') {
+        if (this.state.type === 'Object' || this.state.type === 'Array') {
+          if (getNonPrintableCharsFromJson(value).totalCount > 0) {
+            return false;
+          }
+        } else if (this.state.type === 'String') {
+          if (hasNonPrintableChars(value)) {
+            return false;
+          }
+        }
+      }
+    }
+
+    // Block save if regex validation fails for this param
+    if (
+      this.state.detectRegex &&
+      this.props.param.length > 0 &&
+      this.state.regexBlockSave.includes(this.props.param)
+    ) {
+      const value = this.state.value;
+      if (value && typeof value === 'string') {
+        if (this.state.type === 'Object' || this.state.type === 'Array') {
+          const result = getRegexValidationFromJson(value);
+          if (result.results.some(r => !r.isValid)) {
+            return false;
+          }
+        } else if (this.state.type === 'String') {
+          if (!getRegexValidation(value).isValid) {
+            return false;
+          }
+        }
+      }
+    }
+
     return true;
   }
 
@@ -346,6 +419,17 @@ export default class ConfigDialog extends React.Component {
       this.setState({ selectedIndex: index, value });
     };
 
+    // Determine effective detection flags based on show-only-for settings
+    const isExistingParam = this.props.param && this.props.param.length > 0;
+    let effectiveDetectNonPrintable = this.state.detectNonPrintable;
+    if (effectiveDetectNonPrintable && isExistingParam && this.state.nonPrintableShowOnlyFor.length > 0) {
+      effectiveDetectNonPrintable = this.state.nonPrintableShowOnlyFor.includes(this.props.param);
+    }
+    let effectiveDetectRegex = this.state.detectRegex;
+    if (effectiveDetectRegex && isExistingParam && this.state.regexShowOnlyFor.length > 0) {
+      effectiveDetectRegex = this.state.regexShowOnlyFor.includes(this.props.param);
+    }
+
     const dialogContent = (
       <div>
         <Field
@@ -372,7 +456,7 @@ export default class ConfigDialog extends React.Component {
             value => this.setState({ value, error: null }),
             this.state.wordWrap,
             this.state.syntaxColors,
-            { detectNonPrintable: this.state.detectNonPrintable, detectRegex: this.state.detectRegex }
+            { detectNonPrintable: effectiveDetectNonPrintable, detectRegex: effectiveDetectRegex }
           )}
         />
 

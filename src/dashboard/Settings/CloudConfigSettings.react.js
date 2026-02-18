@@ -3,6 +3,9 @@ import DashboardView from 'dashboard/DashboardView.react';
 import Field from 'components/Field/Field.react';
 import Fieldset from 'components/Fieldset/Fieldset.react';
 import Label from 'components/Label/Label.react';
+import MultiSelect from 'components/MultiSelect/MultiSelect.react';
+import MultiSelectOption from 'components/MultiSelect/MultiSelectOption.react';
+import Parse from 'parse';
 import React from 'react';
 import TextInput from 'components/TextInput/TextInput.react';
 import Toggle from 'components/Toggle/Toggle.react';
@@ -38,6 +41,11 @@ export default class CloudConfigSettings extends DashboardView {
       syntaxColors: { ...DEFAULT_SYNTAX_COLORS },
       detectNonPrintable: true,
       detectRegex: true,
+      configParamNames: [],
+      nonPrintableBlockSave: [],
+      nonPrintableShowOnlyFor: [],
+      regexBlockSave: [],
+      regexShowOnlyFor: [],
       message: undefined,
       loading: true,
     };
@@ -70,7 +78,22 @@ export default class CloudConfigSettings extends DashboardView {
         if (settings.detectRegex !== undefined) {
           this.setState({ detectRegex: !!settings.detectRegex });
         }
+        if (Array.isArray(settings.nonPrintableBlockSave)) {
+          this.setState({ nonPrintableBlockSave: settings.nonPrintableBlockSave });
+        }
+        if (Array.isArray(settings.nonPrintableShowOnlyFor)) {
+          this.setState({ nonPrintableShowOnlyFor: settings.nonPrintableShowOnlyFor });
+        }
+        if (Array.isArray(settings.regexBlockSave)) {
+          this.setState({ regexBlockSave: settings.regexBlockSave });
+        }
+        if (Array.isArray(settings.regexShowOnlyFor)) {
+          this.setState({ regexShowOnlyFor: settings.regexShowOnlyFor });
+        }
       }
+
+      // Fetch Cloud Config parameter names for multi-select dropdowns
+      await this.loadConfigParamNames();
 
       // Load formatting settings
       const formattingSettings = await this.serverStorage.getConfig(
@@ -86,6 +109,18 @@ export default class CloudConfigSettings extends DashboardView {
       this.showNote('Failed to load Cloud Config settings.', true);
     } finally {
       this.setState({ loading: false });
+    }
+  }
+
+  async loadConfigParamNames() {
+    try {
+      this.context.setParseKeys();
+      const result = await Parse._request('GET', 'config', {}, { useMasterKey: true });
+      if (result && result.params) {
+        this.setState({ configParamNames: Object.keys(result.params).sort() });
+      }
+    } catch {
+      // Silently fail - dropdowns will be empty
     }
   }
 
@@ -129,6 +164,50 @@ export default class CloudConfigSettings extends DashboardView {
       this.showNote(`Regex validation display ${value ? 'enabled' : 'disabled'}.`);
     } else {
       this.setState({ detectRegex: !value });
+      this.showNote('Failed to save setting.', true);
+    }
+  }
+
+  async handleNonPrintableBlockSaveChange(value) {
+    const previous = this.state.nonPrintableBlockSave;
+    this.setState({ nonPrintableBlockSave: value });
+    if (await this.saveSettings({ nonPrintableBlockSave: value.length > 0 ? value : undefined })) {
+      this.showNote('Non-printable block-save parameters updated.');
+    } else {
+      this.setState({ nonPrintableBlockSave: previous });
+      this.showNote('Failed to save setting.', true);
+    }
+  }
+
+  async handleNonPrintableShowOnlyForChange(value) {
+    const previous = this.state.nonPrintableShowOnlyFor;
+    this.setState({ nonPrintableShowOnlyFor: value });
+    if (await this.saveSettings({ nonPrintableShowOnlyFor: value.length > 0 ? value : undefined })) {
+      this.showNote('Non-printable show-only parameters updated.');
+    } else {
+      this.setState({ nonPrintableShowOnlyFor: previous });
+      this.showNote('Failed to save setting.', true);
+    }
+  }
+
+  async handleRegexBlockSaveChange(value) {
+    const previous = this.state.regexBlockSave;
+    this.setState({ regexBlockSave: value });
+    if (await this.saveSettings({ regexBlockSave: value.length > 0 ? value : undefined })) {
+      this.showNote('Regex block-save parameters updated.');
+    } else {
+      this.setState({ regexBlockSave: previous });
+      this.showNote('Failed to save setting.', true);
+    }
+  }
+
+  async handleRegexShowOnlyForChange(value) {
+    const previous = this.state.regexShowOnlyFor;
+    this.setState({ regexShowOnlyFor: value });
+    if (await this.saveSettings({ regexShowOnlyFor: value.length > 0 ? value : undefined })) {
+      this.showNote('Regex show-only parameters updated.');
+    } else {
+      this.setState({ regexShowOnlyFor: previous });
       this.showNote('Failed to save setting.', true);
     }
   }
@@ -259,6 +338,24 @@ export default class CloudConfigSettings extends DashboardView {
     }, 3500);
   }
 
+  renderParamMultiSelect(value, onChange, placeholder, disabled) {
+    return (
+      <MultiSelect
+        fixed={true}
+        value={value}
+        onChange={onChange}
+        placeHolder={placeholder}
+        formatSelection={sel => `${sel.length} parameter${sel.length !== 1 ? 's' : ''} selected`}
+      >
+        {this.state.configParamNames.map(name => (
+          <MultiSelectOption key={name} value={name} disabled={disabled}>
+            {name}
+          </MultiSelectOption>
+        ))}
+      </MultiSelect>
+    );
+  }
+
   renderContent() {
     const message = this.state.message;
     const serverConfigEnabled = this.serverStorage && this.serverStorage.isServerConfigEnabled();
@@ -327,6 +424,41 @@ export default class CloudConfigSettings extends DashboardView {
                 />
               }
             />
+            {this.state.detectNonPrintable && (
+              <>
+                <Field
+                  labelWidth={62}
+                  label={
+                    <Label
+                      text="Block Save"
+                      description="Select parameters for which the Save button should be disabled when non-printable characters are detected."
+                    />
+                  }
+                  input={this.renderParamMultiSelect(
+                    this.state.nonPrintableBlockSave,
+                    this.handleNonPrintableBlockSaveChange.bind(this),
+                    'No parameter',
+                    !serverConfigEnabled || this.state.loading
+                  )}
+                />
+                <Field
+                  labelWidth={62}
+                  className={styles.sectionSeparator}
+                  label={
+                    <Label
+                      text="Show Only For"
+                      description="Limit the non-printable character info box to only the selected parameters. When none are selected, the info box shows for all parameters."
+                    />
+                  }
+                  input={this.renderParamMultiSelect(
+                    this.state.nonPrintableShowOnlyFor,
+                    this.handleNonPrintableShowOnlyForChange.bind(this),
+                    'All parameters',
+                    !serverConfigEnabled || this.state.loading
+                  )}
+                />
+              </>
+            )}
             <Field
               labelWidth={62}
               label={
@@ -345,6 +477,40 @@ export default class CloudConfigSettings extends DashboardView {
                 />
               }
             />
+            {this.state.detectRegex && (
+              <>
+                <Field
+                  labelWidth={62}
+                  label={
+                    <Label
+                      text="Block Save"
+                      description="Select parameters for which the Save button should be disabled when invalid regex patterns are detected."
+                    />
+                  }
+                  input={this.renderParamMultiSelect(
+                    this.state.regexBlockSave,
+                    this.handleRegexBlockSaveChange.bind(this),
+                    'No parameter',
+                    !serverConfigEnabled || this.state.loading
+                  )}
+                />
+                <Field
+                  labelWidth={62}
+                  label={
+                    <Label
+                      text="Show Only For"
+                      description="Limit the regex validation info box to only the selected parameters. When none are selected, the info box shows for all parameters."
+                    />
+                  }
+                  input={this.renderParamMultiSelect(
+                    this.state.regexShowOnlyFor,
+                    this.handleRegexShowOnlyForChange.bind(this),
+                    'All parameters',
+                    !serverConfigEnabled || this.state.loading
+                  )}
+                />
+              </>
+            )}
           </Fieldset>
           <Fieldset
             legend="Formatting"
@@ -358,10 +524,11 @@ export default class CloudConfigSettings extends DashboardView {
               null: 'Null',
               punctuation: 'Punctuation (brackets, commas)',
               operator: 'Operator (colons)',
-            }).map(([tokenType, label]) => (
+            }).map(([tokenType, label], index, array) => (
               <Field
                 key={tokenType}
                 labelWidth={62}
+                className={index === array.length - 1 ? styles.lastField : undefined}
                 label={
                   <Label
                     text={label}
