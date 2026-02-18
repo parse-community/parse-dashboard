@@ -654,7 +654,7 @@ export default class NonPrintableHighlighter extends React.Component {
             >
               <span className={styles.regexIcon}>ℛ</span>
               <span className={styles.regexText}>
-                <span className={invalidCount > 0 ? styles.regexLabelInvalid : undefined}>
+                <span className={invalidCount > 0 ? styles.regexSummaryInvalid : undefined}>
                   {isJson
                     ? `${regexResult.results.filter(r => r.isValid).length}/${regexResult.results.length} valid regex pattern${regexResult.results.length > 1 ? 's' : ''}`
                     : (regexResult.results[0].isValid ? 'Valid regex pattern' : 'Invalid regex pattern')
