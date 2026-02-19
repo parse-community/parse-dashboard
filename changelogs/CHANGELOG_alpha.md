@@ -1,3 +1,10 @@
+## [9.0.1-alpha.3](https://github.com/parse-community/parse-dashboard/compare/9.0.1-alpha.2...9.0.1-alpha.3) (2026-02-19)
+
+
+### Bug Fixes
+
+* Security upgrade transitive dependency qs ([#3228](https://github.com/parse-community/parse-dashboard/issues/3228)) ([225c710](https://github.com/parse-community/parse-dashboard/commit/225c71047eedb57cb4134ac618adf629b2ab07a2))
+
 ## [9.0.1-alpha.2](https://github.com/parse-community/parse-dashboard/compare/9.0.1-alpha.1...9.0.1-alpha.2) (2026-02-19)
 
 
