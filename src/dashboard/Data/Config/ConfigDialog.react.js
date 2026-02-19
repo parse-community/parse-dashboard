@@ -192,7 +192,7 @@ export default class ConfigDialog extends React.Component {
       case 'Object':
         try {
           const obj = JSON.parse(this.state.value);
-          if (!obj || typeof obj !== 'object') {
+          if (!obj || typeof obj !== 'object' || Array.isArray(obj)) {
             return false;
           }
         } catch {
