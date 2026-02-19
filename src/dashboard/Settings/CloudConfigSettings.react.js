@@ -458,6 +458,7 @@ export default class CloudConfigSettings extends DashboardView {
         value={value}
         onChange={onChange}
         placeHolder={placeholder}
+        disabled={disabled}
         formatSelection={sel => `${sel.length} parameter${sel.length !== 1 ? 's' : ''} selected`}
       >
         {names.map(name => (
