@@ -1,7 +1,10 @@
-const core = require('@actions/core');
-const semver = require('semver');
-const fs = require('fs').promises;
-const path = require('path');
+import * as core from '@actions/core';
+import semver from 'semver';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * This checks whether any package dependency requires a minimum node engine

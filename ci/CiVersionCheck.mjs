@@ -1,7 +1,7 @@
-const core = require('@actions/core');
-const semver = require('semver');
-const yaml = require('yaml');
-const fs = require('fs').promises;
+import * as core from '@actions/core';
+import semver from 'semver';
+import yaml from 'yaml';
+import fs from 'fs/promises';
 
 /**
  * This checks the CI version of an environment variable in a YAML file
@@ -287,4 +287,4 @@ class CiVersionCheck {
   }
 }
 
-module.exports = CiVersionCheck;
+export default CiVersionCheck;
