@@ -158,7 +158,8 @@ module.exports = function(config, options) {
               }
 
               if (typeof app.masterKey === 'function') {
-                app.masterKey = await ConfigKeyCache.get(app.appId, 'masterKey', app.masterKeyTtl, app.masterKey);
+                const cacheKey = matchingAccess.readOnly ? 'readOnlyMasterKey' : 'masterKey';
+                app.masterKey = await ConfigKeyCache.get(app.appId, cacheKey, app.masterKeyTtl, app.masterKey);
               }
 
               return app;
@@ -253,7 +254,8 @@ module.exports = function(config, options) {
 
         // Resolve function-typed masterKey (supports dynamic key rotation via ConfigKeyCache)
         if (typeof appContext.masterKey === 'function') {
-          appContext.masterKey = await ConfigKeyCache.get(appContext.appId, 'masterKey', appContext.masterKeyTtl, appContext.masterKey);
+          const cacheKey = isReadOnly ? 'readOnlyMasterKey' : 'masterKey';
+          appContext.masterKey = await ConfigKeyCache.get(appContext.appId, cacheKey, appContext.masterKeyTtl, appContext.masterKey);
         }
 
         // Find the requested model
