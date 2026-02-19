@@ -1163,7 +1163,7 @@ You have direct access to the Parse database through function calls, so you can 
     });
 
     // For every other request, go to index.html. Let client-side handle the rest.
-    app.get('{*splat}', function(req, res) {
+    app.get('{*splat}', Authentication.csrfProtection, function(req, res) {
       if (users && (!req.user || !req.user.isAuthenticated)) {
         const redirect = req.url.replace('/login', '');
         if (redirect.length > 1) {
@@ -1187,6 +1187,7 @@ You have direct access to the Parse database through function calls, so you can 
         </head>
         <body>
           <div id="browser_mount"></div>
+          <script id="csrf" type="application/json">"${req.csrfToken()}"</script>
           <script src="${mountPath}bundles/dashboard.bundle.js"></script>
         </body>
       </html>
