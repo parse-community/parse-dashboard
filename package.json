@@ -118,8 +118,6 @@
     "prettier": "3.8.1",
     "puppeteer": "24.37.2",
     "react-test-renderer": "16.13.1",
-    "request": "2.88.2",
-    "request-promise": "4.2.6",
     "sass": "1.97.3",
     "sass-loader": "16.0.7",
     "semantic-release": "25.0.3",
