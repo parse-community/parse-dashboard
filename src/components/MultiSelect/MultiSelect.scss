@@ -27,6 +27,7 @@
   border: 1px solid $blue;
   background: white;
   overflow: auto;
+  overscroll-behavior: none;
 
   > *:last-child .option {
     border-bottom: none;

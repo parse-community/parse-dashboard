@@ -22,3 +22,14 @@
     height: auto !important;
   }
 }
+
+.sectionSeparator {
+  border-bottom-width: 1px;
+  margin-bottom: 20px;
+}
+
+.lastField {
+  border-bottom-width: 1px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}

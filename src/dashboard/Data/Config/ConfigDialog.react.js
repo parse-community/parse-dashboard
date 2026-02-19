@@ -12,7 +12,7 @@ import FileInput from 'components/FileInput/FileInput.react';
 import GeoPointInput from 'components/GeoPointInput/GeoPointInput.react';
 import Label from 'components/Label/Label.react';
 import Modal from 'components/Modal/Modal.react';
-import NonPrintableHighlighter from 'components/NonPrintableHighlighter/NonPrintableHighlighter.react';
+import NonPrintableHighlighter, { hasNonPrintableChars, getNonPrintableCharsFromJson, hasNonAlphanumericChars, getNonAlphanumericCharsFromJson, getRegexValidation, getRegexValidationFromJson } from 'components/NonPrintableHighlighter/NonPrintableHighlighter.react';
 import Option from 'components/Dropdown/Option.react';
 import Parse from 'parse';
 import React from 'react';
@@ -28,7 +28,6 @@ import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
 import ServerConfigStorage from 'lib/ServerConfigStorage';
 import { CurrentApp } from 'context/currentApp';
 
-const CONFIG_KEY = 'config.settings';
 const FORMATTING_CONFIG_KEY = 'config.formatting.syntax';
 
 const PARAM_TYPES = ['Boolean', 'String', 'Number', 'Date', 'Object', 'Array', 'GeoPoint', 'File'];
@@ -51,7 +50,7 @@ const EDITORS = {
     <Toggle type={Toggle.Types.TRUE_FALSE} value={!!value} onChange={onChange} />
   ),
   String: (value, onChange, wordWrap, syntaxColors, options = {}) => (
-    <NonPrintableHighlighter value={value} detectNonPrintable={!!options.detectNonPrintable} detectNonAlphanumeric={true} detectRegex={!!options.detectRegex}>
+    <NonPrintableHighlighter value={value} detectNonPrintable={!!options.detectNonPrintable} detectNonAlphanumeric={!!options.detectNonAlphanumeric} detectRegex={!!options.detectRegex}>
       <TextInput multiline={true} value={value || ''} onChange={onChange} />
     </NonPrintableHighlighter>
   ),
@@ -60,7 +59,7 @@ const EDITORS = {
   ),
   Date: (value, onChange) => <DateTimeInput fixed={true} value={value} onChange={onChange} />,
   Object: (value, onChange, wordWrap, syntaxColors, options = {}) => (
-    <NonPrintableHighlighter value={value} isJson={true} detectNonPrintable={!!options.detectNonPrintable} detectNonAlphanumeric={true} detectRegex={!!options.detectRegex}>
+    <NonPrintableHighlighter value={value} isJson={true} detectNonPrintable={!!options.detectNonPrintable} detectNonAlphanumeric={!!options.detectNonAlphanumeric} detectRegex={!!options.detectRegex}>
       <JsonEditor
         value={value || ''}
         onChange={onChange}
@@ -71,7 +70,7 @@ const EDITORS = {
     </NonPrintableHighlighter>
   ),
   Array: (value, onChange, wordWrap, syntaxColors, options = {}) => (
-    <NonPrintableHighlighter value={value} isJson={true} detectNonPrintable={!!options.detectNonPrintable} detectNonAlphanumeric={true} detectRegex={!!options.detectRegex}>
+    <NonPrintableHighlighter value={value} isJson={true} detectNonPrintable={!!options.detectNonPrintable} detectNonAlphanumeric={!!options.detectNonAlphanumeric} detectRegex={!!options.detectRegex}>
       <JsonEditor
         value={value || ''}
         onChange={onChange}
@@ -129,8 +128,6 @@ export default class ConfigDialog extends React.Component {
       wordWrap: false,
       error: null,
       syntaxColors: null,
-      detectNonPrintable: true,
-      detectRegex: true,
     };
     if (props.param.length > 0) {
       let initialValue = props.value;
@@ -147,15 +144,12 @@ export default class ConfigDialog extends React.Component {
         wordWrap: false,
         error: initialError,
         syntaxColors: null,
-        detectNonPrintable: true,
-        detectRegex: true,
       };
     }
   }
 
   componentDidMount() {
     this.loadSyntaxColors();
-    this.loadValueAnalysisSettings();
   }
 
   async loadSyntaxColors() {
@@ -175,24 +169,21 @@ export default class ConfigDialog extends React.Component {
     }
   }
 
-  async loadValueAnalysisSettings() {
-    try {
-      const serverStorage = new ServerConfigStorage(this.context);
-      if (serverStorage.isServerConfigEnabled()) {
-        const settings = await serverStorage.getConfig(
-          CONFIG_KEY,
-          this.context.applicationId
-        );
-        if (settings?.detectNonPrintable !== undefined) {
-          this.setState({ detectNonPrintable: !!settings.detectNonPrintable });
-        }
-        if (settings?.detectRegex !== undefined) {
-          this.setState({ detectRegex: !!settings.detectRegex });
-        }
-      }
-    } catch {
-      // Silently fail - keep defaults (true)
+  getEffectiveDetectionFlags() {
+    const isExistingParam = this.props.param && this.props.param.length > 0;
+    let detectNonPrintable = this.props.detectNonPrintable;
+    if (detectNonPrintable && isExistingParam && this.props.nonPrintableShowOnlyFor.length > 0) {
+      detectNonPrintable = this.props.nonPrintableShowOnlyFor.includes(this.props.param);
     }
+    let detectNonAlphanumeric = this.props.detectNonAlphanumeric;
+    if (detectNonAlphanumeric && isExistingParam && this.props.nonAlphanumericShowOnlyFor.length > 0) {
+      detectNonAlphanumeric = this.props.nonAlphanumericShowOnlyFor.includes(this.props.param);
+    }
+    let detectRegex = this.props.detectRegex;
+    if (detectRegex && isExistingParam && this.props.regexShowOnlyFor.length > 0) {
+      detectRegex = this.props.regexShowOnlyFor.includes(this.props.param);
+    }
+    return { detectNonPrintable, detectNonAlphanumeric, detectRegex };
   }
 
   valid() {
@@ -201,32 +192,41 @@ export default class ConfigDialog extends React.Component {
     }
     switch (this.state.type) {
       case 'String':
-        return !!this.state.value;
+        if (!this.state.value) {
+          return false;
+        }
+        break;
       case 'Number':
-        return !isNaN(parseFloat(this.state.value));
+        if (isNaN(parseFloat(this.state.value))) {
+          return false;
+        }
+        break;
       case 'Date':
-        return !isNaN(new Date(this.state.value));
+        if (isNaN(new Date(this.state.value))) {
+          return false;
+        }
+        break;
       case 'Object':
         try {
           const obj = JSON.parse(this.state.value);
-          if (obj && typeof obj === 'object') {
-            return true;
+          if (!obj || typeof obj !== 'object' || Array.isArray(obj)) {
+            return false;
           }
-          return false;
         } catch {
           return false;
         }
+        break;
       case 'Array':
         try {
           const obj = JSON.parse(this.state.value);
-          if (obj && Array.isArray(obj)) {
-            return true;
+          if (!obj || !Array.isArray(obj)) {
+            return false;
           }
-          return false;
         } catch {
           return false;
         }
-      case 'GeoPoint':
+        break;
+      case 'GeoPoint': {
         const val = this.state.value;
         if (!val || typeof val !== 'object') {
           return false;
@@ -242,14 +242,81 @@ export default class ConfigDialog extends React.Component {
         ) {
           return false;
         }
-        return true;
-      case 'File':
+        break;
+      }
+      case 'File': {
         const fileVal = this.state.value;
-        if (fileVal && fileVal.url()) {
-          return true;
+        if (!fileVal || !fileVal.url()) {
+          return false;
         }
-        return false;
+        break;
+      }
     }
+
+    // Compute effective detection flags (respecting show-only-for settings)
+    const { detectNonPrintable, detectNonAlphanumeric, detectRegex } = this.getEffectiveDetectionFlags();
+
+    // Block save if non-printable characters detected for this param
+    if (
+      detectNonPrintable &&
+      this.props.param.length > 0 &&
+      this.props.nonPrintableBlockSave.includes(this.props.param)
+    ) {
+      const value = this.state.value;
+      if (value && typeof value === 'string') {
+        if (this.state.type === 'Object' || this.state.type === 'Array') {
+          if (getNonPrintableCharsFromJson(value).totalCount > 0) {
+            return false;
+          }
+        } else if (this.state.type === 'String') {
+          if (hasNonPrintableChars(value)) {
+            return false;
+          }
+        }
+      }
+    }
+
+    // Block save if non-alphanumeric characters detected for this param
+    if (
+      detectNonAlphanumeric &&
+      this.props.param.length > 0 &&
+      this.props.nonAlphanumericBlockSave.includes(this.props.param)
+    ) {
+      const value = this.state.value;
+      if (value && typeof value === 'string') {
+        if (this.state.type === 'Object' || this.state.type === 'Array') {
+          if (getNonAlphanumericCharsFromJson(value).totalCount > 0) {
+            return false;
+          }
+        } else if (this.state.type === 'String') {
+          if (hasNonAlphanumericChars(value)) {
+            return false;
+          }
+        }
+      }
+    }
+
+    // Block save if regex validation fails for this param
+    if (
+      detectRegex &&
+      this.props.param.length > 0 &&
+      this.props.regexBlockSave.includes(this.props.param)
+    ) {
+      const value = this.state.value;
+      if (value && typeof value === 'string') {
+        if (this.state.type === 'Object' || this.state.type === 'Array') {
+          const result = getRegexValidationFromJson(value);
+          if (result.results.some(r => !r.isValid)) {
+            return false;
+          }
+        } else if (this.state.type === 'String') {
+          if (!getRegexValidation(value).isValid) {
+            return false;
+          }
+        }
+      }
+    }
+
     return true;
   }
 
@@ -346,6 +413,13 @@ export default class ConfigDialog extends React.Component {
       this.setState({ selectedIndex: index, value });
     };
 
+    // Determine effective detection flags based on show-only-for settings
+    const {
+      detectNonPrintable: effectiveDetectNonPrintable,
+      detectNonAlphanumeric: effectiveDetectNonAlphanumeric,
+      detectRegex: effectiveDetectRegex,
+    } = this.getEffectiveDetectionFlags();
+
     const dialogContent = (
       <div>
         <Field
@@ -372,7 +446,7 @@ export default class ConfigDialog extends React.Component {
             value => this.setState({ value, error: null }),
             this.state.wordWrap,
             this.state.syntaxColors,
-            { detectNonPrintable: this.state.detectNonPrintable, detectRegex: this.state.detectRegex }
+            { detectNonPrintable: effectiveDetectNonPrintable, detectNonAlphanumeric: effectiveDetectNonAlphanumeric, detectRegex: effectiveDetectRegex }
           )}
         />
 

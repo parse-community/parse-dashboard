@@ -3,6 +3,9 @@ import DashboardView from 'dashboard/DashboardView.react';
 import Field from 'components/Field/Field.react';
 import Fieldset from 'components/Fieldset/Fieldset.react';
 import Label from 'components/Label/Label.react';
+import MultiSelect from 'components/MultiSelect/MultiSelect.react';
+import MultiSelectOption from 'components/MultiSelect/MultiSelectOption.react';
+import Parse from 'parse';
 import React from 'react';
 import TextInput from 'components/TextInput/TextInput.react';
 import Toggle from 'components/Toggle/Toggle.react';
@@ -38,6 +41,14 @@ export default class CloudConfigSettings extends DashboardView {
       syntaxColors: { ...DEFAULT_SYNTAX_COLORS },
       detectNonPrintable: true,
       detectRegex: true,
+      configParamNames: [],
+      nonPrintableBlockSave: [],
+      nonPrintableShowOnlyFor: [],
+      detectNonAlphanumeric: true,
+      nonAlphanumericBlockSave: [],
+      nonAlphanumericShowOnlyFor: [],
+      regexBlockSave: [],
+      regexShowOnlyFor: [],
       message: undefined,
       loading: true,
     };
@@ -70,7 +81,31 @@ export default class CloudConfigSettings extends DashboardView {
         if (settings.detectRegex !== undefined) {
           this.setState({ detectRegex: !!settings.detectRegex });
         }
+        if (Array.isArray(settings.nonPrintableBlockSave)) {
+          this.setState({ nonPrintableBlockSave: settings.nonPrintableBlockSave });
+        }
+        if (Array.isArray(settings.nonPrintableShowOnlyFor)) {
+          this.setState({ nonPrintableShowOnlyFor: settings.nonPrintableShowOnlyFor });
+        }
+        if (settings.detectNonAlphanumeric !== undefined) {
+          this.setState({ detectNonAlphanumeric: !!settings.detectNonAlphanumeric });
+        }
+        if (Array.isArray(settings.nonAlphanumericBlockSave)) {
+          this.setState({ nonAlphanumericBlockSave: settings.nonAlphanumericBlockSave });
+        }
+        if (Array.isArray(settings.nonAlphanumericShowOnlyFor)) {
+          this.setState({ nonAlphanumericShowOnlyFor: settings.nonAlphanumericShowOnlyFor });
+        }
+        if (Array.isArray(settings.regexBlockSave)) {
+          this.setState({ regexBlockSave: settings.regexBlockSave });
+        }
+        if (Array.isArray(settings.regexShowOnlyFor)) {
+          this.setState({ regexShowOnlyFor: settings.regexShowOnlyFor });
+        }
       }
+
+      // Fetch Cloud Config parameter names for multi-select dropdowns
+      await this.loadConfigParamNames();
 
       // Load formatting settings
       const formattingSettings = await this.serverStorage.getConfig(
@@ -86,6 +121,35 @@ export default class CloudConfigSettings extends DashboardView {
       this.showNote('Failed to load Cloud Config settings.', true);
     } finally {
       this.setState({ loading: false });
+    }
+  }
+
+  async loadConfigParamNames() {
+    try {
+      this.context.setParseKeys();
+      const result = await Parse._request('GET', 'config', {}, { useMasterKey: true });
+      if (result && result.params) {
+        // Only include params of types that support value analysis (String, Object, Array)
+        const names = Object.entries(result.params)
+          .filter(([, value]) => {
+            if (typeof value === 'string') {
+              return true;
+            }
+            if (typeof value === 'object' && value !== null) {
+              // Exclude Date, GeoPoint, File
+              if (value.__type === 'Date' || value.__type === 'GeoPoint' || value.__type === 'File') {
+                return false;
+              }
+              return true; // Object or Array
+            }
+            return false;
+          })
+          .map(([name]) => name)
+          .sort();
+        this.setState({ configParamNames: names });
+      }
+    } catch {
+      // Silently fail - dropdowns will be empty
     }
   }
 
@@ -129,6 +193,112 @@ export default class CloudConfigSettings extends DashboardView {
       this.showNote(`Regex validation display ${value ? 'enabled' : 'disabled'}.`);
     } else {
       this.setState({ detectRegex: !value });
+      this.showNote('Failed to save setting.', true);
+    }
+  }
+
+  async handleNonPrintableBlockSaveChange(value) {
+    const previous = this.state.nonPrintableBlockSave;
+    this.setState({ nonPrintableBlockSave: value });
+    if (await this.saveSettings({ nonPrintableBlockSave: value.length > 0 ? value : undefined })) {
+      this.showNote('Non-printable block-save parameters updated.');
+    } else {
+      this.setState({ nonPrintableBlockSave: previous });
+      this.showNote('Failed to save setting.', true);
+    }
+  }
+
+  async handleNonPrintableShowOnlyForChange(value) {
+    const previousShowOnlyFor = this.state.nonPrintableShowOnlyFor;
+    const previousBlockSave = this.state.nonPrintableBlockSave;
+    this.setState({ nonPrintableShowOnlyFor: value });
+    // Remove block-save entries that are no longer in the show-info-box list
+    const blockSaveUpdates = {};
+    if (value.length > 0) {
+      const filtered = previousBlockSave.filter(name => value.includes(name));
+      if (filtered.length !== previousBlockSave.length) {
+        this.setState({ nonPrintableBlockSave: filtered });
+        blockSaveUpdates.nonPrintableBlockSave = filtered.length > 0 ? filtered : undefined;
+      }
+    }
+    if (await this.saveSettings({ nonPrintableShowOnlyFor: value.length > 0 ? value : undefined, ...blockSaveUpdates })) {
+      this.showNote('Non-printable show-only parameters updated.');
+    } else {
+      this.setState({ nonPrintableShowOnlyFor: previousShowOnlyFor, nonPrintableBlockSave: previousBlockSave });
+      this.showNote('Failed to save setting.', true);
+    }
+  }
+
+  async handleDetectNonAlphanumericChange(value) {
+    this.setState({ detectNonAlphanumeric: value });
+    if (await this.saveSettings({ detectNonAlphanumeric: value === true ? undefined : value })) {
+      this.showNote(`Non-alphanumeric character detection ${value ? 'enabled' : 'disabled'}.`);
+    } else {
+      this.setState({ detectNonAlphanumeric: !value });
+      this.showNote('Failed to save setting.', true);
+    }
+  }
+
+  async handleNonAlphanumericBlockSaveChange(value) {
+    const previous = this.state.nonAlphanumericBlockSave;
+    this.setState({ nonAlphanumericBlockSave: value });
+    if (await this.saveSettings({ nonAlphanumericBlockSave: value.length > 0 ? value : undefined })) {
+      this.showNote('Non-alphanumeric block-save parameters updated.');
+    } else {
+      this.setState({ nonAlphanumericBlockSave: previous });
+      this.showNote('Failed to save setting.', true);
+    }
+  }
+
+  async handleNonAlphanumericShowOnlyForChange(value) {
+    const previousShowOnlyFor = this.state.nonAlphanumericShowOnlyFor;
+    const previousBlockSave = this.state.nonAlphanumericBlockSave;
+    this.setState({ nonAlphanumericShowOnlyFor: value });
+    // Remove block-save entries that are no longer in the show-info-box list
+    const blockSaveUpdates = {};
+    if (value.length > 0) {
+      const filtered = previousBlockSave.filter(name => value.includes(name));
+      if (filtered.length !== previousBlockSave.length) {
+        this.setState({ nonAlphanumericBlockSave: filtered });
+        blockSaveUpdates.nonAlphanumericBlockSave = filtered.length > 0 ? filtered : undefined;
+      }
+    }
+    if (await this.saveSettings({ nonAlphanumericShowOnlyFor: value.length > 0 ? value : undefined, ...blockSaveUpdates })) {
+      this.showNote('Non-alphanumeric show-only parameters updated.');
+    } else {
+      this.setState({ nonAlphanumericShowOnlyFor: previousShowOnlyFor, nonAlphanumericBlockSave: previousBlockSave });
+      this.showNote('Failed to save setting.', true);
+    }
+  }
+
+  async handleRegexBlockSaveChange(value) {
+    const previous = this.state.regexBlockSave;
+    this.setState({ regexBlockSave: value });
+    if (await this.saveSettings({ regexBlockSave: value.length > 0 ? value : undefined })) {
+      this.showNote('Regex block-save parameters updated.');
+    } else {
+      this.setState({ regexBlockSave: previous });
+      this.showNote('Failed to save setting.', true);
+    }
+  }
+
+  async handleRegexShowOnlyForChange(value) {
+    const previousShowOnlyFor = this.state.regexShowOnlyFor;
+    const previousBlockSave = this.state.regexBlockSave;
+    this.setState({ regexShowOnlyFor: value });
+    // Remove block-save entries that are no longer in the show-info-box list
+    const blockSaveUpdates = {};
+    if (value.length > 0) {
+      const filtered = previousBlockSave.filter(name => value.includes(name));
+      if (filtered.length !== previousBlockSave.length) {
+        this.setState({ regexBlockSave: filtered });
+        blockSaveUpdates.regexBlockSave = filtered.length > 0 ? filtered : undefined;
+      }
+    }
+    if (await this.saveSettings({ regexShowOnlyFor: value.length > 0 ? value : undefined, ...blockSaveUpdates })) {
+      this.showNote('Regex show-only parameters updated.');
+    } else {
+      this.setState({ regexShowOnlyFor: previousShowOnlyFor, regexBlockSave: previousBlockSave });
       this.showNote('Failed to save setting.', true);
     }
   }
@@ -259,6 +429,47 @@ export default class CloudConfigSettings extends DashboardView {
     }, 3500);
   }
 
+  renderParamMultiSelectWithButtons(value, onChange, placeholder, disabled, paramNames) {
+    const allNames = paramNames || this.state.configParamNames;
+    return (
+      <div style={{ width: '100%', background: '#f6fafb' }}>
+        {this.renderParamMultiSelect(value, onChange, placeholder, disabled, allNames)}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '8px', paddingBottom: '8px' }}>
+          <Button
+            value="Select all"
+            disabled={disabled || value.length === allNames.length}
+            onClick={() => onChange([...allNames])}
+          />
+          <Button
+            value="Unselect all"
+            disabled={disabled || value.length === 0}
+            onClick={() => onChange([])}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  renderParamMultiSelect(value, onChange, placeholder, disabled, paramNames) {
+    const names = paramNames || this.state.configParamNames;
+    return (
+      <MultiSelect
+        fixed={true}
+        value={value}
+        onChange={onChange}
+        placeHolder={placeholder}
+        disabled={disabled}
+        formatSelection={sel => `${sel.length} parameter${sel.length !== 1 ? 's' : ''} selected`}
+      >
+        {names.map(name => (
+          <MultiSelectOption key={name} value={name} disabled={disabled}>
+            {name}
+          </MultiSelectOption>
+        ))}
+      </MultiSelect>
+    );
+  }
+
   renderContent() {
     const message = this.state.message;
     const serverConfigEnabled = this.serverStorage && this.serverStorage.isServerConfigEnabled();
@@ -327,6 +538,96 @@ export default class CloudConfigSettings extends DashboardView {
                 />
               }
             />
+            {this.state.detectNonPrintable && (
+              <>
+                <Field
+                  labelWidth={62}
+                  label={
+                    <Label
+                      text="Show Info Box"
+                      description="Show the info box for selected parameters, or for all if none are selected."
+                    />
+                  }
+                  input={this.renderParamMultiSelectWithButtons(
+                    this.state.nonPrintableShowOnlyFor,
+                    this.handleNonPrintableShowOnlyForChange.bind(this),
+                    'All parameters',
+                    !serverConfigEnabled || this.state.loading
+                  )}
+                />
+                <Field
+                  labelWidth={62}
+                  className={styles.sectionSeparator}
+                  label={
+                    <Label
+                      text="Block Save"
+                      description="Select parameters for which the Save button should be disabled if validation fails."
+                    />
+                  }
+                  input={this.renderParamMultiSelectWithButtons(
+                    this.state.nonPrintableBlockSave,
+                    this.handleNonPrintableBlockSaveChange.bind(this),
+                    'No parameter',
+                    !serverConfigEnabled || this.state.loading,
+                    this.state.nonPrintableShowOnlyFor.length > 0 ? this.state.nonPrintableShowOnlyFor : undefined
+                  )}
+                />
+              </>
+            )}
+            <Field
+              labelWidth={62}
+              label={
+                <Label
+                  text="Non-Alphanumeric Characters"
+                  description="When enabled, the parameter editor highlights non-alphanumeric characters such as special symbols, punctuation, and whitespace."
+                />
+              }
+              input={
+                <Toggle
+                  type={Toggle.Types.YES_NO}
+                  value={this.state.detectNonAlphanumeric}
+                  onChange={this.handleDetectNonAlphanumericChange.bind(this)}
+                  disabled={!serverConfigEnabled || this.state.loading}
+                  additionalStyles={{ margin: '0px' }}
+                />
+              }
+            />
+            {this.state.detectNonAlphanumeric && (
+              <>
+                <Field
+                  labelWidth={62}
+                  label={
+                    <Label
+                      text="Show Info Box"
+                      description="Show the info box for selected parameters, or for all if none are selected."
+                    />
+                  }
+                  input={this.renderParamMultiSelectWithButtons(
+                    this.state.nonAlphanumericShowOnlyFor,
+                    this.handleNonAlphanumericShowOnlyForChange.bind(this),
+                    'All parameters',
+                    !serverConfigEnabled || this.state.loading
+                  )}
+                />
+                <Field
+                  labelWidth={62}
+                  className={styles.sectionSeparator}
+                  label={
+                    <Label
+                      text="Block Save"
+                      description="Select parameters for which the Save button should be disabled if validation fails."
+                    />
+                  }
+                  input={this.renderParamMultiSelectWithButtons(
+                    this.state.nonAlphanumericBlockSave,
+                    this.handleNonAlphanumericBlockSaveChange.bind(this),
+                    'No parameter',
+                    !serverConfigEnabled || this.state.loading,
+                    this.state.nonAlphanumericShowOnlyFor.length > 0 ? this.state.nonAlphanumericShowOnlyFor : undefined
+                  )}
+                />
+              </>
+            )}
             <Field
               labelWidth={62}
               label={
@@ -345,6 +646,42 @@ export default class CloudConfigSettings extends DashboardView {
                 />
               }
             />
+            {this.state.detectRegex && (
+              <>
+                <Field
+                  labelWidth={62}
+                  label={
+                    <Label
+                      text="Show Info Box"
+                      description="Show the info box for selected parameters, or for all if none are selected."
+                    />
+                  }
+                  input={this.renderParamMultiSelectWithButtons(
+                    this.state.regexShowOnlyFor,
+                    this.handleRegexShowOnlyForChange.bind(this),
+                    'All parameters',
+                    !serverConfigEnabled || this.state.loading
+                  )}
+                />
+                <Field
+                  labelWidth={62}
+                  className={styles.sectionSeparator}
+                  label={
+                    <Label
+                      text="Block Save"
+                      description="Select parameters for which the Save button should be disabled if validation fails."
+                    />
+                  }
+                  input={this.renderParamMultiSelectWithButtons(
+                    this.state.regexBlockSave,
+                    this.handleRegexBlockSaveChange.bind(this),
+                    'No parameter',
+                    !serverConfigEnabled || this.state.loading,
+                    this.state.regexShowOnlyFor.length > 0 ? this.state.regexShowOnlyFor : undefined
+                  )}
+                />
+              </>
+            )}
           </Fieldset>
           <Fieldset
             legend="Formatting"
@@ -358,10 +695,11 @@ export default class CloudConfigSettings extends DashboardView {
               null: 'Null',
               punctuation: 'Punctuation (brackets, commas)',
               operator: 'Operator (colons)',
-            }).map(([tokenType, label]) => (
+            }).map(([tokenType, label], index, array) => (
               <Field
                 key={tokenType}
                 labelWidth={62}
+                className={index === array.length - 1 ? styles.lastField : undefined}
                 label={
                   <Label
                     text={label}

@@ -1,3 +1,10 @@
+# [9.0.0-alpha.7](https://github.com/parse-community/parse-dashboard/compare/9.0.0-alpha.6...9.0.0-alpha.7) (2026-02-19)
+
+
+### Features
+
+* Add option to block saving Cloud Config parameter if validation fails ([#3225](https://github.com/parse-community/parse-dashboard/issues/3225)) ([41691aa](https://github.com/parse-community/parse-dashboard/commit/41691aafbd516a3e63cf30a1739e30985e7ca4ea))
+
 # [9.0.0-alpha.6](https://github.com/parse-community/parse-dashboard/compare/9.0.0-alpha.5...9.0.0-alpha.6) (2026-02-17)
 
 
