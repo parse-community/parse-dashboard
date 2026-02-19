@@ -1,3 +1,10 @@
+## [9.0.1-alpha.2](https://github.com/parse-community/parse-dashboard/compare/9.0.1-alpha.1...9.0.1-alpha.2) (2026-02-19)
+
+
+### Bug Fixes
+
+* Remove unused dependencies ([#3227](https://github.com/parse-community/parse-dashboard/issues/3227)) ([3ba250d](https://github.com/parse-community/parse-dashboard/commit/3ba250df8421166b00eb906b191c147e237a3606))
+
 ## [9.0.1-alpha.1](https://github.com/parse-community/parse-dashboard/compare/9.0.0...9.0.1-alpha.1) (2026-02-19)
 
 
