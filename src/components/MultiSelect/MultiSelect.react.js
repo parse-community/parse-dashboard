@@ -54,6 +54,9 @@ export default class MultiSelect extends React.Component {
   }
 
   toggle() {
+    if (this.props.disabled) {
+      return;
+    }
     this.setPosition();
     this.setState({ open: !this.state.open });
   }
@@ -184,4 +187,5 @@ MultiSelect.propTypes = {
   dense: PropTypes.bool.describe('Mini variant - less height'),
   chips: PropTypes.bool.describe('Display chip for every selected item'),
   formatSelection: PropTypes.func.describe('Custom function to format the display text. Receives array of selected labels.'),
+  disabled: PropTypes.bool.describe('When true, prevents the dropdown from opening.'),
 };
