@@ -61,6 +61,9 @@ class Config extends TableView {
       detectRegex: false,
       nonPrintableBlockSave: [],
       nonPrintableShowOnlyFor: [],
+      detectNonAlphanumeric: false,
+      nonAlphanumericBlockSave: [],
+      nonAlphanumericShowOnlyFor: [],
       regexBlockSave: [],
       regexShowOnlyFor: [],
     };
@@ -106,6 +109,7 @@ class Config extends TableView {
       if (settings) {
         const updates = {
           detectNonPrintable: settings.detectNonPrintable !== undefined ? !!settings.detectNonPrintable : true,
+          detectNonAlphanumeric: settings.detectNonAlphanumeric !== undefined ? !!settings.detectNonAlphanumeric : true,
           detectRegex: settings.detectRegex !== undefined ? !!settings.detectRegex : true,
         };
         if (settings.historyLimit !== undefined) {
@@ -117,6 +121,12 @@ class Config extends TableView {
         if (Array.isArray(settings.nonPrintableShowOnlyFor)) {
           updates.nonPrintableShowOnlyFor = settings.nonPrintableShowOnlyFor;
         }
+        if (Array.isArray(settings.nonAlphanumericBlockSave)) {
+          updates.nonAlphanumericBlockSave = settings.nonAlphanumericBlockSave;
+        }
+        if (Array.isArray(settings.nonAlphanumericShowOnlyFor)) {
+          updates.nonAlphanumericShowOnlyFor = settings.nonAlphanumericShowOnlyFor;
+        }
         if (Array.isArray(settings.regexBlockSave)) {
           updates.regexBlockSave = settings.regexBlockSave;
         }
@@ -125,10 +135,10 @@ class Config extends TableView {
         }
         this.setState(updates);
       } else {
-        this.setState({ detectNonPrintable: true, detectRegex: true });
+        this.setState({ detectNonPrintable: true, detectNonAlphanumeric: true, detectRegex: true });
       }
     } catch {
-      this.setState({ detectNonPrintable: true, detectRegex: true });
+      this.setState({ detectNonPrintable: true, detectNonAlphanumeric: true, detectRegex: true });
     }
   }
 
@@ -222,6 +232,9 @@ class Config extends TableView {
           detectRegex={this.state.detectRegex}
           nonPrintableBlockSave={this.state.nonPrintableBlockSave}
           nonPrintableShowOnlyFor={this.state.nonPrintableShowOnlyFor}
+          detectNonAlphanumeric={this.state.detectNonAlphanumeric}
+          nonAlphanumericBlockSave={this.state.nonAlphanumericBlockSave}
+          nonAlphanumericShowOnlyFor={this.state.nonAlphanumericShowOnlyFor}
           regexBlockSave={this.state.regexBlockSave}
           regexShowOnlyFor={this.state.regexShowOnlyFor}
         />

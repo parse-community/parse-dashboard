@@ -44,6 +44,9 @@ export default class CloudConfigSettings extends DashboardView {
       configParamNames: [],
       nonPrintableBlockSave: [],
       nonPrintableShowOnlyFor: [],
+      detectNonAlphanumeric: true,
+      nonAlphanumericBlockSave: [],
+      nonAlphanumericShowOnlyFor: [],
       regexBlockSave: [],
       regexShowOnlyFor: [],
       message: undefined,
@@ -84,6 +87,15 @@ export default class CloudConfigSettings extends DashboardView {
         if (Array.isArray(settings.nonPrintableShowOnlyFor)) {
           this.setState({ nonPrintableShowOnlyFor: settings.nonPrintableShowOnlyFor });
         }
+        if (settings.detectNonAlphanumeric !== undefined) {
+          this.setState({ detectNonAlphanumeric: !!settings.detectNonAlphanumeric });
+        }
+        if (Array.isArray(settings.nonAlphanumericBlockSave)) {
+          this.setState({ nonAlphanumericBlockSave: settings.nonAlphanumericBlockSave });
+        }
+        if (Array.isArray(settings.nonAlphanumericShowOnlyFor)) {
+          this.setState({ nonAlphanumericShowOnlyFor: settings.nonAlphanumericShowOnlyFor });
+        }
         if (Array.isArray(settings.regexBlockSave)) {
           this.setState({ regexBlockSave: settings.regexBlockSave });
         }
@@ -117,7 +129,24 @@ export default class CloudConfigSettings extends DashboardView {
       this.context.setParseKeys();
       const result = await Parse._request('GET', 'config', {}, { useMasterKey: true });
       if (result && result.params) {
-        this.setState({ configParamNames: Object.keys(result.params).sort() });
+        // Only include params of types that support value analysis (String, Object, Array)
+        const names = Object.entries(result.params)
+          .filter(([, value]) => {
+            if (typeof value === 'string') {
+              return true;
+            }
+            if (typeof value === 'object' && value !== null) {
+              // Exclude Date, GeoPoint, File
+              if (value.__type === 'Date' || value.__type === 'GeoPoint' || value.__type === 'File') {
+                return false;
+              }
+              return true; // Object or Array
+            }
+            return false;
+          })
+          .map(([name]) => name)
+          .sort();
+        this.setState({ configParamNames: names });
       }
     } catch {
       // Silently fail - dropdowns will be empty
@@ -186,6 +215,38 @@ export default class CloudConfigSettings extends DashboardView {
       this.showNote('Non-printable show-only parameters updated.');
     } else {
       this.setState({ nonPrintableShowOnlyFor: previous });
+      this.showNote('Failed to save setting.', true);
+    }
+  }
+
+  async handleDetectNonAlphanumericChange(value) {
+    this.setState({ detectNonAlphanumeric: value });
+    if (await this.saveSettings({ detectNonAlphanumeric: value === true ? undefined : value })) {
+      this.showNote(`Non-alphanumeric character detection ${value ? 'enabled' : 'disabled'}.`);
+    } else {
+      this.setState({ detectNonAlphanumeric: !value });
+      this.showNote('Failed to save setting.', true);
+    }
+  }
+
+  async handleNonAlphanumericBlockSaveChange(value) {
+    const previous = this.state.nonAlphanumericBlockSave;
+    this.setState({ nonAlphanumericBlockSave: value });
+    if (await this.saveSettings({ nonAlphanumericBlockSave: value.length > 0 ? value : undefined })) {
+      this.showNote('Non-alphanumeric block-save parameters updated.');
+    } else {
+      this.setState({ nonAlphanumericBlockSave: previous });
+      this.showNote('Failed to save setting.', true);
+    }
+  }
+
+  async handleNonAlphanumericShowOnlyForChange(value) {
+    const previous = this.state.nonAlphanumericShowOnlyFor;
+    this.setState({ nonAlphanumericShowOnlyFor: value });
+    if (await this.saveSettings({ nonAlphanumericShowOnlyFor: value.length > 0 ? value : undefined })) {
+      this.showNote('Non-alphanumeric show-only parameters updated.');
+    } else {
+      this.setState({ nonAlphanumericShowOnlyFor: previous });
       this.showNote('Failed to save setting.', true);
     }
   }
@@ -430,8 +491,24 @@ export default class CloudConfigSettings extends DashboardView {
                   labelWidth={62}
                   label={
                     <Label
+                      text="Show Info Box"
+                      description="Show the info box for selected parameters, or for all if none are selected."
+                    />
+                  }
+                  input={this.renderParamMultiSelect(
+                    this.state.nonPrintableShowOnlyFor,
+                    this.handleNonPrintableShowOnlyForChange.bind(this),
+                    'All parameters',
+                    !serverConfigEnabled || this.state.loading
+                  )}
+                />
+                <Field
+                  labelWidth={62}
+                  className={styles.sectionSeparator}
+                  label={
+                    <Label
                       text="Block Save"
-                      description="Select parameters for which the Save button should be disabled when non-printable characters are detected."
+                      description="Select parameters for which the Save button should be disabled if validation fails."
                     />
                   }
                   input={this.renderParamMultiSelect(
@@ -441,19 +518,56 @@ export default class CloudConfigSettings extends DashboardView {
                     !serverConfigEnabled || this.state.loading
                   )}
                 />
+              </>
+            )}
+            <Field
+              labelWidth={62}
+              label={
+                <Label
+                  text="Non-Alphanumeric Characters"
+                  description="When enabled, the parameter editor highlights non-alphanumeric characters such as special symbols, punctuation, and whitespace."
+                />
+              }
+              input={
+                <Toggle
+                  type={Toggle.Types.YES_NO}
+                  value={this.state.detectNonAlphanumeric}
+                  onChange={this.handleDetectNonAlphanumericChange.bind(this)}
+                  disabled={!serverConfigEnabled || this.state.loading}
+                  additionalStyles={{ margin: '0px' }}
+                />
+              }
+            />
+            {this.state.detectNonAlphanumeric && (
+              <>
+                <Field
+                  labelWidth={62}
+                  label={
+                    <Label
+                      text="Show Info Box"
+                      description="Show the info box for selected parameters, or for all if none are selected."
+                    />
+                  }
+                  input={this.renderParamMultiSelect(
+                    this.state.nonAlphanumericShowOnlyFor,
+                    this.handleNonAlphanumericShowOnlyForChange.bind(this),
+                    'All parameters',
+                    !serverConfigEnabled || this.state.loading
+                  )}
+                />
                 <Field
                   labelWidth={62}
                   className={styles.sectionSeparator}
                   label={
                     <Label
-                      text="Show Only For"
-                      description="Limit the non-printable character info box to only the selected parameters. When none are selected, the info box shows for all parameters."
+                      text="Block Save"
+                      description="Select parameters for which the Save button should be disabled if validation fails."
                     />
                   }
                   input={this.renderParamMultiSelect(
-                    this.state.nonPrintableShowOnlyFor,
-                    this.handleNonPrintableShowOnlyForChange.bind(this),
-                    'All parameters',
+                    this.state.nonAlphanumericBlockSave,
+                    this.handleNonAlphanumericBlockSaveChange.bind(this),
+                    'No parameter',
                     !serverConfigEnabled || this.state.loading
                   )}
                 />
@@ -483,14 +597,14 @@ export default class CloudConfigSettings extends DashboardView {
                   labelWidth={62}
                   label={
                     <Label
-                      text="Block Save"
-                      description="Select parameters for which the Save button should be disabled when invalid regex patterns are detected."
+                      text="Show Info Box"
+                      description="Show the info box for selected parameters, or for all if none are selected."
                     />
                   }
                   input={this.renderParamMultiSelect(
-                    this.state.regexBlockSave,
-                    this.handleRegexBlockSaveChange.bind(this),
-                    'No parameter',
+                    this.state.regexShowOnlyFor,
+                    this.handleRegexShowOnlyForChange.bind(this),
+                    'All parameters',
                     !serverConfigEnabled || this.state.loading
                   )}
                 />
@@ -498,14 +612,14 @@ export default class CloudConfigSettings extends DashboardView {
                   labelWidth={62}
                   label={
                     <Label
-                      text="Show Only For"
-                      description="Limit the regex validation info box to only the selected parameters. When none are selected, the info box shows for all parameters."
+                      text="Block Save"
+                      description="Select parameters for which the Save button should be disabled if validation fails."
                     />
                   }
                   input={this.renderParamMultiSelect(
-                    this.state.regexShowOnlyFor,
-                    this.handleRegexShowOnlyForChange.bind(this),
-                    'All parameters',
+                    this.state.regexBlockSave,
+                    this.handleRegexBlockSaveChange.bind(this),
+                    'No parameter',
                     !serverConfigEnabled || this.state.loading
                   )}
                 />
