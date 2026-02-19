@@ -242,15 +242,18 @@ module.exports = function(config, options) {
         // Determine if the user is read-only (globally or per-app)
         const isReadOnly = (authentication && authentication.isReadOnly) || isPerAppReadOnly;
 
-        // Build the app context — swap masterKey for readOnlyMasterKey for read-only users
-        let appContext;
+        // Build the app context — always shallow copy to avoid mutating the shared config
+        const appContext = { ...appConfig };
         if (isReadOnly) {
           if (!appConfig.readOnlyMasterKey) {
             return res.status(400).json({ error: 'You need to provide a readOnlyMasterKey to use read-only features.' });
           }
-          appContext = { ...appConfig, masterKey: appConfig.readOnlyMasterKey };
-        } else {
-          appContext = appConfig;
+          appContext.masterKey = appConfig.readOnlyMasterKey;
+        }
+
+        // Resolve function-typed masterKey (supports dynamic key rotation via ConfigKeyCache)
+        if (typeof appContext.masterKey === 'function') {
+          appContext.masterKey = await ConfigKeyCache.get(appContext.appId, 'masterKey', appContext.masterKeyTtl, appContext.masterKey);
         }
 
         // Find the requested model
