@@ -433,7 +433,7 @@ export default class CloudConfigSettings extends DashboardView {
     const allNames = paramNames || this.state.configParamNames;
     return (
       <div style={{ width: '100%', background: '#f6fafb' }}>
-        {this.renderParamMultiSelect(value, onChange, placeholder, disabled, paramNames)}
+        {this.renderParamMultiSelect(value, onChange, placeholder, disabled, allNames)}
         <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '8px', paddingBottom: '8px' }}>
           <Button
             value="Select all"
