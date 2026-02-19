@@ -211,7 +211,16 @@ export default class CloudConfigSettings extends DashboardView {
   async handleNonPrintableShowOnlyForChange(value) {
     const previous = this.state.nonPrintableShowOnlyFor;
     this.setState({ nonPrintableShowOnlyFor: value });
-    if (await this.saveSettings({ nonPrintableShowOnlyFor: value.length > 0 ? value : undefined })) {
+    // Remove block-save entries that are no longer in the show-info-box list
+    const blockSaveUpdates = {};
+    if (value.length > 0) {
+      const filtered = this.state.nonPrintableBlockSave.filter(name => value.includes(name));
+      if (filtered.length !== this.state.nonPrintableBlockSave.length) {
+        this.setState({ nonPrintableBlockSave: filtered });
+        blockSaveUpdates.nonPrintableBlockSave = filtered.length > 0 ? filtered : undefined;
+      }
+    }
+    if (await this.saveSettings({ nonPrintableShowOnlyFor: value.length > 0 ? value : undefined, ...blockSaveUpdates })) {
       this.showNote('Non-printable show-only parameters updated.');
     } else {
       this.setState({ nonPrintableShowOnlyFor: previous });
@@ -243,7 +252,16 @@ export default class CloudConfigSettings extends DashboardView {
   async handleNonAlphanumericShowOnlyForChange(value) {
     const previous = this.state.nonAlphanumericShowOnlyFor;
     this.setState({ nonAlphanumericShowOnlyFor: value });
-    if (await this.saveSettings({ nonAlphanumericShowOnlyFor: value.length > 0 ? value : undefined })) {
+    // Remove block-save entries that are no longer in the show-info-box list
+    const blockSaveUpdates = {};
+    if (value.length > 0) {
+      const filtered = this.state.nonAlphanumericBlockSave.filter(name => value.includes(name));
+      if (filtered.length !== this.state.nonAlphanumericBlockSave.length) {
+        this.setState({ nonAlphanumericBlockSave: filtered });
+        blockSaveUpdates.nonAlphanumericBlockSave = filtered.length > 0 ? filtered : undefined;
+      }
+    }
+    if (await this.saveSettings({ nonAlphanumericShowOnlyFor: value.length > 0 ? value : undefined, ...blockSaveUpdates })) {
       this.showNote('Non-alphanumeric show-only parameters updated.');
     } else {
       this.setState({ nonAlphanumericShowOnlyFor: previous });
@@ -265,7 +283,16 @@ export default class CloudConfigSettings extends DashboardView {
   async handleRegexShowOnlyForChange(value) {
     const previous = this.state.regexShowOnlyFor;
     this.setState({ regexShowOnlyFor: value });
-    if (await this.saveSettings({ regexShowOnlyFor: value.length > 0 ? value : undefined })) {
+    // Remove block-save entries that are no longer in the show-info-box list
+    const blockSaveUpdates = {};
+    if (value.length > 0) {
+      const filtered = this.state.regexBlockSave.filter(name => value.includes(name));
+      if (filtered.length !== this.state.regexBlockSave.length) {
+        this.setState({ regexBlockSave: filtered });
+        blockSaveUpdates.regexBlockSave = filtered.length > 0 ? filtered : undefined;
+      }
+    }
+    if (await this.saveSettings({ regexShowOnlyFor: value.length > 0 ? value : undefined, ...blockSaveUpdates })) {
       this.showNote('Regex show-only parameters updated.');
     } else {
       this.setState({ regexShowOnlyFor: previous });
@@ -399,7 +426,8 @@ export default class CloudConfigSettings extends DashboardView {
     }, 3500);
   }
 
-  renderParamMultiSelect(value, onChange, placeholder, disabled) {
+  renderParamMultiSelect(value, onChange, placeholder, disabled, paramNames) {
+    const names = paramNames || this.state.configParamNames;
     return (
       <MultiSelect
         fixed={true}
@@ -408,7 +436,7 @@ export default class CloudConfigSettings extends DashboardView {
         placeHolder={placeholder}
         formatSelection={sel => `${sel.length} parameter${sel.length !== 1 ? 's' : ''} selected`}
       >
-        {this.state.configParamNames.map(name => (
+        {names.map(name => (
           <MultiSelectOption key={name} value={name} disabled={disabled}>
             {name}
           </MultiSelectOption>
@@ -515,7 +543,8 @@ export default class CloudConfigSettings extends DashboardView {
                     this.state.nonPrintableBlockSave,
                     this.handleNonPrintableBlockSaveChange.bind(this),
                     'No parameter',
-                    !serverConfigEnabled || this.state.loading
+                    !serverConfigEnabled || this.state.loading,
+                    this.state.nonPrintableShowOnlyFor.length > 0 ? this.state.nonPrintableShowOnlyFor : undefined
                   )}
                 />
               </>
@@ -568,7 +597,8 @@ export default class CloudConfigSettings extends DashboardView {
                     this.state.nonAlphanumericBlockSave,
                     this.handleNonAlphanumericBlockSaveChange.bind(this),
                     'No parameter',
-                    !serverConfigEnabled || this.state.loading
+                    !serverConfigEnabled || this.state.loading,
+                    this.state.nonAlphanumericShowOnlyFor.length > 0 ? this.state.nonAlphanumericShowOnlyFor : undefined
                   )}
                 />
               </>
@@ -620,7 +650,8 @@ export default class CloudConfigSettings extends DashboardView {
                     this.state.regexBlockSave,
                     this.handleRegexBlockSaveChange.bind(this),
                     'No parameter',
-                    !serverConfigEnabled || this.state.loading
+                    !serverConfigEnabled || this.state.loading,
+                    this.state.regexShowOnlyFor.length > 0 ? this.state.regexShowOnlyFor : undefined
                   )}
                 />
               </>
