@@ -1,3 +1,10 @@
+## [9.0.1-alpha.1](https://github.com/parse-community/parse-dashboard/compare/9.0.0...9.0.1-alpha.1) (2026-02-19)
+
+
+### Bug Fixes
+
+* Bump fast-xml-parser from 5.3.5 to 5.3.6 ([#3223](https://github.com/parse-community/parse-dashboard/issues/3223)) ([aee458b](https://github.com/parse-community/parse-dashboard/commit/aee458b36a88ee28bc9e551bbe994d964261895b))
+
 # [9.0.0-alpha.8](https://github.com/parse-community/parse-dashboard/compare/9.0.0-alpha.7...9.0.0-alpha.8) (2026-02-19)
 
 
