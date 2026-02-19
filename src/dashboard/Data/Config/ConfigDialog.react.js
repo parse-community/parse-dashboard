@@ -169,6 +169,23 @@ export default class ConfigDialog extends React.Component {
     }
   }
 
+  getEffectiveDetectionFlags() {
+    const isExistingParam = this.props.param && this.props.param.length > 0;
+    let detectNonPrintable = this.props.detectNonPrintable;
+    if (detectNonPrintable && isExistingParam && this.props.nonPrintableShowOnlyFor.length > 0) {
+      detectNonPrintable = this.props.nonPrintableShowOnlyFor.includes(this.props.param);
+    }
+    let detectNonAlphanumeric = this.props.detectNonAlphanumeric;
+    if (detectNonAlphanumeric && isExistingParam && this.props.nonAlphanumericShowOnlyFor.length > 0) {
+      detectNonAlphanumeric = this.props.nonAlphanumericShowOnlyFor.includes(this.props.param);
+    }
+    let detectRegex = this.props.detectRegex;
+    if (detectRegex && isExistingParam && this.props.regexShowOnlyFor.length > 0) {
+      detectRegex = this.props.regexShowOnlyFor.includes(this.props.param);
+    }
+    return { detectNonPrintable, detectNonAlphanumeric, detectRegex };
+  }
+
   valid() {
     if (!this.state.name.match(/^[a-zA-Z_][a-zA-Z0-9_]*$/)) {
       return false;
@@ -236,9 +253,12 @@ export default class ConfigDialog extends React.Component {
       }
     }
 
+    // Compute effective detection flags (respecting show-only-for settings)
+    const { detectNonPrintable, detectNonAlphanumeric, detectRegex } = this.getEffectiveDetectionFlags();
+
     // Block save if non-printable characters detected for this param
     if (
-      this.props.detectNonPrintable &&
+      detectNonPrintable &&
       this.props.param.length > 0 &&
       this.props.nonPrintableBlockSave.includes(this.props.param)
     ) {
@@ -258,7 +278,7 @@ export default class ConfigDialog extends React.Component {
 
     // Block save if non-alphanumeric characters detected for this param
     if (
-      this.props.detectNonAlphanumeric &&
+      detectNonAlphanumeric &&
       this.props.param.length > 0 &&
       this.props.nonAlphanumericBlockSave.includes(this.props.param)
     ) {
@@ -278,7 +298,7 @@ export default class ConfigDialog extends React.Component {
 
     // Block save if regex validation fails for this param
     if (
-      this.props.detectRegex &&
+      detectRegex &&
       this.props.param.length > 0 &&
       this.props.regexBlockSave.includes(this.props.param)
     ) {
@@ -394,19 +414,11 @@ export default class ConfigDialog extends React.Component {
     };
 
     // Determine effective detection flags based on show-only-for settings
-    const isExistingParam = this.props.param && this.props.param.length > 0;
-    let effectiveDetectNonPrintable = this.props.detectNonPrintable;
-    if (effectiveDetectNonPrintable && isExistingParam && this.props.nonPrintableShowOnlyFor.length > 0) {
-      effectiveDetectNonPrintable = this.props.nonPrintableShowOnlyFor.includes(this.props.param);
-    }
-    let effectiveDetectNonAlphanumeric = this.props.detectNonAlphanumeric;
-    if (effectiveDetectNonAlphanumeric && isExistingParam && this.props.nonAlphanumericShowOnlyFor.length > 0) {
-      effectiveDetectNonAlphanumeric = this.props.nonAlphanumericShowOnlyFor.includes(this.props.param);
-    }
-    let effectiveDetectRegex = this.props.detectRegex;
-    if (effectiveDetectRegex && isExistingParam && this.props.regexShowOnlyFor.length > 0) {
-      effectiveDetectRegex = this.props.regexShowOnlyFor.includes(this.props.param);
-    }
+    const {
+      detectNonPrintable: effectiveDetectNonPrintable,
+      detectNonAlphanumeric: effectiveDetectNonAlphanumeric,
+      detectRegex: effectiveDetectRegex,
+    } = this.getEffectiveDetectionFlags();
 
     const dialogContent = (
       <div>
