@@ -664,6 +664,7 @@ export default class CloudConfigSettings extends DashboardView {
                 />
                 <Field
                   labelWidth={62}
+                  className={styles.sectionSeparator}
                   label={
                     <Label
                       text="Block Save"
