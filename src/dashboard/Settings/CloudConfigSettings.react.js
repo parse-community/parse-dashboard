@@ -209,13 +209,14 @@ export default class CloudConfigSettings extends DashboardView {
   }
 
   async handleNonPrintableShowOnlyForChange(value) {
-    const previous = this.state.nonPrintableShowOnlyFor;
+    const previousShowOnlyFor = this.state.nonPrintableShowOnlyFor;
+    const previousBlockSave = this.state.nonPrintableBlockSave;
     this.setState({ nonPrintableShowOnlyFor: value });
     // Remove block-save entries that are no longer in the show-info-box list
     const blockSaveUpdates = {};
     if (value.length > 0) {
-      const filtered = this.state.nonPrintableBlockSave.filter(name => value.includes(name));
-      if (filtered.length !== this.state.nonPrintableBlockSave.length) {
+      const filtered = previousBlockSave.filter(name => value.includes(name));
+      if (filtered.length !== previousBlockSave.length) {
         this.setState({ nonPrintableBlockSave: filtered });
         blockSaveUpdates.nonPrintableBlockSave = filtered.length > 0 ? filtered : undefined;
       }
@@ -223,7 +224,7 @@ export default class CloudConfigSettings extends DashboardView {
     if (await this.saveSettings({ nonPrintableShowOnlyFor: value.length > 0 ? value : undefined, ...blockSaveUpdates })) {
       this.showNote('Non-printable show-only parameters updated.');
     } else {
-      this.setState({ nonPrintableShowOnlyFor: previous });
+      this.setState({ nonPrintableShowOnlyFor: previousShowOnlyFor, nonPrintableBlockSave: previousBlockSave });
       this.showNote('Failed to save setting.', true);
     }
   }
@@ -250,13 +251,14 @@ export default class CloudConfigSettings extends DashboardView {
   }
 
   async handleNonAlphanumericShowOnlyForChange(value) {
-    const previous = this.state.nonAlphanumericShowOnlyFor;
+    const previousShowOnlyFor = this.state.nonAlphanumericShowOnlyFor;
+    const previousBlockSave = this.state.nonAlphanumericBlockSave;
     this.setState({ nonAlphanumericShowOnlyFor: value });
     // Remove block-save entries that are no longer in the show-info-box list
     const blockSaveUpdates = {};
     if (value.length > 0) {
-      const filtered = this.state.nonAlphanumericBlockSave.filter(name => value.includes(name));
-      if (filtered.length !== this.state.nonAlphanumericBlockSave.length) {
+      const filtered = previousBlockSave.filter(name => value.includes(name));
+      if (filtered.length !== previousBlockSave.length) {
         this.setState({ nonAlphanumericBlockSave: filtered });
         blockSaveUpdates.nonAlphanumericBlockSave = filtered.length > 0 ? filtered : undefined;
       }
@@ -264,7 +266,7 @@ export default class CloudConfigSettings extends DashboardView {
     if (await this.saveSettings({ nonAlphanumericShowOnlyFor: value.length > 0 ? value : undefined, ...blockSaveUpdates })) {
       this.showNote('Non-alphanumeric show-only parameters updated.');
     } else {
-      this.setState({ nonAlphanumericShowOnlyFor: previous });
+      this.setState({ nonAlphanumericShowOnlyFor: previousShowOnlyFor, nonAlphanumericBlockSave: previousBlockSave });
       this.showNote('Failed to save setting.', true);
     }
   }
@@ -281,13 +283,14 @@ export default class CloudConfigSettings extends DashboardView {
   }
 
   async handleRegexShowOnlyForChange(value) {
-    const previous = this.state.regexShowOnlyFor;
+    const previousShowOnlyFor = this.state.regexShowOnlyFor;
+    const previousBlockSave = this.state.regexBlockSave;
     this.setState({ regexShowOnlyFor: value });
     // Remove block-save entries that are no longer in the show-info-box list
     const blockSaveUpdates = {};
     if (value.length > 0) {
-      const filtered = this.state.regexBlockSave.filter(name => value.includes(name));
-      if (filtered.length !== this.state.regexBlockSave.length) {
+      const filtered = previousBlockSave.filter(name => value.includes(name));
+      if (filtered.length !== previousBlockSave.length) {
         this.setState({ regexBlockSave: filtered });
         blockSaveUpdates.regexBlockSave = filtered.length > 0 ? filtered : undefined;
       }
@@ -295,7 +298,7 @@ export default class CloudConfigSettings extends DashboardView {
     if (await this.saveSettings({ regexShowOnlyFor: value.length > 0 ? value : undefined, ...blockSaveUpdates })) {
       this.showNote('Regex show-only parameters updated.');
     } else {
-      this.setState({ regexShowOnlyFor: previous });
+      this.setState({ regexShowOnlyFor: previousShowOnlyFor, regexBlockSave: previousBlockSave });
       this.showNote('Failed to save setting.', true);
     }
   }
