@@ -426,6 +426,27 @@ export default class CloudConfigSettings extends DashboardView {
     }, 3500);
   }
 
+  renderParamMultiSelectWithButtons(value, onChange, placeholder, disabled, paramNames) {
+    const allNames = paramNames || this.state.configParamNames;
+    return (
+      <div style={{ width: '100%', background: '#f6fafb' }}>
+        {this.renderParamMultiSelect(value, onChange, placeholder, disabled, paramNames)}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '8px', paddingBottom: '8px' }}>
+          <Button
+            value="Select all"
+            disabled={disabled || value.length === allNames.length}
+            onClick={() => onChange([...allNames])}
+          />
+          <Button
+            value="Unselect all"
+            disabled={disabled || value.length === 0}
+            onClick={() => onChange([])}
+          />
+        </div>
+      </div>
+    );
+  }
+
   renderParamMultiSelect(value, onChange, placeholder, disabled, paramNames) {
     const names = paramNames || this.state.configParamNames;
     return (
@@ -523,7 +544,7 @@ export default class CloudConfigSettings extends DashboardView {
                       description="Show the info box for selected parameters, or for all if none are selected."
                     />
                   }
-                  input={this.renderParamMultiSelect(
+                  input={this.renderParamMultiSelectWithButtons(
                     this.state.nonPrintableShowOnlyFor,
                     this.handleNonPrintableShowOnlyForChange.bind(this),
                     'All parameters',
@@ -539,7 +560,7 @@ export default class CloudConfigSettings extends DashboardView {
                       description="Select parameters for which the Save button should be disabled if validation fails."
                     />
                   }
-                  input={this.renderParamMultiSelect(
+                  input={this.renderParamMultiSelectWithButtons(
                     this.state.nonPrintableBlockSave,
                     this.handleNonPrintableBlockSaveChange.bind(this),
                     'No parameter',
@@ -577,7 +598,7 @@ export default class CloudConfigSettings extends DashboardView {
                       description="Show the info box for selected parameters, or for all if none are selected."
                     />
                   }
-                  input={this.renderParamMultiSelect(
+                  input={this.renderParamMultiSelectWithButtons(
                     this.state.nonAlphanumericShowOnlyFor,
                     this.handleNonAlphanumericShowOnlyForChange.bind(this),
                     'All parameters',
@@ -593,7 +614,7 @@ export default class CloudConfigSettings extends DashboardView {
                       description="Select parameters for which the Save button should be disabled if validation fails."
                     />
                   }
-                  input={this.renderParamMultiSelect(
+                  input={this.renderParamMultiSelectWithButtons(
                     this.state.nonAlphanumericBlockSave,
                     this.handleNonAlphanumericBlockSaveChange.bind(this),
                     'No parameter',
@@ -631,7 +652,7 @@ export default class CloudConfigSettings extends DashboardView {
                       description="Show the info box for selected parameters, or for all if none are selected."
                     />
                   }
-                  input={this.renderParamMultiSelect(
+                  input={this.renderParamMultiSelectWithButtons(
                     this.state.regexShowOnlyFor,
                     this.handleRegexShowOnlyForChange.bind(this),
                     'All parameters',
@@ -646,7 +667,7 @@ export default class CloudConfigSettings extends DashboardView {
                       description="Select parameters for which the Save button should be disabled if validation fails."
                     />
                   }
-                  input={this.renderParamMultiSelect(
+                  input={this.renderParamMultiSelectWithButtons(
                     this.state.regexBlockSave,
                     this.handleRegexBlockSaveChange.bind(this),
                     'No parameter',
