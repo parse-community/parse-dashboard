@@ -200,6 +200,12 @@ module.exports = function(config, options) {
     // Agent API endpoint for handling AI requests - scoped to specific app
     app.post('/apps/:appId/agent', async (req, res) => {
       try {
+        // Authentication check — reject unauthenticated requests when users are configured
+        const authentication = req.user;
+        if (users && (!authentication || !authentication.isAuthenticated)) {
+          return res.status(401).json({ error: 'Unauthorized' });
+        }
+
         const { message, modelName, conversationId, permissions } = req.body || {};
         const { appId } = req.params;
 
@@ -221,9 +227,34 @@ module.exports = function(config, options) {
         }
 
         // Find the app in the configuration
-        const app = config.apps.find(app => (app.appNameForURL || app.appName) === appId);
-        if (!app) {
+        const appConfig = config.apps.find(a => (a.appNameForURL || a.appName) === appId);
+        if (!appConfig) {
           return res.status(404).json({ error: `App "${appId}" not found` });
+        }
+
+        // Cross-app access control — restrict to apps the authenticated user has access to
+        const appsUserHasAccess = authentication && authentication.appsUserHasAccessTo;
+        let isPerAppReadOnly = false;
+        if (appsUserHasAccess) {
+          const matchingAccess = appsUserHasAccess.find(access => access.appId === appConfig.appId);
+          if (!matchingAccess) {
+            return res.status(403).json({ error: 'Forbidden: you do not have access to this app' });
+          }
+          isPerAppReadOnly = !!matchingAccess.readOnly;
+        }
+
+        // Determine if the user is read-only (globally or per-app)
+        const isReadOnly = (authentication && authentication.isReadOnly) || isPerAppReadOnly;
+
+        // Build the app context — swap masterKey for readOnlyMasterKey for read-only users
+        let appContext;
+        if (isReadOnly) {
+          if (!appConfig.readOnlyMasterKey) {
+            return res.status(400).json({ error: 'You need to provide a readOnlyMasterKey to use read-only features.' });
+          }
+          appContext = { ...appConfig, masterKey: appConfig.readOnlyMasterKey };
+        } else {
+          appContext = appConfig;
         }
 
         // Find the requested model
@@ -258,8 +289,12 @@ module.exports = function(config, options) {
         // Array to track database operations for this request
         const operationLog = [];
 
+        // Read-only users: override client permissions to deny all write operations,
+        // preventing privilege escalation via self-authorized permissions in the request body
+        const effectivePermissions = isReadOnly ? {} : (permissions || {});
+
         // Make request to OpenAI API with app context and conversation history
-        const response = await makeOpenAIRequest(message, model, apiKey, app, conversationHistory, operationLog, permissions);
+        const response = await makeOpenAIRequest(message, model, apiKey, appContext, conversationHistory, operationLog, effectivePermissions);
 
         // Update conversation history with user message and AI response
         conversationHistory.push(
@@ -280,7 +315,7 @@ module.exports = function(config, options) {
           conversationId: finalConversationId,
           debug: {
             timestamp: new Date().toISOString(),
-            appId: app.appId,
+            appId: appContext.appId,
             modelUsed: model,
             operations: operationLog
           }
