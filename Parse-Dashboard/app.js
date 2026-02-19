@@ -197,14 +197,10 @@ module.exports = function(config, options) {
     // In-memory conversation storage (consider using Redis in future)
     const conversations = new Map();
 
-    // Agent API endpoint for handling AI requests - scoped to specific app
-    app.post('/apps/:appId/agent', async (req, res) => {
+    // Agent API endpoint handler
+    async function agentHandler(req, res) {
       try {
-        // Authentication check — reject unauthenticated requests when users are configured
         const authentication = req.user;
-        if (users && (!authentication || !authentication.isAuthenticated)) {
-          return res.status(401).json({ error: 'Unauthorized' });
-        }
 
         const { message, modelName, conversationId, permissions } = req.body || {};
         const { appId } = req.params;
@@ -326,7 +322,19 @@ module.exports = function(config, options) {
         const errorMessage = error.message || 'Provider error';
         res.status(500).json({ error: `Error: ${errorMessage}` });
       }
-    });
+    }
+
+    // Agent API endpoint — middleware chain: auth check (401) → CSRF validation (403) → handler
+    app.post('/apps/:appId/agent',
+      (req, res, next) => {
+        if (users && (!req.user || !req.user.isAuthenticated)) {
+          return res.status(401).json({ error: 'Unauthorized' });
+        }
+        next();
+      },
+      Authentication.csrfProtection,
+      agentHandler
+    );
 
     /**
      * Database function tools for the AI agent
