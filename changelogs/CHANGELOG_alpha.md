@@ -1,3 +1,10 @@
+## [9.0.1-alpha.5](https://github.com/parse-community/parse-dashboard/compare/9.0.1-alpha.4...9.0.1-alpha.5) (2026-02-20)
+
+
+### Bug Fixes
+
+* Security removal dependency null-loader ([#3230](https://github.com/parse-community/parse-dashboard/issues/3230)) ([5e1b1fa](https://github.com/parse-community/parse-dashboard/commit/5e1b1fa0912c48a5698dc80819a27b85627ef0f3))
+
 ## [9.0.1-alpha.4](https://github.com/parse-community/parse-dashboard/compare/9.0.1-alpha.3...9.0.1-alpha.4) (2026-02-20)
 
 

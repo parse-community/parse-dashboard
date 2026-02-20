@@ -76,7 +76,7 @@ module.exports = {
       },
       {
         test: /\.flow$/,
-        use: 'null-loader',
+        type: 'asset/source',
       },
     ],
   },
