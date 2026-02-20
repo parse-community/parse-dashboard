@@ -77,7 +77,6 @@ module.exports = {
       {
         test: /\.flow$/,
         type: 'asset/source',
-        generator: { emit: false },
       },
     ],
   },
