@@ -113,7 +113,6 @@
     "madge": "8.0.0",
     "marked": "15.0.12",
     "mongodb-runner": "^6.6.0",
-    "null-loader": "4.0.1",
     "parse-server": "9.2.0",
     "prettier": "3.8.1",
     "puppeteer": "24.37.2",
