@@ -29,20 +29,25 @@ function buildSvgSprite(files) {
     const innerMatch = svg.match(/<svg[^>]*>([\s\S]*)<\/svg>/);
     const inner = innerMatch ? innerMatch[1] : '';
 
-    // Strip <style>, <defs>, <title>, <desc> elements and their content
-    // Remove id, fill, class, style, stroke attributes
+    // Strip elements that are unnecessary or potential XSS vectors
+    // Remove attributes that interfere with sprite styling or pose security risks
     const cleaned = inner
       .replace(/<style[\s\S]*?<\/style>/gi, '')
       .replace(/<defs[\s\S]*?<\/defs>/gi, '')
       .replace(/<title[\s\S]*?<\/title>/gi, '')
       .replace(/<desc[\s\S]*?<\/desc>/gi, '')
+      .replace(/<script[\s\S]*?<\/script>/gi, '')
       .replace(/<!--[\s\S]*?-->/g, '')
       .replace(/\s+id="[^"]*"/g, '')
       .replace(/\s+fill="[^"]*"/g, '')
       .replace(/\s+class="[^"]*"/g, '')
       .replace(/\s+style="[^"]*"/g, '')
       .replace(/\s+stroke="[^"]*"/g, '')
-      .replace(/\s+stroke-[a-z]+="[^"]*"/g, '');
+      .replace(/\s+stroke-[a-z]+="[^"]*"/g, '')
+      .replace(/\s+on[a-zA-Z]+="[^"]*"/g, '')
+      .replace(/\s+on[a-zA-Z]+='[^']*'/g, '')
+      .replace(/\s+href="[^"]*"/g, '')
+      .replace(/\s+xlink:href="[^"]*"/g, '');
 
     return `  <symbol id="${name}" viewBox="${viewBox}">\n    ${cleaned.trim()}\n  </symbol>`;
   });
