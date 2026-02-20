@@ -15,7 +15,7 @@ module.exports = defineConfig([
   js.configs.recommended,
   reactPlugin.configs.flat.recommended,
   {
-    files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
+    files: ['**/*.js', '**/*.jsx', '**/*.mjs', '**/*.ts', '**/*.tsx'],
     languageOptions: {
       parser: babelParser,
       parserOptions: {
