@@ -463,29 +463,6 @@ export default class ConfigDialog extends React.Component {
             { detectNonPrintable: effectiveDetectNonPrintable, detectNonAlphanumeric: effectiveDetectNonAlphanumeric, detectRegex: effectiveDetectRegex }
           )}
         />
-        {this.props.conflict && (
-          <Field
-            label={
-              <Label
-                text="Conflict"
-                description="This parameter was modified on the server while you were editing."
-              />
-            }
-            input={
-              <div style={{ width: '100%', padding: '10px', textAlign: 'left', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
-                <div style={{ color: '#cb2431', fontSize: '13px' }}>
-                  Do you want to overwrite the server value with the diff below?
-                </div>
-                <Toggle
-                  type={Toggle.Types.YES_NO}
-                  value={this.state.confirmOverride}
-                  onChange={confirmOverride => this.setState({ confirmOverride })}
-                  additionalStyles={{ margin: '0px' }}
-                />
-              </div>
-            }
-          />
-        )}
         {this.state.showDiff && this.props.param.length > 0 && (
           <Field
             label={
@@ -561,7 +538,21 @@ export default class ConfigDialog extends React.Component {
     const isDiffableType = isJsonType || this.state.type === 'String';
     const isExistingParam = this.props.param && this.props.param.length > 0;
     const customFooter = (
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '17px 28px' }}>
+      <div>
+        {this.props.conflict && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 28px', borderTop: '1px solid #e1e4e8', background: '#ffeef0' }}>
+            <span style={{ color: '#cb2431', fontSize: '13px' }}>
+              Server value changed while editing, see diff view - overwrite it?
+            </span>
+            <Toggle
+              type={Toggle.Types.YES_NO}
+              value={this.state.confirmOverride}
+              onChange={confirmOverride => this.setState({ confirmOverride })}
+              additionalStyles={{ margin: '0px' }}
+            />
+          </div>
+        )}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '17px 28px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           {isJsonType && (
             <>
@@ -615,6 +606,7 @@ export default class ConfigDialog extends React.Component {
             disabled={!this.valid() || this.props.loading || (this.props.conflict && !this.state.confirmOverride)}
           />
         </div>
+      </div>
       </div>
     );
 
