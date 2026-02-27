@@ -10,6 +10,7 @@ import Dropdown from 'components/Dropdown/Dropdown.react';
 import Field from 'components/Field/Field.react';
 import FileInput from 'components/FileInput/FileInput.react';
 import GeoPointInput from 'components/GeoPointInput/GeoPointInput.react';
+import Icon from 'components/Icon/Icon.react';
 import Label from 'components/Label/Label.react';
 import Modal from 'components/Modal/Modal.react';
 import NonPrintableHighlighter, { hasNonPrintableChars, getNonPrintableCharsFromJson, hasNonAlphanumericChars, getNonAlphanumericCharsFromJson, getRegexValidation, getRegexValidationFromJson } from 'components/NonPrintableHighlighter/NonPrintableHighlighter.react';
@@ -18,6 +19,8 @@ import Parse from 'parse';
 import React from 'react';
 import TextInput from 'components/TextInput/TextInput.react';
 import Toggle from 'components/Toggle/Toggle.react';
+import Popover from 'components/Popover/Popover.react';
+import Position from 'lib/Position';
 import Button from 'components/Button/Button.react';
 import JsonEditor from 'components/JsonEditor/JsonEditor.react';
 import validateNumeric from 'lib/validateNumeric';
@@ -120,6 +123,7 @@ export default class ConfigDialog extends React.Component {
 
   constructor(props) {
     super();
+    this.optionsRef = React.createRef();
     this.state = {
       value: null,
       type: 'String',
@@ -129,6 +133,7 @@ export default class ConfigDialog extends React.Component {
       wordWrap: false,
       showDiff: false,
       confirmOverride: false,
+      optionsMenuOpen: false,
       error: null,
       syntaxColors: null,
     };
@@ -334,6 +339,14 @@ export default class ConfigDialog extends React.Component {
       ...(this.props.conflict && this.state.confirmOverride ? { override: true } : {}),
     });
   }
+
+  updateOptionsMenuPos = () => {
+    if (this.optionsRef.current) {
+      const pos = Position.inWindow(this.optionsRef.current);
+      pos.y -= 4;
+      this.setState({ optionsMenuPos: pos });
+    }
+  };
 
   formatValue() {
     const { value, error } = ConfigDialog.formatJSON(this.state.value);
@@ -566,37 +579,58 @@ export default class ConfigDialog extends React.Component {
                   onClick={this.compactValue.bind(this)}
                   disabled={!this.canFormatValue()}
                 />
-                <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
-                  <Toggle
-                    type={Toggle.Types.HIDE_LABELS}
-                    value={this.state.wordWrap}
-                    onChange={wordWrap => this.setState({ wordWrap })}
-                    additionalStyles={{ margin: '0px' }}
-                    colorLeft="#cbcbcb"
-                    colorRight="#00db7c"
-                  />
-                  <span style={{ color: this.state.wordWrap ? '#333' : '#999' }}>Wrap</span>
-                </label>
                 {this.state.error && (
                   <span style={{ color: '#d73a49', fontSize: '13px' }}>{this.state.error}</span>
                 )}
               </>
             )}
-            {isDiffableType && isExistingParam && (
-              <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
-                <Toggle
-                  type={Toggle.Types.HIDE_LABELS}
-                  value={this.state.showDiff}
-                  onChange={showDiff => this.setState({ showDiff })}
-                  additionalStyles={{ margin: '0px' }}
-                  colorLeft="#cbcbcb"
-                  colorRight="#00db7c"
+            {(isJsonType || (isDiffableType && isExistingParam)) && (
+              <div ref={this.optionsRef}>
+                <Button
+                  value="Options &#9662;"
+                  onClick={() => {
+                    const node = this.optionsRef.current;
+                    const pos = Position.inWindow(node);
+                    pos.y -= 4; // small gap above button
+                    this.setState({ optionsMenuOpen: !this.state.optionsMenuOpen, optionsMenuPos: pos });
+                  }}
                 />
-                <span style={{ color: this.state.showDiff ? '#333' : '#999' }}>Diff</span>
-              </label>
+                {this.state.optionsMenuOpen && this.state.optionsMenuPos && (
+                  <Popover
+                    fixed={true}
+                    position={this.state.optionsMenuPos}
+                    onExternalClick={() => { document.activeElement?.blur(); this.setState({ optionsMenuOpen: false }); }}
+                  >
+                    <div style={{ background: '#fff', border: '1px solid #e1e4e8', borderRadius: '4px', boxShadow: '0 3px 12px rgba(0,0,0,0.15)', padding: '4px 0', minWidth: '130px', transform: 'translateY(-100%)' }}>
+                      {isJsonType && (
+                        <div
+                          onClick={() => this.setState({ wordWrap: !this.state.wordWrap }, this.updateOptionsMenuPos)}
+                          style={{ display: 'flex', alignItems: 'center', padding: '8px 12px', cursor: 'pointer', fontSize: '14px', color: '#333', gap: '8px' }}
+                          onMouseEnter={e => e.currentTarget.style.background = '#f6f8fa'}
+                          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                        >
+                          <span style={{ width: '12px', display: 'inline-block' }}>{this.state.wordWrap && <Icon name="check" width={12} height={12} fill="#00db7c" />}</span>
+                          <span>Word wrap</span>
+                        </div>
+                      )}
+                      {isDiffableType && isExistingParam && (
+                        <div
+                          onClick={() => this.setState({ showDiff: !this.state.showDiff }, this.updateOptionsMenuPos)}
+                          style={{ display: 'flex', alignItems: 'center', padding: '8px 12px', cursor: 'pointer', fontSize: '14px', color: '#333', gap: '8px' }}
+                          onMouseEnter={e => e.currentTarget.style.background = '#f6f8fa'}
+                          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                        >
+                          <span style={{ width: '12px', display: 'inline-block' }}>{this.state.showDiff && <Icon name="check" width={12} height={12} fill="#00db7c" />}</span>
+                          <span>Diff view</span>
+                        </div>
+                      )}
+                    </div>
+                  </Popover>
+                )}
+              </div>
             )}
           </div>
-          <div style={{ display: 'flex', gap: '12px', marginLeft: '20px' }}>
+          <div style={{ display: 'flex', gap: '12px' }}>
             <Button value="Cancel" onClick={this.props.onCancel} />
             <Button
               primary={true}

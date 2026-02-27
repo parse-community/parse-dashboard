@@ -81,7 +81,7 @@ export default class MultiSelect extends React.Component {
   render() {
     let popover = null;
     if (this.state.open) {
-      const width = this.dropdownRef.current.clientWidth;
+      const width = this.props.menuWidth || this.dropdownRef.current.clientWidth;
 
       const classes = [styles.menu];
       if (this.props.dense) {
