@@ -196,8 +196,12 @@ const ConfigConflictDiff = ({ serverValue, userValue, type }) => {
   };
 
   const lineStyle = (row) => {
-    if (row.type === 'removed') return styles.lineRemoved;
-    if (row.type === 'added') return styles.lineAdded;
+    if (row.type === 'removed') {
+      return styles.lineRemoved;
+    }
+    if (row.type === 'added') {
+      return styles.lineAdded;
+    }
     return styles.lineContext;
   };
 
