@@ -278,11 +278,12 @@ class Config extends TableView {
           type={Modal.Types.INFO}
           icon="warn-outline"
           title={`Conflict: ${this.confirmData?.name || 'parameter'}`}
+          subtitle="Parameter was modified on the server while editing - compare your changes below to the server version."
           showCancel={false}
-          continueText="Accept server version"
+          continueText="Keep server version"
           showContinue={true}
           onContinue={() => this.setState({ confirmModalOpen: false })}
-          confirmText="Keep my edits"
+          confirmText="Save my changes"
           onConfirm={() => {
             this.setState({ confirmModalOpen: false });
             this.saveParam({
