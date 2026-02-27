@@ -553,60 +553,60 @@ export default class ConfigDialog extends React.Component {
           </div>
         )}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '17px 28px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          {isJsonType && (
-            <>
-              <Button
-                value="Format"
-                onClick={this.formatValue.bind(this)}
-                disabled={!this.canFormatValue()}
-              />
-              <Button
-                value="Compact"
-                onClick={this.compactValue.bind(this)}
-                disabled={!this.canFormatValue()}
-              />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            {isJsonType && (
+              <>
+                <Button
+                  value="Format"
+                  onClick={this.formatValue.bind(this)}
+                  disabled={!this.canFormatValue()}
+                />
+                <Button
+                  value="Compact"
+                  onClick={this.compactValue.bind(this)}
+                  disabled={!this.canFormatValue()}
+                />
+                <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                  <Toggle
+                    type={Toggle.Types.HIDE_LABELS}
+                    value={this.state.wordWrap}
+                    onChange={wordWrap => this.setState({ wordWrap })}
+                    additionalStyles={{ margin: '0px' }}
+                    colorLeft="#cbcbcb"
+                    colorRight="#00db7c"
+                  />
+                  <span style={{ color: this.state.wordWrap ? '#333' : '#999' }}>Wrap</span>
+                </label>
+                {this.state.error && (
+                  <span style={{ color: '#d73a49', fontSize: '13px' }}>{this.state.error}</span>
+                )}
+              </>
+            )}
+            {isDiffableType && isExistingParam && (
               <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
                 <Toggle
                   type={Toggle.Types.HIDE_LABELS}
-                  value={this.state.wordWrap}
-                  onChange={wordWrap => this.setState({ wordWrap })}
+                  value={this.state.showDiff}
+                  onChange={showDiff => this.setState({ showDiff })}
                   additionalStyles={{ margin: '0px' }}
                   colorLeft="#cbcbcb"
                   colorRight="#00db7c"
                 />
-                <span style={{ color: this.state.wordWrap ? '#333' : '#999' }}>Wrap</span>
+                <span style={{ color: this.state.showDiff ? '#333' : '#999' }}>Diff</span>
               </label>
-              {this.state.error && (
-                <span style={{ color: '#d73a49', fontSize: '13px' }}>{this.state.error}</span>
-              )}
-            </>
-          )}
-          {isDiffableType && isExistingParam && (
-            <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
-              <Toggle
-                type={Toggle.Types.HIDE_LABELS}
-                value={this.state.showDiff}
-                onChange={showDiff => this.setState({ showDiff })}
-                additionalStyles={{ margin: '0px' }}
-                colorLeft="#cbcbcb"
-                colorRight="#00db7c"
-              />
-              <span style={{ color: this.state.showDiff ? '#333' : '#999' }}>Diff</span>
-            </label>
-          )}
+            )}
+          </div>
+          <div style={{ display: 'flex', gap: '12px', marginLeft: '20px' }}>
+            <Button value="Cancel" onClick={this.props.onCancel} />
+            <Button
+              primary={true}
+              color="blue"
+              value={newParam ? 'Create' : 'Save'}
+              onClick={this.submit.bind(this)}
+              disabled={!this.valid() || this.props.loading || (this.props.conflict && !this.state.confirmOverride)}
+            />
+          </div>
         </div>
-        <div style={{ display: 'flex', gap: '12px', marginLeft: '20px' }}>
-          <Button value="Cancel" onClick={this.props.onCancel} />
-          <Button
-            primary={true}
-            color="blue"
-            value={newParam ? 'Create' : 'Save'}
-            onClick={this.submit.bind(this)}
-            disabled={!this.valid() || this.props.loading || (this.props.conflict && !this.state.confirmOverride)}
-          />
-        </div>
-      </div>
       </div>
     );
 
