@@ -32,6 +32,7 @@ module.exports = {
     src = src.replace(/from 'stylesheets/g, 'from \'' + relPrefix + 'stylesheets');
     src = src.replace(/from 'lib/g, 'from \'' + relPrefix + 'lib');
     src = src.replace(/from 'components/g, 'from \'' + relPrefix + 'components');
+    src = src.replace(/from 'dashboard/g, 'from \'' + relPrefix + 'dashboard');
 
     // Ignore all files within node_modules
     // babel files can be .js, .es, .jsx or .es6

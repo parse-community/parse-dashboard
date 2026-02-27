@@ -7,6 +7,7 @@
  */
 import { ActionTypes } from 'lib/stores/ConfigStore';
 import Button from 'components/Button/Button.react';
+import ConfigConflictDiff from 'dashboard/Data/Config/ConfigConflictDiff.react';
 import ConfigDialog from 'dashboard/Data/Config/ConfigDialog.react';
 import DeleteParameterDialog from 'dashboard/Data/Config/DeleteParameterDialog.react';
 import AddArrayEntryDialog from 'dashboard/Data/Config/AddArrayEntryDialog.react';
@@ -276,10 +277,12 @@ class Config extends TableView {
         <Modal
           type={Modal.Types.INFO}
           icon="warn-outline"
-          title={'Are you sure?'}
-          confirmText="Continue"
-          cancelText="Cancel"
-          onCancel={() => this.setState({ confirmModalOpen: false })}
+          title={`Conflict: ${this.confirmData?.name || 'parameter'}`}
+          showCancel={false}
+          continueText="Accept server version"
+          showContinue={true}
+          onContinue={() => this.setState({ confirmModalOpen: false })}
+          confirmText="Keep my edits"
           onConfirm={() => {
             this.setState({ confirmModalOpen: false });
             this.saveParam({
@@ -287,11 +290,13 @@ class Config extends TableView {
               override: true,
             });
           }}
+          width={700}
         >
-          <div className={[browserStyles.confirmConfig]}>
-            This parameter changed while you were editing it. If you continue, the latest changes
-            will be lost and replaced with your version. Do you want to proceed?
-          </div>
+          <ConfigConflictDiff
+            serverValue={this.confirmServerValue}
+            userValue={this.confirmData?.value}
+            type={this.confirmData?.type}
+          />
         </Modal>
       );
     }
@@ -549,6 +554,7 @@ class Config extends TableView {
           type,
           masterKeyOnly,
         };
+        this.confirmServerValue = currentValueAfter;
         return;
       }
 

@@ -26,6 +26,7 @@ import semver from 'semver/preload.js';
 import { dateStringUTC } from 'lib/DateUtils';
 import LoaderContainer from 'components/LoaderContainer/LoaderContainer.react';
 import ServerConfigStorage from 'lib/ServerConfigStorage';
+import ConfigConflictDiff from 'dashboard/Data/Config/ConfigConflictDiff.react';
 import { CurrentApp } from 'context/currentApp';
 
 const FORMATTING_CONFIG_KEY = 'config.formatting.syntax';
@@ -126,6 +127,7 @@ export default class ConfigDialog extends React.Component {
       masterKeyOnly: false,
       selectedIndex: null,
       wordWrap: false,
+      showDiff: false,
       error: null,
       syntaxColors: null,
     };
@@ -142,6 +144,7 @@ export default class ConfigDialog extends React.Component {
         masterKeyOnly: props.masterKeyOnly,
         selectedIndex: 0,
         wordWrap: false,
+        showDiff: false,
         error: initialError,
         syntaxColors: null,
       };
@@ -449,6 +452,27 @@ export default class ConfigDialog extends React.Component {
             { detectNonPrintable: effectiveDetectNonPrintable, detectNonAlphanumeric: effectiveDetectNonAlphanumeric, detectRegex: effectiveDetectRegex }
           )}
         />
+        {this.state.showDiff && this.props.param.length > 0 && (
+          <Field
+            label={
+              <Label
+                text="Diff"
+                description="Changes compared to the saved version."
+              />
+            }
+            input={
+              <ConfigConflictDiff
+                serverValue={
+                  (this.state.type === 'Object' || this.state.type === 'Array')
+                    ? (() => { try { return JSON.parse(this.props.value); } catch { return this.props.value; } })()
+                    : this.props.value
+                }
+                userValue={this.state.value}
+                type={this.state.type}
+              />
+            }
+          />
+        )}
 
         {
           /*
@@ -500,6 +524,8 @@ export default class ConfigDialog extends React.Component {
     );
 
     const isJsonType = this.state.type === 'Object' || this.state.type === 'Array';
+    const isDiffableType = isJsonType || this.state.type === 'String';
+    const isExistingParam = this.props.param && this.props.param.length > 0;
     const customFooter = (
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '17px 28px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
@@ -515,7 +541,7 @@ export default class ConfigDialog extends React.Component {
                 onClick={this.compactValue.bind(this)}
                 disabled={!this.canFormatValue()}
               />
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
                 <Toggle
                   type={Toggle.Types.HIDE_LABELS}
                   value={this.state.wordWrap}
@@ -531,8 +557,21 @@ export default class ConfigDialog extends React.Component {
               )}
             </>
           )}
+          {isDiffableType && isExistingParam && (
+            <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+              <Toggle
+                type={Toggle.Types.HIDE_LABELS}
+                value={this.state.showDiff}
+                onChange={showDiff => this.setState({ showDiff })}
+                additionalStyles={{ margin: '0px' }}
+                colorLeft="#cbcbcb"
+                colorRight="#00db7c"
+              />
+              <span style={{ color: this.state.showDiff ? '#333' : '#999' }}>Diff</span>
+            </label>
+          )}
         </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div style={{ display: 'flex', gap: '12px', marginLeft: '20px' }}>
           <Button value="Cancel" onClick={this.props.onCancel} />
           <Button
             primary={true}

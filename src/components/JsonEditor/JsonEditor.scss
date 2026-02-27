@@ -90,7 +90,7 @@
 .inputLayer {
   display: block;
   width: 100%;
-  min-width: calc(var(--modal-min-width) * (1 - var(--modal-label-ratio)));
+  min-width: 100%;
   background: transparent;
   color: transparent;
   caret-color: #333;
