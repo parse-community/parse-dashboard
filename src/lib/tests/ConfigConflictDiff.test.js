@@ -34,7 +34,6 @@ describe('ConfigConflictDiff', () => {
         serverValue="hello"
         userValue="world"
         type="String"
-        paramName="greeting"
       />
     );
     const tree = component.toJSON();
@@ -49,7 +48,6 @@ describe('ConfigConflictDiff', () => {
         serverValue={{ key: 'old' }}
         userValue='{"key": "new"}'
         type="Object"
-        paramName="config"
       />
     );
     const tree = component.toJSON();
@@ -62,7 +60,6 @@ describe('ConfigConflictDiff', () => {
         serverValue=""
         userValue=""
         type="String"
-        paramName="test"
       />
     );
     const tree = component.toJSON();
@@ -76,7 +73,6 @@ describe('ConfigConflictDiff', () => {
         serverValue={true}
         userValue={false}
         type="Boolean"
-        paramName="flag"
       />
     );
     const tree = component.toJSON();
@@ -89,7 +85,6 @@ describe('ConfigConflictDiff', () => {
         serverValue={42}
         userValue={99}
         type="Number"
-        paramName="count"
       />
     );
     const tree = component.toJSON();
