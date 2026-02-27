@@ -518,7 +518,7 @@ class Config extends TableView {
 
         if (override) {
           // Re-check: has the server value changed again since the user confirmed?
-          const serverValueChanged = this.state.modalValue !== conflictServerValue;
+          const serverValueChanged = !equal(this.state.modalValue, conflictServerValue);
           if (serverValueChanged) {
             this.setState({
               modalConflict: true,
