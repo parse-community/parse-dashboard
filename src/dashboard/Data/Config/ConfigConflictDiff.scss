@@ -1,9 +1,8 @@
 .container {
-  border: 1px solid #d1d5da;
-  border-radius: 4px;
-  margin: 12px 20px;
+  width: 100%;
   overflow: auto;
   max-height: 400px;
+  text-align: left;
 }
 
 .table {
@@ -58,20 +57,6 @@
 .charAdded {
   background-color: #abf2bc;
   border-radius: 2px;
-}
-
-.header {
-  padding: 8px 16px;
-  background-color: #fafbfc;
-  border-bottom: 1px solid #d1d5da;
-  font-size: 13px;
-  color: #24292e;
-  display: flex;
-  justify-content: space-between;
-}
-
-.headerLabel {
-  font-weight: 600;
 }
 
 .emptyDiff {

@@ -203,10 +203,6 @@ const ConfigConflictDiff = ({ serverValue, userValue, type }) => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <span className={styles.headerLabel}>Server version</span>
-        <span className={styles.headerLabel}>Your edits</span>
-      </div>
       <table className={styles.table}>
         <tbody>
           {rows.map((row, idx) => (
