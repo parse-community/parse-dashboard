@@ -6,12 +6,12 @@
  * the root directory of this source tree.
  */
 .container {
+  contain: inline-size;
   width: 100%;
-  min-width: 100%;
+  min-width: 0;
   overflow: auto;
   height: 200px;
   min-height: 80px;
-  resize: both;
   text-align: left;
 }
 
