@@ -39,8 +39,8 @@ describe('ConfigConflictDiff', () => {
     );
     const tree = component.toJSON();
     expect(tree).toBeTruthy();
-    // Should have header + table children
-    expect(tree.children.length).toBe(2);
+    // Should have table child
+    expect(tree.children.length).toBe(1);
   });
 
   it('renders a diff for changed object values', () => {

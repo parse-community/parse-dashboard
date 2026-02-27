@@ -128,6 +128,7 @@ export default class ConfigDialog extends React.Component {
       selectedIndex: null,
       wordWrap: false,
       showDiff: false,
+      confirmOverride: false,
       error: null,
       syntaxColors: null,
     };
@@ -145,6 +146,7 @@ export default class ConfigDialog extends React.Component {
         selectedIndex: 0,
         wordWrap: false,
         showDiff: false,
+        confirmOverride: false,
         error: initialError,
         syntaxColors: null,
       };
@@ -329,6 +331,7 @@ export default class ConfigDialog extends React.Component {
       type: this.state.type,
       value: GET_VALUE[this.state.type](this.state.value),
       masterKeyOnly: this.state.masterKeyOnly,
+      ...(this.props.conflict && this.state.confirmOverride ? { override: true } : {}),
     });
   }
 
@@ -361,8 +364,16 @@ export default class ConfigDialog extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    // Update parameter value or masterKeyOnly if they have changed
-    if (this.props.value !== prevProps.value || this.props.masterKeyOnly !== prevProps.masterKeyOnly) {
+    // When a conflict is detected (or server value changes during conflict),
+    // don't reset the editor value — preserve user edits.
+    // Auto-enable the Diff toggle and reset the override confirmation.
+    if (this.props.conflict && (!prevProps.conflict || this.props.value !== prevProps.value)) {
+      this.setState({ showDiff: true, confirmOverride: false });
+      return;
+    }
+
+    // Update parameter value or masterKeyOnly if they have changed (non-conflict)
+    if (!this.props.conflict && (this.props.value !== prevProps.value || this.props.masterKeyOnly !== prevProps.masterKeyOnly)) {
       let updatedValue = this.props.value;
       let error = null;
 
@@ -452,6 +463,29 @@ export default class ConfigDialog extends React.Component {
             { detectNonPrintable: effectiveDetectNonPrintable, detectNonAlphanumeric: effectiveDetectNonAlphanumeric, detectRegex: effectiveDetectRegex }
           )}
         />
+        {this.props.conflict && (
+          <Field
+            label={
+              <Label
+                text="Conflict"
+                description="This parameter was modified on the server while you were editing."
+              />
+            }
+            input={
+              <div style={{ width: '100%', padding: '10px', textAlign: 'left', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+                <div style={{ color: '#cb2431', fontSize: '13px' }}>
+                  Do you want to overwrite the server value with the diff below?
+                </div>
+                <Toggle
+                  type={Toggle.Types.YES_NO}
+                  value={this.state.confirmOverride}
+                  onChange={confirmOverride => this.setState({ confirmOverride })}
+                  additionalStyles={{ margin: '0px' }}
+                />
+              </div>
+            }
+          />
+        )}
         {this.state.showDiff && this.props.param.length > 0 && (
           <Field
             label={
@@ -578,7 +612,7 @@ export default class ConfigDialog extends React.Component {
             color="blue"
             value={newParam ? 'Create' : 'Save'}
             onClick={this.submit.bind(this)}
-            disabled={!this.valid() || this.props.loading}
+            disabled={!this.valid() || this.props.loading || (this.props.conflict && !this.state.confirmOverride)}
           />
         </div>
       </div>
@@ -592,7 +626,7 @@ export default class ConfigDialog extends React.Component {
         iconSize={30}
         subtitle={'Dynamically configure parts of your app'}
         customFooter={customFooter}
-        disabled={!this.valid() || this.props.loading}
+        disabled={!this.valid() || this.props.loading || (this.props.conflict && !this.state.confirmOverride)}
         onCancel={this.props.onCancel}
         onConfirm={this.submit.bind(this)}
       >

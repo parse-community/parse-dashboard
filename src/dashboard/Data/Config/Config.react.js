@@ -7,7 +7,6 @@
  */
 import { ActionTypes } from 'lib/stores/ConfigStore';
 import Button from 'components/Button/Button.react';
-import ConfigConflictDiff from 'dashboard/Data/Config/ConfigConflictDiff.react';
 import ConfigDialog from 'dashboard/Data/Config/ConfigDialog.react';
 import DeleteParameterDialog from 'dashboard/Data/Config/DeleteParameterDialog.react';
 import AddArrayEntryDialog from 'dashboard/Data/Config/AddArrayEntryDialog.react';
@@ -25,7 +24,6 @@ import Toolbar from 'components/Toolbar/Toolbar.react';
 import browserStyles from 'dashboard/Data/Browser/Browser.scss';
 import configStyles from 'dashboard/Data/Config/Config.scss';
 import { CurrentApp } from 'context/currentApp';
-import Modal from 'components/Modal/Modal.react';
 import equal from 'fast-deep-equal';
 import Notification from 'dashboard/Data/Browser/Notification.react';
 import ServerConfigStorage from 'lib/ServerConfigStorage';
@@ -47,7 +45,7 @@ class Config extends TableView {
       modalValue: '',
       modalMasterKeyOnly: false,
       loading: false,
-      confirmModalOpen: false,
+      modalConflict: false,
       lastError: null,
       lastNote: null,
       showAddEntryDialog: false,
@@ -221,11 +219,12 @@ class Config extends TableView {
       extras = (
         <ConfigDialog
           onConfirm={this.saveParam.bind(this)}
-          onCancel={() => this.setState({ modalOpen: false })}
+          onCancel={() => this.setState({ modalOpen: false, modalConflict: false })}
           param={this.state.modalParam}
           type={this.state.modalType}
           value={this.state.modalValue}
           masterKeyOnly={this.state.modalMasterKeyOnly}
+          conflict={this.state.modalConflict}
           parseServerVersion={this.context.serverInfo?.parseServerVersion}
           loading={this.state.loading}
           configHistory={this.state.currentParamHistory}
@@ -272,35 +271,6 @@ class Config extends TableView {
       );
     }
 
-    if (this.state.confirmModalOpen) {
-      extras = (
-        <Modal
-          type={Modal.Types.INFO}
-          icon="warn-outline"
-          title={`Conflict: ${this.confirmData?.name || 'parameter'}`}
-          subtitle="Parameter was modified on the server while editing - compare your changes below to the server version."
-          showCancel={false}
-          continueText="Keep server version"
-          showContinue={true}
-          onContinue={() => this.setState({ confirmModalOpen: false })}
-          confirmText="Save my changes"
-          onConfirm={() => {
-            this.setState({ confirmModalOpen: false });
-            this.saveParam({
-              ...this.confirmData,
-              override: true,
-            });
-          }}
-          width={700}
-        >
-          <ConfigConflictDiff
-            serverValue={this.confirmServerValue}
-            userValue={this.confirmData?.value}
-            type={this.confirmData?.type}
-          />
-        </Modal>
-      );
-    }
     let notification = null;
     if (this.state.lastError) {
       notification = <Notification note={this.state.lastError} isErrorNote={true} />;
@@ -543,20 +513,28 @@ class Config extends TableView {
       const currentValueAfter = fetchedParamsAfter.get(name);
       const valuesAreEqual = equal(currentValue, currentValueAfter);
 
-      if (!valuesAreEqual && !override) {
-        this.setState({
-          confirmModalOpen: true,
-          modalOpen: false,
-          loading: false,
-        });
-        this.confirmData = {
-          name,
-          value,
-          type,
-          masterKeyOnly,
-        };
-        this.confirmServerValue = currentValueAfter;
-        return;
+      if (!valuesAreEqual) {
+        const { modalValue: conflictServerValue } = this.parseValueForModal(currentValueAfter);
+
+        if (override) {
+          // Re-check: has the server value changed again since the user confirmed?
+          const serverValueChanged = this.state.modalValue !== conflictServerValue;
+          if (serverValueChanged) {
+            this.setState({
+              modalConflict: true,
+              modalValue: conflictServerValue,
+              loading: false,
+            });
+            return;
+          }
+        } else {
+          this.setState({
+            modalConflict: true,
+            modalValue: conflictServerValue,
+            loading: false,
+          });
+          return;
+        }
       }
 
       await this.props.config.dispatch(ActionTypes.SET, {
@@ -574,7 +552,7 @@ class Config extends TableView {
         this.cacheData.set('masterKeyOnly', masterKeyOnlyParams);
       }
 
-      this.setState({ modalOpen: false });
+      this.setState({ modalOpen: false, modalConflict: false });
 
       // Update config history in localStorage
       let transformedValue = value;
