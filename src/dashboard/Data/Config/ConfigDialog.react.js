@@ -604,7 +604,7 @@ export default class ConfigDialog extends React.Component {
                     <div style={{ background: '#fff', border: '1px solid #e1e4e8', borderRadius: '4px', boxShadow: '0 3px 12px rgba(0,0,0,0.15)', padding: '4px 0', minWidth: '130px', transform: 'translateY(-100%)' }}>
                       {isJsonType && (
                         <div
-                          onClick={() => this.setState({ wordWrap: !this.state.wordWrap }, this.updateOptionsMenuPos)}
+                          onClick={() => { document.activeElement?.blur(); this.setState({ wordWrap: !this.state.wordWrap, optionsMenuOpen: false }); }}
                           style={{ display: 'flex', alignItems: 'center', padding: '8px 12px', cursor: 'pointer', fontSize: '14px', color: '#333', gap: '8px' }}
                           onMouseEnter={e => e.currentTarget.style.background = '#f6f8fa'}
                           onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
@@ -615,7 +615,7 @@ export default class ConfigDialog extends React.Component {
                       )}
                       {isDiffableType && isExistingParam && (
                         <div
-                          onClick={() => this.setState({ showDiff: !this.state.showDiff }, this.updateOptionsMenuPos)}
+                          onClick={() => { document.activeElement?.blur(); this.setState({ showDiff: !this.state.showDiff, optionsMenuOpen: false }); }}
                           style={{ display: 'flex', alignItems: 'center', padding: '8px 12px', cursor: 'pointer', fontSize: '14px', color: '#333', gap: '8px' }}
                           onMouseEnter={e => e.currentTarget.style.background = '#f6f8fa'}
                           onMouseLeave={e => e.currentTarget.style.background = 'transparent'}

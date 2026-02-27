@@ -11,11 +11,6 @@
   position: relative;
   display: inline-block;
   width: 100%;
-  min-width: calc(var(--modal-min-width) * (1 - var(--modal-label-ratio)));
-  height: 200px;
-  min-height: 80px;
-  resize: both;
-  overflow: hidden;
   font-family: 'Source Code Pro', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
   font-size: 15px;
   line-height: 1.5;
@@ -95,11 +90,14 @@
 .inputLayer {
   display: block;
   width: 100%;
-  height: 100%;
+  min-width: calc(var(--modal-min-width) * (1 - var(--modal-label-ratio)));
   background: transparent;
   color: transparent;
   caret-color: #333;
+  resize: both;
   outline: none;
+  min-height: 80px;
+  height: 200px;
   overflow: auto;
 
   &::placeholder {
