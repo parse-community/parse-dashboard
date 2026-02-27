@@ -1,7 +1,10 @@
 .container {
   width: 100%;
+  min-width: 100%;
   overflow: auto;
-  max-height: 400px;
+  height: 200px;
+  min-height: 80px;
+  resize: both;
   text-align: left;
 }
 
