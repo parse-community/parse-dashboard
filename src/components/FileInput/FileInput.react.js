@@ -44,7 +44,7 @@ export default class FileInput extends React.Component {
     if (this.props.accept) {
       inputProps.accept = this.props.accept;
     }
-    const label = this.renderLabel();
+    const label = this.props.buttonText ? null : this.renderLabel();
     const buttonStyles = [styles.button];
     if (this.props.disabled || this.props.uploading) {
       buttonStyles.push(styles.disabled);
@@ -58,6 +58,8 @@ export default class FileInput extends React.Component {
         <div className={buttonStyles.join(' ')}>
           {this.props.uploading ? (
             <div className={styles.spinner}></div>
+          ) : this.props.buttonText ? (
+            <span>{this.props.buttonText}</span>
           ) : label ? (
             <span>Change file</span>
           ) : (

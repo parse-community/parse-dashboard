@@ -137,6 +137,7 @@ export default class ImportDataDialog extends React.Component {
               value={this.state.file}
               onChange={file => this.handleFileChange(file)}
               accept=".json,.csv"
+              buttonText={this.state.file ? this.state.file.name : undefined}
             />
           }
         />
