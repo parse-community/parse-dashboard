@@ -27,10 +27,6 @@ export default class DateTimeEditor extends React.Component {
     this.editorRef = React.createRef();
   }
 
-  componentWillReceiveProps(props) {
-    this.setState({ value: props.value, text: props.value.toISOString() });
-  }
-
   componentDidMount() {
     document.body.addEventListener('click', this.checkExternalClick);
     document.body.addEventListener('touchend', this.checkExternalClick);
