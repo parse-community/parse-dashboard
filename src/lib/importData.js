@@ -24,6 +24,15 @@ export function parseImportJSON(content) {
   if (parsed.length === 0) {
     return { rows: null, error: 'The array is empty. Nothing to import.' };
   }
+  const invalidRowIndex = parsed.findIndex(
+    row => !row || typeof row !== 'object' || Array.isArray(row)
+  );
+  if (invalidRowIndex !== -1) {
+    return {
+      rows: null,
+      error: `Row ${invalidRowIndex + 1} is not an object.`,
+    };
+  }
   return { rows: parsed, error: null };
 }
 
