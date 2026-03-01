@@ -44,6 +44,7 @@ const BrowserToolbar = ({
   onCloneSelectedRows,
   onExportSelectedRows,
   onExportSchema,
+  onImport,
   onExport,
   onRemoveColumn,
   onDeleteRows,
@@ -378,7 +379,7 @@ const BrowserToolbar = ({
       {onAddRow && <div className={styles.toolbarSeparator} />}
       {onAddRow && (
         <BrowserMenu
-          title="Export"
+          title="Data"
           icon="down-solid"
           disabled={isUnique || isPendingEditCloneRows}
           setCurrent={setCurrent}
@@ -390,6 +391,8 @@ const BrowserToolbar = ({
           />
           <MenuItem text={'Export all rows'} onClick={() => onExportSelectedRows({ '*': true })} />
           <MenuItem text={'Export schema'} onClick={() => onExportSchema()} />
+          <Separator />
+          <MenuItem text={`Import into ${className}`} onClick={() => onImport()} />
         </BrowserMenu>
       )}
       {onAddRow && <div className={styles.toolbarSeparator} />}

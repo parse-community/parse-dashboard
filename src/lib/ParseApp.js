@@ -32,6 +32,7 @@ export default class ParseApp {
     dashboardURL,
     javascriptKey,
     masterKey,
+    maintenanceKey,
     restKey,
     windowsKey,
     webhookKey,
@@ -63,6 +64,7 @@ export default class ParseApp {
     this.clientKey = clientKey;
     this.javascriptKey = javascriptKey;
     this.masterKey = masterKey;
+    this.maintenanceKey = maintenanceKey;
     this.restKey = restKey;
     this.windowsKey = windowsKey;
     this.webhookKey = webhookKey;

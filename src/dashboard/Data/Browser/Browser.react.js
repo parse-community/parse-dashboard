@@ -24,6 +24,14 @@ import ScriptResponseModal from 'dashboard/Data/Browser/ScriptResponseModal.reac
 import ExportDialog from 'dashboard/Data/Browser/ExportDialog.react';
 import ExportSchemaDialog from 'dashboard/Data/Browser/ExportSchemaDialog.react';
 import ExportSelectedRowsDialog from 'dashboard/Data/Browser/ExportSelectedRowsDialog.react';
+import ImportDataDialog from 'dashboard/Data/Browser/ImportDataDialog.react';
+import {
+  parseImportJSON,
+  parseImportCSV,
+  buildBatchRequests,
+  sendBatchImport,
+  checkDuplicates,
+} from 'lib/importData';
 import Notification from 'dashboard/Data/Browser/Notification.react';
 import PointerKeyDialog from 'dashboard/Data/Browser/PointerKeyDialog.react';
 import RemoveColumnDialog from 'dashboard/Data/Browser/RemoveColumnDialog.react';
@@ -152,6 +160,7 @@ class Browser extends DashboardView {
       showPointerKeyDialog: false,
       rowsToDelete: null,
       rowsToExport: null,
+      showImportDialog: false,
 
       relation: null,
       counts: {},
@@ -255,6 +264,9 @@ class Browser extends DashboardView {
     this.showExportSchemaDialog = this.showExportSchemaDialog.bind(this);
     this.confirmExportSelectedRows = this.confirmExportSelectedRows.bind(this);
     this.cancelExportSelectedRows = this.cancelExportSelectedRows.bind(this);
+    this.showImportDialog = this.showImportDialog.bind(this);
+    this.confirmImport = this.confirmImport.bind(this);
+    this.cancelImportDialog = this.cancelImportDialog.bind(this);
     this.getClassRelationColumns = this.getClassRelationColumns.bind(this);
     this.showCreateClass = this.showCreateClass.bind(this);
     this.refresh = this.refresh.bind(this);
@@ -302,6 +314,8 @@ class Browser extends DashboardView {
 
     // Map of objectId -> promise for ongoing info panel cloud function requests
     this.infoPanelQueries = {};
+
+    this.importDialogRef = null;
 
     this.dataBrowserRef = React.createRef();
 
@@ -2071,6 +2085,7 @@ class Browser extends DashboardView {
       this.state.showEditRowDialog ||
       this.state.showPermissionsDialog ||
       this.state.showExportSelectedRowsDialog ||
+      this.state.showImportDialog ||
       this.state.showAddToConfigDialog
     );
   }
@@ -2418,6 +2433,143 @@ class Browser extends DashboardView {
     this.setState({
       showExportSchemaDialog: true,
     });
+  }
+
+  showImportDialog() {
+    this.setState({ showImportDialog: true });
+  }
+
+  cancelImportDialog() {
+    this.setState({ showImportDialog: false });
+    this.refresh();
+  }
+
+  async confirmImport(importOptions) {
+    const className = this.props.params.className;
+    const classColumns = this.getClassColumns(className, false);
+    const schema = {};
+    classColumns.forEach(column => {
+      schema[column.name] = column;
+    });
+    const knownColumns = classColumns.map(c => c.name);
+
+    const dialogRef = this.importDialogRef;
+
+    // Parse the file
+    let parseResult;
+    if (importOptions.fileType === '.json') {
+      parseResult = parseImportJSON(importOptions.content);
+    } else {
+      parseResult = parseImportCSV(importOptions.content, schema);
+    }
+
+    if (parseResult.error) {
+      this.showNote(parseResult.error, true);
+      return;
+    }
+
+    // Check for unknown columns if fail mode
+    if (importOptions.unknownColumns === 'fail') {
+      const unknownCols = [];
+      for (const row of parseResult.rows) {
+        for (const key of Object.keys(row)) {
+          if (!knownColumns.includes(key) && !unknownCols.includes(key)) {
+            unknownCols.push(key);
+          }
+        }
+      }
+      if (unknownCols.length > 0) {
+        this.showNote(`Unknown columns found: ${unknownCols.join(', ')}. Import aborted.`, true);
+        return;
+      }
+    }
+
+    try {
+      // Track rows before duplicate filtering for skip count
+      const totalRowsBefore = parseResult.rows.length;
+
+      // Check for duplicates if needed
+      if (importOptions.preserveObjectIds && importOptions.duplicateHandling !== 'overwrite') {
+        const objectIds = parseResult.rows
+          .map(r => r.objectId)
+          .filter(Boolean);
+
+        if (objectIds.length > 0) {
+          const existing = await checkDuplicates(objectIds, className, {
+            serverURL: this.context.serverURL,
+            applicationId: this.context.applicationId,
+            masterKey: this.context.masterKey,
+          });
+
+          if (importOptions.duplicateHandling === 'fail' && existing.length > 0) {
+            this.showNote(
+              `Duplicate objectIds found: ${existing.slice(0, 5).join(', ')}${existing.length > 5 ? '...' : ''}. Import aborted.`,
+              true
+            );
+            return;
+          }
+
+          if (importOptions.duplicateHandling === 'skip') {
+            const existingSet = new Set(existing);
+            parseResult.rows = parseResult.rows.filter(r => !existingSet.has(r.objectId));
+            if (parseResult.rows.length === 0) {
+              this.showNote('All rows already exist. Nothing to import.', true);
+              return;
+            }
+          }
+        }
+      }
+
+      const skippedCount = totalRowsBefore - parseResult.rows.length;
+
+      // Build batch requests
+      const requests = buildBatchRequests(parseResult.rows, className, {
+        preserveObjectIds: importOptions.preserveObjectIds,
+        preserveTimestamps: importOptions.preserveTimestamps,
+        duplicateHandling: importOptions.duplicateHandling,
+        unknownColumns: importOptions.unknownColumns,
+        knownColumns,
+      });
+
+      // Set dialog to importing state
+      if (dialogRef) {
+        dialogRef.setImporting();
+      }
+
+      // Send batch import
+      const results = await sendBatchImport(requests, {
+        serverURL: this.context.serverURL,
+        applicationId: this.context.applicationId,
+        masterKey: this.context.masterKey,
+        maintenanceKey: importOptions.preserveTimestamps ? this.context.maintenanceKey : undefined,
+        continueOnError: importOptions.continueOnError,
+        onProgress: (progress) => {
+          if (dialogRef) {
+            dialogRef.setProgress(progress);
+          }
+        },
+      });
+
+      // Show results in dialog with skip count included
+      if (dialogRef) {
+        dialogRef.setResults({
+          ...results,
+          skipped: results.skipped + skippedCount,
+        });
+      }
+    } catch (error) {
+      const msg = typeof error === 'string' ? error : error.message;
+      this.showNote(msg || 'Import failed due to a network error.', true);
+      if (dialogRef) {
+        dialogRef.setResults({
+          imported: 0,
+          skipped: 0,
+          failed: 0,
+          errors: [],
+          stopped: true,
+        });
+      }
+    }
   }
 
   cancelExportSelectedRows() {
@@ -2957,6 +3109,7 @@ class Browser extends DashboardView {
               onEditPermissions={this.onDialogToggle}
               onExportSelectedRows={this.showExportSelectedRowsDialog}
               onExportSchema={this.showExportSchemaDialog}
+              onImport={this.showImportDialog}
               onSaveNewRow={this.saveNewRow}
               onShowPointerKey={this.showPointerKeyDialog}
               onAbortAddRow={this.abortAddRow}
@@ -3245,6 +3398,16 @@ class Browser extends DashboardView {
           onConfirm={(type, indentation) =>
             this.confirmExportSelectedRows(this.state.rowsToExport, type, indentation)
           }
+        />
+      );
+    } else if (this.state.showImportDialog) {
+      extras = (
+        <ImportDataDialog
+          ref={(ref) => { this.importDialogRef = ref; }}
+          className={className}
+          maintenanceKey={this.context.maintenanceKey}
+          onCancel={this.cancelImportDialog}
+          onConfirm={this.confirmImport}
         />
       );
     } else if (this.state.showAddToConfigDialog) {

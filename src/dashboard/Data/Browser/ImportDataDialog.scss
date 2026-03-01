@@ -1,0 +1,80 @@
+.row {
+  display: block;
+  position: relative;
+  min-height: 50px;
+  padding: 10px 24px;
+  border-bottom: 1px solid #e0e0e1;
+}
+
+.label {
+  line-height: 16px;
+}
+
+.warning {
+  color: #F5A623;
+  font-size: 12px;
+  padding: 4px 24px 8px;
+}
+
+.error {
+  color: #FF395E;
+  font-size: 12px;
+  padding: 4px 24px 8px;
+}
+
+.results {
+  padding: 16px 24px;
+}
+
+.resultSuccess {
+  color: #00DB7C;
+  font-size: 14px;
+  padding: 2px 0;
+}
+
+.resultFail {
+  color: #FF395E;
+  font-size: 14px;
+  padding: 2px 0;
+}
+
+.resultSkip {
+  color: #F5A623;
+  font-size: 14px;
+  padding: 2px 0;
+}
+
+.progressBarContainer {
+  width: 100%;
+  background-color: #e0e0e1;
+  border-radius: 4px;
+  margin: 16px 24px;
+  overflow: hidden;
+  height: 8px;
+  max-width: calc(100% - 48px);
+}
+
+.progressBar {
+  height: 100%;
+  background-color: #169CEE;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.fileInfo {
+  color: #8E9299;
+  font-size: 12px;
+  padding: 4px 24px 8px;
+}
+
+.disabledToggle {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.tooltip {
+  font-size: 12px;
+  font-style: italic;
+  color: #8E9299;
+  padding: 4px 24px 8px;
+}
