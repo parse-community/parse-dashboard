@@ -2453,8 +2453,6 @@ class Browser extends DashboardView {
     });
     const knownColumns = classColumns.map(c => c.name);
 
-    const dialogRef = this.importDialogRef;
-
     // Parse the file
     let parseResult;
     if (importOptions.fileType === '.json') {
@@ -2532,8 +2530,8 @@ class Browser extends DashboardView {
       });
 
       // Set dialog to importing state
-      if (dialogRef) {
-        dialogRef.setImporting();
+      if (this.importDialogRef) {
+        this.importDialogRef.setImporting();
       }
 
       // Send batch import
@@ -2544,15 +2542,15 @@ class Browser extends DashboardView {
         maintenanceKey: importOptions.preserveTimestamps ? this.context.maintenanceKey : undefined,
         continueOnError: importOptions.continueOnError,
         onProgress: (progress) => {
-          if (dialogRef) {
-            dialogRef.setProgress(progress);
+          if (this.importDialogRef) {
+            this.importDialogRef.setProgress(progress);
           }
         },
       });
 
       // Show results in dialog with skip count included
-      if (dialogRef) {
-        dialogRef.setResults({
+      if (this.importDialogRef) {
+        this.importDialogRef.setResults({
           ...results,
           skipped: results.skipped + skippedCount,
         });
@@ -2560,8 +2558,8 @@ class Browser extends DashboardView {
     } catch (error) {
       const msg = typeof error === 'string' ? error : error.message;
       this.showNote(msg || 'Import failed due to a network error.', true);
-      if (dialogRef) {
-        dialogRef.setResults({
+      if (this.importDialogRef) {
+        this.importDialogRef.setResults({
           imported: 0,
           skipped: 0,
           failed: 0,
