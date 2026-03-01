@@ -82,6 +82,7 @@ export default class ImportDataDialog extends React.Component {
     if (!file) {
       return;
     }
+    this.setState({ importing: true, progress: null, fileError: null });
     const reader = new FileReader();
     reader.onload = (e) => {
       const content = e.target.result;
@@ -94,6 +95,12 @@ export default class ImportDataDialog extends React.Component {
         duplicateHandling: this.state.duplicateHandling,
         unknownColumns: this.state.unknownColumns,
         continueOnError: this.state.continueOnError,
+      });
+    };
+    reader.onerror = () => {
+      this.setState({
+        importing: false,
+        fileError: 'Failed to read the selected file. Please try again.',
       });
     };
     reader.readAsText(file);
