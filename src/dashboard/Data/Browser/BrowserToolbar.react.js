@@ -391,8 +391,12 @@ const BrowserToolbar = ({
           />
           <MenuItem text={'Export all rows'} onClick={() => onExportSelectedRows({ '*': true })} />
           <MenuItem text={'Export schema'} onClick={() => onExportSchema()} />
-          <Separator />
-          <MenuItem text={'Import'} onClick={() => onImport()} />
+          {!relation && (
+            <>
+              <Separator />
+              <MenuItem text={'Import'} onClick={() => onImport()} />
+            </>
+          )}
         </BrowserMenu>
       )}
       {onAddRow && <div className={styles.toolbarSeparator} />}
