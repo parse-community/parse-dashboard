@@ -1757,7 +1757,7 @@ The import dialog provides the following options:
 | Option | Description |
 |---|---|
 | Preserve object IDs | Use `objectId` values from the file instead of generating new ones. Requires the server option `allowCustomObjectId`. |
-| Preserve timestamps | Use `createdAt` / `updatedAt` from the file. Requires a `maintenanceKey` to be configured. |
+| Preserve timestamps | Use `createdAt` / `updatedAt` from the file. Requires `apps[].maintenanceKey` in the dashboard config. |
 | Duplicate handling | When preserving object IDs: overwrite, skip, or fail on duplicates. |
 | Unknown columns | Auto-create new columns, ignore them, or fail on unknown columns. |
 | Continue on errors | Skip failing rows and continue, or stop on the first error. |
