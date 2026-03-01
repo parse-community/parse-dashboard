@@ -103,7 +103,7 @@ export function monthsFrom(date, delta) {
 }
 
 export function dateStringUTC(date) {
-  return date.toLocaleDateString('en-US', {
+  return date.toLocaleDateString('en-GB', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
