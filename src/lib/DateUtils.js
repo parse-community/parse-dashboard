@@ -103,25 +103,17 @@ export function monthsFrom(date, delta) {
 }
 
 export function dateStringUTC(date) {
-  let full =
-    String(date.getUTCDate()) +
-    ' ' +
-    shortMonth(date.getUTCMonth()) +
-    ' ' +
-    String(date.getUTCFullYear()) +
-    ' at ';
-  const time = {
-    hours: String(date.getUTCHours()),
-    minutes: String(date.getUTCMinutes()),
-    seconds: String(date.getUTCSeconds()),
-  };
-  for (const k in time) {
-    if (time[k].length < 2) {
-      time[k] = '0' + time[k];
-    }
-  }
-  full += time.hours + ':' + time.minutes + ':' + time.seconds + ' UTC';
-  return full;
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hour12: false,
+    timeZone: 'UTC',
+    timeZoneName: 'short',
+  });
 }
 
 export function monthDayStringUTC(date) {
