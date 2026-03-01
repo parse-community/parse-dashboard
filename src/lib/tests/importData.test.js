@@ -67,6 +67,18 @@ describe('parseImportJSON', () => {
     expect(result.error).toMatch(/empty/i);
   });
 
+  it('returns error when array contains non-object items', () => {
+    const result = parseImportJSON(JSON.stringify([1, 'hello', null]));
+    expect(result.rows).toBeNull();
+    expect(result.error).toMatch(/row 1.*not an object/i);
+  });
+
+  it('returns error for non-object item in middle of array', () => {
+    const result = parseImportJSON(JSON.stringify([{ name: 'Alice' }, 42]));
+    expect(result.rows).toBeNull();
+    expect(result.error).toMatch(/row 2.*not an object/i);
+  });
+
   it('returns error for null content', () => {
     const result = parseImportJSON(null);
     expect(result.rows).toBeNull();
@@ -278,6 +290,35 @@ describe('parseImportCSV', () => {
     expect(result.error).toBeNull();
     expect(result.rows).toHaveLength(2);
     expect(result.rows[0]).toEqual({ name: 'Alice', score: 100 });
+  });
+
+  it('returns error for invalid number value', () => {
+    const csv = 'score\nnot-a-number';
+    const schema = { score: { type: 'Number' } };
+    const result = parseImportCSV(csv, schema);
+    expect(result.rows).toBeNull();
+    expect(result.error).toMatch(/invalid number/i);
+  });
+
+  it('skips blank CSV rows (trailing newlines)', () => {
+    const csv = 'name,score\nAlice,100\n\n';
+    const schema = {
+      name: { type: 'String' },
+      score: { type: 'Number' },
+    };
+    const result = parseImportCSV(csv, schema);
+    expect(result.error).toBeNull();
+    expect(result.rows).toHaveLength(1);
+    expect(result.rows[0]).toEqual({ name: 'Alice', score: 100 });
+  });
+
+  it('skips Relation values without leaking undefined into row', () => {
+    const csv = 'name,friends\nAlice,rel123';
+    const schema = { name: { type: 'String' }, friends: { type: 'Relation', targetClass: '_User' } };
+    const result = parseImportCSV(csv, schema);
+    expect(result.error).toBeNull();
+    expect(result.rows[0]).toEqual({ name: 'Alice' });
+    expect(Object.keys(result.rows[0])).not.toContain('friends');
   });
 });
 

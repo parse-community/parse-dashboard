@@ -70,6 +70,9 @@ export function parseImportCSV(content, schema) {
       const colSchema = schema[header];
       const type = colSchema ? colSchema.type : 'String';
       const converted = convertCSVValue(raw, type, colSchema);
+      if (converted === undefined) {
+        continue;
+      }
       if (type === 'Number' && Number.isNaN(converted)) {
         return {
           rows: null,
@@ -240,26 +243,16 @@ export function buildBatchRequests(rows, className, options) {
     }
 
     // Determine method and path based on preserveObjectIds and duplicateHandling
-    let method;
-    let path;
-
     if (preserveObjectIds && duplicateHandling === 'overwrite' && body.objectId) {
-      // PUT to update existing objects
-      method = 'PUT';
-      path = `/classes/${className}/${body.objectId}`;
+      const path = `/classes/${className}/${body.objectId}`;
       delete body.objectId;
-    } else if (preserveObjectIds && duplicateHandling !== 'overwrite') {
-      // POST with objectId in body to let server handle it
-      method = 'POST';
-      path = `/classes/${className}`;
-    } else {
-      // POST without objectId
-      method = 'POST';
-      path = `/classes/${className}`;
-      delete body.objectId;
+      return { method: 'PUT', path, body };
     }
 
-    return { method, path, body };
+    if (!preserveObjectIds) {
+      delete body.objectId;
+    }
+    return { method: 'POST', path: `/classes/${className}`, body };
   });
 }
 
@@ -295,7 +288,6 @@ export async function sendBatchImport(requests, options) {
 
   const BATCH_SIZE = 50;
   let imported = 0;
-  const skipped = 0;
   let failed = 0;
   const errors = [];
   let stopped = false;
@@ -371,7 +363,7 @@ export async function sendBatchImport(requests, options) {
     }
   }
 
-  return { imported, skipped, failed, errors, stopped };
+  return { imported, skipped: 0, failed, errors, stopped };
 }
 
 /**
