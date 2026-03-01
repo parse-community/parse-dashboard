@@ -92,6 +92,9 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
         - [Response Fields](#response-fields)
         - [Form Elements](#form-elements)
           - [Drop-Down](#drop-down)
+          - [Checkbox](#checkbox)
+          - [Toggle](#toggle)
+          - [Text Input](#text-input)
     - [Graph](#graph)
       - [Calculated Values](#calculated-values)
       - [Formula Operator](#formula-operator)
@@ -103,7 +106,8 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     - [Browse as User](#browse-as-user)
     - [Change Pointer Key](#change-pointer-key)
       - [Limitations](#limitations)
-    - [CSV Export](#csv-export)
+    - [Data Export](#data-export)
+    - [Data Import](#data-import)
   - [AI Agent](#ai-agent)
     - [Configuration](#configuration-1)
     - [Providers](#providers)
@@ -1731,13 +1735,34 @@ This feature allows you to change how a pointer is represented in the browser. B
 
 > ⚠️ For each custom pointer key in each row, a server request is triggered to resolve the custom pointer key. For example, if the browser shows a class with 50 rows and each row contains 3 custom pointer keys, a total of 150 separate server requests are triggered.
 
-### CSV Export
+### Data Export
 
 ▶️ *Core > Browser > Export*
 
 This feature will take either selected rows or all rows of an individual class and saves them to a CSV file, which is then downloaded. CSV headers are added to the top of the file matching the column names.
 
 > ⚠️ There is currently a 10,000 row limit when exporting all data. If more than 10,000 rows are present in the class, the CSV file will only contain 10,000 rows.
+
+### Data Import
+
+▶️ *Core > Browser > Data > Import*
+
+Import data into a class from a JSON or CSV file. The file format is the same as the export format, so you can export data from one class and import it into another.
+
+- **JSON** — An array of objects, e.g. `[{ "name": "Alice", "score": 100 }, ...]`. Typed fields such as `Pointer`, `Date`, `GeoPoint`, and `File` are expected in Parse `_toFullJSON()` format.
+- **CSV** — Comma-separated with a header row. Column types are reconstructed from the class schema.
+
+The import dialog provides the following options:
+
+| Option | Description |
+|---|---|
+| Preserve object IDs | Use `objectId` values from the file instead of generating new ones. Requires the server option `allowCustomObjectId`. |
+| Preserve timestamps | Use `createdAt` / `updatedAt` from the file. Requires a `maintenanceKey` to be configured. |
+| Duplicate handling | When preserving object IDs: overwrite, skip, or fail on duplicates. |
+| Unknown columns | Auto-create new columns, ignore them, or fail on unknown columns. |
+| Continue on errors | Skip failing rows and continue, or stop on the first error. |
+
+> ⚠️ Disabling *Preserve object IDs* means new object IDs are generated. Any `Pointer` or `Relation` fields that reference objects within the same import file will not resolve correctly.
 
 ## AI Agent
 
