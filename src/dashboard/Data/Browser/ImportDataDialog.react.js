@@ -110,6 +110,10 @@ export default class ImportDataDialog extends React.Component {
     this.setState({ importing: true, progress: null, results: null });
   }
 
+  resetForm() {
+    this.setState({ importing: false, progress: null, results: null });
+  }
+
   setProgress(progress) {
     this.setState({ progress });
   }

@@ -2463,6 +2463,9 @@ class Browser extends DashboardView {
 
     if (parseResult.error) {
       this.showNote(parseResult.error, true);
+      if (this.importDialogRef) {
+        this.importDialogRef.resetForm();
+      }
       return;
     }
 
@@ -2478,6 +2481,9 @@ class Browser extends DashboardView {
       }
       if (unknownCols.length > 0) {
         this.showNote(`Unknown columns found: ${unknownCols.join(', ')}. Import aborted.`, true);
+        if (this.importDialogRef) {
+          this.importDialogRef.resetForm();
+        }
         return;
       }
     }
@@ -2504,6 +2510,9 @@ class Browser extends DashboardView {
               `Duplicate objectIds found: ${existing.slice(0, 5).join(', ')}${existing.length > 5 ? '...' : ''}. Import aborted.`,
               true
             );
+            if (this.importDialogRef) {
+              this.importDialogRef.resetForm();
+            }
             return;
           }
 
@@ -2512,6 +2521,9 @@ class Browser extends DashboardView {
             parseResult.rows = parseResult.rows.filter(r => !existingSet.has(r.objectId));
             if (parseResult.rows.length === 0) {
               this.showNote('All rows already exist. Nothing to import.', true);
+              if (this.importDialogRef) {
+                this.importDialogRef.resetForm();
+              }
               return;
             }
           }
