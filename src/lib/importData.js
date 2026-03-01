@@ -69,7 +69,14 @@ export function parseImportCSV(content, schema) {
       }
       const colSchema = schema[header];
       const type = colSchema ? colSchema.type : 'String';
-      row[header] = convertCSVValue(raw, type, colSchema);
+      const converted = convertCSVValue(raw, type, colSchema);
+      if (type === 'Number' && Number.isNaN(converted)) {
+        return {
+          rows: null,
+          error: `Invalid number in row ${i}, column "${header}".`,
+        };
+      }
+      row[header] = converted;
     }
     rows.push(row);
   }
