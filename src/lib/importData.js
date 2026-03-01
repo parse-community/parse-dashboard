@@ -164,7 +164,7 @@ function convertCSVValue(value, type, colSchema) {
     case 'ACL':
       try {
         return JSON.parse(value);
-      } catch (e) {
+      } catch {
         return value;
       }
     case 'String':
@@ -276,7 +276,7 @@ export async function sendBatchImport(requests, options) {
 
   const BATCH_SIZE = 50;
   let imported = 0;
-  let skipped = 0;
+  const skipped = 0;
   let failed = 0;
   const errors = [];
   let stopped = false;
@@ -288,7 +288,7 @@ export async function sendBatchImport(requests, options) {
   let serverPath = '';
   try {
     serverPath = new URL(serverURL).pathname.replace(/\/+$/, '');
-  } catch (e) {
+  } catch {
     // If URL parsing fails, try to extract path manually
     const pathMatch = serverURL.match(/https?:\/\/[^/]+(\/.*)/);
     if (pathMatch) {
