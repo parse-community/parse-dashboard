@@ -103,6 +103,8 @@ export function monthsFrom(date, delta) {
 }
 
 export function dateStringUTC(date) {
+  // Use locale 'en-GB' to maintain the current date time format of "dd MMM yyyy, HH:mm:ss";
+  // when supporting multiple locales in the future, this forced locale should be removed
   return date.toLocaleDateString('en-GB', {
     year: 'numeric',
     month: 'short',
