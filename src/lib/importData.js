@@ -78,6 +78,9 @@ export function parseImportCSV(content, schema) {
       }
       row[header] = converted;
     }
+    if (Object.keys(row).length === 0) {
+      continue;
+    }
     rows.push(row);
   }
 
