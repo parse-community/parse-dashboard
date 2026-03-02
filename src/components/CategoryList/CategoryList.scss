@@ -100,8 +100,6 @@
     align-items: flex-start;
     padding-top: 2px;
     cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.2s ease;
     svg {
       fill: #8fb9cf;
     }
@@ -110,10 +108,6 @@
         fill: white;
       }
     }
-  }
-  
-  &:hover .edit {
-    opacity: 1;
   }
 }
 
@@ -138,8 +132,6 @@
     align-items: flex-start;
     padding-top: 2px;
     cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.2s ease;
     svg {
       fill: #8fb9cf;
     }
@@ -148,9 +140,5 @@
         fill: white;
       }
     }
-  }
-  
-  &:hover .editFilter {
-    opacity: 1;
   }
 }
