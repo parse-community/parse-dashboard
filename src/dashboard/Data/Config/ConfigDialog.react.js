@@ -353,12 +353,28 @@ export default class ConfigDialog extends React.Component {
   }
 
   hasChanges() {
-    return (
+    if (
       this.state.name !== this.initialValues.name ||
       this.state.type !== this.initialValues.type ||
-      this.state.value !== this.initialValues.value ||
       this.state.masterKeyOnly !== this.initialValues.masterKeyOnly
-    );
+    ) {
+      return true;
+    }
+    const currVal = this.state.value;
+    const initVal = this.initialValues.value;
+    if (currVal === initVal) {
+      return false;
+    }
+    if (this.state.type === 'Date' && currVal && initVal) {
+      return new Date(currVal).getTime() !== new Date(initVal).getTime();
+    }
+    if (this.state.type === 'GeoPoint' && currVal && initVal) {
+      return currVal.latitude !== initVal.latitude || currVal.longitude !== initVal.longitude;
+    }
+    if (this.state.type === 'File' && currVal && initVal) {
+      return currVal.url() !== initVal.url();
+    }
+    return true;
   }
 
   submit() {
