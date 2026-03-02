@@ -285,6 +285,12 @@ function ensureDateObject(value) {
 
 /**
  * Send batch import requests to Parse Server.
+ *
+ * Uses the REST batch endpoint directly instead of Parse.Object.saveAll() because the
+ * JS SDK does not support: maintenanceKey headers (needed for preserving timestamps),
+ * per-batch progress callbacks, per-row error collection with indices, or explicit PUT
+ * vs POST control for overwrites.
+ *
  * @param {{ method: string, path: string, body: Object }[]} requests
  * @param {Object} options - { serverURL, applicationId, masterKey, maintenanceKey, continueOnError, onProgress }
  * @returns {Promise<{ imported: number, skipped: number, failed: number, errors: Object[], stopped: boolean }>}
