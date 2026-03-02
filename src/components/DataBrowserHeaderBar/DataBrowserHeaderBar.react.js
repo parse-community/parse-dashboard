@@ -50,7 +50,6 @@ export default class DataBrowserHeaderBar extends React.Component {
       setSelectedObjectId,
       setCurrent,
       stickyLefts,
-      handleLefts,
       freezeIndex,
       showRowNumber,
       rowNumberWidth,
@@ -120,6 +119,11 @@ export default class DataBrowserHeaderBar extends React.Component {
         className += ` ${styles.preventSort} `;
       }
 
+      let handleClassName = styles.handle;
+      if (freezeIndex >= 0 && i === freezeIndex) {
+        handleClassName += ` ${styles.handleFreeze}`;
+      }
+
       elements.push(
         <div
           onClick={onClick}
@@ -136,27 +140,13 @@ export default class DataBrowserHeaderBar extends React.Component {
             index={i}
             moveDataBrowserHeader={this.props.handleDragDrop}
           />
+          <DragHandle
+            key={'handle' + i}
+            className={handleClassName}
+            onDrag={onResize.bind(null, i)}
+            onClick={e => e.stopPropagation()}
+          />
         </div>
-      );
-      const handleStyle = {};
-      if (freezeIndex >= 0 && typeof handleLefts[i] !== 'undefined' && i <= freezeIndex) {
-        handleStyle.position = 'sticky';
-        handleStyle.left = handleLefts[i];
-        handleStyle.zIndex = 11;
-        if (i === freezeIndex) {
-          handleStyle.marginRight = 0;
-          handleStyle.width = 4;
-        } else {
-          handleStyle.background = wrapStyle.background;
-        }
-      }
-      elements.push(
-        <DragHandle
-          key={'handle' + i}
-          className={styles.handle}
-          onDrag={onResize.bind(null, i)}
-          style={handleStyle}
-        />
       );
     });
 

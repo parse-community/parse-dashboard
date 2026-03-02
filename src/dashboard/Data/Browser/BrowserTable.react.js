@@ -120,7 +120,6 @@ export default class BrowserTable extends React.Component {
     }));
 
     const stickyLefts = [];
-    const handleLefts = [];
     const maxRowNumber =
       this.props.skip + (this.props.data ? this.props.data.length : this.props.limit);
     const rowNumberWidth = this.props.showRowNumber
@@ -130,7 +129,6 @@ export default class BrowserTable extends React.Component {
       let left = 30 + rowNumberWidth;
       headers.forEach((h, i) => {
         stickyLefts[i] = left;
-        handleLefts[i] = left + h.width;
         if (h.visible) {
           left += h.width;
         }
@@ -620,7 +618,6 @@ export default class BrowserTable extends React.Component {
           }
           headers={headers}
           stickyLefts={stickyLefts}
-          handleLefts={handleLefts}
           freezeIndex={this.props.freezeIndex}
           freezeColumns={this.props.freezeColumns}
           unfreezeColumns={this.props.unfreezeColumns}

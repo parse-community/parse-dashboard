@@ -24,6 +24,7 @@
 }
 
 .wrap {
+  position: relative;
   display: inline-block;
   vertical-align: top;
 }
@@ -71,12 +72,18 @@
 }
 
 .handle {
-  position: relative;
-  display: inline-block;
-  width: 8px;
+  position: absolute;
+  right: -8px;
+  top: 0;
+  width: 16px;
   height: 30px;
-  margin: 0 -4px;
+  z-index: 2;
   cursor: ew-resize;
+}
+
+.handleFreeze {
+  right: -4px;
+  width: 8px;
 }
 
 .pickerPointer {
