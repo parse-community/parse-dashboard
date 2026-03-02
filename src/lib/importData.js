@@ -385,7 +385,7 @@ export async function checkDuplicates(objectIds, className, options) {
   }
 
   const { serverURL, applicationId, masterKey } = options || {};
-  const CHUNK_SIZE = 1000;
+  const CHUNK_SIZE = 100;
   const allExisting = [];
 
   for (let i = 0; i < objectIds.length; i += CHUNK_SIZE) {
