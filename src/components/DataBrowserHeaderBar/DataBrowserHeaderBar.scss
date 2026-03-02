@@ -24,6 +24,7 @@
   position: relative;
   display: inline-block;
   vertical-align: top;
+  cursor: pointer;
 }
 
 .addColumn {
@@ -76,6 +77,12 @@
   height: 30px;
   z-index: 2;
   cursor: col-resize;
+  background: rgba(255, 255, 255, 0);
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
 }
 
 .handleFreeze {
