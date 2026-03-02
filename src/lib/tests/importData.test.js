@@ -300,6 +300,14 @@ describe('parseImportCSV', () => {
     expect(result.error).toMatch(/invalid number/i);
   });
 
+  it('returns error for invalid boolean value', () => {
+    const csv = 'active\nyes';
+    const schema = { active: { type: 'Boolean' } };
+    const result = parseImportCSV(csv, schema);
+    expect(result.rows).toBeNull();
+    expect(result.error).toMatch(/invalid boolean/i);
+  });
+
   it('skips blank CSV rows (trailing newlines)', () => {
     const csv = 'name,score\nAlice,100\n\n';
     const schema = {

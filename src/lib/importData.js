@@ -79,6 +79,12 @@ export function parseImportCSV(content, schema = {}) {
           error: `Invalid number in row ${i}, column "${header}".`,
         };
       }
+      if (type === 'Boolean' && raw.toLowerCase() !== 'true' && raw.toLowerCase() !== 'false') {
+        return {
+          rows: null,
+          error: `Invalid boolean in row ${i}, column "${header}".`,
+        };
+      }
       row[header] = converted;
     }
     if (Object.keys(row).length === 0) {
