@@ -18,9 +18,6 @@
   display: block;
   min-width: 100%;
   width: max-content;
-  // to resolve rendering issue with retina displays
-  -webkit-transform: translate3d(0, 0, 0);
-  will-change: transform;
 }
 
 .wrap {
@@ -78,7 +75,7 @@
   width: 16px;
   height: 30px;
   z-index: 2;
-  cursor: ew-resize;
+  cursor: col-resize;
 }
 
 .handleFreeze {
