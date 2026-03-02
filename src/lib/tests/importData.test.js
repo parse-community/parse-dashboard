@@ -9,7 +9,9 @@
  * the root directory of this source tree.
  */
 jest.dontMock('../importData');
+jest.dontMock('parse');
 
+const Parse = require('parse');
 const {
   parseImportJSON,
   parseImportCSV,
@@ -734,70 +736,52 @@ describe('sendBatchImport', () => {
 // checkDuplicates
 // ──────────────────────────────────────────────
 describe('checkDuplicates', () => {
-  const baseOptions = {
-    serverURL: 'http://localhost:1337/parse',
-    applicationId: 'app1',
-    masterKey: 'master1',
-  };
+  let mockFind;
+  let mockQuery;
 
   beforeEach(() => {
-    global.fetch = jest.fn();
+    mockFind = jest.fn().mockResolvedValue([]);
+    mockQuery = {
+      containedIn: jest.fn(),
+      select: jest.fn(),
+      limit: jest.fn(),
+      find: mockFind,
+    };
+    jest.spyOn(Parse, 'Query').mockImplementation(() => mockQuery);
   });
 
   afterEach(() => {
-    delete global.fetch;
+    Parse.Query.mockRestore();
   });
 
-  it('queries Parse Server with correct URL and headers', async () => {
-    global.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ results: [] }),
-    });
+  it('queries with correct className and objectIds', async () => {
+    await checkDuplicates(['id1', 'id2'], 'GameScore');
 
-    await checkDuplicates(['id1', 'id2'], 'GameScore', baseOptions);
-
-    expect(global.fetch).toHaveBeenCalledTimes(1);
-    const call = global.fetch.mock.calls[0];
-    const url = call[0];
-    expect(url).toContain('http://localhost:1337/parse/classes/GameScore');
-    expect(url).toContain(encodeURIComponent(JSON.stringify({ objectId: { $in: ['id1', 'id2'] } })));
-    expect(url).toContain('keys=objectId');
-    expect(url).toContain('limit=2');
-
-    expect(call[1].headers).toEqual({
-      'X-Parse-Application-Id': 'app1',
-      'X-Parse-Master-Key': 'master1',
-    });
+    expect(Parse.Query).toHaveBeenCalledWith('GameScore');
+    expect(mockQuery.containedIn).toHaveBeenCalledWith('objectId', ['id1', 'id2']);
+    expect(mockQuery.select).toHaveBeenCalledWith('objectId');
+    expect(mockQuery.limit).toHaveBeenCalledWith(2);
+    expect(mockFind).toHaveBeenCalledWith({ useMasterKey: true });
   });
 
   it('returns objectIds that already exist', async () => {
-    global.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
-        results: [
-          { objectId: 'id1' },
-          { objectId: 'id3' },
-        ],
-      }),
-    });
+    mockFind.mockResolvedValueOnce([
+      { id: 'id1' },
+      { id: 'id3' },
+    ]);
 
-    const result = await checkDuplicates(['id1', 'id2', 'id3'], 'GameScore', baseOptions);
+    const result = await checkDuplicates(['id1', 'id2', 'id3'], 'GameScore');
     expect(result).toEqual(['id1', 'id3']);
   });
 
   it('returns empty array when no duplicates exist', async () => {
-    global.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ results: [] }),
-    });
-
-    const result = await checkDuplicates(['id1', 'id2'], 'GameScore', baseOptions);
+    const result = await checkDuplicates(['id1', 'id2'], 'GameScore');
     expect(result).toEqual([]);
   });
 
   it('returns empty array for empty objectIds input', async () => {
-    const result = await checkDuplicates([], 'GameScore', baseOptions);
+    const result = await checkDuplicates([], 'GameScore');
     expect(result).toEqual([]);
-    expect(global.fetch).not.toHaveBeenCalled();
+    expect(Parse.Query).not.toHaveBeenCalled();
   });
 });

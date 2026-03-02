@@ -2499,11 +2499,7 @@ class Browser extends DashboardView {
           .filter(Boolean);
 
         if (objectIds.length > 0) {
-          const existing = await checkDuplicates(objectIds, className, {
-            serverURL: this.context.serverURL,
-            applicationId: this.context.applicationId,
-            masterKey: this.context.masterKey,
-          });
+          const existing = await checkDuplicates(objectIds, className);
 
           if (importOptions.duplicateHandling === 'fail' && existing.length > 0) {
             this.showNote(

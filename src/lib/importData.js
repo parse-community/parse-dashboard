@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import Parse from 'parse';
 
 /**
  * Parse a JSON string containing an array of objects for import.
@@ -383,45 +384,24 @@ export async function sendBatchImport(requests, options) {
  * Check which objectIds already exist in a Parse Server class.
  * @param {string[]} objectIds
  * @param {string} className
- * @param {Object} options - { serverURL, applicationId, masterKey }
  * @returns {Promise<string[]>}
  */
-export async function checkDuplicates(objectIds, className, options) {
+export async function checkDuplicates(objectIds, className) {
   if (!objectIds || objectIds.length === 0) {
     return [];
   }
 
-  const { serverURL, applicationId, masterKey } = options || {};
-  const normalizedServerURL = (serverURL || '').replace(/\/+$/, '');
-  const CHUNK_SIZE = 100;
+  const CHUNK_SIZE = 1000;
   const allExisting = [];
 
   for (let i = 0; i < objectIds.length; i += CHUNK_SIZE) {
     const chunk = objectIds.slice(i, i + CHUNK_SIZE);
-    const where = JSON.stringify({ objectId: { $in: chunk } });
-    const params = new URLSearchParams({
-      where,
-      keys: 'objectId',
-      limit: String(chunk.length),
-    });
-
-    const url = `${normalizedServerURL}/classes/${className}?${params.toString()}`;
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'X-Parse-Application-Id': applicationId,
-        'X-Parse-Master-Key': masterKey,
-      },
-    });
-
-    if (!response.ok) {
-      const errorBody = await response.text();
-      throw new Error(`Server returned ${response.status}: ${errorBody}`);
-    }
-
-    const data = await response.json();
-    const existing = (data.results || []).map(obj => obj.objectId);
-    allExisting.push(...existing);
+    const query = new Parse.Query(className);
+    query.containedIn('objectId', chunk);
+    query.select('objectId');
+    query.limit(chunk.length);
+    const results = await query.find({ useMasterKey: true });
+    allExisting.push(...results.map(obj => obj.id));
   }
 
   return allExisting;
