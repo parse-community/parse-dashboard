@@ -42,7 +42,7 @@ export function parseImportJSON(content) {
  * @param {Object} schema - Map of { columnName: { type, targetClass? } }
  * @returns {{ rows: Object[]|null, error: string|null }}
  */
-export function parseImportCSV(content, schema) {
+export function parseImportCSV(content, schema = {}) {
   if (!content || content.trim().length === 0) {
     return { rows: null, error: 'File is empty.' };
   }
