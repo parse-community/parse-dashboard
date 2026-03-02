@@ -136,6 +136,7 @@ export default class ConfigDialog extends React.Component {
       optionsMenuOpen: false,
       error: null,
       syntaxColors: null,
+      showDiscardConfirm: false,
     };
     if (props.param.length > 0) {
       let initialValue = props.value;
@@ -154,8 +155,17 @@ export default class ConfigDialog extends React.Component {
         confirmOverride: false,
         error: initialError,
         syntaxColors: null,
+        showDiscardConfirm: false,
       };
     }
+
+    // Store initial values for change detection
+    this.initialValues = {
+      name: this.state.name,
+      type: this.state.type,
+      value: this.state.value,
+      masterKeyOnly: this.state.masterKeyOnly,
+    };
   }
 
   componentDidMount() {
@@ -330,7 +340,31 @@ export default class ConfigDialog extends React.Component {
     return true;
   }
 
+  handleCancel() {
+    if (this.state.showDiscardConfirm) {
+      this.setState({ showDiscardConfirm: false });
+      return;
+    }
+    if (this.hasChanges()) {
+      this.setState({ showDiscardConfirm: true });
+    } else {
+      this.props.onCancel();
+    }
+  }
+
+  hasChanges() {
+    return (
+      this.state.name !== this.initialValues.name ||
+      this.state.type !== this.initialValues.type ||
+      this.state.value !== this.initialValues.value ||
+      this.state.masterKeyOnly !== this.initialValues.masterKeyOnly
+    );
+  }
+
   submit() {
+    if (this.state.showDiscardConfirm) {
+      return;
+    }
     this.props.onConfirm({
       name: this.state.name,
       type: this.state.type,
@@ -381,7 +415,7 @@ export default class ConfigDialog extends React.Component {
     // don't reset the editor value — preserve user edits.
     // Auto-enable the Diff toggle and reset the override confirmation.
     if (this.props.conflict && (!prevProps.conflict || this.props.value !== prevProps.value)) {
-      this.setState({ showDiff: true, confirmOverride: false });
+      this.setState({ showDiff: true, confirmOverride: false, showDiscardConfirm: false });
       return;
     }
 
@@ -399,6 +433,8 @@ export default class ConfigDialog extends React.Component {
         error,
         masterKeyOnly: this.props.masterKeyOnly,
       });
+      this.initialValues.value = updatedValue;
+      this.initialValues.masterKeyOnly = this.props.masterKeyOnly;
     }
   }
 
@@ -631,7 +667,7 @@ export default class ConfigDialog extends React.Component {
             )}
           </div>
           <div style={{ display: 'flex', gap: '12px' }}>
-            <Button value="Cancel" onClick={this.props.onCancel} />
+            <Button value="Cancel" onClick={this.handleCancel.bind(this)} />
             <Button
               primary={true}
               color="blue"
@@ -645,21 +681,34 @@ export default class ConfigDialog extends React.Component {
     );
 
     return (
-      <Modal
-        type={Modal.Types.INFO}
-        title={newParam ? 'New parameter' : 'Edit parameter'}
-        icon="gear-solid"
-        iconSize={30}
-        subtitle={'Dynamically configure parts of your app'}
-        customFooter={customFooter}
-        disabled={!this.valid() || this.props.loading || (this.props.conflict && !this.state.confirmOverride)}
-        onCancel={this.props.onCancel}
-        onConfirm={this.submit.bind(this)}
-      >
-        <LoaderContainer loading={this.props.loading}>
-          {dialogContent}
-        </LoaderContainer>
-      </Modal>
+      <>
+        <Modal
+          type={Modal.Types.INFO}
+          title={newParam ? 'New parameter' : 'Edit parameter'}
+          icon="gear-solid"
+          iconSize={30}
+          subtitle={'Dynamically configure parts of your app'}
+          customFooter={customFooter}
+          disabled={!this.valid() || this.props.loading || (this.props.conflict && !this.state.confirmOverride)}
+          onCancel={this.handleCancel.bind(this)}
+          onConfirm={this.submit.bind(this)}
+        >
+          <LoaderContainer loading={this.props.loading}>
+            {dialogContent}
+          </LoaderContainer>
+        </Modal>
+        {this.state.showDiscardConfirm && (
+          <Modal
+            type={Modal.Types.DANGER}
+            title="Discard unsaved changes?"
+            subtitle="Your changes will be lost."
+            confirmText="Discard"
+            cancelText="Keep editing"
+            onConfirm={this.props.onCancel}
+            onCancel={() => this.setState({ showDiscardConfirm: false })}
+          />
+        )}
+      </>
     );
   }
 }
