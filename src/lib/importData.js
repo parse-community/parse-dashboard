@@ -298,6 +298,7 @@ export async function sendBatchImport(requests, options) {
     onProgress,
   } = options || {};
 
+  const normalizedServerURL = (serverURL || '').replace(/\/+$/, '');
   const BATCH_SIZE = 50;
   let imported = 0;
   let failed = 0;
@@ -310,10 +311,10 @@ export async function sendBatchImport(requests, options) {
   // Parse Server's batch handler requires paths to include this prefix
   let serverPath = '';
   try {
-    serverPath = new URL(serverURL).pathname.replace(/\/+$/, '');
+    serverPath = new URL(normalizedServerURL).pathname.replace(/\/+$/, '');
   } catch {
     // If URL parsing fails, try to extract path manually
-    const pathMatch = serverURL.match(/https?:\/\/[^/]+(\/.*)/);
+    const pathMatch = normalizedServerURL.match(/https?:\/\/[^/]+(\/.*)/);
     if (pathMatch) {
       serverPath = pathMatch[1].replace(/\/+$/, '');
     }
@@ -335,7 +336,7 @@ export async function sendBatchImport(requests, options) {
       ...req,
       path: `${serverPath}${req.path}`,
     }));
-    const response = await fetch(`${serverURL}/batch`, {
+    const response = await fetch(`${normalizedServerURL}/batch`, {
       method: 'POST',
       headers,
       body: JSON.stringify({ requests: batch }),
@@ -391,6 +392,7 @@ export async function checkDuplicates(objectIds, className, options) {
   }
 
   const { serverURL, applicationId, masterKey } = options || {};
+  const normalizedServerURL = (serverURL || '').replace(/\/+$/, '');
   const CHUNK_SIZE = 100;
   const allExisting = [];
 
@@ -403,7 +405,7 @@ export async function checkDuplicates(objectIds, className, options) {
       limit: String(chunk.length),
     });
 
-    const url = `${serverURL}/classes/${className}?${params.toString()}`;
+    const url = `${normalizedServerURL}/classes/${className}?${params.toString()}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {
