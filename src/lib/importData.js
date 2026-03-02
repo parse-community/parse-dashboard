@@ -246,14 +246,20 @@ export function buildBatchRequests(rows, className, options) {
     if (preserveObjectIds && duplicateHandling === 'overwrite' && body.objectId) {
       const path = `/classes/${className}/${body.objectId}`;
       delete body.objectId;
+      if (Object.keys(body).length === 0) {
+        return null;
+      }
       return { method: 'PUT', path, body };
     }
 
     if (!preserveObjectIds) {
       delete body.objectId;
     }
+    if (Object.keys(body).length === 0) {
+      return null;
+    }
     return { method: 'POST', path: `/classes/${className}`, body };
-  });
+  }).filter(Boolean);
 }
 
 /**

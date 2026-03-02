@@ -463,6 +463,38 @@ describe('buildBatchRequests', () => {
     });
     expect(requests).toEqual([]);
   });
+
+  it('skips rows that become empty after filtering and field removal', () => {
+    const rows = [
+      { objectId: 'abc', createdAt: '2024-01-01', updatedAt: '2024-01-01' },
+      { objectId: 'def', name: 'Alice', createdAt: '2024-01-01' },
+    ];
+    const requests = buildBatchRequests(rows, 'GameScore', {
+      preserveObjectIds: false,
+      preserveTimestamps: false,
+    });
+    // First row has only system fields → empty after stripping → skipped
+    // Second row retains name → included
+    expect(requests).toEqual([
+      { method: 'POST', path: '/classes/GameScore', body: { name: 'Alice' } },
+    ]);
+  });
+
+  it('skips rows that become empty after unknown column filtering', () => {
+    const rows = [
+      { unknownField: 'value' },
+      { name: 'Bob', unknownField: 'value' },
+    ];
+    const requests = buildBatchRequests(rows, 'GameScore', {
+      preserveObjectIds: false,
+      preserveTimestamps: false,
+      unknownColumns: 'ignore',
+      knownColumns: ['name', 'score'],
+    });
+    expect(requests).toEqual([
+      { method: 'POST', path: '/classes/GameScore', body: { name: 'Bob' } },
+    ]);
+  });
 });
 
 // ──────────────────────────────────────────────
