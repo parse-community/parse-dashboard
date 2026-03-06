@@ -1,6 +1,6 @@
 # [Unreleased]
 
-### Features
+## Features
 
 * Keep cell selected by objectId and field name after data browser refresh ([#2631](https://github.com/parse-community/parse-dashboard/issues/2631))
 

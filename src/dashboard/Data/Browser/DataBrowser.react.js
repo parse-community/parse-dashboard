@@ -520,10 +520,13 @@ export default class DataBrowser extends React.Component {
       }
     }
 
-    // When a refresh completes, data transitions from null back to a new array.
-    // Use the saved objectId + fieldName to find the row/col in the fresh data and
-    // restore the selection. If the document is gone, deselect to avoid confusion.
-    if (
+    // If the class changed while a restore was pending, discard it to avoid firing
+    // against a different class's data. Otherwise, when a refresh delivers new data,
+    // use the saved objectId + fieldName to restore the selection in its new position.
+    // If the document is no longer present, deselect to avoid highlighting the wrong cell.
+    if (this.props.className !== prevProps.className && this.state.pendingRestore) {
+      this.setState({ pendingRestore: null });
+    } else if (
       this.props.data !== null &&
       prevProps.data === null &&
       this.state.pendingRestore
@@ -539,13 +542,8 @@ export default class DataBrowser extends React.Component {
         this.handleCallCloudFunction(objectId, this.props.className, this.props.app.applicationId);
       } else {
         this.setState({ current: null, pendingRestore: null });
+        this.setSelectedObjectId(undefined);
       }
-    }
-
-    // If the user switches class entirely, discard any pending restore so it does
-    // not accidentally fire when the new class data loads.
-    if (this.props.className !== prevProps.className && this.state.pendingRestore) {
-      this.setState({ pendingRestore: null });
     }
 
     if (this.state.current && this.state.current !== prevState.current) {

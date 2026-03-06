@@ -77,8 +77,13 @@ class MockDataBrowser {
       }
     }
 
-    // Block B - restore selection when refresh delivers new data
-    if (
+    // Block C takes priority: if the class changed while a restore was pending,
+    // discard it to avoid firing against a different class's data.
+    // Block B: otherwise, when a refresh delivers new data, restore the selection.
+    // If the document is no longer present, deselect and clear selectedObjectId.
+    if (this.props.className !== prevProps.className && this.state.pendingRestore) {
+      this.setState({ pendingRestore: null });
+    } else if (
       this.props.data !== null &&
       prevProps.data === null &&
       this.state.pendingRestore
@@ -94,12 +99,8 @@ class MockDataBrowser {
         this.handleCallCloudFunction(objectId, this.props.className, this.props.app.applicationId);
       } else {
         this.setState({ current: null, pendingRestore: null });
+        this.setSelectedObjectId(undefined);
       }
-    }
-
-    // Block C - discard stale pendingRestore when class changes
-    if (this.props.className !== prevProps.className && this.state.pendingRestore) {
-      this.setState({ pendingRestore: null });
     }
   }
 
@@ -220,7 +221,7 @@ describe('DataBrowser - pendingRestore (Block B: restore on refresh end)', () =>
 
     expect(browser.state.current).toBeNull();
     expect(browser.state.pendingRestore).toBeNull();
-    expect(browser._setSelectedObjectIdCalls).toHaveLength(0);
+    expect(browser._setSelectedObjectIdCalls).toEqual([undefined]);
     expect(browser._handleCallCloudFunctionCalls).toHaveLength(0);
   });
 
@@ -240,6 +241,7 @@ describe('DataBrowser - pendingRestore (Block B: restore on refresh end)', () =>
 
     expect(browser.state.current).toBeNull();
     expect(browser.state.pendingRestore).toBeNull();
+    expect(browser._setSelectedObjectIdCalls).toEqual([undefined]);
     expect(browser._handleCallCloudFunctionCalls).toHaveLength(0);
   });
 
@@ -302,6 +304,29 @@ describe('DataBrowser - pendingRestore (Block C: clear on class change)', () => 
     browser.runPendingRestoreLogic(prevProps);
 
     expect(browser._setStateCalls.length).toBe(stateBefore);
+  });
+
+  it('discards pendingRestore and does not restore when class changes at the same time new data arrives', () => {
+    // Regression: prevProps.data is null AND className changed AND new data arrived
+    // in the same update. The class-change guard must take priority over the restore.
+    const newData = [makeObj('abc'), makeObj('def')];
+    const browser = new MockDataBrowser(
+      { data: newData, className: 'NewClass' },
+      {
+        pendingRestore: { objectId: 'abc', fieldName: 'username' },
+        order: [{ name: 'objectId' }, { name: 'username' }],
+        current: { row: 0, col: 1 },
+      }
+    );
+    const prevProps = { data: null, className: 'OldClass' };
+
+    browser.runPendingRestoreLogic(prevProps);
+
+    expect(browser.state.pendingRestore).toBeNull();
+    expect(browser._setSelectedObjectIdCalls).toHaveLength(0);
+    expect(browser._handleCallCloudFunctionCalls).toHaveLength(0);
+    // current is left as-is; the class change flow handles its own reset separately
+    expect(browser.state.current).toEqual({ row: 0, col: 1 });
   });
 });
 
