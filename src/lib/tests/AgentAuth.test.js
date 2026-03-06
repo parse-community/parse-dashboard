@@ -373,3 +373,206 @@ describe('Agent endpoint security', () => {
     expect(res.status).not.toBe(403);
   });
 });
+
+// ---------------------------------------------------------------
+// No-user mode — remote access guard
+// ---------------------------------------------------------------
+
+describe('Agent endpoint no-user mode', () => {
+  let server;
+  let port;
+
+  const noUserConfig = {
+    apps: [
+      {
+        serverURL: 'http://localhost:1337/parse',
+        appId: 'testAppId',
+        masterKey: 'testMasterKey',
+        appName: 'TestApp',
+      },
+    ],
+    // No users configured
+    agent: {
+      models: [
+        {
+          name: 'test-model',
+          provider: 'openai',
+          model: 'gpt-4',
+          apiKey: 'fake-api-key-for-testing',
+        },
+      ],
+    },
+  };
+
+  beforeAll((done) => {
+    const parseDashboard = require('../../../Parse-Dashboard/app.js');
+    // dev: false to enable the remote access guard
+    const dashboardApp = parseDashboard(noUserConfig, {
+      cookieSessionSecret: SESSION_SECRET,
+    });
+
+    const parentApp = express();
+    parentApp.use('/', dashboardApp);
+
+    server = parentApp.listen(0, () => {
+      port = server.address().port;
+      done();
+    });
+  });
+
+  afterAll((done) => {
+    if (server) {
+      server.close(done);
+    } else {
+      done();
+    }
+  });
+
+  it('allows local requests to the agent endpoint in no-user mode', async () => {
+    // Requests to 127.0.0.1 are local, so they should pass the guard
+    const res = await makeRequest(port, {
+      method: 'POST',
+      path: '/apps/TestApp/agent',
+      body: agentBody(),
+    });
+    // Should not be blocked by the no-user guard (may fail at CSRF or later)
+    expect(res.status).not.toBe(401);
+  });
+});
+
+describe('Agent endpoint no-user mode — remote requests', () => {
+  let server;
+  let port;
+
+  const noUserConfig = {
+    apps: [
+      {
+        serverURL: 'http://localhost:1337/parse',
+        appId: 'testAppId',
+        masterKey: 'testMasterKey',
+        appName: 'TestApp',
+      },
+    ],
+    agent: {
+      models: [
+        {
+          name: 'test-model',
+          provider: 'openai',
+          model: 'gpt-4',
+          apiKey: 'fake-api-key-for-testing',
+        },
+      ],
+    },
+  };
+
+  beforeAll((done) => {
+    const parseDashboard = require('../../../Parse-Dashboard/app.js');
+    const dashboardApp = parseDashboard(noUserConfig, {
+      cookieSessionSecret: SESSION_SECRET,
+    });
+
+    const parentApp = express();
+    // Spoof a non-local remote address before the dashboard middleware
+    parentApp.use((req, _res, next) => {
+      Object.defineProperty(req.connection, 'remoteAddress', {
+        value: '203.0.113.1',
+        writable: true,
+        configurable: true,
+      });
+      next();
+    });
+    parentApp.use('/', dashboardApp);
+
+    server = parentApp.listen(0, () => {
+      port = server.address().port;
+      done();
+    });
+  });
+
+  afterAll((done) => {
+    if (server) {
+      server.close(done);
+    } else {
+      done();
+    }
+  });
+
+  it('returns 403 for remote non-HTTPS requests to the agent endpoint', async () => {
+    const res = await makeRequest(port, {
+      method: 'POST',
+      path: '/apps/TestApp/agent',
+      body: agentBody(),
+    });
+    expect(res.status).toBe(403);
+    expect(res.body.error).toBe('Parse Dashboard can only be remotely accessed via HTTPS');
+  });
+});
+
+describe('Agent endpoint no-user mode — remote requests with allowInsecureHTTP', () => {
+  let server;
+  let port;
+
+  const noUserConfig = {
+    apps: [
+      {
+        serverURL: 'http://localhost:1337/parse',
+        appId: 'testAppId',
+        masterKey: 'testMasterKey',
+        appName: 'TestApp',
+      },
+    ],
+    agent: {
+      models: [
+        {
+          name: 'test-model',
+          provider: 'openai',
+          model: 'gpt-4',
+          apiKey: 'fake-api-key-for-testing',
+        },
+      ],
+    },
+  };
+
+  beforeAll((done) => {
+    const parseDashboard = require('../../../Parse-Dashboard/app.js');
+    const dashboardApp = parseDashboard(noUserConfig, {
+      cookieSessionSecret: SESSION_SECRET,
+      allowInsecureHTTP: true,
+    });
+
+    const parentApp = express();
+    // Spoof a non-local remote address before the dashboard middleware
+    parentApp.use((req, _res, next) => {
+      Object.defineProperty(req.connection, 'remoteAddress', {
+        value: '203.0.113.1',
+        writable: true,
+        configurable: true,
+      });
+      next();
+    });
+    parentApp.use('/', dashboardApp);
+
+    server = parentApp.listen(0, () => {
+      port = server.address().port;
+      done();
+    });
+  });
+
+  afterAll((done) => {
+    if (server) {
+      server.close(done);
+    } else {
+      done();
+    }
+  });
+
+  it('returns 401 for remote requests to the agent endpoint in no-user mode when HTTPS is bypassed', async () => {
+    const res = await makeRequest(port, {
+      method: 'POST',
+      path: '/apps/TestApp/agent',
+      body: agentBody(),
+    });
+    expect(res.status).toBe(401);
+    expect(res.body.error).toBe('Configure a user to access Parse Dashboard remotely');
+  });
+});
