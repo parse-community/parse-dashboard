@@ -199,7 +199,7 @@ module.exports = function(config, options) {
 
       //They didn't provide auth, and have configured the dashboard to not need auth
       //(ie. didn't supply usernames and passwords)
-      if (requestIsLocal || options.dev) {
+      if (isLocalRequest(req) || options.dev) {
         //Allow no-auth access on localhost only, if they have configured the dashboard to not need auth
         await Promise.all(
           response.apps.map(async (app) => {
