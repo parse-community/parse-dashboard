@@ -87,6 +87,32 @@ module.exports = function(config, options) {
       cookieSessionStore: options.cookieSessionStore
     });
 
+    /**
+     * Checks whether a request is from localhost.
+     */
+    function isLocalRequest(req) {
+      return req.connection.remoteAddress === '127.0.0.1' ||
+        req.connection.remoteAddress === '::ffff:127.0.0.1' ||
+        req.connection.remoteAddress === '::1';
+    }
+
+    /**
+     * Middleware that enforces remote access restrictions:
+     * - Requires HTTPS for remote requests (unless allowInsecureHTTP is set)
+     * - Requires users to be configured for remote access (unless dev mode is enabled)
+     */
+    function enforceRemoteAccessRestrictions(req, res, next) {
+      if (!options.dev && !isLocalRequest(req)) {
+        if (!req.secure && !options.allowInsecureHTTP) {
+          return res.status(403).json({ error: 'Parse Dashboard can only be remotely accessed via HTTPS' });
+        }
+        if (!users) {
+          return res.status(401).json({ error: 'Configure a user to access Parse Dashboard remotely' });
+        }
+      }
+      next();
+    }
+
     // CSRF error handler
     app.use(function (err, req, res, next) {
       if (err.code !== 'EBADCSRFTOKEN') {return next(err)}
@@ -109,13 +135,7 @@ module.exports = function(config, options) {
         agent: config.agent,
       };
 
-      //Based on advice from Doug Wilson here:
-      //https://github.com/expressjs/express/issues/2518
-      const requestIsLocal =
-        req.connection.remoteAddress === '127.0.0.1' ||
-        req.connection.remoteAddress === '::ffff:127.0.0.1' ||
-        req.connection.remoteAddress === '::1';
-      if (!options.dev && !requestIsLocal) {
+      if (!options.dev && !isLocalRequest(req)) {
         if (!req.secure && !options.allowInsecureHTTP) {
           //Disallow HTTP requests except on localhost, to prevent the master key from being transmitted in cleartext
           return res.send({ success: false, error: 'Parse Dashboard can only be remotely accessed via HTTPS' });
@@ -179,7 +199,7 @@ module.exports = function(config, options) {
 
       //They didn't provide auth, and have configured the dashboard to not need auth
       //(ie. didn't supply usernames and passwords)
-      if (requestIsLocal || options.dev) {
+      if (isLocalRequest(req) || options.dev) {
         //Allow no-auth access on localhost only, if they have configured the dashboard to not need auth
         await Promise.all(
           response.apps.map(async (app) => {
@@ -329,8 +349,9 @@ module.exports = function(config, options) {
       }
     }
 
-    // Agent API endpoint — middleware chain: auth check (401) → CSRF validation (403) → handler
+    // Agent API endpoint — middleware chain: remote access guard → auth check (401) → CSRF validation (403) → handler
     app.post('/apps/:appId/agent',
+      enforceRemoteAccessRestrictions,
       (req, res, next) => {
         if (users && (!req.user || !req.user.isAuthenticated)) {
           return res.status(401).json({ error: 'Unauthorized' });

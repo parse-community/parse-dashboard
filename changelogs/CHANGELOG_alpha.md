@@ -1,8 +1,16 @@
 # [Unreleased]
 
-## Features
+
+### Features
 
 * Keep cell selected by objectId and field name after data browser refresh ([#2631](https://github.com/parse-community/parse-dashboard/issues/2631))
+
+# [9.1.0-alpha.8](https://github.com/parse-community/parse-dashboard/compare/9.1.0-alpha.7...9.1.0-alpha.8) (2026-03-06)
+
+
+### Features
+
+* Enforce remote access restrictions on `agent` endpoint ([#3255](https://github.com/parse-community/parse-dashboard/issues/3255)) ([edef824](https://github.com/parse-community/parse-dashboard/commit/edef824d2243bf1930d07466bf7909d88c490786))
 
 # [9.1.0-alpha.7](https://github.com/parse-community/parse-dashboard/compare/9.1.0-alpha.6...9.1.0-alpha.7) (2026-03-02)
 
