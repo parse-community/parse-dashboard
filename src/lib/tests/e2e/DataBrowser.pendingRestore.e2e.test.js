@@ -183,8 +183,8 @@ describe('DataBrowser pendingRestore e2e', () => {
 
     const currentCell = await page.$('[data-current-cell="true"]');
     expect(currentCell).toBeTruthy();
-    const dataObjectId = await currentCell.getAttribute('data-object-id');
-    const dataField = await currentCell.getAttribute('data-field');
+    const dataObjectId = await currentCell.evaluate(el => el.getAttribute('data-object-id'));
+    const dataField = await currentCell.evaluate(el => el.getAttribute('data-field'));
     expect(dataObjectId).toBe(objectId);
     expect(dataField).toBe('title');
 
