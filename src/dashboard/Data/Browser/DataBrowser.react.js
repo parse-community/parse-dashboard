@@ -171,6 +171,7 @@ export default class DataBrowser extends React.Component {
       _objectsToFetch: [], // Temporary field for async fetch handling
       loadingObjectIds: new Set(),
       keyboardShortcuts: null, // Keyboard shortcuts from server
+      pendingRestore: null, // Stores { objectId, fieldName } to re-select the same cell after a refresh
       showScriptConfirmationDialog: false,
       selectedScript: null,
       contextMenuX: null,
@@ -502,19 +503,64 @@ export default class DataBrowser extends React.Component {
     // Note: We intentionally do NOT clear selectedObjectId when current becomes null.
     // Clicking toolbar menus sets current=null, but the info panel should persist.
 
+    // When a refresh starts, data becomes null. Save the currently selected cell's
+    // objectId and field name so we can restore the selection once new data loads.
+    if (
+      this.props.data === null &&
+      prevProps.data !== null &&
+      this.props.className === prevProps.className
+    ) {
+      const { current, order } = this.state;
+      if (current !== null) {
+        const objectId = prevProps.data[current.row]?.id;
+        const fieldName = order[current.col]?.name;
+        if (objectId && fieldName) {
+          this.setState({ pendingRestore: { objectId, fieldName } });
+        }
+      }
+    }
+
+    // If the class changed while a restore was pending, discard it to avoid firing
+    // against a different class's data. Otherwise, when a refresh delivers new data,
+    // use the saved objectId + fieldName to restore the selection in its new position.
+    // If the document is no longer present, deselect to avoid highlighting the wrong cell.
+    if (this.props.className !== prevProps.className && this.state.pendingRestore) {
+      this.setState({ pendingRestore: null });
+    } else if (
+      this.props.data !== null &&
+      prevProps.data === null &&
+      this.state.pendingRestore
+    ) {
+      const { objectId, fieldName } = this.state.pendingRestore;
+      const newRowIndex = this.props.data.findIndex(obj => obj.id === objectId);
+      const newColIndex = this.state.order.findIndex(col => col.name === fieldName);
+
+      if (newRowIndex !== -1 && newColIndex !== -1) {
+        this.setCurrent({ row: newRowIndex, col: newColIndex });
+        this.setState({ pendingRestore: null });
+        this.setSelectedObjectId(objectId);
+        this.handleCallCloudFunction(objectId, this.props.className, this.props.app.applicationId);
+      } else {
+        this.setState({ current: null, pendingRestore: null });
+        this.setSelectedObjectId(undefined);
+      }
+    }
+
     if (this.state.current && this.state.current !== prevState.current) {
       if (this.state.current.col !== this.state.lastSelectedCol) {
         this.setState({ lastSelectedCol: this.state.current.col });
       }
     }
 
-    // Auto-load first row if enabled and conditions are met
+    // Auto-load first row if enabled and conditions are met.
+    // Skip when a cell restore is pending to avoid overwriting the restored selection.
     if (
       this.state.autoLoadFirstRow &&
       this.state.isPanelVisible &&
       this.props.data &&
       this.props.data.length > 0 &&
       !this.state.selectedObjectId &&
+      !this.state.pendingRestore &&
       ((!prevProps.data || prevProps.data.length === 0) ||
        prevProps.className !== this.props.className ||
        prevState.isPanelVisible !== this.state.isPanelVisible)

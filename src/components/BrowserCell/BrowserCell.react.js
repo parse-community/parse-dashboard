@@ -673,6 +673,7 @@ export default class BrowserCell extends Component {
       row,
       col,
       field,
+      objectId,
       onEditSelectedRow,
       isRequired,
       markRequiredFieldRow,
@@ -733,6 +734,9 @@ export default class BrowserCell extends Component {
         ref={this.cellRef}
         className={classes.join(' ')}
         style={style}
+        {...(current && { 'data-current-cell': 'true' })}
+        {...(objectId && { 'data-object-id': objectId })}
+        {...(field && { 'data-field': field })}
         onClick={e => {
           if (e.metaKey === true && type === 'Pointer') {
             onPointerCmdClick(value);
