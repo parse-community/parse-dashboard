@@ -172,7 +172,7 @@ describe('DataBrowser pendingRestore e2e', () => {
     const hasCurrentBefore = (await page.$('[data-current-cell="true"]')) !== null;
     expect(hasCurrentBefore).toBe(true);
 
-    const refreshByText = await page.$x("//a[.//span[text()='Refresh']]").then(nodes => nodes[0]);
+    const refreshByText = await page.locator('xpath///a[.//span[text()="Refresh"]]');
     expect(refreshByText).toBeTruthy();
     await refreshByText.click();
 
