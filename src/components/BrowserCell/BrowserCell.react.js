@@ -125,7 +125,7 @@ export default class BrowserCell extends Component {
           const object = new Parse.Object(v.className);
           object.id = v.objectId;
           return (
-            <li key={v.objectId || i}>
+            <li key={`${v.objectId}-${i}`}>
               <Pill
                 value={v.objectId}
                 onClick={this.props.onPointerClick.bind(undefined, object)}
