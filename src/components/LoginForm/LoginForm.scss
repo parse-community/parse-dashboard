@@ -11,69 +11,79 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  margin-left: -175px;
+  margin-left: -190px;
   text-align: center;
-  width: 350px;
+  width: 380px;
 }
 
 .form {
-  margin-top: 30px;
+  margin-top: var(--space-6);
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border-secondary);
+  overflow: hidden;
 }
 
 .header {
   height: 50px;
   line-height: 50px;
-  border-radius: 5px 5px 0 0;
-  color: $blue;
-  font-size: 16px;
-  font-weight: 700;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  color: var(--color-accent-blue);
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold);
   text-align: center;
-  background: white;
-  border-bottom: 1px solid #e0e0e1;
+  background: var(--color-bg-elevated);
+  border-bottom: 1px solid var(--color-border-secondary);
 }
 
 .footer {
-  @include NotoSansFont;
+  @include UIFont;
   position: relative;
   height: 40px;
   padding: 10px 0;
   width: 100%;
-  background: white;
-  border-radius: 0 0 5px 5px;
-  color: #c1c0c9;
-  font-size: 12px;
+  background: var(--color-bg-secondary);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  color: var(--color-text-tertiary);
+  font-size: var(--text-xs);
   text-align: center;
+  border-top: 1px solid var(--color-border-secondary);
 
   a {
-    color: #c1c0c9;
+    color: var(--color-text-tertiary);
+    transition: color var(--transition-fast);
 
     &:hover {
-      color: $mainTextColor;
+      color: var(--color-text-primary);
     }
   }
 }
 
 .submit {
-  @include NotoSansFont;
+  @include UIFont;
   display: block;
-  background: $green;
+  background: var(--color-accent-blue);
   height: 42px;
   width: 100%;
-  font-size: 16px;
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
   line-height: 42px;
-  border-radius: 5px;
-  color: white;
-  margin-top: 15px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-on-dark);
+  margin-top: var(--space-4);
   outline: none;
   border: none;
   cursor: pointer;
+  transition: background var(--transition-fast);
 
   &:hover, &:focus {
-    background: $darkGreen;
+    background: var(--color-accent-blue-hover);
   }
 
   &:disabled {
-    background: #dadada;
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-tertiary);
     cursor: default;
   }
 }

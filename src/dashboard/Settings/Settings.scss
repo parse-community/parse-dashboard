@@ -5,16 +5,21 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+@import 'stylesheets/globals.scss';
+
+// =============================================================================
+// Modern (light / dark) — left-aligned, constrained width, clean spacing
+// =============================================================================
+
 .settings_page {
-  padding: 120px 0 80px 0;
+  padding: calc(#{$toolbar-height} + var(--space-3)) var(--space-10) var(--space-10);
+  max-width: 720px;
 }
 
 .form_buttons {
-  max-width: 50%;
-  margin: 20px auto 0;
   display: flex;
-  justify-content: center;
-  gap: 5px;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
 
   & > div {
     background: transparent !important;
@@ -24,12 +29,56 @@
 }
 
 .sectionSeparator {
-  border-bottom-width: 1px;
-  margin-bottom: 20px;
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-border-secondary);
 }
 
 .lastField {
-  border-bottom-width: 1px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
+  // No special treatment in modern
+}
+
+// =============================================================================
+// Classic — centered, wider padding, original look
+// =============================================================================
+
+:global([data-theme="classic"]) {
+  .settings_page {
+    padding: 120px 0 80px 0;
+    max-width: none;
+  }
+
+  .form_buttons {
+    max-width: 50%;
+    margin: 20px auto 0;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  .sectionSeparator {
+    border-bottom-width: 1px;
+    margin-bottom: 20px;
+    padding-bottom: 0;
+  }
+
+  .lastField {
+    border-bottom-width: 1px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+}
+
+// =============================================================================
+// Responsive — mobile
+// =============================================================================
+
+@media (max-width: $bp-md - 1) {
+  .settings_page {
+    padding: calc(#{$toolbar-height} + #{$mobile-header-height} + var(--space-4)) var(--space-3) var(--space-8);
+    max-width: none;
+  }
+
+  .form_buttons {
+    max-width: 100%;
+  }
 }

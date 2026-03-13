@@ -7,13 +7,15 @@
  */
 @import 'stylesheets/globals.scss';
 
+// Modern: compact select trigger, no outer chrome
 .dropdown {
   position: relative;
-  background: $inputBackgroundColor;
-  font-size: 16px;
-  height: 80px;
+  background: transparent;
+  font-size: var(--text-base);
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
+  display: flex;
+  align-items: center;
 }
 
 .dropdown, .menu {
@@ -24,10 +26,13 @@
 
 .menu {
   max-height: 215px;
-  border: 1px solid $blue;
-  background: white;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-elevated);
+  box-shadow: var(--shadow-lg);
   overflow: auto;
   overscroll-behavior: none;
+  padding: var(--space-1) 0;
 
   button {
     @include buttonReset;
@@ -36,11 +41,14 @@
   }
 
   .option {
-    color: $blue;
-    border-bottom: 1px solid $borderGrey;
+    color: var(--color-text-primary);
+    border-bottom: none;
+    transition: background var(--transition-fast);
+    line-height: 36px;
+    padding: 0 var(--space-3);
 
     &:hover {
-      background: rgba(0,0,0,0.1);
+      background: var(--color-interactive-hover);
     }
   }
 
@@ -50,44 +58,86 @@
 }
 
 .current {
-  text-align: center;
-  height: 80px;
+  text-align: left;
+  height: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-3);
+  min-height: 36px;
+  width: 100%;
+  transition: border-color var(--transition-fast);
+
+  &:hover {
+    border-color: var(--color-border-focus);
+  }
 
   &:not(.hideArrow){
+    padding-right: 32px;
+
     &:after {
-      @include arrow('down', 12px, 8px, rgba(0,0,0,0.3));
+      @include arrow('down', 10px, 6px, $grey);
       position: absolute;
       content: '';
-      top: 36px;
-      right: 20px;
+      right: 12px;
+      top: 50%;
+      margin-top: -3px;
     }
   }
 
   .option, .placeHolder {
-    height: 80px;
-    line-height: 80px;
+    height: 36px;
+    line-height: 36px;
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--text-sm);
   }
 
   .placeHolder {
-    color: $secondaryTextColor
+    color: var(--color-text-tertiary);
+    font-weight: normal;
   }
 }
 
 .option {
-  line-height: 50px;
-  padding: 0 14px 0 14px;
+  line-height: 40px;
+  padding: 0 var(--space-4);
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: var(--text-sm);
 }
 
 .disabled {
   cursor: default;
 
-  .current:after {
-    display: none;
+  .current {
+    background: var(--color-bg-secondary);
+    border-color: var(--color-border-secondary);
+
+    &:after {
+      display: none;
+    }
   }
 
   .option {
-    padding: 0 14px;
+    padding: 0 var(--space-4);
+    color: var(--color-text-tertiary);
+  }
+}
+
+// Classic: centered dropdown in 80px row
+:global([data-theme="classic"]) {
+  .dropdown {
+    height: 80px;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .current {
+    text-align: center;
+    width: auto;
   }
 }

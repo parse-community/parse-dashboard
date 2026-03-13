@@ -11,7 +11,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  box-shadow: var(--shadow-md);
 
   input {
     @include MonospaceFont;
@@ -19,7 +19,14 @@
     height: 30px;
     border: none;
     outline: none;
-    padding: 0 4px;
-    font-size: 12px;
+    padding: 0 var(--space-1);
+    font-size: var(--text-xs);
+    background: var(--color-bg-elevated);
+    color: var(--color-text-primary);
+    transition: background var(--transition-fast);
+
+    &:focus {
+      background: var(--color-bg-primary);
+    }
   }
 }

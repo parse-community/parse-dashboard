@@ -11,11 +11,16 @@
   position: fixed;
   top: 0;
   right: 0;
-  left: 300px;
-  background: #353446;
-  height: 96px;
-  color: white;
+  left: $sidebar-width;
+  background: var(--color-bg-toolbar);
+  height: $toolbar-height;
+  color: var(--color-text-on-dark);
   z-index: 5;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-4);
 }
 
 body:global(.expanded) {
@@ -24,10 +29,31 @@ body:global(.expanded) {
   }
 }
 
+@media (max-width: $bp-md - 1) {
+  .toolbar {
+    left: 0;
+    top: $mobile-header-height;
+    padding: 0 var(--space-2);
+  }
+
+  .titleText {
+    display: none;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
 .objectPickerContent {
   .toolbar {
-    background: #00db7c;
-    height: 80px;
+    background: var(--color-accent-green);
+    height: calc($toolbar-height - 16px);
     right: 135px;
 
     .nav {
@@ -41,81 +67,103 @@ body:global(.expanded) {
 }
 
 .title {
-  position: absolute;
-  left: 14px;
-  bottom: 10px;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex-shrink: 1;
 }
 
 .nav {
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .iconButton {
-  display: block;
-  padding-top: 10px;
-  padding-right: 10px;
+  display: flex;
+  align-items: center;
+  padding: var(--space-2);
   cursor: pointer;
+  border-radius: var(--radius-md);
+  color: var(--color-text-on-dark-muted);
+  transition: background var(--transition-fast), color var(--transition-fast);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-on-dark);
+  }
 }
 
 .titleText {
   display: inline-block;
+  min-width: 0;
 }
 
 .section {
-  @include DosisFont;
-  color: #757985;
+  @include HeadingFont;
+  color: var(--color-text-on-dark-muted);
   text-transform: uppercase;
-  font-size: 8px;
-  letter-spacing: 1.6px;
+  font-size: var(--text-xs);
+  letter-spacing: 0.5px;
+  font-weight: var(--font-weight-medium);
 }
 
 .subsection {
-  font-size: 18px;
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold);
   vertical-align: bottom;
   margin-right: 10px;
+  color: var(--color-text-on-dark);
 }
 
 .details {
-  color: #80848f;
-  font-size: 12px;
+  color: var(--color-text-on-dark-muted);
+  font-size: var(--text-xs);
 }
 
 .actions {
-  position: absolute;
-  right: 14px;
-  top: 4px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-left: auto;
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: visible;
 }
 
 .panelButtons {
-  position: absolute;
-  right: 5px;
-  bottom: 5px;
   display: flex;
-  gap: 5px;
+  align-items: center;
+  gap: var(--space-1);
+  margin-left: var(--space-2);
 }
 
 .btn {
   position: relative;
   border: none;
-  padding: 6px 8px;
+  padding: var(--space-1) var(--space-2);
   background: none;
-  color: white;
+  color: var(--color-text-on-dark-muted);
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: var(--space-1);
   cursor: pointer;
   white-space: nowrap;
+  font-size: var(--text-sm);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast), color var(--transition-fast);
 
   svg {
-
-    &:hover {
-      fill: #ffffff;
-    }
+    fill: var(--color-text-on-dark-muted);
+    transition: fill var(--transition-fast);
   }
 
   &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-on-dark);
+
     svg {
-      fill: #ffffff;
+      fill: var(--color-text-on-dark);
     }
   }
 
@@ -124,20 +172,31 @@ body:global(.expanded) {
     cursor: not-allowed;
 
     &:hover {
+      background: none;
       svg {
-        fill: #797592;
+        fill: var(--color-text-on-dark-muted);
       }
     }
   }
 }
 
 .btnAutoScroll {
-  background-color: #169cee;
-  border-radius: 4px;
+  background-color: var(--color-accent-blue);
+  color: var(--color-text-on-dark);
+  border-radius: var(--radius-md);
   animation: pulse 1.5s ease-in-out infinite;
 
+  svg {
+    fill: var(--color-text-on-dark);
+  }
+
   &:hover {
-    background-color: #1486cc;
+    background-color: var(--color-accent-blue-hover);
+    color: var(--color-text-on-dark);
+
+    svg {
+      fill: var(--color-text-on-dark);
+    }
   }
 }
 

@@ -6,15 +6,15 @@
  * the root directory of this source tree.
  */
 @import 'stylesheets/globals.scss';
-       
+
 .dropdown {
   display: inline-block;
   vertical-align: top;
   height: 32px;
   text-align: left;
   white-space: nowrap;
-  font-size: 14px;
-  margin-right: 10px;
+  font-size: var(--text-sm);
+  margin-right: var(--space-3);
 
   &:nth-last-child(2) {
     margin-right: 0;
@@ -22,18 +22,18 @@
 }
 
 .current, .menu {
-  background: $white;
-  border-radius: $borderRadiusConst;
-  border: 1px solid $blue;
-  color: $blue;
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-accent-blue);
+  color: var(--color-accent-blue);
   cursor: pointer;
 
   &.red {
-    border-color: $red;
+    border-color: var(--color-accent-red);
   }
 
   &.green {
-    border-color: $green;
+    border-color: var(--color-accent-green);
   }
 
   &.blueGreen {
@@ -49,7 +49,8 @@
   position: relative;
   height: 30px;
   line-height: 30px;
-  padding: 0 30px 0 10px;
+  padding: 0 var(--space-7) 0 var(--space-3);
+  transition: background var(--transition-fast);
 
   div {
     overflow-x: hidden;
@@ -61,21 +62,25 @@
     position: absolute;
     content: '';
     top: 12px;
-    right: 10px;
+    right: var(--space-3);
+  }
+
+  &:hover {
+    background: var(--color-interactive-hover);
   }
 
   &.green {
-    color: $green;
+    color: var(--color-accent-green);
     &:after {
       @include arrow('down', 12px, 8px, $green);
-    }    
+    }
   }
 
   &.red {
-    color: $red;
+    color: var(--color-accent-red);
     &:after {
       @include arrow('down', 12px, 8px, $red);
-    }    
+    }
   }
 
   &.blueGreen {
@@ -96,17 +101,19 @@
 .menu {
   max-height: 360px;
   overflow-y: auto;
-  font-size: 14px;
-  border: 1px solid $blue;
+  font-size: var(--text-sm);
+  border: 1px solid var(--color-accent-blue);
+  box-shadow: var(--shadow-sm);
 
   div {
     height: 30px;
     line-height: 30px;
-    padding: 0 10px;
+    padding: 0 var(--space-3);
+    transition: background var(--transition-fast), color var(--transition-fast);
 
     &:hover {
-      background: rgba($blue, 0.1);
-      color: $white;
+      background: var(--color-interactive-hover);
+      color: var(--color-accent-blue);
     }
   }
 }

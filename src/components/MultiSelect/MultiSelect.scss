@@ -9,8 +9,8 @@
 
 .dropdown {
   position: relative;
-  background: $inputBackgroundColor;
-  font-size: 16px;
+  background: var(--color-bg-secondary);
+  font-size: var(--text-base);
   width: 100%;
   overflow: hidden;
 }
@@ -24,10 +24,12 @@
 
 .menu {
   max-height: 200px;
-  border: 1px solid $blue;
-  background: white;
+  border: 1px solid var(--color-border-focus);
+  background: var(--color-bg-elevated);
   overflow: auto;
   overscroll-behavior: none;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
 
   > *:last-child .option {
     border-bottom: none;
@@ -40,30 +42,32 @@
   white-space: normal;
   padding: 20px;
   line-height: 40px;
+  color: var(--color-text-primary);
 }
 
 .option {
   position: relative;
-  height: 48px;
-  line-height: 50px;
+  height: 44px;
+  line-height: 44px;
   padding: 0 50px 0 14px;
-  color: $blue;
-  border-bottom: 1px solid $borderGrey;
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: background var(--transition-fast);
 
   &:hover {
-    background: rgba(0, 0, 0, 0.1);
+    background: var(--color-interactive-hover);
 
     .unchecked {
-      background: white;
+      background: var(--color-bg-primary);
     }
   }
 }
 
 .option.disabled {
   &:hover {
-    background: white;
+    background: var(--color-bg-primary);
     cursor: default;
   }
 }
@@ -71,18 +75,18 @@
 .checked,
 .unchecked {
   position: absolute;
-  width: 32px;
-  height: 32px;
-  border-radius: 100%;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
   top: 8px;
   right: 8px;
 }
 
 .unchecked {
-  background: #e0e0ea;
+  background: var(--color-border-primary);
 }
 .checked {
-  background: #00dc7c;
+  background: var(--color-accent-green);
 
   svg {
     position: absolute;
@@ -92,7 +96,7 @@
 }
 
 .current.placeholder {
-  color: $secondaryTextColor;
+  color: var(--color-text-tertiary);
   text-align: center;
 }
 
@@ -100,16 +104,13 @@
   background: none;
 }
 
-.dropdown.dense {
-  background: none;
-}
 .dense {
   .checked,
   .unchecked {
     position: absolute;
     width: 18px;
     height: 18px;
-    border-radius: 100%;
+    border-radius: var(--radius-full);
     top: 4px;
     right: 4px;
   }

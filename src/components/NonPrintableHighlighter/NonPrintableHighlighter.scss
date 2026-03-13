@@ -15,94 +15,94 @@
 }
 
 .warningContainer {
-  margin-top: 8px;
+  margin-top: var(--space-2);
 }
 
 .warningBadge {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--space-2);
   width: 100%;
-  padding: 8px 10px;
-  background: #fff3cd;
-  border: 1px solid #ffc107;
-  border-radius: 4px;
+  padding: var(--space-2) var(--space-2);
+  background: var(--color-bg-warning);
+  border: 1px solid var(--color-accent-orange);
+  border-radius: var(--radius-md);
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.15s ease;
+  transition: background-color var(--transition-fast);
 
   &:hover {
-    background: #ffe69c;
+    background: var(--color-bg-warning-hover);
   }
 
   &.expanded {
-    border-radius: 4px 4px 0 0;
-    border-bottom: 1px solid #ffc107;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    border-bottom: 1px solid var(--color-accent-orange);
   }
 }
 
 .warningIcon {
-  color: #856404;
-  font-size: 14px;
+  color: var(--color-text-warning);
+  font-size: var(--text-sm);
 }
 
 .warningText {
-  color: #856404;
-  font-size: 12px;
-  font-weight: 500;
+  color: var(--color-text-warning);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-medium);
 }
 
 .detailsPanel {
-  padding: 10px 12px;
-  background: #fff8e1;
-  border: 1px solid #ffe082;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-bg-warning);
+  border: 1px solid var(--color-accent-orange);
   border-top: none;
-  border-radius: 0 0 4px 4px;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
 }
 
 .charList {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--space-2);
 }
 
 .charItem {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 3px 8px;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 3px;
+  gap: var(--space-1);
+  padding: 3px var(--space-2);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-sm);
 }
 
 .charLabel {
-  font-family: monospace;
+  @include MonospaceFont;
   font-size: 11px;
-  font-weight: 600;
-  color: #d32f2f;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-accent-red);
 }
 
 .charCode {
-  font-family: monospace;
+  @include MonospaceFont;
   font-size: 10px;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .charCount {
-  font-family: monospace;
-  font-size: 10px;
-  font-weight: 600;
-  color: #1976d2;
+  @include MonospaceFont;
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-accent-blue);
   margin-left: 2px;
 }
 
 .charPositions {
-  font-family: monospace;
+  @include MonospaceFont;
   font-size: 10px;
-  color: #888;
-  margin-left: 4px;
+  color: var(--color-text-secondary);
+  margin-left: var(--space-1);
 }
 
 // Info badge styles for non-alphanumeric character detection
@@ -114,50 +114,50 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--space-2);
   width: 100%;
-  padding: 8px 10px;
-  background: #e3f2fd;
-  border: 1px solid #2196f3;
-  border-radius: 4px;
+  padding: var(--space-2) var(--space-2);
+  background: var(--color-bg-info);
+  border: 1px solid var(--color-accent-blue);
+  border-radius: var(--radius-md);
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.15s ease;
+  transition: background-color var(--transition-fast);
 
   &:hover {
-    background: #bbdefb;
+    background: var(--color-bg-info-hover);
   }
 
   &.expanded {
-    border-radius: 4px 4px 0 0;
-    border-bottom: 1px solid #2196f3;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    border-bottom: 1px solid var(--color-accent-blue);
   }
 }
 
 .infoIcon {
-  color: #1565c0;
-  font-size: 14px;
+  color: var(--color-accent-blue);
+  font-size: var(--text-sm);
 }
 
 .infoText {
-  color: #1565c0;
-  font-size: 12px;
-  font-weight: 500;
+  color: var(--color-accent-blue);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-medium);
 }
 
 .infoDetailsPanel {
-  padding: 10px 12px;
-  background: #e8f4fd;
-  border: 1px solid #90caf9;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-bg-info);
+  border: 1px solid var(--color-accent-blue);
   border-top: none;
-  border-radius: 0 0 4px 4px;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
 }
 
 .charLabelInfo {
-  font-family: monospace;
+  @include MonospaceFont;
   font-size: 11px;
-  font-weight: 600;
-  color: #1565c0;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-accent-blue);
 }
 
 // Regex validation badge styles
@@ -169,62 +169,62 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--space-2);
   width: 100%;
-  padding: 8px 10px;
-  background: #e8f5e9;
-  border: 1px solid #4caf50;
-  border-radius: 4px;
+  padding: var(--space-2) var(--space-2);
+  background: var(--color-bg-success);
+  border: 1px solid var(--color-accent-green);
+  border-radius: var(--radius-md);
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.15s ease;
+  transition: background-color var(--transition-fast);
 
   &:hover {
-    background: #c8e6c9;
+    background: var(--color-bg-success-hover);
   }
 
   &.expanded {
-    border-radius: 4px 4px 0 0;
-    border-bottom: 1px solid #4caf50;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    border-bottom: 1px solid var(--color-accent-green);
   }
 }
 
 .regexIcon {
-  color: #2e7d32;
-  font-size: 14px;
-  font-family: monospace;
+  color: var(--color-accent-green);
+  font-size: var(--text-sm);
+  @include MonospaceFont;
   font-weight: 700;
 }
 
 .regexText {
-  color: #2e7d32;
-  font-size: 12px;
-  font-weight: 500;
+  color: var(--color-accent-green);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-medium);
 }
 
 .regexDetailsPanel {
-  padding: 10px 12px;
-  background: #f1f8e9;
-  border: 1px solid #a5d6a7;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-bg-success);
+  border: 1px solid var(--color-accent-green);
   border-top: none;
-  border-radius: 0 0 4px 4px;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
 }
 
 .regexLabelValid {
-  font-family: monospace;
+  @include MonospaceFont;
   font-size: 11px;
-  font-weight: 600;
-  color: #2e7d32;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-accent-green);
 }
 
 .regexLabelInvalid {
-  font-family: monospace;
+  @include MonospaceFont;
   font-size: 11px;
-  font-weight: 600;
-  color: #d32f2f;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-accent-red);
 }
 
 .regexSummaryInvalid {
-  color: #d32f2f;
-  font-weight: 600;
+  color: var(--color-accent-red);
+  font-weight: var(--font-weight-semibold);
 }

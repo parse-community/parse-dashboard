@@ -10,20 +10,24 @@
 html, body {
   min-height: 100vh;
 }
-html{
-  background-color: #110D11;
+html {
+  background-color: var(--color-bg-secondary);
+  accent-color: var(--color-accent-blue);
+}
+:global([data-theme='dark']) {
+  color-scheme: dark;
 }
 
 body {
-  @include NotoSansFont;
+  font-family: var(--font-sans);
   box-sizing: border-box;
-  color: $mainTextColor;
-  background-color: #110D11;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-secondary);
 }
 
 :global(#browser_mount) {
   min-height: 100vh;
-  background: #FDFAFB;
+  background: var(--color-bg-secondary);
 }
 
 * {
@@ -35,7 +39,7 @@ body {
 }
 
 a {
-  color: $blue;
+  color: var(--color-accent-blue);
   cursor: pointer;
   text-decoration: none;
 }
@@ -74,25 +78,25 @@ table {
 }
 
 .failedBackground {
-  background-color: $red;
+  background-color: var(--color-accent-red);
 }
 
 .succeededBackground {
-  background-color: $green;
+  background-color: var(--color-accent-green);
 }
 
 .progressBackground {
-  background-color: $blue;
+  background-color: var(--color-accent-blue);
 }
 
 .failedText {
-  color: $red;
+  color: var(--color-accent-red);
 }
 
 .succeededText {
-  color: $green;
+  color: var(--color-accent-green);
 }
 
 .progressText {
-  color: $blue;
+  color: var(--color-accent-blue);
 }

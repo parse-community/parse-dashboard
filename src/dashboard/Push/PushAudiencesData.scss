@@ -13,11 +13,11 @@
 }
 
 .pushAudienceData {
-  border: 1px solid $borderGrey;
+  border: 1px solid var(--color-border-primary);
 }
 
 .pushAudienceDialog {
   text-align: right;
-  border-top: 1px solid $borderGrey;
+  border-top: 1px solid var(--color-border-primary);
   padding: 15px 30px 15px 15px;
 }

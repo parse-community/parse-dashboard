@@ -7,55 +7,133 @@
  */
 @import 'stylesheets/globals.scss';
 
+// =============================================================================
+// Modern layout (light / dark) — stacked label-above-input like shadcn
+// =============================================================================
+
 .field {
   position: relative;
-  border-style: solid;
-  border-color: $borderGrey;
-  border-width: 1px 1px 0 1px;
-  min-height: 80px;
-  background: white;
+  border: none;
+  background: transparent;
   display: flex;
-
-  &:last-of-type {
-    border-bottom-width: 1px;
-  }
+  flex-direction: column;
+  min-height: auto;
+  padding: 0;
+  gap: 6px;
 
   > pre[class*="language-"] {
-    border-radius: 5px;
+    border-radius: var(--radius-md);
   }
 }
 
 .left {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   flex-shrink: 0;
-  width: calc(var(--modal-min-width, 540px) * var(--modal-label-ratio, 0.5));
-  max-width: calc(var(--modal-min-width, 540px) * var(--modal-label-ratio, 0.5));
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
 }
 
 .right {
-  --modal-row-min-height: 80px;
   position: relative;
-  min-height: var(--modal-row-min-height);
-  text-align: right;
+  text-align: left;
   padding: 0;
-  background: #f6fafb;
+  background: transparent;
   display: flex;
-  justify-content: center;
   align-items: center;
   flex: 1;
+  width: 100%;
+  min-height: 36px;
 }
-
 
 .header {
   min-height: 56px;
   height: 56px;
+  flex-direction: row;
+  padding: 0;
+  border-bottom: 1px solid var(--color-border-secondary);
 
   .right {
     min-height: 56px;
   }
 
   & ~ .field {
-    background: #f5f5f7;
+    background: transparent;
+  }
+}
+
+// =============================================================================
+// Classic layout — side-by-side label | input (original Parse Dashboard look)
+// =============================================================================
+
+:global([data-theme="classic"]) {
+  .field {
+    flex-direction: row;
+    min-height: 80px;
+    padding: 0;
+    gap: 0;
+    background: var(--color-bg-primary);
+    border-style: solid;
+    border-color: var(--color-border-secondary);
+    border-width: 1px 0 0 0;
+
+    &:first-of-type {
+      border-top: none;
+    }
+  }
+
+  .left {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    width: calc(var(--modal-min-width, 540px) * var(--modal-label-ratio, 0.5));
+    max-width: calc(var(--modal-min-width, 540px) * var(--modal-label-ratio, 0.5));
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .right {
+    --modal-row-min-height: 80px;
+    min-height: var(--modal-row-min-height);
+    text-align: right;
+    justify-content: center;
+    background: var(--color-bg-primary);
+    width: auto;
+  }
+}
+
+// =============================================================================
+// Responsive — stacks on mobile for all themes
+// =============================================================================
+
+@media (max-width: $bp-md - 1) {
+  .field {
+    flex-direction: column;
+    min-height: auto;
+    padding: 0;
+    gap: 6px;
+  }
+
+  .left {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    flex-shrink: 1;
+  }
+
+  .right {
+    text-align: left;
+    width: 100%;
+    min-height: 36px;
+    padding: 0;
+  }
+
+  .header {
+    height: auto;
+    min-height: auto;
+
+    .right {
+      min-height: auto;
+    }
   }
 }

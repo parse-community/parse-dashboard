@@ -10,22 +10,24 @@
 .wrapper {
   width: 320px;
   text-align: center;
-  padding: 10px;
+  padding: var(--space-3);
   margin: 0 auto;
 
   .title {
     height: 20px;
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-medium);
   }
 
   .percent {
     height: 160px;
     width: 160px;
-    border-radius: 80px;
+    border-radius: var(--radius-full);
     border: 3px solid;
-    margin: 10px auto;
+    margin: var(--space-3) auto;
 
     .rate {
-      @include DosisFont;
+      @include HeadingFont;
       font-size: 40px;
       font-weight: 100;
       padding: 38px 0 0 0;
@@ -34,41 +36,41 @@
   }
 
   .count_wrap {
-    color: $mainTextColor;
+    color: var(--color-text-primary);
 
     .count {
       font-size: 30px;
-      @include DosisFont;
+      @include HeadingFont;
     }
   }
 }
 
 .blue {
-  color: $blue;
-  background: white;
+  color: var(--color-accent-blue);
+  background: var(--color-bg-primary);
 }
 
 .blue_inv {
-  color: white;
-  background: $blue;
+  color: var(--color-text-on-dark);
+  background: var(--color-accent-blue);
 }
 
 .pink {
-  color: $pink;
-  background: white;
+  color: var(--color-accent-red);
+  background: var(--color-bg-primary);
 }
 
 .pink_inv {
-  color: white;
-  background: $pink;
+  color: var(--color-text-on-dark);
+  background: var(--color-accent-red);
 }
 
 .yellow {
-  color: $yellow;
-  background: white;
+  color: var(--color-accent-orange);
+  background: var(--color-bg-primary);
 }
 
 .yellow_inv {
-  color: white;
-  background: $yellow;
+  color: var(--color-text-on-dark);
+  background: var(--color-accent-orange);
 }

@@ -5,19 +5,23 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+@import 'stylesheets/globals.scss';
+
 .directory, .file {
-  color: #8fb9cf;
+  color: var(--color-text-on-dark-muted);
   height: 20px;
   line-height: 20px;
-  font-size: 12px;
+  font-size: var(--text-xs);
   cursor: pointer;
+  transition: color var(--transition-fast);
 }
 
 .directory {
   svg {
     vertical-align: middle;
-    fill: #8fb9cf;
-    margin-right: 6px;
+    fill: var(--color-text-on-dark-muted);
+    margin-right: var(--space-2);
+    transition: fill var(--transition-fast);
   }
 
   > span {
@@ -25,26 +29,26 @@
   }
 
   &:hover {
-    color: white;
+    color: var(--color-text-on-dark);
 
     svg {
-      fill: white;
+      fill: var(--color-text-on-dark);
     }
   }
 }
 
 .contents {
-  padding-left: 12px;
+  padding-left: var(--space-3);
 }
 
 .file {
   display: block;
-  
+
   &:hover {
-    color: white;
+    color: var(--color-text-on-dark);
   }
 }
 
 .current {
-  color: white;
+  color: var(--color-text-on-dark);
 }

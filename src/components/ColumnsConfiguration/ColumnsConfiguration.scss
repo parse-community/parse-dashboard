@@ -1,44 +1,65 @@
 @import 'stylesheets/globals.scss';
 
 .entry {
-  display: inline-block;
-  height: 14px;
-  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-2);
 
   svg {
-    fill: #66637A;
+    fill: var(--color-text-on-dark-muted);
   }
 
   &:hover svg {
-    fill: white;
+    fill: var(--color-text-on-dark);
   }
 
   &.disabled {
     cursor: not-allowed;
-    color: #66637A;
+    color: rgba(255, 255, 255, 0.3);
+    opacity: 0.5;
 
     &:hover svg {
-      fill: #66637A;
+      fill: rgba(255, 255, 255, 0.3);
     }
   }
 }
 
 .title {
-  margin-top: -4px;
-  background: #797691;
+  background: rgba(255, 255, 255, 0.1);
   padding: 4px 8px;
-  border-radius: 5px 5px 0 0;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
 
   svg {
-    fill: white;
+    fill: var(--color-text-on-dark);
+  }
+}
+
+// When title is inside the popover dropdown, use light-bg styling
+.popover {
+  .title {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    font-weight: var(--font-weight-semibold);
+
+    svg {
+      fill: var(--color-text-secondary);
+    }
+
+    &:hover {
+      color: var(--color-text-primary);
+      background: var(--color-bg-tertiary);
+    }
   }
 }
 
 .entry, .title {
-  @include NotoSansFont;
-  font-size: 14px;
-  color: #ffffff;
+  @include UIFont;
+  font-size: var(--text-sm);
+  color: var(--color-text-on-dark-muted);
   cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
 
   svg {
     vertical-align: middle;
@@ -49,23 +70,29 @@
     vertical-align: middle;
     line-height: 14px;
   }
+
+  &:hover {
+    color: var(--color-text-on-dark);
+  }
 }
 
 .objectPickerContent {
   .entry svg {
-    fill: rgba(0, 0, 0, 0.3);
+    fill: var(--color-text-tertiary);
   }
 }
 
 .body {
-  color: white;
+  color: var(--color-text-primary);
   position: absolute;
   top: 22px;
   right: 0;
-  border-radius: 5px 0 5px 5px;
-  background: #797691;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-secondary);
+  box-shadow: var(--shadow-overlay);
   width: 320px;
-  font-size: 14px;
+  font-size: var(--text-sm);
 
   .columnConfigContainer {
     max-height: calc(100vh - 180px);
@@ -75,10 +102,12 @@
 }
 
 .footer {
-  background: rgba(0,0,0,0.2);
-  padding: 15px 20px;
+  background: var(--color-bg-tertiary);
+  padding: var(--space-3) var(--space-4);
   display: flex;
   justify-content: space-between;
+  border-top: 1px solid var(--color-border-secondary);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 
   > a {
     margin-right: 10px;

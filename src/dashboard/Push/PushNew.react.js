@@ -749,7 +749,7 @@ class PushNew extends DashboardView {
             {!this.state.loadingLocale && this.state.locales.length === 0 ? (
               <a
                 href="https://github.com/parse-community/parse-dashboard#configuring-localized-push-notifications"
-                style={{ color: '#169CEE' }}
+                style={{ color: 'var(--color-accent-blue)' }}
                 target="_blank" rel="noreferrer"
               >
                 Please follow this guide to setup the push locales feature

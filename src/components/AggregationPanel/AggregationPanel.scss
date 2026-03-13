@@ -1,212 +1,227 @@
 @import 'stylesheets/globals.scss';
 
 .heading {
-    font-size: 14px;
-    margin-top: 0;
-    padding: 8px;
-    padding-left: 10px;
-    background-color: $blue;
-    color: $white;
+  @include HeadingFont;
+  font-size: var(--text-base);
+  margin-top: 0;
+  padding: var(--space-2);
+  padding-left: var(--space-3);
+  background-color: var(--color-accent-blue);
+  color: var(--color-text-on-dark);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
 .segmentItems {
-    font-size: 14px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+  @include UIFont;
+  font-size: var(--text-base);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
 
 .keyValue {
-    font-size: 14px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
+  font-size: var(--text-base);
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
 
-    .copyIcon {
-        display: none;
-        cursor: pointer;
-        margin-left: 4px;
-        color: inherit;
-        opacity: 0.6;
-    }
+  .copyIcon {
+    display: none;
+    cursor: pointer;
+    margin-left: var(--space-1);
+    color: inherit;
+    opacity: 0.6;
+    transition: opacity var(--transition-fast);
 
-    &:hover .copyIcon {
-        display: inline-block;
+    &:hover {
+      opacity: 1;
     }
+  }
+
+  &:hover .copyIcon {
+    display: inline-block;
+  }
 }
 
 .video {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .image {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .audio {
-    width: 100%;
+  width: 100%;
 }
 
 .segmentItems table,
 .segmentItems th,
 .segmentItems td {
-    font-size: 14px;
-    border: 1px solid #ddd;
+  font-size: var(--text-base);
+  border: 1px solid var(--color-border-primary);
 }
 
 .segmentItems th,
 .segmentItems td {
-    padding: 4px;
-    text-align: left;
+  padding: var(--space-1);
+  text-align: left;
 }
 
 .buttonContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .button {
-    width: auto;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    cursor: pointer;
-    margin-bottom: 15px;
-    background-color: $blue;
-    padding: 3px 13px;
-    border: none;
-    color: $white;
-    line-height: 28px;
-    outline: 0;
-    text-decoration: none;
-    text-align: center;
-    border-radius: 5px;
-    font-size: 14px;
+  @include UIFont;
+  width: auto;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  margin-bottom: var(--space-4);
+  background-color: var(--color-accent-blue);
+  padding: var(--space-1) var(--space-3);
+  border: none;
+  color: var(--color-text-on-dark);
+  line-height: 28px;
+  outline: 0;
+  text-decoration: none;
+  text-align: center;
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  transition: background-color var(--transition-fast);
 
-    &:hover,
-    &:focus {
-        background-color: $darkBlue;
-    }
+  &:hover,
+  &:focus {
+    background-color: var(--color-accent-blue-hover);
+  }
 }
 
 .loading {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
 }
 
 .center {
-    position: absolute;
-    text-align: center;
-    top: 50%;
-    left: 50%;
-    @include transform(translate(-50%, -50%));
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  @include transform(translate(-50%, -50%));
 }
 
 .nestedPanel {
-    margin-right: -10px;
-    transition: all 0.3s ease;
+  margin-right: -10px;
+  transition: all 0.3s ease;
 }
 
 .nestedPanelHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    border-left: 1px solid transparent; 
-    background-color: $blue;
-    color: $white;
-    cursor: pointer;
-    padding-right: 4px;
-    
-    &.expanded {                         
-      border-left-color: #e3e3ea;
-    }
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  border-left: 1px solid transparent;
+  background-color: var(--color-accent-blue);
+  color: var(--color-text-on-dark);
+  cursor: pointer;
+  padding-right: var(--space-1);
+  transition: border-color var(--transition-fast);
+
+  &.expanded {
+    border-left-color: var(--color-border-primary);
   }
+}
 
 .expandButton {
-    display: inline;
-    padding: 8px;
-    font-weight: 500;
+  @include UIFont;
+  display: inline;
+  padding: var(--space-2);
+  font-weight: var(--font-weight-medium);
 
-    &.expanded {
-        font-weight: 600;
-    }
+  &.expanded {
+    font-weight: var(--font-weight-semibold);
+  }
 }
 
 .refreshButton {
-    background: none;
-    border: none;
-    padding: 4px;
-    cursor: pointer;
-    color: #666;
-    font-size: 16px;
+  background: none;
+  border: none;
+  padding: var(--space-1);
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  font-size: var(--text-lg);
+  transition: color var(--transition-fast);
 
-    &:hover {
-        color: #333;
-    }
+  &:hover {
+    color: var(--color-text-primary);
+  }
 
-    &:disabled {
-        color: #ccc;
-        cursor: not-allowed;
-    }
+  &:disabled {
+    color: var(--color-text-tertiary);
+    cursor: not-allowed;
+  }
 }
 
 .nestedPanelContent {
-    padding: 0  0 8px 0;
+  padding: 0 0 var(--space-2) 0;
 }
 
 .loader {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .reloadControls {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 6px;
-    animation: fadeIn 0.5s ease-in;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: var(--space-2);
+  animation: fadeIn 0.5s ease-in;
 }
 
 .elapsedTimer {
-    color: #999;
-    font-size: 12px;
+  color: var(--color-text-tertiary);
+  font-size: var(--text-xs);
 }
 
 .reloadButton {
-    background: none;
-    border: none;
-    padding: 8px 12px;
-    cursor: pointer;
-    color: $blue;
-    font-size: 13px;
-    margin-top: 10px;
+  @include UIFont;
+  background: none;
+  border: none;
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  color: var(--color-accent-blue);
+  font-size: var(--text-sm);
+  margin-top: var(--space-3);
+  transition: color var(--transition-fast);
 
-    &:hover {
-        color: $darkBlue;
-    }
+  &:hover {
+    color: var(--color-accent-blue-hover);
+  }
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .segmentContainer {
-    border-left: 1px solid #e3e3ea;
-    border-bottom: 1px solid #e3e3ea;
-    margin-bottom: 16px;
-  }
+  border-left: 1px solid var(--color-border-primary);
+  border-bottom: 1px solid var(--color-border-primary);
+  margin-bottom: var(--space-4);
+}

@@ -1,0 +1,91 @@
+/*
+ * Classic Theme
+ * Original Parse Dashboard look & feel (pre-uplift)
+ * Apply via <html data-theme="classic">
+ */
+
+:global([data-theme='classic']) {
+  // --- Fonts ---
+  --font-sans: 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-heading: 'Dosis', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono: 'Source Code Pro', 'Courier New', monospace;
+  --font-data-browser: 'Source Code Pro', 'Fira Code', 'Courier New', monospace;
+
+  // --- Backgrounds ---
+  --color-bg-primary: #fdfafb;
+  --color-bg-secondary: #f4f5f7;
+  --color-bg-tertiary: #ecf0f3;
+  --color-bg-elevated: #ffffff;
+  --color-bg-sidebar: #0c5582;
+  --color-bg-sidebar-bottom: #0c5582;
+  --color-bg-sidebar-hover: #0d5e91;
+  --color-bg-sidebar-active: #159cee;
+  --color-bg-toolbar: #353446;
+
+  // --- Borders ---
+  --color-border-primary: #e3e3ea;
+  --color-border-secondary: #e0e0ea;
+  --color-border-focus: #169cee;
+
+  // --- Text ---
+  --color-text-primary: #555572;
+  --color-text-secondary: #a5a5b4;
+  --color-text-tertiary: #cccbd2;
+  --color-text-on-dark: #ffffff;
+  --color-text-on-dark-muted: #84a5bc;
+
+  // --- Accent ---
+  --color-accent-blue: #169cee;
+  --color-accent-blue-hover: #0e69a1;
+  --color-accent-blue-light: #acd7f1;
+  --color-accent-green: #00db7c;
+  --color-accent-green-light: #a8f0ad;
+  --color-accent-red: #ff395e;
+  --color-accent-red-light: #fbc3bd;
+  --color-accent-orange: #fd9539;
+  --color-accent-orange-light: #fde0b5;
+  --color-accent-purple: #343445;
+
+  // --- Data Browser (original look) ---
+  --color-cell-text: #0e69a1;
+  --color-cell-border: var(--color-border-primary);
+  --color-row-stripe: var(--color-bg-secondary);
+  --color-row-hover: var(--color-accent-blue-light);
+  --data-header-transform: none;
+  --data-header-tracking: normal;
+  --data-header-size: 12px;
+  --data-header-color: #ffffff;
+  --data-header-type-color: #a2a6b1;
+  --data-header-bg: #66637a;
+  --data-header-hover-bg: #5a576e;
+  --data-header-border-color: #5a576e;
+  --data-cell-padding: 5px;
+  --data-add-col-bg: #343445;
+  --data-add-col-color: #ffffff;
+  --data-add-col-border: none;
+  --data-check-bg: #726f85;
+
+  // --- Buttons (outlined style for classic) ---
+  --btn-border: 1px solid var(--color-accent-blue);
+  --btn-color: var(--color-accent-blue);
+  --btn-bg: none;
+  --btn-hover-bg: var(--color-accent-blue);
+  --btn-hover-color: #ffffff;
+  --btn-primary-bg: var(--color-accent-blue);
+  --btn-primary-color: #ffffff;
+  --btn-primary-border: 1px solid var(--color-accent-blue);
+  --btn-primary-hover-bg: var(--color-accent-blue-hover);
+  --btn-radius: 5px;
+
+  // --- Interactive ---
+  --color-interactive-hover: rgba(0, 0, 0, 0.04);
+  --color-interactive-active: rgba(0, 0, 0, 0.06);
+  --color-interactive-focus-ring: 0 0 0 2px #169cee, 0 0 0 4px rgba(22, 156, 238, 0.3);
+
+  // --- Elevation ---
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --shadow-overlay: 0 16px 32px -4px rgba(0, 0, 0, 0.12);
+}

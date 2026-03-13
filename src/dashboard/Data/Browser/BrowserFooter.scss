@@ -1,18 +1,132 @@
 @import 'stylesheets/globals.scss';
 
 .footer {
+  @include UIFont;
   position: absolute;
-  width: calc(100% - 300px);
+  width: calc(100% - $sidebar-width);
   bottom: 0;
-  gap: 10px;
-  padding: 0px 15px;
+  padding: 0 var(--space-4);
   height: 36px;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
-  font-size: 12px;
-  font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  border-top: 1px solid lightgrey;
-  background-color: #f1f5f9;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  border-top: 1px solid var(--color-border-primary);
+  background-color: var(--color-bg-primary);
+}
+
+body:global(.expanded) {
+  .footer {
+    width: calc(100% - $sidebarCollapsedWidth);
+  }
+}
+
+@media (max-width: $bp-md - 1) {
+  .footer {
+    width: 100%;
+  }
+}
+
+.footerLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.footerRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.sep {
+  width: 1px;
+  height: 14px;
+  background: var(--color-border-primary);
+  flex-shrink: 0;
+}
+
+.pageSelect {
+  @include UIFont;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-sm);
+  padding: 2px 20px 2px 6px;
+  font-size: var(--text-xs);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  height: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%239ca3af' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  transition: border-color var(--transition-fast);
+
+  &:hover {
+    border-color: var(--color-text-tertiary);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-border-focus);
+  }
+}
+
+.pageLabel {
+  color: var(--color-text-tertiary);
+}
+
+.pageInput {
+  @include UIFont;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-sm);
+  padding: 2px 4px;
+  font-size: var(--text-xs);
+  color: var(--color-text-primary);
+  text-align: center;
+  height: 24px;
+  transition: border-color var(--transition-fast);
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-border-focus);
+  }
+}
+
+.navBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+  padding: 0;
+
+  &:hover:not(:disabled) {
+    background: var(--color-bg-secondary);
+    border-color: var(--color-text-tertiary);
+    color: var(--color-text-primary);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
 }

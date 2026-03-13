@@ -81,7 +81,7 @@ const ClassProgressBar = ({ job, last }) => {
           className={[styles.detailCompletion, baseStyles.succeededBackground].join(' ')}
         />
       );
-      icon = <Icon name="check-solid" fill="#00db7c" width={15} height={15} />;
+      icon = <Icon name="check-solid" fill="var(--color-accent-green)" width={15} height={15} />;
       break;
     case MIGRATION_FATALED:
       progressDiv = (
@@ -90,7 +90,7 @@ const ClassProgressBar = ({ job, last }) => {
           className={[styles.detailCompletion, baseStyles.failedBackground].join(' ')}
         />
       );
-      icon = <Icon name="x-solid" fill="#ff395e" width={15} height={15} />;
+      icon = <Icon name="x-solid" fill="var(--color-accent-red)" width={15} height={15} />;
   }
   return (
     <div>

@@ -1,0 +1,93 @@
+/*
+ * Light Theme (Default)
+ * Parse Dashboard 2025 — a modern reimagination of Parse's visual identity
+ * Deep navy chrome with gradient depth, Parse blue accents, clean data-focused content area
+ */
+
+:global(:root) {
+  // --- Fonts ---
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Source Code Pro', 'Fira Code', 'Courier New', monospace;
+  --font-data-browser: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  // --- Backgrounds ---
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f5f7fa;
+  --color-bg-tertiary: #eaeff5;
+  --color-bg-elevated: #ffffff;
+  --color-bg-sidebar: #0a1e3d;
+  --color-bg-sidebar-bottom: #1470a0;
+  --color-bg-sidebar-hover: #133552;
+  --color-bg-sidebar-active: #1a4568;
+  --color-bg-toolbar: #0a1e3d;
+
+  // --- Borders ---
+  --color-border-primary: #cdd5df;
+  --color-border-secondary: #e2e8f0;
+  --color-border-focus: #1694d0;
+
+  // --- Text ---
+  --color-text-primary: #0c1b2e;
+  --color-text-secondary: #475b74;
+  --color-text-tertiary: #7c90a8;
+  --color-text-on-dark: #e8f2fb;
+  --color-text-on-dark-muted: #7da4c4;
+
+  // --- Parse Accent Blue (signature) ---
+  --color-accent-blue: #1694d0;
+  --color-accent-blue-hover: #0f7cb3;
+  --color-accent-blue-light: #e4f3fc;
+
+  // --- Supporting accents ---
+  --color-accent-green: #0ea572;
+  --color-accent-green-light: #e6f9f1;
+  --color-accent-red: #e5484d;
+  --color-accent-red-light: #fde8e9;
+  --color-accent-orange: #d97706;
+  --color-accent-orange-light: #fef3e2;
+  --color-accent-purple: #7c5cbf;
+
+  // --- Interactive ---
+  --color-interactive-hover: rgba(11, 25, 41, 0.05);
+  --color-interactive-active: rgba(11, 25, 41, 0.08);
+  --color-interactive-focus-ring: 0 0 0 2px #1694d0, 0 0 0 4px rgba(22, 148, 208, 0.25);
+
+  // --- Data Browser ---
+  --color-cell-text: var(--color-text-secondary);
+  --color-cell-border: var(--color-border-secondary);
+  --color-row-stripe: transparent;
+  --color-row-hover: var(--color-interactive-hover);
+  --data-header-transform: uppercase;
+  --data-header-tracking: 0.04em;
+  --data-header-size: 11px;
+  --data-header-color: var(--color-text-secondary);
+  --data-header-type-color: var(--color-text-tertiary);
+  --data-header-bg: var(--color-bg-tertiary);
+  --data-header-hover-bg: var(--color-bg-secondary);
+  --data-header-border-color: var(--color-border-primary);
+  --data-cell-padding: 5px 8px;
+  --data-add-col-bg: var(--color-bg-secondary);
+  --data-add-col-color: var(--color-text-secondary);
+  --data-add-col-border: 1px solid var(--color-border-primary);
+  --data-check-bg: var(--color-bg-tertiary);
+
+  // --- Buttons ---
+  --btn-border: 1px solid var(--color-border-primary);
+  --btn-color: var(--color-text-primary);
+  --btn-bg: var(--color-bg-primary);
+  --btn-hover-bg: var(--color-bg-tertiary);
+  --btn-hover-color: var(--color-text-primary);
+  --btn-primary-bg: var(--color-text-primary);
+  --btn-primary-color: var(--color-bg-primary);
+  --btn-primary-border: 1px solid var(--color-text-primary);
+  --btn-primary-hover-bg: #1e3046;
+  --btn-radius: 6px;
+
+  // --- Elevation ---
+  --shadow-xs: 0 1px 2px rgba(11, 25, 41, 0.06);
+  --shadow-sm: 0 1px 3px rgba(11, 25, 41, 0.1), 0 1px 2px rgba(11, 25, 41, 0.04);
+  --shadow-md: 0 4px 8px -1px rgba(11, 25, 41, 0.1), 0 2px 4px -2px rgba(11, 25, 41, 0.04);
+  --shadow-lg: 0 12px 24px -4px rgba(11, 25, 41, 0.14), 0 4px 8px -4px rgba(11, 25, 41, 0.06);
+  --shadow-overlay: 0 24px 48px -8px rgba(11, 25, 41, 0.18), 0 0 1px rgba(11, 25, 41, 0.12);
+}

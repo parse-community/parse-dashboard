@@ -7,10 +7,20 @@
  */
 @import 'stylesheets/globals.scss';
 
+// Modern: compact, transparent
 .input {
   width: 100%;
-  height: 80px;
-  text-align: center;
-  padding-top: 25px;
-  background: $inputBackgroundColor;
+  text-align: left;
+  padding: var(--space-2) 0;
+  background: transparent;
+}
+
+// Classic: centered, gray bg, tall
+:global([data-theme="classic"]) {
+  .input {
+    height: 80px;
+    text-align: center;
+    padding-top: var(--space-6);
+    background: var(--color-bg-tertiary);
+  }
 }

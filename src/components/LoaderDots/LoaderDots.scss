@@ -20,7 +20,7 @@ $dotSize: 8px;
     width: $dotSize;
     height: $dotSize;
     border-radius: $dotSize;
-    background-color: black;
+    background-color: var(--color-text-primary);
     margin: 4px;
 
     &:nth-child(2) {

@@ -150,9 +150,9 @@ export default class ColumnsConfiguration extends React.Component {
                 </DndProvider>
               </div>
               <div className={styles.footer}>
-                <Button color="white" value="Hide all" onClick={this.hideAll.bind(this)} />
-                <Button color="white" value="Show all" onClick={this.showAll.bind(this)} />
-                <Button color="white" value="Auto-sort" onClick={this.autoSort.bind(this)} />
+                <Button value="Hide all" onClick={this.hideAll.bind(this)} />
+                <Button value="Show all" onClick={this.showAll.bind(this)} />
+                <Button value="Auto-sort" onClick={this.autoSort.bind(this)} />
               </div>
             </div>
           </div>

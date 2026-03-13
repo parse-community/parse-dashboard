@@ -243,8 +243,8 @@ export default class Overview extends DashboardView {
           <div className={styles.healthInfo}>
             {this.state.error !== undefined ? (
               <div>
-                <Icon name="cloud-sad" fill="#ff395e" width={88} height={64} />
-                <h2 style={{ color: '#ff395e' }}>There is an issue with your app!</h2>
+                <Icon name="cloud-sad" fill="var(--color-accent-red)" width={88} height={64} />
+                <h2 style={{ color: 'var(--color-accent-red)' }}>There is an issue with your app!</h2>
                 <div>{this.state.error}</div>
                 <Button
                   onClick={() => {
@@ -257,7 +257,7 @@ export default class Overview extends DashboardView {
               </div>
             ) : (
               <div>
-                <Icon name="cloud-happy" fill="#00db7c" width={88} height={64} />
+                <Icon name="cloud-happy" fill="var(--color-accent-green)" width={88} height={64} />
                 <h2>Your app is healthy!</h2>
               </div>
             )}

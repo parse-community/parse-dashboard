@@ -49,14 +49,17 @@ const EmptyState = ({
   return (
     <div className={containerClass}>
       <div className={styles.content}>
-        <div className={styles.icon}>
-          <Icon width={80} height={80} fill="#343445" name={icon} />
-        </div>
+        {icon && (
+          <div className={styles.icon}>
+            <Icon width={24} height={24} fill="currentColor" name={icon} />
+          </div>
+        )}
         <div className={styles.title}>{title}</div>
-        <div className={styles.description}>{description}</div>
-        {ctaButton(cta, action)}
-        {secondaryCta && ' '}
-        {ctaButton(secondaryCta, secondaryAction)}
+        {description && <div className={styles.description}>{description}</div>}
+        <div className={styles.actions}>
+          {ctaButton(cta, action)}
+          {ctaButton(secondaryCta, secondaryAction)}
+        </div>
       </div>
       {customContent && <div className={styles.customContent}>{customContent}</div>}
     </div>

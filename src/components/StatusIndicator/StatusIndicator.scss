@@ -8,9 +8,9 @@
 @import 'stylesheets/globals.scss';
 
 .status {
-  @include DosisFont;
+  @include HeadingFont;
   display: inline-block;
-  font-size: 14px;
+  font-size: var(--text-base);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 
@@ -19,31 +19,31 @@
     display: inline-block;
     width: 11px;
     height: 11px;
-    border-radius: 100%;
-    margin-right: 8px;
+    border-radius: var(--radius-full);
+    margin-right: var(--space-2);
   }
 }
 
 .blue {
-  color: $blue;
+  color: var(--color-accent-blue);
 
   &:before {
-    background: $blue;
+    background: var(--color-accent-blue);
   }
 }
 
 .red {
-  color: $red;
+  color: var(--color-accent-red);
 
   &:before {
-    background: $red;
+    background: var(--color-accent-red);
   }
 }
 
 .green {
-  color: $green;
+  color: var(--color-accent-green);
 
   &:before {
-    background: $green;
+    background: var(--color-accent-green);
   }
 }

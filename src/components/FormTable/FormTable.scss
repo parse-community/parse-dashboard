@@ -11,30 +11,30 @@
   text-align: left;
   white-space: nowrap;
   min-height: 80px;
-  background: $formTableGrey;
+  background: var(--color-bg-tertiary);
 }
 
 .row {
-  background: $formTableGrey;
-  font-size: 12px;
-  padding-bottom: 4px;
+  background: var(--color-bg-tertiary);
+  font-size: var(--text-xs);
+  padding-bottom: var(--space-1);
 }
 
 .title {
   @include ellipsis();
   display: inline-block;
   width: 100%;
-  padding-right: 20px;
+  padding-right: var(--space-5);
 }
 
 .header {
   position: relative;
   height: 30px;
-  background: #e3ebef;
+  background: var(--color-bg-tertiary);
   line-height: 14px;
-  font-size: 12px;
-  padding: 9px 32px 9px 6px;
-  margin-bottom: 4px;
+  font-size: var(--text-xs);
+  padding: 9px var(--space-8) 9px var(--space-2);
+  margin-bottom: var(--space-1);
 
   span {
     vertical-align: top;
@@ -45,21 +45,21 @@
   display: inline-block;
   width: 12px;
   height: 12px;
-  border-radius: 100%;
-  margin-right: 10px;
+  border-radius: var(--radius-full);
+  margin-right: var(--space-3);
   vertical-align: middle;
 
   &.blue {
-    background: $blue;
+    background: var(--color-accent-blue);
   }
   &.green {
-    background: $green;
+    background: var(--color-accent-green);
   }
   &.orange {
-    background: $orange;
+    background: var(--color-accent-orange);
   }
   &.red {
-    background: $red;
+    background: var(--color-accent-red);
   }
 }
 
@@ -68,38 +68,43 @@
   position: absolute;
   top: 7px;
   right: 7px;
-  color: $secondaryTextColor;
+  color: var(--color-text-secondary);
   font-size: 22px;
   line-height: 22px;
+  transition: color var(--transition-fast);
+
+  &:hover {
+    color: var(--color-accent-red);
+  }
 }
 
 .info {
   @include ellipsis();
-  padding: 4px 6px;
+  padding: var(--space-1) var(--space-2);
 }
 
 .label {
-  @include DosisFont;
+  @include UIFont;
   display: inline-block;
   text-transform: uppercase;
-  color: $secondaryTextColor;
+  color: var(--color-text-secondary);
   letter-spacing: 0.1em;
   font-size: 10px;
 
   &.blue {
-    color: $blue;
+    color: var(--color-accent-blue);
   }
   &.green {
-    color: $green;
+    color: var(--color-accent-green);
   }
   &.orange {
-    color: $orange;
+    color: var(--color-accent-orange);
   }
   &.red {
-    color: $red;
+    color: var(--color-accent-red);
   }
 }
 
 .din {
-  @include DosisFont;
+  @include UIFont;
 }

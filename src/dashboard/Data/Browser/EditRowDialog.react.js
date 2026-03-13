@@ -446,7 +446,7 @@ export default class EditRowDialog extends React.Component {
           {targetClass ? `${type} <${targetClass}>` : type}
           <div style={{ marginTop: '2px' }}>
             {expandedTextAreas[name] && expandedTextAreas[name].rows > 3 && (
-              <a style={{ color: '#169cee' }} onClick={() => this.toggleExpandTextArea(name)}>
+              <a style={{ color: 'var(--color-accent-blue)' }} onClick={() => this.toggleExpandTextArea(name)}>
                 {expandedTextAreas[name].expanded ? 'collapse' : 'expand'}
               </a>
             )}

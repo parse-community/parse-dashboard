@@ -6,47 +6,58 @@
  * the root directory of this source tree.
  */
 @import 'stylesheets/globals.scss';
+
 //select width values are hardcoded
 //current usecase is fixed width container
 .row {
   width: 100%;
   display: block;
-  padding: 15px 20px;
+  padding: var(--space-4) var(--space-5);
   cursor: pointer;
   float: left;
+  transition: background var(--transition-fast);
+
   .radiobutton {
     float: left;
-    margin-right: 10px;
+    margin-right: var(--space-3);
   }
+
   &:nth-child(even) {
-    background: #f2f6f8;
+    background: var(--color-bg-secondary);
   }
+
   &:nth-child(odd) {
-    background: #fbfbfc;
+    background: var(--color-bg-secondary);
   }
+
   &:hover {
-    background: #EAEAEA;
+    background: var(--color-interactive-hover);
   }
+
   &.everyone {
     .audienceInfo {
-      margin-top: 7px;
+      margin-top: var(--space-2);
     }
   }
+
   .cell {
     display: inline-block;
-    margin-top: 7px;
+    margin-top: var(--space-2);
   }
+
   .col1 {
     width: 50%;
     float: left;
     margin-top: 0;
   }
+
   .col2 {
     width: 20%;
-    margin-top: 7px;
+    margin-top: var(--space-2);
   }
+
   .input {
-    margin-right: 12px;
+    margin-right: var(--space-3);
     position: relative;
     top: -2px;
   }
@@ -55,23 +66,26 @@
     margin-left: 30px;
 
     .headline {
-      font-size: 14px;
+      font-size: var(--text-sm);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-primary);
     }
 
     .subline {
-      font-size: 12px;
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
     }
 
     .shortInfo {
-    	@include ellipsis();
-      margin-right: 5px;
+      @include ellipsis();
+      margin-right: var(--space-2);
       max-width: 190px;
       float: left;
     }
 
     .longInfo {
       overflow: hidden;
-      margin: 10px 10px 0 0;
+      margin: var(--space-3) var(--space-3) 0 0;
 
       .platformInfo {
         float: left;
@@ -83,13 +97,20 @@
       }
 
       .detailsHeaderListItem {
-        color: $secondaryTextColor;
+        color: var(--color-text-secondary);
+        font-size: var(--text-xs);
       }
     }
 
     .moreDetails {
       @include buttonReset;
-      color: $blue;
+      color: var(--color-accent-blue);
+      font-size: var(--text-xs);
+      transition: color var(--transition-fast);
+
+      &:hover {
+        color: var(--color-accent-blue-hover);
+      }
 
       &.hideMoreDetails {
         display: none;

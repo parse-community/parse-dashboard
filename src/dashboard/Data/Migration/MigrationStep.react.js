@@ -24,13 +24,13 @@ const MigrationStep = ({ title, description, descriptionWidth = '100%', percentC
       percentComplete = 100;
       progressClass = baseStyles.succeededBackground;
       titleClass = baseStyles.succeededText;
-      icon = <Icon name="check-solid" fill="#00db7c" width={15} height={15} />;
+      icon = <Icon name="check-solid" fill="var(--color-accent-green)" width={15} height={15} />;
       break;
     case AsyncStatus.FAILED:
       percentComplete = 100;
       progressClass = baseStyles.failedBackground;
       titleClass = baseStyles.failedText;
-      icon = <Icon name="x-solid" fill="#ff395e" width={15} height={15} />;
+      icon = <Icon name="x-solid" fill="var(--color-accent-red)" width={15} height={15} />;
       break;
     case AsyncStatus.PROGRESS:
       progressClass = baseStyles.progressBackground;

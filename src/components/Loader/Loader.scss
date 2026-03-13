@@ -21,13 +21,13 @@
     transform: translate(-50%, -50%);
 
     &:nth-child(3n) {
-      background: $red;
+      background: var(--color-accent-red);
     }
     &:nth-child(3n + 1) {
-      background: $green;
+      background: var(--color-accent-green);
     }
     &:nth-child(3n + 2) {
-      background: $blue;
+      background: var(--color-accent-blue);
     }
   }
 }

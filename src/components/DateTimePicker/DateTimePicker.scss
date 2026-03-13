@@ -8,8 +8,10 @@
 @import 'stylesheets/globals.scss';
 
 .picker {
-  border: 1px solid $blue;
-  background: white;
+  border: 1px solid var(--color-border-primary);
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
 
   > *:first-child {
     margin: 10% auto 4% auto;
@@ -17,30 +19,37 @@
 }
 
 .value {
-  color: $lightBlue;
+  color: var(--color-text-secondary);
 
   strong {
-    color: $blue;
+    color: var(--color-accent-blue);
   }
 }
 
 .time {
   margin: 0;
-  padding: 12px;
-  color: $blue;
-  border-top: 1px solid $borderGrey;
+  padding: var(--space-3);
+  color: var(--color-accent-blue);
+  border-top: 1px solid var(--color-border-secondary);
   text-align: right;
 
   input {
     display: inline-block;
     width: 40px;
     height: 30px;
-    border: 1px solid $blue;
-    color: $blue;
-    border-radius: 5px;
+    border: 1px solid var(--color-border-primary);
+    color: var(--color-text-primary);
+    border-radius: var(--radius-md);
     outline: none;
     text-align: center;
-    font-size: 12px;
+    font-size: var(--text-xs);
     padding: 0;
+    background: var(--color-bg-primary);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+    &:focus {
+      border-color: var(--color-border-focus);
+      box-shadow: 0 0 0 2px var(--color-accent-blue-light);
+    }
   }
 }

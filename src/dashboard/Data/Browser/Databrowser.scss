@@ -1,6 +1,8 @@
+@import 'stylesheets/globals.scss';
+
 .resizablePanel{
     position: fixed;
-    top: 96px;
+    top: $toolbar-height;
     right: 0;
     bottom: 36px;
     :global(.react-resizable-handle) {
@@ -10,7 +12,7 @@
         bottom: 0;
         width: 10px;
         cursor: col-resize;
-        box-shadow: -3px 0 3px -1px rgba(203, 203, 203, 0.2);
+        box-shadow: var(--shadow-xs);
         user-select: none;
         -webkit-user-select: none;
         -moz-user-select: none;
@@ -21,13 +23,13 @@
 .aggregationPanelContainer{
     height: 100%;
     overflow: auto;
-    background-color: #fefafb;
+    background-color: var(--color-bg-secondary);
 }
 
 .graphPanelContainer{
     height: 100%;
     overflow: auto;
-    background-color: #fefafb;
+    background-color: var(--color-bg-secondary);
 }
 
 .multiPanelWrapper {
@@ -58,22 +60,22 @@
     }
 
     &::-webkit-scrollbar-thumb {
-        background: rgba(0, 0, 0, 0.2);
+        background: var(--color-text-tertiary);
         border-radius: 3px;
     }
 
     &::-webkit-scrollbar-thumb:hover {
-        background: rgba(0, 0, 0, 0.4);
+        background: var(--color-text-secondary);
     }
 
     /* Firefox scrollbar support */
     scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+    scrollbar-color: var(--color-text-tertiary) transparent;
 }
 
 .panelSeparator {
     width: 0px;
-    background-color: #ebebeb;
+    background-color: var(--color-border-secondary);
     flex-shrink: 0;
 }
 
@@ -81,8 +83,8 @@
     position: sticky;
     top: 0;
     z-index: 10;
-    background-color: #67637a;
-    border-left: 1px solid #878396;
+    background-color: var(--color-bg-tertiary);
+    border-left: 1px solid var(--color-border-primary);
     padding: 8px 8px 6px 8px;
     display: flex;
     align-items: center;

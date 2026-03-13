@@ -10,7 +10,7 @@
 
 $migrationStatesWidth: 175px;
 $progressRowHeight: 25px;
-$progressRowBorder: 1px $grey solid;
+$progressRowBorder: 1px var(--color-border-primary) solid;
 $progressBarHeight: 10px;
 $progressBarGrey: #edeaeb;
 
@@ -40,7 +40,7 @@ $progressRowPadding: 15px;
 
 .statusBar {
 	clear: both;
-	background-color: $borderGrey;
+	background-color: var(--color-border-primary);
 	height: 32px;
 	padding-top: 8px;
 	padding-left: $progressRowPadding;
@@ -62,7 +62,7 @@ $progressRowPadding: 15px;
 
 .infoText {
 	@include DosisFont;
-	color: $blue;
+	color: var(--color-accent-blue);
 }
 
 .detailMongoName {
@@ -70,7 +70,7 @@ $progressRowPadding: 15px;
 	width: $migrationStatesWidth;
 	float: left;
 	font-size: 20px;
-	color: $blue;
+	color: var(--color-accent-blue);
 	padding-top: 15px;
 	padding-left: $progressRowPadding;
 	padding-right: $progressRowPadding;
@@ -139,13 +139,13 @@ $progressRowPadding: 15px;
 }
 
 .migrationStatusError {
-	color: $red;
+	color: var(--color-accent-red);
 	text-align: center;
 	display: block;
 }
 
 .longStateDescription {
-	background-color: $borderGrey;
+	background-color: var(--color-border-primary);
 	padding: $progressRowPadding;
 	border-radius: 5px;
 	margin-top: 20px;

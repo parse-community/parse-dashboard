@@ -10,14 +10,17 @@ import AppsMenu from 'components/Sidebar/AppsMenu.react';
 import AppName from 'components/Sidebar/AppName.react';
 import isInsidePopover from 'lib/isInsidePopover';
 import Pin from 'components/Sidebar/Pin.react';
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import SidebarHeader from 'components/Sidebar/SidebarHeader.react';
 import SidebarSection from 'components/Sidebar/SidebarSection.react';
 import SidebarSubItem from 'components/Sidebar/SidebarSubItem.react';
 import styles from 'components/Sidebar/Sidebar.scss';
+import ThemeSelector from 'components/Sidebar/ThemeSelector.react';
 import { CurrentApp } from 'context/currentApp';
 import Icon from 'components/Icon/Icon.react';
 const mountPath = window.PARSE_DASHBOARD_PATH;
+
+const COLLAPSE_WIDTH = 1024;
 
 const Sidebar = ({
   prefix,
@@ -30,50 +33,50 @@ const Sidebar = ({
   appSelector,
   primaryBackgroundColor,
   secondaryBackgroundColor,
+  mobileOpen,
+  onMobileClose,
 }) => {
   const currentApp = useContext(CurrentApp);
-  const collapseWidth = 980;
   const [appsMenuOpen, setAppsMenuOpen] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
-  const [fixed, setFixed] = useState(true);
+  const [collapsed, setCollapsed] = useState(window.innerWidth <= COLLAPSE_WIDTH);
+  const [fixed, setFixed] = useState(window.innerWidth > COLLAPSE_WIDTH);
   const [dashboardUser, setDashboardUser] = useState('');
-  fetch(mountPath).then(response => {
-    setDashboardUser(response.headers.get('username'));
-  });
-  let currentWidth = window.innerWidth;
+  const prevWidth = useRef(window.innerWidth);
+
+  useEffect(() => {
+    fetch(mountPath).then(response => {
+      setDashboardUser(response.headers.get('username'));
+    });
+  }, []);
 
   const windowResizeHandler = () => {
-    if (window.innerWidth <= collapseWidth && currentWidth > collapseWidth) {
-      if (document.body.className.indexOf(' expanded') === -1) {
-        document.body.className += ' expanded';
-      }
+    const w = window.innerWidth;
+    if (w <= COLLAPSE_WIDTH && prevWidth.current > COLLAPSE_WIDTH) {
+      document.body.classList.add('expanded');
       setCollapsed(true);
       setFixed(false);
-    } else if (window.innerWidth > collapseWidth && currentWidth <= collapseWidth) {
-      document.body.className = document.body.className.replace(' expanded', '');
+    } else if (w > COLLAPSE_WIDTH && prevWidth.current <= COLLAPSE_WIDTH) {
+      document.body.classList.remove('expanded');
       setCollapsed(false);
       setFixed(true);
     }
-    // Update window width
-    currentWidth = window.innerWidth;
+    prevWidth.current = w;
   };
 
   useEffect(() => {
     window.addEventListener('resize', windowResizeHandler);
-
-    return () => {
-      window.removeEventListener('resize', windowResizeHandler);
-    };
+    return () => window.removeEventListener('resize', windowResizeHandler);
   });
 
   const sidebarClasses = [styles.sidebar];
   if (fixed) {
-    document.body.className = document.body.className.replace(' expanded', '');
+    document.body.classList.remove('expanded');
   } else if (!fixed && collapsed) {
     sidebarClasses.push(styles.collapsed);
-    if (document.body.className.indexOf(' expanded') === -1) {
-      document.body.className += ' expanded';
-    }
+    document.body.classList.add('expanded');
+  }
+  if (mobileOpen) {
+    sidebarClasses.push(styles.mobileOpen);
   }
 
   const _subMenu = subsections => {
@@ -93,6 +96,7 @@ const Sidebar = ({
               actionHandler={active ? actionHandler : null}
               active={active}
               icon={icon}
+              onNavigate={onMobileClose}
             >
               {active ? children : null}
             </SidebarSubItem>
@@ -156,8 +160,7 @@ const Sidebar = ({
                 style={style}
                 link={prefix + link}
                 active={active}
-                primaryBackgroundColor={primaryBackgroundColor}
-                secondaryBackgroundColor={secondaryBackgroundColor}
+                onNavigate={onMobileClose}
               >
                 {!collapsed && active ? _subMenu(subsections) : null}
               </SidebarSection>
@@ -185,14 +188,15 @@ const Sidebar = ({
     >
       <SidebarHeader isCollapsed={!appsMenuOpen && collapsed} dashboardUser={dashboardUser} />
       {sidebarContent}
-      {dashboardUser && (
-        <div className={styles.footer}>
+      <div className={styles.footer}>
+        <ThemeSelector />
+        {dashboardUser && (
           <a href={`${mountPath}logout`} className={styles.more}>
             <Icon height={16} width={16} name="logout" />
             Logout
           </a>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

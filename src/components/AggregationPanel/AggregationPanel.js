@@ -223,7 +223,7 @@ const AggregationPanel = ({
                       onClick={handleReload}
                       className={styles.reloadButton}
                     >
-                      <Icon name="refresh-solid" width={20} height={20} fill="#169cee" />
+                      <Icon name="refresh-solid" width={20} height={20} fill="var(--color-accent-blue)" />
                     </button>
                   </div>
                 )}
@@ -268,7 +268,7 @@ const AggregationPanel = ({
                 onClick={handleReload}
                 className={styles.reloadButton}
               >
-                <Icon name="refresh-outline" width={20} height={20} fill="#169cee" />
+                <Icon name="refresh-outline" width={20} height={20} fill="var(--color-accent-blue)" />
               </button>
             </div>
           )}

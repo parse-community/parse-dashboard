@@ -17,9 +17,8 @@ const SidebarSection = ({
   link,
   icon,
   style,
-  primaryBackgroundColor,
-  secondaryBackgroundColor,
   isCollapsed,
+  onNavigate,
 }) => {
   const classes = [styles.section];
   if (active) {
@@ -27,14 +26,14 @@ const SidebarSection = ({
   }
   let iconContent = null;
   if (icon) {
-    iconContent = <Icon width={25} height={25} name={icon} fill="#ffffff" />;
+    iconContent = <Icon width={20} height={20} name={icon} fill="currentColor" />;
   }
   if (isCollapsed) {
     classes.push(styles.collapsed);
     return (
       <div className={classes.join(' ')}>
         <div
-          style={{background: primaryBackgroundColor, ...style}}
+          style={style}
           className={styles.section_header}
         >
           {iconContent}
@@ -46,21 +45,21 @@ const SidebarSection = ({
     <div className={classes.join(' ')}>
       {active ? (
         <div
-          style={{background: primaryBackgroundColor, ...style, }}
+          style={style}
           className={styles.section_header}
         >
           {iconContent}
           <span>{name}</span>
         </div>
       ) : (
-        <Link style={style} className={styles.section_header} to={{ pathname: link || '' }}>
+        <Link style={style} className={styles.section_header} to={{ pathname: link || '' }} onClick={onNavigate}>
           {iconContent}
           <span>{name}</span>
         </Link>
       )}
 
       {children ? (
-        <div className={styles.section_contents} style={{ background: secondaryBackgroundColor }}>
+        <div className={styles.section_contents}>
           {children}
         </div>
       ) : null}

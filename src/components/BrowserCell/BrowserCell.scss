@@ -10,15 +10,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: default;
-  color: #0E69A1;
+  color: var(--color-cell-text);
   height: 30px;
   line-height: 20px;
-  padding: 5px;
-  border-right: 1px solid #e3e3ea;
+  padding: var(--data-cell-padding);
+  border-right: 1px solid var(--color-cell-border);
 }
 
 .empty {
-  color: #7D929F;
+  color: var(--color-text-tertiary);
 }
 
 .current {
@@ -28,7 +28,7 @@
     position: absolute;
     pointer-events: none;
     content: '';
-    border: 2px solid #555572;
+    border: 2px solid var(--color-text-primary);
     top: 0;
     left: 0;
     right: 0;
@@ -43,7 +43,7 @@
     position: absolute;
     pointer-events: none;
     content: '';
-    border-left: 2px solid #555572;
+    border-left: 2px solid var(--color-text-primary);
     top: 0;
     left: 0;
     right: 0;
@@ -58,7 +58,7 @@
     position: absolute;
     pointer-events: none;
     content: '';
-    border-right: 2px solid #555572;
+    border-right: 2px solid var(--color-text-primary);
     top: 0;
     left: 0;
     right: 0;
@@ -73,7 +73,7 @@
     position: absolute;
     pointer-events: none;
     content: '';
-    border-top: 2px solid #555572;
+    border-top: 2px solid var(--color-text-primary);
     top: 0;
     left: 0;
     right: 0;
@@ -88,7 +88,7 @@
     position: absolute;
     pointer-events: none;
     content: '';
-    border-bottom: 2px solid #555572;
+    border-bottom: 2px solid var(--color-text-primary);
     top: 0;
     left: 0;
     right: 0;
@@ -97,7 +97,7 @@
 }
 
 .selected {
-  background-color: #e3effd;
+  background-color: var(--color-accent-blue-light);
 }
 
 .pointerList {
@@ -154,7 +154,7 @@
     position: absolute;
     pointer-events: none;
     content: '';
-    border: 2px solid #ff395e;
+    border: 2px solid var(--color-accent-red);
     top: 0;
     left: 0;
     right: 0;
@@ -163,7 +163,7 @@
 }
 
 .readonly {
-  color: #04263bd1;
+  color: var(--color-text-secondary);
 }
 
 .action {

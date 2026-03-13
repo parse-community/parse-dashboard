@@ -189,51 +189,41 @@ export default class RestConsole extends Component {
     }
 
     return (
-      <div style={{ padding: '120px 0 60px 0' }}>
+      <div style={{ padding: `${56 + 12}px 40px 40px 40px`, maxWidth: 720 }}>
         <Fieldset
           legend="Send a test query"
           description="Try out some queries, and take a look at what they return."
         >
-          <Field label={<Label text="What type of request?" />} input={methodDropdown} />
+          <div className={styles.requestRow}>
+            <Field label={<Label text="Method" />} input={methodDropdown} />
+            <Field
+              label={<Label text="Endpoint" />}
+              input={
+                <TextInput
+                  value={this.state.endpoint}
+                  monospace={true}
+                  placeholder={'classes/_User'}
+                  onChange={endpoint => this.setState({ endpoint })}
+                />
+              }
+            />
+          </div>
+          <div className={styles.inlineToggle}>
+            <div className={styles.inlineToggleLabel}>
+              <span className={styles.inlineToggleLabelText}>Use Master Key</span>
+              <span className={styles.inlineToggleDesc}>Bypass ACL/CLPs</span>
+            </div>
+            <Toggle
+              value={this.state.useMasterKey}
+              type={Toggle.Types.HIDE_LABELS}
+              onChange={useMasterKey => this.setState({ useMasterKey })}
+            />
+          </div>
           <Field
             label={
               <Label
-                text="Which endpoint?"
-                description={
-                  <span>
-                    Not sure what endpoint you need?
-                    <br />
-                    Take a look at our{' '}
-                    <a href="http://docs.parseplatform.org/rest/guide/">REST API guide</a>.
-                  </span>
-                }
-              />
-            }
-            input={
-              <TextInput
-                value={this.state.endpoint}
-                monospace={true}
-                placeholder={'classes/_User'}
-                onChange={endpoint => this.setState({ endpoint })}
-              />
-            }
-          />
-          <Field
-            label={<Label text="Use Master Key?" description={'This will bypass any ACL/CLPs.'} />}
-            input={
-              <Toggle
-                value={this.state.useMasterKey}
-                onChange={useMasterKey => this.setState({ useMasterKey })}
-              />
-            }
-          />
-          <Field
-            label={
-              <Label
-                text="Run as..."
-                description={
-                  'Send your query as a specific user. You can use their username or Object ID.'
-                }
+                text="Run as"
+                description={'Username or Object ID of a specific user.'}
               />
             }
             input={
@@ -255,8 +245,9 @@ export default class RestConsole extends Component {
                 text="Query parameters"
                 description={
                   <span>
-                    Learn more about query parameters in our{' '}
-                    <a href="http://docs.parseplatform.org/rest/guide/#queries">REST API guide</a>.
+                    See{' '}
+                    <a href="http://docs.parseplatform.org/rest/guide/#queries" style={{ color: 'inherit', textDecoration: 'underline' }}>REST API guide</a>{' '}
+                    for details.
                   </span>
                 }
               />
@@ -272,11 +263,12 @@ export default class RestConsole extends Component {
             }
           />
         </Fieldset>
-        <Fieldset legend="Results" description="">
-          <div className={fieldStyle.field}>
+        <div className={styles.resultsSection}>
+          <div className={styles.resultsLabel}>Response</div>
+          <div className={styles.resultsBlock}>
             <JsonPrinter object={this.state.response} />
           </div>
-        </Fieldset>
+        </div>
         <Toolbar section="Core" subsection="API Console" />
         <FlowFooter
           primary={

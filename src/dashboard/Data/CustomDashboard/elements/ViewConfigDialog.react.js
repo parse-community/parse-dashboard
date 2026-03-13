@@ -63,7 +63,7 @@ const ViewConfigDialog = ({
         <Field
           label={<Label text="No Views Available" />}
           input={
-            <div style={{ padding: '20px', color: '#94a3b8' }}>
+            <div style={{ padding: '20px', color: 'var(--color-text-tertiary)' }}>
               No views found. Create a view in the Views section first.
             </div>
           }
@@ -102,7 +102,7 @@ const ViewConfigDialog = ({
             <Field
               label={<Label text="View Details" description="Information about the selected view" />}
               input={
-                <div style={{ padding: '12px', backgroundColor: '#f4f5f7', borderRadius: '4px', fontSize: '12px', color: '#666666' }}>
+                <div style={{ padding: '12px', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-md)', fontSize: '12px', color: 'var(--color-text-secondary)' }}>
                   {selectedView.cloudFunction ? (
                     <div>Cloud Function: <strong>{selectedView.cloudFunction}</strong></div>
                   ) : (

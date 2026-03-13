@@ -19,12 +19,18 @@ $dateRangeHeight: 30px;
   display: inline-block;
   white-space: nowrap;
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--text-base);
   height: $dateRangeHeight;
-  border: 1px solid $blue;
-  border-radius: 5px;
-  padding: 6px 12px;
-  color: $blue;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-accent-blue);
+  background: var(--color-bg-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+  &:hover {
+    border-color: var(--color-border-focus);
+  }
 
   span {
     display: inline-block;
@@ -33,35 +39,36 @@ $dateRangeHeight: 30px;
 
   svg {
     vertical-align: top;
-    margin-left: 10px;
+    margin-left: var(--space-3);
   }
 }
 
 .open .range {
   position: relative;
-  background: white;
+  background: var(--color-bg-elevated);
   border-top: none;
   padding-top: 7px;
-  border-radius: 0 0 5px 5px;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
 }
 
 .calendars {
   position: absolute;
-  background: white;
-  border: 1px solid $blue;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-primary);
   bottom: 29px;
   left: 0;
   width: 406px;
   height: 192px;
-  padding: 10px;
-  border-radius: 5px 5px 5px 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-md) var(--radius-md) var(--radius-md) 0;
+  box-shadow: var(--shadow-lg);
 
   > * {
     display: inline-block;
     vertical-align: top;
 
     &:first-child {
-      margin-right: 20px;
+      margin-right: var(--space-5);
     }
   }
 }
@@ -75,6 +82,6 @@ $dateRangeHeight: 30px;
   .calendars {
     left: auto;
     right: 0;
-    border-radius: 5px 5px 0 5px;
+    border-radius: var(--radius-md) var(--radius-md) 0 var(--radius-md);
   }
 }

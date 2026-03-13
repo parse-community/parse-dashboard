@@ -18,7 +18,7 @@ import LoginDialog from 'dashboard/Data/Browser/LoginDialog.react';
 import SecureFieldsDialog from 'dashboard/Data/Browser/SecureFieldsDialog.react';
 import SecurityDialog from 'dashboard/Data/Browser/SecurityDialog.react';
 import prettyNumber from 'lib/prettyNumber';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
 const BrowserToolbar = ({
   className,
@@ -288,6 +288,7 @@ const BrowserToolbar = ({
   const clpDialogRef = useRef(null);
   const protectedDialogRef = useRef(null);
   const loginDialogRef = useRef(null);
+  const [overflowOpen, setOverflowOpen] = useState(false);
 
   const showCLP = () => clpDialogRef.current.handleOpen();
   const showProtected = () => protectedDialogRef.current.handleOpen();
@@ -311,277 +312,10 @@ const BrowserToolbar = ({
       isAutoScrolling={isAutoScrolling}
       stopAutoScroll={stopAutoScroll}
     >
-      {onAddRow && (
-        <a className={classes.join(' ')} onClick={onClick}>
-          <Icon name="plus-solid" width={14} height={14} />
-          <span>Add Row</span>
-        </a>
-      )}
-      {onAddRow && <div className={styles.toolbarSeparator} />}
-      <ColumnsConfiguration
-        handleColumnsOrder={handleColumnsOrder}
-        handleColumnDragDrop={handleColumnDragDrop}
-        order={order}
-        disabled={isPendingEditCloneRows}
-        className={classNameForEditors}
-      />
-      <div className={styles.toolbarSeparator} />
+      {/* Hidden dialog containers */}
       {onAddRow && (
         <LoginDialog ref={loginDialogRef} currentUser={currentUser} login={login} logout={logout} />
       )}
-      {onAddRow && (
-        <BrowserMenu
-          setCurrent={setCurrent}
-          title={currentUser ? 'Browsing' : 'Browse'}
-          icon="users-solid"
-          active={!!currentUser}
-          disabled={isPendingEditCloneRows}
-        >
-          <MenuItem text={currentUser ? 'Switch User' : 'As User'} onClick={showLogin} />
-          {currentUser ? (
-            <MenuItem
-              text={
-                <span>
-                  Use Master Key{' '}
-                  <Toggle
-                    type={Toggle.Types.HIDE_LABELS}
-                    value={useMasterKey}
-                    onChange={toggleMasterKeyUsage}
-                    switchNoMargin={true}
-                    additionalStyles={{
-                      display: 'inline',
-                      lineHeight: 0,
-                      margin: 0,
-                      paddingLeft: 5,
-                    }}
-                  />
-                </span>
-              }
-              onClick={toggleMasterKeyUsage}
-            />
-          ) : (
-            <noscript />
-          )}
-          {currentUser ? (
-            <MenuItem
-              text={
-                <span>
-                  Stop browsing (<b>{currentUser.get('username')}</b>)
-                </span>
-              }
-              onClick={logout}
-            />
-          ) : (
-            <noscript />
-          )}
-        </BrowserMenu>
-      )}
-      {onAddRow && <div className={styles.toolbarSeparator} />}
-      {onAddRow && (
-        <BrowserMenu
-          title="Data"
-          icon="down-solid"
-          disabled={isUnique || isPendingEditCloneRows}
-          setCurrent={setCurrent}
-        >
-          <MenuItem
-            disabled={!selectionLength}
-            text={`Export ${selectionLength} selected ${selectionLength <= 1 ? 'row' : 'rows'}`}
-            onClick={() => onExportSelectedRows(selection)}
-          />
-          <MenuItem text={'Export all rows'} onClick={() => onExportSelectedRows({ '*': true })} />
-          <MenuItem text={'Export schema'} onClick={() => onExportSchema()} />
-          {!relation && (
-            <>
-              <Separator />
-              <MenuItem text={'Import'} onClick={() => onImport()} />
-            </>
-          )}
-        </BrowserMenu>
-      )}
-      {onAddRow && <div className={styles.toolbarSeparator} />}
-      <BrowserMenu setCurrent={setCurrent} title="Settings" icon="gear-solid">
-        <BrowserMenu title="Info Panel" setCurrent={setCurrent}>
-          <MenuItem
-            text={
-              <span>
-                {autoLoadFirstRow && (
-                  <Icon
-                    name="check"
-                    width={12}
-                    height={12}
-                    fill="#ffffffff"
-                    className="menuCheck"
-                  />
-                )}
-                Auto-load first row
-              </span>
-            }
-            onClick={() => {
-              toggleAutoLoadFirstRow();
-            }}
-          />
-          <MenuItem
-            text={
-              <span>
-                {batchNavigate && (
-                  <Icon
-                    name="check"
-                    width={12}
-                    height={12}
-                    fill="#ffffffff"
-                    className="menuCheck"
-                  />
-                )}
-                Batch-navigate panels
-              </span>
-            }
-            onClick={() => {
-              toggleBatchNavigate();
-            }}
-          />
-          <MenuItem
-            text={
-              <span>
-                {showPanelCheckbox && (
-                  <Icon
-                    name="check"
-                    width={12}
-                    height={12}
-                    fill="#ffffffff"
-                    className="menuCheck"
-                  />
-                )}
-                Show panel selection
-              </span>
-            }
-            onClick={() => {
-              toggleShowPanelCheckbox();
-            }}
-          />
-          <Separator />
-          <MenuItem
-            text={
-              <span>
-                {scrollToTop && (
-                  <Icon
-                    name="check"
-                    width={12}
-                    height={12}
-                    fill="#ffffffff"
-                    className="menuCheck"
-                  />
-                )}
-                Scroll to top
-              </span>
-            }
-            onClick={() => {
-              toggleScrollToTop();
-            }}
-          />
-          <MenuItem
-            text={
-              <span>
-                {syncPanelScroll && (
-                  <Icon
-                    name="check"
-                    width={12}
-                    height={12}
-                    fill="#ffffffff"
-                    className="menuCheck"
-                  />
-                )}
-                Sync panel scrolling
-              </span>
-            }
-            onClick={() => {
-              toggleSyncPanelScroll();
-            }}
-          />
-          <BrowserMenu title="Auto-scroll" setCurrent={setCurrent}>
-            <MenuItem
-              text={
-                <span>
-                  {autoScrollEnabled && (
-                    <Icon
-                      name="check"
-                      width={12}
-                      height={12}
-                      fill="#ffffffff"
-                      className="menuCheck"
-                    />
-                  )}
-                  Enabled
-                </span>
-              }
-              onClick={() => {
-                toggleAutoScroll();
-              }}
-            />
-            <MenuItem
-              text={
-                <span>
-                  {autoScrollRequireHover && (
-                    <Icon
-                      name="check"
-                      width={12}
-                      height={12}
-                      fill="#ffffffff"
-                      className="menuCheck"
-                    />
-                  )}
-                  Require hover
-                </span>
-              }
-              onClick={() => {
-                toggleAutoScrollRequireHover();
-              }}
-            />
-          </BrowserMenu>
-        </BrowserMenu>
-      </BrowserMenu>
-      <div className={styles.toolbarSeparator} />
-      <BrowserMenu setCurrent={setCurrent} title="Graph" icon="analytics-solid">
-        <MenuItem
-          text={
-            <span>
-              {isGraphPanelVisible && (
-                <Icon
-                  name="check"
-                  width={12}
-                  height={12}
-                  fill="#ffffffff"
-                  className="menuCheck"
-                />
-              )}
-              Show Graph Panel
-            </span>
-          }
-          onClick={toggleGraphPanel}
-          disableMouseDown={true}
-        />
-      </BrowserMenu>
-      <div className={styles.toolbarSeparator} />
-      <a className={classes.join(' ')} onClick={isPendingEditCloneRows ? null : onRefresh}>
-        <Icon name="refresh-solid" width={14} height={14} />
-        <span>Refresh</span>
-      </a>
-      <div className={styles.toolbarSeparator} />
-      <BrowserFilter
-        setCurrent={setCurrent}
-        schema={schemaSimplifiedData}
-        filters={filters}
-        savedFilters={savedFilters}
-        onChange={onFilterChange}
-        onSaveFilter={onFilterSave}
-        onDeleteFilter={onDeleteFilter}
-        className={classNameForEditors}
-        blacklistedFilters={onAddRow ? [] : ['unique']}
-        disabled={isPendingEditCloneRows}
-        allClasses={allClasses}
-        allClassesSchema={allClassesSchema}
-      />
-      {onAddRow && <div className={styles.toolbarSeparator} />}
       {enableSecurityDialog ? (
         <SecurityDialog
           ref={clpDialogRef}
@@ -610,50 +344,184 @@ const BrowserToolbar = ({
         icon="locked-solid"
         onEditPermissions={onEditPermissions}
       />
-      {enableSecurityDialog ? (
-        <BrowserMenu
-          setCurrent={setCurrent}
-          title="Security"
-          icon="locked-solid"
-          disabled={!!relation || !!isUnique || isPendingEditCloneRows}
-        >
-          <MenuItem text={'Class Level Permissions'} onClick={showCLP} />
-          <MenuItem text={'Protected Fields'} onClick={showProtected} />
-        </BrowserMenu>
-      ) : (
-        <noscript />
+
+      {/* Primary actions — always visible, single row */}
+      {onAddRow && (
+        <a className={classes.join(' ')} onClick={onClick}>
+          <Icon name="plus-solid" width={14} height={14} />
+          <span>Add Row</span>
+        </a>
       )}
-      {enableSecurityDialog ? <div className={styles.toolbarSeparator} /> : <noscript />}
-      <BrowserMenu setCurrent={setCurrent} title="Script" icon="script-solid">
-        <MenuItem
-          disabled={selectionLength === 0}
-          text={
-            selectionLength === 1 && !selection['*']
-              ? 'Run script on selected row...'
-              : `Run script on ${selectionLength} selected rows...`
-          }
-          onClick={() => onExecuteScriptRows(selection)}
-          shortcut={runScriptShortcut}
-        />
+      {onAddRow && <div className={styles.toolbarSeparator} />}
+      <ColumnsConfiguration
+        handleColumnsOrder={handleColumnsOrder}
+        handleColumnDragDrop={handleColumnDragDrop}
+        order={order}
+        disabled={isPendingEditCloneRows}
+        className={classNameForEditors}
+      />
+      <div className={styles.toolbarSeparator} />
+      <BrowserFilter
+        setCurrent={setCurrent}
+        schema={schemaSimplifiedData}
+        filters={filters}
+        savedFilters={savedFilters}
+        onChange={onFilterChange}
+        onSaveFilter={onFilterSave}
+        onDeleteFilter={onDeleteFilter}
+        className={classNameForEditors}
+        blacklistedFilters={onAddRow ? [] : ['unique']}
+        disabled={isPendingEditCloneRows}
+        allClasses={allClasses}
+        allClassesSchema={allClassesSchema}
+      />
+      <div className={styles.toolbarSeparator} />
+      <a className={classes.join(' ')} onClick={isPendingEditCloneRows ? null : onRefresh}>
+        <Icon name="refresh-solid" width={14} height={14} />
+        <span>Refresh</span>
+      </a>
+      <div className={styles.toolbarSeparator} />
+
+      {/* Consolidated "More" menu — Browse, Data, Security, Script, Edit, Settings, Graph */}
+      <BrowserMenu setCurrent={setCurrent} title="More" icon="ellipses">
+        {onAddRow && (
+          <BrowserMenu
+            setCurrent={setCurrent}
+            title={currentUser ? 'Browsing' : 'Browse As'}
+            icon="users-solid"
+            active={!!currentUser}
+            disabled={isPendingEditCloneRows}
+          >
+            <MenuItem text={currentUser ? 'Switch User' : 'As User'} onClick={showLogin} />
+            {currentUser ? (
+              <MenuItem
+                text={
+                  <span>
+                    Use Master Key{' '}
+                    <Toggle
+                      type={Toggle.Types.HIDE_LABELS}
+                      value={useMasterKey}
+                      onChange={toggleMasterKeyUsage}
+                      switchNoMargin={true}
+                      additionalStyles={{
+                        display: 'inline',
+                        lineHeight: 0,
+                        margin: 0,
+                        paddingLeft: 5,
+                      }}
+                    />
+                  </span>
+                }
+                onClick={toggleMasterKeyUsage}
+              />
+            ) : (
+              <noscript />
+            )}
+            {currentUser ? (
+              <MenuItem
+                text={<span>Stop browsing (<b>{currentUser.get('username')}</b>)</span>}
+                onClick={logout}
+              />
+            ) : (
+              <noscript />
+            )}
+          </BrowserMenu>
+        )}
+        {onAddRow && <Separator />}
+        {onAddRow && (
+          <BrowserMenu
+            title="Import / Export"
+            icon="down-solid"
+            disabled={isUnique || isPendingEditCloneRows}
+            setCurrent={setCurrent}
+          >
+            <MenuItem
+              disabled={!selectionLength}
+              text={`Export ${selectionLength} selected ${selectionLength <= 1 ? 'row' : 'rows'}`}
+              onClick={() => onExportSelectedRows(selection)}
+            />
+            <MenuItem text={'Export all rows'} onClick={() => onExportSelectedRows({ '*': true })} />
+            <MenuItem text={'Export schema'} onClick={() => onExportSchema()} />
+            {!relation && (
+              <>
+                <Separator />
+                <MenuItem text={'Import'} onClick={() => onImport()} />
+              </>
+            )}
+          </BrowserMenu>
+        )}
         <Separator />
         <MenuItem
+          text={<span>{isGraphPanelVisible && <Icon name="check" width={12} height={12} fill="currentColor" className="menuCheck" />}Graph Panel</span>}
+          onClick={toggleGraphPanel}
           disableMouseDown={true}
-          text={
-            <span>
-              {reloadDataTableAfterScript && (
-                <Icon
-                  name="check"
-                  width={12}
-                  height={12}
-                  fill="#ffffffff"
-                  className="menuCheck"
-                />
-              )}
-              Reload all rows after run
-            </span>
-          }
-          onClick={() => toggleReloadDataTableAfterScript()}
         />
+        <Separator />
+        {enableSecurityDialog ? (
+          <BrowserMenu
+            setCurrent={setCurrent}
+            title="Security"
+            icon="locked-solid"
+            disabled={!!relation || !!isUnique || isPendingEditCloneRows}
+          >
+            <MenuItem text={'Class Level Permissions'} onClick={showCLP} />
+            <MenuItem text={'Protected Fields'} onClick={showProtected} />
+          </BrowserMenu>
+        ) : (
+          <noscript />
+        )}
+        <BrowserMenu setCurrent={setCurrent} title="Script" icon="script-solid">
+          <MenuItem
+            disabled={selectionLength === 0}
+            text={
+              selectionLength === 1 && !selection['*']
+                ? 'Run script on selected row...'
+                : `Run script on ${selectionLength} selected rows...`
+            }
+            onClick={() => onExecuteScriptRows(selection)}
+            shortcut={runScriptShortcut}
+          />
+          <Separator />
+          <MenuItem
+            disableMouseDown={true}
+            text={<span>{reloadDataTableAfterScript && <Icon name="check" width={12} height={12} fill="currentColor" className="menuCheck" />}Reload all rows after run</span>}
+            onClick={() => toggleReloadDataTableAfterScript()}
+          />
+        </BrowserMenu>
+        <Separator />
+        <BrowserMenu setCurrent={setCurrent} title="Info Panel" icon="gear-solid">
+          <MenuItem
+            text={<span>{autoLoadFirstRow && <Icon name="check" width={12} height={12} fill="currentColor" className="menuCheck" />}Auto-load first row</span>}
+            onClick={() => toggleAutoLoadFirstRow()}
+          />
+          <MenuItem
+            text={<span>{batchNavigate && <Icon name="check" width={12} height={12} fill="currentColor" className="menuCheck" />}Batch-navigate panels</span>}
+            onClick={() => toggleBatchNavigate()}
+          />
+          <MenuItem
+            text={<span>{showPanelCheckbox && <Icon name="check" width={12} height={12} fill="currentColor" className="menuCheck" />}Show panel selection</span>}
+            onClick={() => toggleShowPanelCheckbox()}
+          />
+          <Separator />
+          <MenuItem
+            text={<span>{scrollToTop && <Icon name="check" width={12} height={12} fill="currentColor" className="menuCheck" />}Scroll to top</span>}
+            onClick={() => toggleScrollToTop()}
+          />
+          <MenuItem
+            text={<span>{syncPanelScroll && <Icon name="check" width={12} height={12} fill="currentColor" className="menuCheck" />}Sync panel scrolling</span>}
+            onClick={() => toggleSyncPanelScroll()}
+          />
+          <BrowserMenu title="Auto-scroll" setCurrent={setCurrent}>
+            <MenuItem
+              text={<span>{autoScrollEnabled && <Icon name="check" width={12} height={12} fill="currentColor" className="menuCheck" />}Enabled</span>}
+              onClick={() => toggleAutoScroll()}
+            />
+            <MenuItem
+              text={<span>{autoScrollRequireHover && <Icon name="check" width={12} height={12} fill="currentColor" className="menuCheck" />}Require hover</span>}
+              onClick={() => toggleAutoScrollRequireHover()}
+            />
+          </BrowserMenu>
+        </BrowserMenu>
       </BrowserMenu>
       <div className={styles.toolbarSeparator} />
       {menu}

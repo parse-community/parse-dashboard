@@ -8,14 +8,14 @@
 @use 'sass:math';
 @import 'stylesheets/globals.scss';
 
-$overviewBackground: #fbfbfc;
+$overviewBackground: var(--color-bg-secondary);
 $containerWidth: 720px;
 $containerPadding: 20px;
 $infoWidth: math.div($containerWidth - 2 * $containerPadding, 4);
 
 .content {
-  padding: 96px 0px 48px 0px;
-  background: $white;
+  padding: $toolbar-height 0px 48px 0px;
+  background: var(--color-bg-primary);
   min-height: 100vh; //to remove the purple background from bleeding through on tall sizes
 }
 
@@ -89,11 +89,11 @@ h2{
 }
 
 .upArrow {
-  @include arrow('up', 12px, 9px, #00db7c);
+  @include arrow('up', 12px, 9px, var(--color-accent-green));
 }
 
 .downArrow {
-  @include arrow('down', 12px, 9px, #ff395e);
+  @include arrow('down', 12px, 9px, var(--color-accent-red));
 }
 
 .upArrow, .downArrow {

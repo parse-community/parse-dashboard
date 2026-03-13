@@ -9,107 +9,136 @@
 
 $headerHeight: 48px;
 $menuSectionHeight: 24px;
-$sidebarMenuItemHeight: 48px;
-$footerHeight: 36px;
+$sidebarMenuItemHeight: 36px;
+$footerHeight: 44px;
+
+// ============================================
+// Sidebar Shell
+// ============================================
 
 .sidebar {
   position: fixed;
-  width: 300px;
+  width: $sidebar-width;
   top: 0;
   left: 0;
   bottom: 0;
-  background: #0c5582;
-  color: #fff;
+  background: linear-gradient(180deg, var(--color-bg-sidebar) 0%, var(--color-bg-sidebar-bottom) 100%);
+  color: var(--color-text-on-dark);
   z-index: 100;
+  transition: width var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
 
   &.collapsed {
-    left: 0;
-    width: 54px;
+    width: $sidebar-collapsed-width;
 
     .section_header > svg {
       margin: 0;
     }
 
     .pinContainer > svg {
-      fill: white;
+      fill: var(--color-text-on-dark);
     }
   }
 }
 
+@media (max-width: $bp-md - 1) {
+  .sidebar {
+    transform: translateX(-100%) !important;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    z-index: 200;
+    width: 280px !important;
+
+    &.mobileOpen {
+      transform: translateX(0) !important;
+    }
+  }
+}
+
+// ============================================
+// Content Area (scrollable sections)
+// ============================================
+
 .content {
-  position: absolute;
+  position: relative;
   overflow-y: auto;
-  top: $headerHeight;
-  right: 0;
-  bottom: 36px;
-  left: 0;
+  flex: 1;
+  padding: 4px 0;
 }
 
 .apps + .content {
-  top: $headerHeight + $sidebarMenuItemHeight;
+  // flex handles spacing
 }
+
+// ============================================
+// Footer
+// ============================================
 
 .footer {
-  @include DosisFont;
-  position: absolute;
-  background: #05283c;
-  padding: 10px 0;
-  text-align: center;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  @include UIFont;
+  position: relative;
+  padding: 10px 12px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 
   a {
-    color: white;
+    color: var(--color-text-on-dark-muted);
     text-decoration: none;
-    border-right: 1px solid #385261;
-    font-size: 13px;
-    padding: 0 12px;
-    vertical-align: top;
+    font-size: var(--text-xs);
+    transition: color var(--transition-fast);
 
-
-    &:first-child {
-      padding-left: 0;
-    }
-    &:last-child {
-      padding-right: 0;
-      border: none;
+    &:hover {
+      color: var(--color-text-on-dark);
     }
   }
 }
+
+// ============================================
+// Header (logo + version)
+// ============================================
 
 .header {
-  background: #05283c;
   height: $headerHeight;
-  padding: 10px 14px;
+  padding: 0 14px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 
   :global(.icon) {
-    width: 28px;
-    height: 28px;
-    float: left;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
   }
 }
+
+// ============================================
+// App Name / Selector
+// ============================================
 
 .currentApp, .menuRow {
   @include ellipsis();
   display: block;
-  background: #094162;
-  height: $sidebarMenuItemHeight;
-  padding: 10px 14px;
-
-  color: white;
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 30px;
+  height: $sidebarMenuItemHeight + 8px;
+  padding: 8px 12px;
+  color: var(--color-text-on-dark);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  line-height: 28px;
 }
 
 .menuRow {
   cursor: pointer;
-  border-bottom: 1px solid #0c5582;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 
   > *:first-child {
     display: inline-block;
-    max-width: 200px;
+    max-width: 160px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -117,6 +146,10 @@ $footerHeight: 36px;
 
   > *:not(:first-child) {
     float: right;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
   }
 }
 
@@ -134,18 +167,18 @@ $footerHeight: 36px;
     .currentAppName {
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 215px;
+      max-width: 170px;
     }
 
     &:after {
-      @include arrow('down', 10px, 7px, #132B39);
+      @include arrow('down', 10px, 7px, rgba(255, 255, 255, 0.2));
       content: '';
       margin-left: 10px;
     }
 
     &:hover {
       &:after {
-        border-top-color: white;
+        border-top-color: var(--color-text-on-dark);
       }
     }
   }
@@ -158,24 +191,23 @@ $footerHeight: 36px;
   padding: 6px;
 }
 
+// ============================================
+// Apps Menu (dropdown)
+// ============================================
+
 .appsMenu {
   overflow: auto;
-  background: #094162;
-  width: 300px;
-
-  .menuRow:hover {
-    background: #0c5582;
-  }
+  width: $sidebar-width;
 
   .currentApp {
     .currentAppName {
       &:after {
-        @include arrow('up', 10px, 7px, #132B39);
+        @include arrow('up', 10px, 7px, rgba(255, 255, 255, 0.2));
       }
 
       &:hover {
         &:after {
-          border-bottom-color: white;
+          border-bottom-color: var(--color-text-on-dark);
         }
       }
     }
@@ -183,187 +215,235 @@ $footerHeight: 36px;
 
   .appListContainer {
     overflow-y: auto;
-    height: calc(100vh - #{$headerHeight} - #{$menuSectionHeight} - #{$sidebarMenuItemHeight} - #{$footerHeight});
+    height: calc(100vh - #{$headerHeight} - #{$menuSectionHeight} - #{$sidebarMenuItemHeight + 8px} - #{$footerHeight});
   }
 }
 
 .menuSection {
-  @include DosisFont;
+  @include HeadingFont;
   height: $menuSectionHeight;
   line-height: 24px;
-  background: #0c5582;
-  color: #84A5BC;
+  color: var(--color-text-on-dark-muted);
   text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 8px;
+  letter-spacing: 1.5px;
+  font-size: 10px;
+  font-weight: var(--font-weight-medium);
   padding: 0 14px;
-  border-bottom: 1px solid #094162;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .createApp {
-  @include DosisFont;
+  @include UIFont;
   display: block;
-  background: $blue;
+  background: var(--color-accent-blue);
   color: white;
-  width: 91%;
-  height: 30px;
-  line-height: 30px;
-  border-radius: 5px;
+  width: calc(100% - 24px);
+  height: 32px;
+  line-height: 32px;
+  border-radius: var(--radius-md);
   text-align: center;
   margin: 12px auto;
-  font-size: 12px;
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-medium);
+  transition: background var(--transition-fast);
 
   &:hover {
-    background: #0c5582;
+    background: var(--color-accent-blue-hover);
   }
 }
+
+// ============================================
+// Section (nav item)
+// ============================================
 
 .section {
-  background: #0c5582;
+  padding: 0 8px;
 
   :global(.icon) {
-    margin-right: 14px;
+    margin-right: 10px;
   }
 }
 
+// Active section — clean Tailwind-style rounded highlight
 .active {
-  background: #159cee;
+  .section_header {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    font-weight: var(--font-weight-semibold);
+    border-radius: var(--radius-md);
 
-  .section_header{
-    font-weight: 700;
-    &:hover{
-      background: #159cee;
+    > svg {
+      opacity: 1;
     }
   }
 }
 
 .section_header {
-  display: block;
+  display: flex;
+  align-items: center;
   height: $sidebarMenuItemHeight;
-  font-size: 18px;
-  line-height: 28px;
-  padding: 12px 14px;
-  color: white;
+  font-size: var(--text-sm);
+  line-height: 20px;
+  padding: 0 10px;
+  color: var(--color-text-on-dark-muted);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast), color var(--transition-fast);
 
-  &:hover{
-    background-color: #0D5E91;
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--color-text-on-dark);
   }
 
   > span {
     vertical-align: top;
-    @include DosisFont;
+    @include UIFont;
+    font-weight: var(--font-weight-medium);
   }
 
   > svg {
-    margin-right: 14px;
+    margin-right: 10px;
+    flex-shrink: 0;
+    opacity: 0.5;
   }
 }
 
+// ============================================
+// Sub-items (expanded under active section)
+// ============================================
+
 .section_contents {
-  background: #0e69a0;
-  padding: 16px 14px 16px 50px;
+  padding: 2px 0 6px 14px;
 }
 
+// Active sub-item — just white text, bold
 .subitem {
   position: relative;
   height: 28px;
   line-height: 28px;
-  font-size: 16px;
-  font-weight: 700;
-  color: white;
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: #ffffff;
   display: flex;
   align-items: center;
+  padding: 0 8px;
+  border-radius: var(--radius-md);
 }
 
+// Inactive sub-item (link) — muted, brightens on hover
 a.subitem {
-  color: #8fb9cf;
-  font-weight: 400;
+  color: var(--color-text-on-dark-muted);
+  font-weight: var(--font-weight-normal);
   display: flex;
   align-items: center;
   width: 100%;
+  transition: color var(--transition-fast);
 
   &:hover {
-    color: white;
+    color: var(--color-text-on-dark);
   }
 
   svg {
     &:hover {
-      fill: white;
+      fill: var(--color-text-on-dark);
     }
   }
 }
 
+// ============================================
+// Action (button inside sub-item)
+// ============================================
+
 .action {
-  @include DosisFont;
+  @include UIFont;
   position: absolute;
-  font-size: 12px;
-  font-weight: 400;
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-normal);
   padding: 0 8px;
   line-height: 20px;
-  top: 4px;
+  top: 5px;
   right: 0px;
-  background: #0c5987;
-  color: white;
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-on-dark);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
 
   &:hover {
-    background: #094162;
+    background: rgba(255, 255, 255, 0.2);
   }
 }
 
+// ============================================
+// Logo & Version
+// ============================================
+
 .logo {
-  float: left;
+  flex-shrink: 0;
 }
 
 .version {
-  @include DosisFont;
+  @include UIFont;
   position: relative;
-  width: 75px;
   height: 100%;
   font-size: 10px;
   display: flex;
   align-items: center;
-  float: left;
-  margin-left: 6px;
-  white-space: nowrap;
-  color: white;
+  margin-left: 10px;
+  color: var(--color-text-on-dark-muted);
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
 
   > *:first-child {
-    position: absolute;
-    letter-spacing: 2px;
-    line-height: 12px;
-    text-transform: uppercase;
-  }
-
-  > *:first-child {
+    letter-spacing: 0.5px;
+    line-height: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     transition: all 0.4s 0.16s cubic-bezier(0.77, 0, 0.175, 1);
   }
 }
 
+// ============================================
+// More / Logout
+// ============================================
+
 .more {
   display: flex;
-  justify-content: center;
   align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  color: var(--color-text-on-dark-muted);
+  transition: color var(--transition-fast), background var(--transition-fast);
+
   svg {
-    fill: #0C5582;
-    transition: fill 0.2s ease-in;
-    margin-right: 4px;
+    fill: var(--color-text-on-dark-muted);
+    transition: fill var(--transition-fast);
   }
 
   &:hover {
+    color: var(--color-text-on-dark);
+    background: rgba(255, 255, 255, 0.06);
+
     svg {
-      fill: $blue;
+      fill: var(--color-text-on-dark);
     }
   }
 }
+
+// ============================================
+// Popup (legacy menu)
+// ============================================
 
 .popup {
   position: absolute;
   bottom: 4px;
   left: -183px;
-  background: white;
+  background: var(--color-bg-elevated);
   width: 200px;
-  border-radius: 5px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-overlay);
 
   &:after {
     @include arrow('down', 12px, 6px, #ffffff);
@@ -374,51 +454,58 @@ a.subitem {
   }
 
   a {
-    @include NotoSansFont;
+    @include UIFont;
     display: block;
     height: 40px;
     line-height: 41px;
-    font-size: 13px;
+    font-size: var(--text-sm);
     text-align: center;
-    border-bottom: 1px solid #e0e0ea;
-    color: $mainTextColor;
+    border-bottom: 1px solid var(--color-border-secondary);
+    color: var(--color-text-primary);
     padding-right: 8px;
-    &:hover{
-      background-color: darken(white,4%)
+
+    &:hover {
+      background-color: var(--color-interactive-hover);
     }
 
     &:first-child {
-      border-radius: 5px 5px 5px 5px;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     }
 
     &:last-child {
       border-bottom: 0;
-      border-radius: 5px 5px 5px 5px;
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
     }
 
-    .emoji{
+    .emoji {
       padding-left: 4px;
       padding-right: 2px;
     }
   }
 }
 
+// ============================================
+// Pin Container (collapsed state)
+// ============================================
+
 .pinContainer {
-  height: 48px;
+  height: $sidebarMenuItemHeight + 8px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #094162;
 
   svg {
     cursor: pointer;
-    height: 40px;
-    width: 40px;
-    padding: 10px 10px 10px 10px;
-    fill: #132B39;
+    height: 36px;
+    width: 36px;
+    padding: 8px;
+    fill: rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-md);
+    transition: fill var(--transition-fast), background var(--transition-fast);
 
     &:hover {
-      fill: white;
+      fill: var(--color-text-on-dark);
+      background: rgba(255, 255, 255, 0.06);
     }
   }
 }

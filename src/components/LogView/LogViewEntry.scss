@@ -8,13 +8,13 @@
 @import 'stylesheets/globals.scss';
 
 .entry {
-	@include MonospaceFont;
-  font-size: 14px;
+  @include MonospaceFont;
+  font-size: var(--text-base);
   list-style: none;
-  margin-bottom: 15px;
+  margin-bottom: var(--space-4);
 
   &.error {
-    color: red;
+    color: var(--color-accent-red);
   }
 
   .content {
@@ -22,26 +22,26 @@
   }
 
   .time {
-    color: green;
+    color: var(--color-accent-green);
   }
 
   //TODO: handle keywords that should be highlighted - use global vars for colors
   .highlight {
 
     &.error {
-      color: red;
+      color: var(--color-accent-red);
     }
 
     &.info {
-      color: purple;
+      color: var(--color-accent-blue);
     }
 
     &.warning {
-      color: orange;
+      color: var(--color-accent-orange);
     }
 
     &.success {
-      color: green;
+      color: var(--color-accent-green);
     }
   }
 }

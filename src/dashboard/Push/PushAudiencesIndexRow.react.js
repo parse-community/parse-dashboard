@@ -71,7 +71,7 @@ export default class PushAudiencesIndexRow extends PushAudiencesBaseRow {
             type="button"
             onClick={this.props.onDelete.bind(undefined, this.props.id, this.props.name)}
           >
-            <Icon name="trash-outline" fill="#343445" width={20} height={20} role="button" />
+            <Icon name="trash-outline" fill="var(--color-text-primary)" width={20} height={20} role="button" />
           </button>
         </td>
       </tr>

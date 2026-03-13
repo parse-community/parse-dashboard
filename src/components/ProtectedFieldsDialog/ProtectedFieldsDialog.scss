@@ -25,28 +25,29 @@ $permissionsDialogWidth: calc(
   top: 50%;
   left: 50%;
   width: $permissionsDialogWidth;
-  background: white;
-  border-radius: 5px;
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   transition: width 0.3s 0.15s ease-out;
+  box-shadow: var(--shadow-overlay);
 }
 
 .header {
   height: 50px;
-  background: $blue;
+  background: var(--color-accent-blue);
   position: relative;
-  color: #ffffff;
+  color: var(--color-text-on-dark);
   line-height: 50px;
-  font-size: 16px;
+  font-size: var(--text-lg);
   text-align: center;
 }
 
 .level {
   height: 50px;
-  width: $permissionsDialogWidth; //   width: 658px;
-  background: #0e69a1;
+  width: $permissionsDialogWidth;
+  background: var(--color-accent-blue-hover);
   position: relative;
-  color: white;
+  color: var(--color-text-on-dark);
   transition: width 0.3s 0.15s ease-out;
 
   > div {
@@ -58,10 +59,10 @@ $permissionsDialogWidth: calc(
 
   > span {
     display: inline-block;
-    font-size: 12;
+    font-size: var(--text-xs);
     height: 50px;
     line-height: 50px;
-    padding-left: 20px;
+    padding-left: var(--space-5);
   }
 }
 
@@ -84,7 +85,7 @@ $permissionsDialogWidth: calc(
     top: 0;
     bottom: 0;
     pointer-events: none;
-    background: rgba(0, 0, 40, 0.03);
+    background: var(--color-interactive-hover);
 
     &.second {
       left: $labelWidth;
@@ -95,23 +96,27 @@ $permissionsDialogWidth: calc(
 .footer {
   position: relative;
   height: 51px;
-  border-top: 1px solid #e3e3ea;
+  border-top: 1px solid var(--color-border-primary);
 
   .details {
-    font-size: 12px;
-    padding-left: 20px;
+    font-size: var(--text-xs);
+    padding-left: var(--space-5);
 
     a {
-      color: $blue;
+      color: var(--color-accent-blue);
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 
   .actions {
     float: right;
-    padding: 10px 15px;
+    padding: var(--space-3) var(--space-4);
 
     button {
-      margin-left: 10px;
+      margin-left: var(--space-3);
     }
   }
 }
@@ -126,25 +131,26 @@ $permissionsDialogWidth: calc(
   min-height: 50px;
   height: 100%;
   vertical-align: middle;
-  font-size: 15px;
-  border-bottom: 1px solid #e3e3ea;
+  font-size: var(--text-base);
+  border-bottom: 1px solid var(--color-border-primary);
   white-space: nowrap;
+  transition: background var(--transition-fast);
 
   &:nth-child(odd) {
-    background: rgba(14, 105, 161, 0.03);
+    background: var(--color-interactive-hover);
   }
 }
 
 .row.public {
-  background: rgba(22, 156, 238, 0.18);
-  border-bottom: 1px solid #0e69a1;
-  color: $blue;
+  background: var(--color-accent-blue-light);
+  border-bottom: 1px solid var(--color-accent-blue-hover);
+  color: var(--color-accent-blue);
 }
 
 .label {
   display: inline-flex;
   width: $labelWidth;
-  padding: 0 20px;
+  padding: 0 var(--space-5);
   flex-direction: column;
   align-self: center;
 }
@@ -152,18 +158,25 @@ $permissionsDialogWidth: calc(
 .entry {
   height: 30px;
   width: $entryWidth;
-  border: 1px solid $mainTextColor;
-  border-radius: 5px;
-  font-size: 14px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
   outline: none;
-  padding: 0 6px;
-  margin: 10px $entryMargin;
+  padding: 0 var(--space-2);
+  margin: var(--space-3) $entryMargin;
   vertical-align: top;
+  background: var(--color-bg-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+  &:focus {
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 0 2px var(--color-accent-blue-light);
+  }
 }
 
 .error {
-  border-color: $red;
-  color: $red;
+  border-color: var(--color-accent-red);
+  color: var(--color-accent-red);
   overflow: hidden;
   white-space: normal;
 }
@@ -183,10 +196,11 @@ $permissionsDialogWidth: calc(
   svg {
     vertical-align: top;
     cursor: pointer;
-    fill: #c1c7cd;
+    fill: var(--color-text-tertiary);
+    transition: fill var(--transition-fast);
 
     &:hover {
-      fill: $red;
+      fill: var(--color-accent-red);
     }
   }
 }
@@ -196,14 +210,14 @@ $permissionsDialogWidth: calc(
   overflow: hidden;
   display: inline-flex;
   align-self: center;
-  padding-left: 4px;
+  padding-left: var(--space-1);
 }
 
 .pillType {
   width: auto;
   display: inline-flex;
   height: 20;
-  padding: 2px 8px 0 8px;
+  padding: 2px var(--space-2) 0 var(--space-2);
 }
 
 .multiselect {
@@ -215,14 +229,14 @@ $permissionsDialogWidth: calc(
 }
 
 .hint {
-  color: $secondaryTextColor;
-  font-size: 0.8em;
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
 }
 .selectable {
   user-select: text;
 }
 .prefix {
-  color: #0e69a1;
+  color: var(--color-accent-blue-hover);
 }
 
 .suggestions {
@@ -233,8 +247,8 @@ $permissionsDialogWidth: calc(
 
 .entry input {
   width: $entryWidth !important;
-  padding: 0 6px;
-  margin: 10px 20px;
+  padding: 0 var(--space-2);
+  margin: var(--space-3) var(--space-5);
 }
 
 @include modalKeyframes();

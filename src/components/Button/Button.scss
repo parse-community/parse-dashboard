@@ -8,95 +8,125 @@
 @import 'stylesheets/globals.scss';
 
 .button {
-  @include DosisFont;
-  @include buttonReset($bg: none, $border: 1px solid $blue, $padding: 0 16px);
+  @include UIFont;
+  @include buttonReset($bg: var(--btn-bg), $border: var(--btn-border), $padding: 0 16px);
   display: inline-block;
-  height: 30px;
-  line-height: 28px;
+  height: 36px;
+  line-height: 36px;
   outline: 0;
   text-decoration: none;
   text-align: center;
-  border-radius: 5px;
-  font-size: 14px;
-
-  color: $blue;
+  border-radius: var(--btn-radius);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--btn-color);
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
 
   &:hover, &:focus {
-    background-color: $blue;
-    color: white;
+    background: var(--btn-hover-bg);
+    color: var(--btn-hover-color);
+    border-color: var(--color-border-primary);
   }
 }
 
 .primary {
-  background-color: $blue;
-  color: $white;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-color);
+  border: var(--btn-primary-border);
 
   &:hover, &:focus {
-    background-color: $darkBlue;
+    background: var(--btn-primary-hover-bg);
+    border-color: var(--btn-primary-hover-bg);
+    color: var(--btn-primary-color);
   }
 }
 
 .green {
-  color: $green;
-  border-color: $green;
+  color: var(--color-accent-green);
+  background: var(--color-accent-green-light);
+  border-color: transparent;
 
   &:hover, &:focus {
-    background-color: $lightGreen;
+    background: var(--color-accent-green);
+    color: var(--color-text-on-dark);
+    border-color: transparent;
   }
 
   &.primary {
-    background-color: $green;
-    color: $white;
+    background: var(--color-accent-green);
+    color: var(--color-text-on-dark);
+    border-color: transparent;
 
     &:hover, &:focus {
-      background-color: $darkGreen;
+      background: var(--color-accent-green);
+      filter: brightness(0.9);
     }
   }
 }
 
 .red {
-  color: $red;
-  border-color: $red;
+  color: var(--color-accent-red);
+  background: var(--color-accent-red-light);
+  border-color: transparent;
 
   &:hover, &:focus {
-    background-color: $lightRed;
+    background: var(--color-accent-red);
+    color: var(--color-text-on-dark);
+    border-color: transparent;
   }
 
   &.primary {
-    background-color: $red;
-    color: $white;
+    background: var(--color-accent-red);
+    color: var(--color-text-on-dark);
+    border-color: transparent;
 
     &:hover, &:focus {
-      background-color: $darkRed;
+      background: var(--color-accent-red);
+      filter: brightness(0.9);
     }
   }
 }
 
-.white {
-  color: $white;
-  border-color: $white;
-  line-height: 28px;
+// Ghost: transparent bg, subtle hover — for Cancel / tertiary actions
+.ghost {
+  color: var(--color-text-secondary);
+  background: transparent;
+  border-color: transparent;
 
   &:hover, &:focus {
-    background-color: $white;
-    color: $blue;
+    background: var(--color-interactive-hover);
+    color: var(--color-text-primary);
+    border-color: transparent;
+  }
+}
+
+.white {
+  color: var(--color-text-on-dark);
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+
+  &:hover, &:focus {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--color-text-on-dark);
+    border-color: rgba(255, 255, 255, 0.4);
   }
 
   &.primary {
-    background-color: $white;
-    color: $blue;
+    background: var(--color-text-on-dark);
+    color: var(--color-accent-blue);
+    border-color: transparent;
 
     &:hover, &:focus {
-      background-color: $blue;
-      border-color: $blue;
-      color: white;
+      background: rgba(255, 255, 255, 0.9);
+      border-color: transparent;
+      color: var(--color-accent-blue);
     }
   }
 
   &.disabled {
-    background-color: transparent;
-    border-color: white;
-    opacity: 0.2;
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.15);
+    opacity: 0.3;
   }
 }
 
@@ -109,14 +139,15 @@
 }
 
 .disabled, .disabled.primary {
-  background-color: #e0e0ea;
-  border-color: #e0e0ea;
-  color: white;
+  background: var(--color-bg-tertiary);
+  border-color: transparent;
+  color: var(--color-text-tertiary);
   cursor: default;
-  &:hover{
-    background-color: #e0e0ea;
-    border-color: #e0e0ea;
-    color: white;
+
+  &:hover {
+    background: var(--color-bg-tertiary);
+    border-color: transparent;
+    color: var(--color-text-tertiary);
   }
 }
 
@@ -128,4 +159,3 @@
     background-position: 150% 0;
   }
 }
-

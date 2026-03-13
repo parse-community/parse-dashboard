@@ -5,24 +5,24 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
- @import "stylesheets/globals.scss";
+@import 'stylesheets/globals.scss';
 
 .field {
   width: 100%;
   height: 56px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   position: relative;
-  transition: 0.3s background-color ease-in-out, 0.3s box-shadow ease-in-out;
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.field.dropdown input{
-  border-radius: 5px 5px 0px 0px;
+.field.dropdown input {
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
 .field.active input + label {
   opacity: 1;
   font-size: 0.5em;
-  color: #0e69a1;
+  color: var(--color-accent-blue);
 }
 
 .field.locked {
@@ -31,33 +31,37 @@
 
 .field input {
   height: 40px;
-
-  border: 1px solid $mainTextColor;
-  border-radius: 5px;
-  font-size: 14px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
   outline: none;
   vertical-align: top;
   line-height: normal;
   position: relative;
   font-weight: 400;
-  transition: 0.3s background-color ease-in-out, 0.3s box-shadow ease-in-out,
-    0.1s padding ease-in-out;
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast),
+    padding 0.1s ease-in-out;
   -webkit-appearance: none;
+
+  &:focus {
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 0 2px var(--color-accent-blue-light);
+  }
 }
 
 .field input + label {
   position: absolute;
   top: 6px;
   left: 26px;
-  font-family: "Gotham SSm A", "Gotham SSm B", sans-serif;
-  font-size: 14px;
-  font-weight: 600;
+  @include UIFont;
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
   line-height: 24px;
   opacity: 0;
   pointer-events: none;
-  transition: 0.1s all ease-in-out;
+  transition: all 0.1s ease-in-out;
 }
 
 .field input + label.error {
-  color: #ec392f;
+  color: var(--color-accent-red);
 }

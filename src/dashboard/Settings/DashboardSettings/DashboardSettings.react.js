@@ -405,7 +405,7 @@ export default class DashboardSettings extends DashboardView {
                       name={this.state.passwordHidden ? 'visibility' : 'visibility_off'}
                       width={18}
                       height={18}
-                      fill="rgba(0,0,0,0.4)"
+                      fill="var(--color-text-tertiary)"
                     />
                   </a>
                 </div>
@@ -592,10 +592,10 @@ export default class DashboardSettings extends DashboardView {
           />
         </Fieldset>
         {this.viewPreferencesManager && this.scriptManager && this.viewPreferencesManager.isServerConfigEnabled() && (
-          <Fieldset legend="Settings Storage">
-            <div style={{ marginBottom: '20px', color: '#666', fontSize: '14px', textAlign: 'center' }}>
-              Storing dashboard settings on the server rather than locally in the browser storage makes the settings available across devices and browsers. It also prevents them from getting lost when resetting the browser website data. Settings that can be stored on the server are currently Data Browser Filters, Data Browser Graphs, Views, Keyboard Shortcuts, JS Console scripts, and Cloud Config history.
-            </div>
+          <Fieldset
+            legend="Settings Storage"
+            description="Store dashboard settings on the server to make them available across devices and browsers. Supports Data Browser Filters, Graphs, Views, Keyboard Shortcuts, JS Console scripts, and Cloud Config history."
+          >
             <Field
               label={
                 <Label
@@ -677,8 +677,8 @@ export default class DashboardSettings extends DashboardView {
           maxHeight: '300px',
           overflowY: 'auto',
           marginBottom: '15px',
-          border: '1px solid #e0e0e0',
-          borderRadius: '4px',
+          border: '1px solid var(--color-border-secondary)',
+          borderRadius: 'var(--radius-md)',
           padding: '10px'
         }}>
           {viewConflicts.length > 0 && (
@@ -690,7 +690,7 @@ export default class DashboardSettings extends DashboardView {
                   return (
                     <li key={conflict.id}>
                       {viewName || 'Unnamed view'}
-                      <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#666', marginLeft: '8px' }}>
+                      <span style={{ fontFamily: 'monospace', fontSize: '12px', color: 'var(--color-text-tertiary)', marginLeft: '8px' }}>
                         [{conflict.id}]
                       </span>
                     </li>
@@ -713,7 +713,7 @@ export default class DashboardSettings extends DashboardView {
                   return (
                     <li key={conflict.id}>
                       {displayText}
-                      <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#666', marginLeft: '8px' }}>
+                      <span style={{ fontFamily: 'monospace', fontSize: '12px', color: 'var(--color-text-tertiary)', marginLeft: '8px' }}>
                         [{conflict.id}]
                       </span>
                     </li>
@@ -732,7 +732,7 @@ export default class DashboardSettings extends DashboardView {
                   return (
                     <li key={conflict.id}>
                       {scriptName || 'Unnamed script'}
-                      <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#666', marginLeft: '8px' }}>
+                      <span style={{ fontFamily: 'monospace', fontSize: '12px', color: 'var(--color-text-tertiary)', marginLeft: '8px' }}>
                         [{conflict.id}]
                       </span>
                     </li>

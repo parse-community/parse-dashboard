@@ -18,7 +18,7 @@ const Checkbox = ({ label, checked, indeterminate, onChange }) => {
   }
   let inner = null;
   if (checked) {
-    inner = <Icon width={12} height={12} name="check" fill="#169cee" />;
+    inner = <Icon width={12} height={12} name="check" fill="var(--color-accent-blue)" />;
   } else if (indeterminate) {
     inner = <span className={styles.minus} />;
   }

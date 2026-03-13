@@ -11,16 +11,16 @@
   position: relative;
   display: inline-block;
   width: 100%;
-  font-family: 'Source Code Pro', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  @include MonospaceFont;
   font-size: 15px;
   line-height: 1.5;
-  background: $inputBackgroundColor;
+  background: var(--color-bg-primary);
 }
 
 // Shared text styles
 .highlightLayer,
 .inputLayer {
-  padding: 10px;
+  padding: var(--space-3);
   margin: 0;
   border: none;
   font-family: inherit;
@@ -41,7 +41,7 @@
   bottom: 0;
   pointer-events: none;
   background: transparent;
-  color: #555572;
+  color: var(--color-text-primary);
   overflow: hidden;
 
   code {
@@ -57,31 +57,31 @@
   // Prism token colors (GitHub light theme)
   :global {
     .token.property {
-      color: #005cc5; // Blue - JSON keys
+      color: var(--color-accent-blue);
     }
 
     .token.string {
-      color: #000000; // Black - string values
+      color: var(--color-text-primary);
     }
 
     .token.number {
-      color: #098658; // Dark green - numbers
+      color: var(--color-accent-green);
     }
 
     .token.boolean {
-      color: #d73a49; // Red - true/false
+      color: var(--color-accent-red);
     }
 
     .token.null {
-      color: #d73a49; // Red - null
+      color: var(--color-accent-red);
     }
 
     .token.punctuation {
-      color: #24292e; // Dark gray - brackets, commas
+      color: var(--color-text-secondary);
     }
 
     .token.operator {
-      color: #24292e; // Dark gray - colons
+      color: var(--color-text-secondary);
     }
   }
 }
@@ -93,7 +93,7 @@
   min-width: calc(var(--modal-min-width) * (1 - var(--modal-label-ratio)));
   background: transparent;
   color: transparent;
-  caret-color: #333;
+  caret-color: var(--color-text-primary);
   resize: both;
   outline: none;
   min-height: 80px;
@@ -101,6 +101,6 @@
   overflow: auto;
 
   &::placeholder {
-    color: #bbb;
+    color: var(--color-text-tertiary);
   }
 }

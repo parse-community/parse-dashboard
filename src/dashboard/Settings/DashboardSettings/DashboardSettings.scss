@@ -1,28 +1,83 @@
+@import 'stylesheets/globals.scss';
+
+// =============================================================================
+// Modern (light / dark) — left-aligned, constrained width
+// =============================================================================
+
+.settings_page {
+  padding: calc(#{$toolbar-height} + var(--space-3)) var(--space-10) var(--space-10);
+  max-width: 720px;
+}
+
 .copyData {
   max-height: 50vh;
-  overflow-y: scroll;
+  overflow-y: auto;
+  border-radius: var(--radius-md);
 }
+
 .newUser {
-  max-height: 100px;
-  overflow-y: scroll;
+  max-height: 200px;
+  overflow-y: auto;
+  border-radius: var(--radius-md);
 }
-.settings_page {
-  padding: 120px 0 80px 0;
-}
+
 .footer {
   display: flex;
-  padding: 10px;
-  justify-content: end;
-  gap: 10px;
+  padding: var(--space-3) 0;
+  justify-content: flex-end;
+  gap: var(--space-3);
 }
+
 .password {
   display: flex;
-  gap: 4px;
+  align-items: center;
+  gap: var(--space-2);
 }
+
 .userData {
-  padding: 10px;
+  padding: var(--space-4) 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
 }
+
 .mfa {
   display: block;
-  margin-top: 10px;
+  margin-top: var(--space-3);
+  font-size: var(--text-sm);
+  word-break: break-all;
+}
+
+// =============================================================================
+// Classic — centered, original
+// =============================================================================
+
+:global([data-theme="classic"]) {
+  .settings_page {
+    padding: 120px 0 80px 0;
+    max-width: none;
+  }
+
+  .footer {
+    padding: 10px;
+  }
+
+  .userData {
+    padding: 10px;
+  }
+
+  .newUser {
+    max-height: 100px;
+  }
+}
+
+// =============================================================================
+// Responsive
+// =============================================================================
+
+@media (max-width: $bp-md - 1) {
+  .settings_page {
+    padding: calc(#{$toolbar-height} + #{$mobile-header-height} + var(--space-4)) var(--space-3) var(--space-8);
+    max-width: none;
+  }
 }

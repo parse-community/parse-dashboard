@@ -725,7 +725,7 @@ export default class BrowserCell extends Component {
       style.left = this.props.stickyLeft;
       style.zIndex = 1;
       style.background = this.props.rowBackground;
-      style.borderBottom = '1px solid #e3e3ea';
+      style.borderBottom = '1px solid var(--color-border-secondary)';
     }
 
     return (

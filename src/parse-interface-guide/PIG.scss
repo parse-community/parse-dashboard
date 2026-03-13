@@ -63,11 +63,11 @@ h1 {
   font-size: 32px;
   font-weight: 400;
   margin: 10px auto;
-  color: $secondaryTextColor;
+  color: var(--color-text-secondary);
 }
 
 .component_name {
-  color: $mainTextColor;
+  color: var(--color-text-primary);
 }
 
 .table {

@@ -40,7 +40,7 @@
 .modalContent {
   width: 90vw;
   height: 85vh;
-  background: white;
+  background: var(--color-bg-elevated);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -64,14 +64,14 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 1px solid #e3e3ea;
+  border-bottom: 1px solid var(--color-border-primary);
   flex-shrink: 0;
 }
 
 .modalTitle {
   font-size: 16px;
   font-weight: 600;
-  color: #0e0e1a;
+  color: var(--color-text-primary);
 }
 
 .closeButton {
@@ -87,7 +87,7 @@
   transition: background-color 0.15s ease;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: var(--color-interactive-hover);
   }
 }
 

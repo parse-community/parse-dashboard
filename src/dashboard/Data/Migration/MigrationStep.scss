@@ -16,7 +16,7 @@ $migrationStatesWidth: 175px;
 	width: calc(700px/3);
 	float: left;
 	&:not(:last-child) {
-		border-right: 2px solid $borderGrey;
+		border-right: 2px solid var(--color-border-primary);
 	}
 	&:last-child {
 		border-top-right-radius: 5px;

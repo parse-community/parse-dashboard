@@ -106,7 +106,7 @@ export default class DateRange extends React.Component {
             </div>
             <div className={styles.range} onClick={this.close.bind(this)}>
               <span>{this.rangeString()}</span>
-              <Icon width={18} height={18} name="calendar-solid" fill="#169CEE" />
+              <Icon width={18} height={18} name="calendar-solid" fill="var(--color-accent-blue)" />
             </div>
           </div>
         </Popover>
@@ -115,7 +115,7 @@ export default class DateRange extends React.Component {
       content = (
         <div className={styles.range}>
           <span>{this.rangeString()}</span>
-          <Icon width={18} height={18} name="calendar-solid" fill="#169CEE" />
+          <Icon width={18} height={18} name="calendar-solid" fill="var(--color-accent-blue)" />
         </div>
       );
     }

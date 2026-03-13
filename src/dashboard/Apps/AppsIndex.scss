@@ -9,18 +9,18 @@
 
 .loadingError {
   font-size: 58px;
-  color: #ffffff;
+  color: var(--color-text-on-dark);
 }
 
 .index {
   padding: 38px 30px;
-  background: #1e3b4d;
+  background: var(--color-bg-sidebar);
   min-height: 100vh;
 }
 
 .empty {
   position: relative;
-  background: #1e3b4d;
+  background: var(--color-bg-sidebar);
   min-height: 100vh;
   text-align: center;
 }
@@ -30,13 +30,13 @@
   height: 170px;
   border-radius: 100%;
   padding-top: 30px;
-  background: #3E5566;
+  background: var(--color-bg-sidebar-hover);
   margin: 0 auto 14px auto;
 }
 
 .alert {
   font-size: 58px;
-  color: #ffffff;
+  color: var(--color-text-on-dark);
   white-space: nowrap;
 }
 
@@ -45,9 +45,9 @@
   height: 32px;
   line-height: 32px;
   width: 128px;
-  background: #ffffff;
+  background: var(--color-bg-primary);
   border-radius: 5px;
-  color: $blue;
+  color: var(--color-accent-blue);
   font-size: 12px;
   margin: 50px auto 0 auto;
 }
@@ -69,14 +69,14 @@
   @include DosisFont;
   background: transparent;
   border: none;
-  color: white;
+  color: var(--color-text-on-dark);
   outline: none;
   font-size: 14px;
   vertical-align: top;
   margin-left: 10px;
 
   @include placeholder {
-    color: #788c97;
+    color: var(--color-text-on-dark-muted);
   }
 }
 
@@ -90,11 +90,11 @@
   padding: 0 14px;
   font-size: 14px;
   border-radius: 5px;
-  color: white;
-  background: $blue;
+  color: var(--color-text-on-dark);
+  background: var(--color-accent-blue);
   &:hover{
-    background: white;
-    color: $blue;
+    background: var(--color-bg-primary);
+    color: var(--color-accent-blue);
   }
 }
 
@@ -104,13 +104,13 @@
 
   li {
     cursor: pointer;
-    background: #193040;
+    background: var(--color-bg-sidebar-active);
     border-radius: 5px;
     margin: 14px 0;
     min-height: 74px;
 
     &:hover{
-      background: #172C3B;
+      background: var(--color-bg-sidebar-hover);
     }
   }
 }
@@ -139,14 +139,14 @@
   width: 100%;
   display: inline-block;
   font-size: 22px;
-  color: white;
+  color: var(--color-text-on-dark);
 }
 
 .details {
   flex: auto;
   overflow: hidden;
   padding: 9px 0;
-  color: #788c97;
+  color: var(--color-text-on-dark-muted);
   font-size: 12px;
 
   > div:first-of-type {
@@ -159,19 +159,19 @@
 }
 
 .ago {
-  color: white;
+  color: var(--color-text-on-dark);
   padding-right: 10px;
 }
 
 .glance {
   flex: 0 0 auto;
   padding: 10px 12px;
-  border-left: 1px solid #1e3b4d;
+  border-left: 1px solid var(--color-bg-sidebar);
 }
 
 .section {
   font-size: 12px;
-  color: #ffffff;
+  color: var(--color-text-on-dark);
 }
 
 .count {
@@ -181,12 +181,12 @@
 
 .number {
   @include DosisFont;
-  color: white;
+  color: var(--color-text-on-dark);
   font-size: 18px;
 }
 
 .label {
-  color: #788c97;
+  color: var(--color-text-on-dark-muted);
   font-size: 11px;
 }
 
@@ -195,9 +195,9 @@
 }
 
 .versionWarning {
-  background: rgba(255, 152, 0, 0.15);
-  border-top: 1px solid rgba(255, 152, 0, 0.3);
-  color: #ff9800;
+  background: var(--color-accent-orange-light);
+  border-top: 1px solid var(--color-accent-orange);
+  color: var(--color-accent-orange);
   font-size: 11px;
   padding: 8px 12px;
   line-height: 1.4;
@@ -210,15 +210,15 @@
   position: absolute;
   top: 7px;
   left: 86px;
-  background: #29475D;
+  background: var(--color-bg-sidebar-hover);
   border-radius: 3px;
   height: 17px;
   line-height: 18px;
-  color: white;
+  color: var(--color-text-on-dark);
   font-size: 10px;
   padding: 0 8px;
 
   &:hover {
-    background: $blue;
+    background: var(--color-accent-blue);
   }
 }

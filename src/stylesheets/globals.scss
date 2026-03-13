@@ -6,6 +6,7 @@
  * the root directory of this source tree.
  */
 @use 'sass:math';
+@import 'tokens.scss';
 
 $white: #fff;
 $blue: #169cee;
@@ -53,19 +54,27 @@ $pushDetailsContent: #66637A;
 $darkPurple: #8D11BA;
 $blueGreen: #11A4BA;
 
-$sidebarCollapsedWidth: 54px;
+$sidebarCollapsedWidth: $sidebar-collapsed-width;
 
-@mixin NotoSansFont {
-  font-family: 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+// Primary UI font — uses theme's --font-sans
+@mixin UIFont {
+  font-family: var(--font-sans);
 }
 
-@mixin DosisFont {
-  font-family: 'Dosis', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+// Heading/label font — uses theme's --font-heading
+@mixin HeadingFont {
+  font-family: var(--font-heading);
 }
 
-@mixin MonospaceFont {
-  font-family: 'Source Code Pro', 'Courier New', monospace;
+// Monospace font — uses theme's --font-mono
+@mixin CodeFont {
+  font-family: var(--font-mono);
 }
+
+// Legacy aliases (used throughout codebase — do not remove)
+@mixin NotoSansFont { @include UIFont; }
+@mixin DosisFont { @include HeadingFont; }
+@mixin MonospaceFont { @include CodeFont; }
 
 @mixin arrow($direction, $base, $height, $color) {
   border-style: solid;

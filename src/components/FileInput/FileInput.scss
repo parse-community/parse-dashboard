@@ -11,7 +11,7 @@
   width: 100%;
   height: 80px;
   padding: 0 10%;
-  background: $inputBackgroundColor;
+  background: var(--color-bg-secondary);
   text-align: center;
   overflow: hidden;
   white-space: nowrap;
@@ -20,18 +20,21 @@
 .button {
   position: relative;
   display: inline-block;
-  height: 30px;
-  margin-top: 25px;
+  height: 32px;
+  margin-top: 24px;
   padding: 0 16px;
-  border: 1px solid $blue;
-  border-radius: 5px;
+  background: var(--btn-bg);
+  border: var(--btn-border);
+  border-radius: var(--btn-radius);
   overflow: hidden;
-  color: $blue;
-  transition: background 0.5s, color 0.5s;
+  color: var(--btn-color);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  transition: background var(--transition-fast), color var(--transition-fast);
 
   &:hover {
-    background: $blue;
-    color: white;
+    background: var(--btn-hover-bg);
+    color: var(--btn-hover-color);
   }
 
   input {
@@ -45,7 +48,7 @@
   }
 
   > span {
-    line-height: 30px;
+    line-height: 32px;
   }
 }
 
@@ -53,7 +56,7 @@
   display: inline-block;
   width: 20px;
   height: 20px;
-  border: .15em solid $blue;
+  border: .15em solid var(--color-accent-blue);
   vertical-align: bottom;
   border-right-color: transparent;
   border-radius: 50%;
@@ -61,10 +64,10 @@
 }
 
 .disabled, .disabled:hover {
-  background: #e0e0ea;
-  border-color: #e0e0ea;
-  color: white;
-  
+  background: var(--color-bg-tertiary);
+  border-color: transparent;
+  color: var(--color-text-tertiary);
+
   input {
     cursor: default;
   }
@@ -77,15 +80,15 @@
 
 .label {
   display: block;
-  line-height: 30px;
-  color: $mainTextColor;
-  margin-top: 25px;
+  line-height: 32px;
+  color: var(--color-text-primary);
+  margin-top: 24px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 a.label {
-  color: $blue;
+  color: var(--color-accent-blue);
 }
 
 @include keyframes(spinner-border) {

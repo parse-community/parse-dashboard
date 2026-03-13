@@ -10,11 +10,11 @@
 .footer {
   @include animation('footer-enter 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)');
   position: fixed;
-  left: 300px;
+  left: $sidebar-width;
   right: 0;
   bottom: 0;
-  background: #fbfbfc;
-  border-top: 1px solid #555572;
+  background: var(--color-bg-elevated);
+  border-top: 1px solid var(--color-border-primary);
   min-height: 49px;
   padding: 9px 11px;
   transition: left 0.5s ease-in;
@@ -35,8 +35,8 @@
 }
 
 .content {
-  color: $mainTextColor;
-  font-size: 13px;
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
   line-height: 22px;
   vertical-align: bottom;
   margin: 5px 0 3px 0;
@@ -46,11 +46,11 @@
   }
 
   &.error {
-    color: $red;
+    color: var(--color-accent-red);
 
     strong {
       font-weight: 700;
-      color: $red;
+      color: var(--color-accent-red);
     }
   }
 }

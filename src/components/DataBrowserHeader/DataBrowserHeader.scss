@@ -8,22 +8,31 @@
 @import 'stylesheets/globals.scss';
 
 .header {
-  @include MonospaceFont;
+  @include UIFont;
   position: relative;
   display: block;
   white-space: nowrap;
   overflow: hidden;
   height: 30px;
-  padding: 4px 6px 4px 2px;
-  border-left: 4px solid transparent;
+  padding: 4px 6px 4px 6px;
+  border-right: 1px solid var(--data-header-border-color);
+  background: var(--data-header-bg);
+  transition: background var(--transition-fast);
+
+  &:hover {
+    background: var(--data-header-hover-bg);
+  }
 }
 
 .name {
-  color: white;
-  font-size: 12px;
+  color: var(--data-header-color);
+  font-size: var(--data-header-size);
+  font-weight: var(--font-weight-semibold);
+  text-transform: var(--data-header-transform);
+  letter-spacing: var(--data-header-tracking);
   height: 22px;
   line-height: 22px;
-  margin-right: 8px;
+  margin-right: 6px;
   float: left;
   max-width: 100%;
   overflow: hidden;
@@ -31,8 +40,9 @@
 }
 
 .type {
-  color: #A2A6B1;
+  color: var(--data-header-type-color);
   font-size: 10px;
+  font-weight: var(--font-weight-normal);
   height: 22px;
   line-height: 22px;
   overflow: hidden;
@@ -43,7 +53,7 @@
   padding-right: 20px;
 
   &:after {
-    @include arrow('up', 12px, 8px, #A2A6B1);
+    @include arrow('up', 12px, 8px, var(--color-accent-blue));
     content: '';
     position: absolute;
     top: 11px;
@@ -55,7 +65,7 @@
   padding-right: 20px;
 
   &:after {
-    @include arrow('down', 12px, 8px, #A2A6B1);
+    @include arrow('down', 12px, 8px, var(--color-accent-blue));
     content: '';
     position: absolute;
     top: 11px;
@@ -64,9 +74,9 @@
 }
 
 .over {
-  border-left-color: $white;
+  border-left-color: var(--color-accent-blue);
 }
 
 .dragging {
-  background: $blue;
+  background: var(--color-accent-blue-light);
 }

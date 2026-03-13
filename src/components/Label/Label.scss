@@ -8,15 +8,30 @@
 @import 'stylesheets/globals.scss';
 
 .label {
-  font-size: 13px;
+  @include UIFont;
+  font-size: var(--text-sm);
 }
 
 .text {
-  font-weight: 700;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  line-height: 1;
 }
 
 .description {
   margin-top: 2px;
-  color: $secondaryTextColor;
-  line-height: 13px;
+  color: var(--color-text-tertiary);
+  line-height: 1.4;
+  font-size: var(--text-xs);
+  font-weight: normal;
+
+  a {
+    color: var(--color-accent-blue);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }

@@ -7,30 +7,43 @@
  */
 @import 'stylesheets/globals.scss';
 
+// =============================================================================
+// Modern (light / dark) — left-aligned, constrained width
+// =============================================================================
+
 .pushFlow {
-  padding: 120px 0 70px 0;
+  padding: calc(#{$toolbar-height} + var(--space-3)) var(--space-10) var(--space-10);
+  max-width: 720px;
 }
 
 .warning {
-  background: $orange;
-  color: white;
-  font-size: 12px;
-  text-align: center;
-  line-height: 30px;
-  padding: 0 10px;
+  @include UIFont;
+  background: color-mix(in srgb, var(--color-accent-orange) 12%, transparent);
+  color: var(--color-accent-orange);
+  font-size: var(--text-xs);
+  text-align: left;
+  line-height: 1.5;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid color-mix(in srgb, var(--color-accent-orange) 25%, transparent);
 }
 
 .info {
-  background: $blue;
-  color: white;
-  font-size: 14px;
-  text-align: center;
-  line-height: 20px;
-  padding: 18px;
+  @include UIFont;
+  background: color-mix(in srgb, var(--color-accent-blue) 10%, transparent);
+  color: var(--color-accent-blue);
+  font-size: var(--text-sm);
+  text-align: left;
+  line-height: 1.5;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid color-mix(in srgb, var(--color-accent-blue) 20%, transparent);
 }
 
 .infoSubline {
-  font-size: 12px;
+  font-size: var(--text-xs);
+  margin-top: var(--space-1);
+  opacity: 0.8;
 }
 
 // workaround for non standard spec
@@ -55,37 +68,123 @@
 }
 
 .invalidMessage {
-  padding-right: 5px;
+  padding-right: var(--space-2);
 }
 
 .localeContainer {
-  margin: 15px 0 25px 0;
+  margin: var(--space-4) 0 var(--space-6) 0;
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
 }
 
 .localeTitle {
-  margin: 5px 0;
-  font-weight: bold;
+  @include UIFont;
+  margin: 0 0 var(--space-3) 0;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--text-sm);
   position: relative;
-  text-align: center;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .localeRemoveButton {
   @include buttonReset;
-  position: absolute;
-  right: 15px;
-  font-size: 12px;
-  top: 3px;
+  font-size: var(--text-xs);
+  color: var(--color-accent-red);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+
   &:hover, &:focus {
     text-decoration: underline;
   }
 }
 
 .localizationSegment {
-  text-align: center;
-  padding: 20px 10px;
+  text-align: left;
+  padding: var(--space-4) 0;
 }
 
 .localedeviceCount {
-  margin-top: 5px;
-  color: $secondaryTextColor;
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+// =============================================================================
+// Classic — centered, original look
+// =============================================================================
+
+:global([data-theme="classic"]) {
+  .pushFlow {
+    padding: 120px 0 70px 0;
+    max-width: none;
+  }
+
+  .warning {
+    background: var(--color-accent-orange);
+    color: var(--color-text-on-dark);
+    font-size: 12px;
+    text-align: center;
+    line-height: 30px;
+    padding: 0 10px;
+    border-radius: 0;
+    border: none;
+  }
+
+  .info {
+    background: var(--color-accent-blue);
+    color: var(--color-text-on-dark);
+    font-size: 14px;
+    text-align: center;
+    line-height: 20px;
+    padding: 18px;
+    border-radius: 0;
+    border: none;
+  }
+
+  .infoSubline {
+    font-size: 12px;
+    opacity: 1;
+  }
+
+  .localeContainer {
+    margin: 15px 0 25px 0;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+  }
+
+  .localeTitle {
+    margin: 5px 0;
+    text-align: center;
+    display: block;
+  }
+
+  .localeRemoveButton {
+    position: absolute;
+    right: 15px;
+    font-size: 12px;
+    top: 3px;
+    color: inherit;
+  }
+
+  .localizationSegment {
+    text-align: center;
+    padding: 20px 10px;
+  }
+}
+
+// =============================================================================
+// Responsive
+// =============================================================================
+
+@media (max-width: $bp-md - 1) {
+  .pushFlow {
+    padding: calc(#{$toolbar-height} + #{$mobile-header-height} + var(--space-4)) var(--space-3) var(--space-8);
+    max-width: none;
+  }
 }

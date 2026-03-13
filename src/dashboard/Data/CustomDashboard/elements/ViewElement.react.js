@@ -140,7 +140,7 @@ const ViewElement = ({
   if (!config || !config.viewId) {
     return (
       <div className={styles.noConfig}>
-        <Icon name="visibility" width={32} height={32} fill="#64748b" />
+        <Icon name="visibility" width={32} height={32} fill="var(--color-text-secondary)" />
         <p>No view configured</p>
       </div>
     );
@@ -149,7 +149,7 @@ const ViewElement = ({
   if (isLoading) {
     return (
       <div className={styles.loading}>
-        <Icon name="spinner" width={24} height={24} fill="#64748b" />
+        <Icon name="spinner" width={24} height={24} fill="var(--color-text-secondary)" />
         <p>Loading view data...</p>
       </div>
     );
@@ -158,7 +158,7 @@ const ViewElement = ({
   if (error) {
     return (
       <div className={styles.error}>
-        <Icon name="exclamation-triangle" width={24} height={24} fill="#ef4444" />
+        <Icon name="exclamation-triangle" width={24} height={24} fill="var(--color-accent-red)" />
         <p>Error loading view data</p>
         {onRefresh && (
           <button type="button" onClick={onRefresh} className={styles.retryButton}>
@@ -172,7 +172,7 @@ const ViewElement = ({
   if (!data || data.length === 0) {
     return (
       <div className={styles.noData}>
-        <Icon name="visibility" width={32} height={32} fill="#64748b" />
+        <Icon name="visibility" width={32} height={32} fill="var(--color-text-secondary)" />
         <p>No data found</p>
       </div>
     );
@@ -343,11 +343,11 @@ const ViewElement = ({
           className={styles.expandButton}
           title="Expand"
         >
-          <Icon name="expand-outline" width={12} height={12} fill="#94a3b8" />
+          <Icon name="expand-outline" width={12} height={12} fill="var(--color-text-tertiary)" />
         </button>
         {onRefresh && (
           <button type="button" onClick={onRefresh} className={styles.refreshButton}>
-            <Icon name="refresh-solid" width={12} height={12} fill="#94a3b8" />
+            <Icon name="refresh-solid" width={12} height={12} fill="var(--color-text-tertiary)" />
           </button>
         )}
       </div>

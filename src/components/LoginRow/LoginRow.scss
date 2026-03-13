@@ -9,12 +9,12 @@
   display: block;
   position: relative;
   height: 50px;
-  border-bottom: 1px solid #e0e0e1;
+  border-bottom: 1px solid var(--color-border-primary);
 }
 
 .label {
   width: 110px;
-  background: #f9f9fa;
+  background: var(--color-bg-secondary);
   font-size: 13px;
   font-weight: 700;
   height: 49px;
@@ -27,7 +27,7 @@
 .input {
   margin-left: 110px;
   height: 49px;
-  background: #f0f4f6;
+  background: var(--color-bg-tertiary);
 
   input {
     display: block;
@@ -41,7 +41,7 @@
     font-size: 13px;
 
     &:focus {
-      background: rgba(6,40,61,0.1);
+      background: var(--color-interactive-hover);
     }
   }
 }

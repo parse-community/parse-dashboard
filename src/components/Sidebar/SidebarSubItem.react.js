@@ -10,13 +10,13 @@ import React from 'react';
 import styles from 'components/Sidebar/Sidebar.scss';
 import Icon from 'components/Icon/Icon.react';
 
-const SidebarSubItem = ({ active, name, action, link, children, icon }) => {
+const SidebarSubItem = ({ active, name, action, link, children, icon, onNavigate }) => {
   if (active) {
     return (
       <div>
         <div className={styles.subitem}>
           {name}
-          {icon && <Icon name={icon} width={16} height={16} fill="white" style={{ marginLeft: '4px', marginTop: '2px' }} />}
+          {icon && <Icon name={icon} width={16} height={16} fill="currentColor" style={{ marginLeft: '4px', marginTop: '2px' }} />}
           {action ? action.renderButton() : null}
         </div>
         <div>{children}</div>
@@ -26,9 +26,9 @@ const SidebarSubItem = ({ active, name, action, link, children, icon }) => {
 
   return (
     <div>
-      <Link className={styles.subitem} to={{ pathname: link }}>
+      <Link className={styles.subitem} to={{ pathname: link }} onClick={onNavigate}>
         {name}
-        {icon && <Icon name={icon} width={16} height={16} fill="#8fb9cf" style={{ marginLeft: '4px', marginTop: '2px' }} />}
+        {icon && <Icon name={icon} width={16} height={16} fill="currentColor" style={{ marginLeft: '4px', marginTop: '2px' }} />}
       </Link>
     </div>
   );

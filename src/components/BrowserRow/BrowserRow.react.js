@@ -74,7 +74,7 @@ export default class BrowserRow extends Component {
     } else if (obj.className === '_User' && obj.get('authData') !== undefined) {
       requiredCols = ['authData'];
     }
-    const rowBackground = row % 2 ? '#F4F5F7' : '#fdfafb';
+    const rowBackground = row % 2 ? 'var(--color-bg-secondary)' : 'var(--color-bg-primary)';
     const rowStyle = { minWidth: rowWidth };
     return (
       <div className={styles.tableRow} style={rowStyle} onMouseOver={() => onMouseOverRow(obj.id)}>
@@ -87,7 +87,7 @@ export default class BrowserRow extends Component {
             left: 0,
             zIndex: 1,
             background: rowBackground,
-            borderBottom: '1px solid #e3e3ea',
+            borderBottom: '1px solid var(--color-border-secondary)',
           }}
         >
           <input
@@ -105,7 +105,7 @@ export default class BrowserRow extends Component {
               left: 30,
               zIndex: 1,
               background: rowBackground,
-              borderBottom: '1px solid #e3e3ea',
+              borderBottom: '1px solid var(--color-border-secondary)',
               width: rowNumberWidth,
             }}
           >

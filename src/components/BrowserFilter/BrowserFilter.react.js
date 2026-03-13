@@ -857,7 +857,6 @@ export default class BrowserFilter extends React.Component {
               {this.state.confirmDelete && (
                 <div className={styles.footer}>
                   <Button
-                    color="white"
                     value="Cancel"
                     width="120px"
                     onClick={() => this.setState({ confirmDelete: false })}
@@ -885,15 +884,14 @@ export default class BrowserFilter extends React.Component {
                           name="up-solid"
                           width={20}
                           height={20}
-                          fill="white"
+                          fill="var(--color-text-secondary)"
                         />
                       </span>
                       <div
                         style={{
                           width: '1px',
                           height: '20px',
-                          backgroundColor: '#ffffff',
-                          opacity: 0.3,
+                          backgroundColor: 'var(--color-border-primary)',
                           alignSelf: 'center'
                         }}
                       />
@@ -909,7 +907,7 @@ export default class BrowserFilter extends React.Component {
                           name="check"
                           width={20}
                           height={20}
-                          fill={this.state.name && (this.state.name !== this.state.originalFilterName || this.hasFilterContentChanged()) && !this.isFilterNameExists(this.state.name) ? '#00db7c' : 'white'}
+                          fill={this.state.name && (this.state.name !== this.state.originalFilterName || this.hasFilterContentChanged()) && !this.isFilterNameExists(this.state.name) ? 'var(--color-accent-green)' : 'var(--color-text-tertiary)'}
                         />
                       </span>
                       {this.isCurrentFilterSaved() && (
@@ -922,7 +920,7 @@ export default class BrowserFilter extends React.Component {
                               name="clone-icon"
                               width={20}
                               height={20}
-                              fill="white"
+                              fill="var(--color-text-secondary)"
                             />
                           </span>
                           <span
@@ -933,7 +931,7 @@ export default class BrowserFilter extends React.Component {
                               name="trash-solid"
                               width={20}
                               height={20}
-                              fill="white"
+                              fill="var(--color-accent-red)"
                             />
                           </span>
                         </>
@@ -951,11 +949,10 @@ export default class BrowserFilter extends React.Component {
                             name="down-solid"
                             width={20}
                             height={20}
-                            fill="white"
+                            fill="var(--color-text-secondary)"
                           />
                         </span>
                         <Button
-                          color="white"
                           value="Clear"
                           disabled={this.state.filters.size === 0}
                           width="120px"
@@ -966,14 +963,12 @@ export default class BrowserFilter extends React.Component {
                   </div>
                   <div className={styles.btnFlex}>
                     <Button
-                      color="white"
                       value="Add"
                       disabled={Object.keys(available).length === 0}
                       width="120px"
                       onClick={() => this.addRow()}
                     />
                     <Button
-                      color="white"
                       primary={true}
                       value="Apply"
                       width="120px"

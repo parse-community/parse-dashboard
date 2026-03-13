@@ -12,74 +12,87 @@
 }
 
 .entry {
-  height: 30px;
-  padding: 8px;
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-2);
 
   svg {
-    fill: #66637A;
+    fill: var(--color-text-on-dark-muted);
   }
 
   &:hover svg {
-    fill: white;
+    fill: var(--color-text-on-dark);
   }
 
   &.disabled {
     cursor: not-allowed;
-    color: #66637A;
+    color: rgba(255, 255, 255, 0.3);
+    opacity: 0.5;
 
     &:hover svg {
-      fill: #66637A;
+      fill: rgba(255, 255, 255, 0.3);
     }
   }
 }
 
 .entry.active {
-  background: $blue;
-  border-radius: 5px;
+  background: var(--color-accent-blue);
+  border-radius: var(--radius-sm);
 
   svg {
-    fill: white;
+    fill: var(--color-text-on-dark);
   }
 }
 
-.active .title, .active .body {
-  background: $blue;
+.active .title {
+  background: var(--color-accent-blue);
+}
+
+.active .body {
+  background: var(--color-bg-elevated);
 }
 
 .title {
-  background: #797691;
-  padding: 8px;
-  border-radius: 5px 5px 0 0;
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
 
   svg {
-    fill: white;
+    fill: var(--color-text-on-dark);
   }
 }
 
 .entry, .title {
-  @include NotoSansFont;
-  position: relative;
-  bottom: -4px;
-  font-size: 14px;
-  color: #ffffff;
+  @include UIFont;
+  font-size: var(--text-sm);
+  color: var(--color-text-on-dark-muted);
   cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast), color var(--transition-fast);
 
   svg {
-    vertical-align: top;
-    margin-right: 6px;
+    vertical-align: middle;
+    margin-right: var(--space-1);
   }
 
   span {
     display: inline-block;
-    vertical-align: top;
+    vertical-align: middle;
     height: 14px;
     line-height: 14px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-on-dark);
   }
 }
 
 .objectPickerContent {
   .entry svg {
-    fill: rgba(0, 0, 0, 0.3);
+    fill: var(--color-text-tertiary);
   }
 }
 
@@ -91,18 +104,22 @@
   overflow: hidden;
   top: 30px;
   right: 0;
-  border-radius: 5px 0 5px 5px;
-  background: #797691;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-secondary);
+  box-shadow: var(--shadow-overlay);
   width: 685px;
-  font-size: 14px;
+  font-size: var(--text-base);
 }
 
 .footer {
-  background: rgba(0,0,0,0.2);
-  padding: 11px 16px;
+  background: var(--color-bg-tertiary);
+  padding: var(--space-3) var(--space-4);
   text-align: center;
   display: flex;
   justify-content: space-between;
+  border-top: 1px solid var(--color-border-secondary);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
   > button {
     margin-right: 10px;
 
@@ -113,7 +130,7 @@
 }
 
 .row {
-  padding: 8px 15px;
+  padding: var(--space-2) 15px;
 
   > * {
     margin-right: 10px;
@@ -127,26 +144,31 @@
     @include MonospaceFont;
     height: 30px;
     width: 140px;
-    background: #343445;
-    border: none;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border-primary);
     outline: none;
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     vertical-align: top;
-    padding: 0 8px;
-    color: white;
-    font-size: 14px;
+    padding: 0 var(--space-2);
+    color: var(--color-text-primary);
+    font-size: var(--text-base);
+
+    &:focus {
+      border-color: var(--color-border-focus);
+      box-shadow: 0 0 0 1px var(--color-border-focus);
+    }
   }
 }
 
 .active .row input {
-  background: #0E69A1;
+  border-color: var(--color-accent-blue);
 }
 
 .remove {
   @include buttonReset;
   display: inline-block;
   height: 14px;
-  margin: 8px;
+  margin: var(--space-2);
 }
 
 .date {
@@ -161,7 +183,7 @@
 
 .btnFlex{
   display: flex;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .iconButton {
@@ -170,8 +192,8 @@
   align-items: center;
   justify-content: center;
   opacity: 0.7;
-  transition: opacity 0.2s ease;
-  
+  transition: opacity var(--transition-fast);
+
   &:hover {
     opacity: 1;
   }
@@ -183,7 +205,7 @@
   align-items: center;
   justify-content: center;
   opacity: 0.3;
-  
+
   &:hover {
     opacity: 0.3;
   }

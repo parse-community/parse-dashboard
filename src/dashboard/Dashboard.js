@@ -217,7 +217,7 @@ export default class Dashboard extends React.Component {
         <div className={styles.empty}>
           <div className={baseStyles.center}>
             <div className={styles.cloud}>
-              <Icon width={110} height={110} name="cloud-surprise" fill="#1e3b4d" />
+              <Icon width={110} height={110} name="cloud-surprise" fill="var(--color-text-secondary)" />
             </div>
             {/* use non-breaking hyphen for the error message to keep the filename on one line */}
             <div className={styles.loadingError}>

@@ -23,7 +23,7 @@ const GraphElement = ({
   if (!config || !config.graphConfig) {
     return (
       <div className={styles.noConfig}>
-        <Icon name="chart-line" width={32} height={32} fill="#64748b" />
+        <Icon name="chart-line" width={32} height={32} fill="var(--color-text-secondary)" />
         <p>No graph configured</p>
       </div>
     );
@@ -63,11 +63,11 @@ const GraphElement = ({
           className={styles.expandButton}
           title="Expand"
         >
-          <Icon name="expand-outline" width={12} height={12} fill="#94a3b8" />
+          <Icon name="expand-outline" width={12} height={12} fill="var(--color-text-tertiary)" />
         </button>
         {onRefresh && (
           <button type="button" onClick={onRefresh} className={styles.refreshButton}>
-            <Icon name="refresh-solid" width={12} height={12} fill="#94a3b8" />
+            <Icon name="refresh-solid" width={12} height={12} fill="var(--color-text-tertiary)" />
           </button>
         )}
       </div>

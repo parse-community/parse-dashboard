@@ -605,8 +605,8 @@ export default class ConfigDialog extends React.Component {
     const customFooter = (
       <div>
         {this.props.conflict && (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 28px', borderTop: '1px solid #e1e4e8', background: '#ffeef0' }}>
-            <span style={{ color: '#cb2431', fontSize: '13px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 28px', borderTop: '1px solid var(--color-border-secondary)', background: 'var(--color-accent-red-light, #ffeef0)' }}>
+            <span style={{ color: 'var(--color-accent-red)', fontSize: '13px' }}>
               Server value changed while editing, see diff view - overwrite it?
             </span>
             <Toggle
@@ -632,7 +632,7 @@ export default class ConfigDialog extends React.Component {
                   disabled={!this.canFormatValue()}
                 />
                 {this.state.error && (
-                  <span style={{ color: '#d73a49', fontSize: '13px' }}>{this.state.error}</span>
+                  <span style={{ color: 'var(--color-accent-red)', fontSize: '13px' }}>{this.state.error}</span>
                 )}
               </>
             )}
@@ -653,26 +653,26 @@ export default class ConfigDialog extends React.Component {
                     position={this.state.optionsMenuPos}
                     onExternalClick={() => { document.activeElement?.blur(); this.setState({ optionsMenuOpen: false }); }}
                   >
-                    <div style={{ background: '#fff', border: '1px solid #e1e4e8', borderRadius: '4px', boxShadow: '0 3px 12px rgba(0,0,0,0.15)', padding: '4px 0', minWidth: '130px', transform: 'translateY(-100%)' }}>
+                    <div style={{ background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border-secondary)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-overlay)', padding: '4px 0', minWidth: '130px', transform: 'translateY(-100%)' }}>
                       {isJsonType && (
                         <div
                           onClick={() => { document.activeElement?.blur(); this.setState({ wordWrap: !this.state.wordWrap, optionsMenuOpen: false }); }}
-                          style={{ display: 'flex', alignItems: 'center', padding: '8px 12px', cursor: 'pointer', fontSize: '14px', color: '#333', gap: '8px' }}
-                          onMouseEnter={e => e.currentTarget.style.background = '#f6f8fa'}
+                          style={{ display: 'flex', alignItems: 'center', padding: '8px 12px', cursor: 'pointer', fontSize: '14px', color: 'var(--color-text-primary)', gap: '8px' }}
+                          onMouseEnter={e => e.currentTarget.style.background = 'var(--color-interactive-hover)'}
                           onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                         >
-                          <span style={{ width: '12px', display: 'inline-block' }}>{this.state.wordWrap && <Icon name="check" width={12} height={12} fill="#00db7c" />}</span>
+                          <span style={{ width: '12px', display: 'inline-block' }}>{this.state.wordWrap && <Icon name="check" width={12} height={12} fill="var(--color-accent-green)" />}</span>
                           <span>Word wrap</span>
                         </div>
                       )}
                       {isDiffableType && isExistingParam && (
                         <div
                           onClick={() => { document.activeElement?.blur(); this.setState({ showDiff: !this.state.showDiff, optionsMenuOpen: false }); }}
-                          style={{ display: 'flex', alignItems: 'center', padding: '8px 12px', cursor: 'pointer', fontSize: '14px', color: '#333', gap: '8px' }}
-                          onMouseEnter={e => e.currentTarget.style.background = '#f6f8fa'}
+                          style={{ display: 'flex', alignItems: 'center', padding: '8px 12px', cursor: 'pointer', fontSize: '14px', color: 'var(--color-text-primary)', gap: '8px' }}
+                          onMouseEnter={e => e.currentTarget.style.background = 'var(--color-interactive-hover)'}
                           onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                         >
-                          <span style={{ width: '12px', display: 'inline-block' }}>{this.state.showDiff && <Icon name="check" width={12} height={12} fill="#00db7c" />}</span>
+                          <span style={{ width: '12px', display: 'inline-block' }}>{this.state.showDiff && <Icon name="check" width={12} height={12} fill="var(--color-accent-green)" />}</span>
                           <span>Diff view</span>
                         </div>
                       )}

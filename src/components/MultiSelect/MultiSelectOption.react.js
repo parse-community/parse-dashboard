@@ -14,7 +14,7 @@ const MultiSelectOption = ({ checked, children, dense, disabled, ...other }) => 
 
   const icon = checked ? (
     <div className={styles.checked}>
-      <Icon width={dense ? 15 : 20} height={dense ? 15 : 20} name="check" fill="#ffffff" />
+      <Icon width={dense ? 15 : 20} height={dense ? 15 : 20} name="check" fill="var(--color-text-on-dark)" />
     </div>
   ) : (
     <div className={styles.unchecked} />

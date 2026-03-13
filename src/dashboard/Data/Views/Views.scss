@@ -8,12 +8,12 @@
   @include MonospaceFont;
   display: inline-block;
   vertical-align: top;
-  background: #66637A;
-  color: white;
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-on-dark);
   font-size: 12px;
   height: 30px;
   padding: 4px 16px;
-  border-right: 1px solid #e3e3ea;
+  border-right: 1px solid var(--color-border-primary);
   position: relative;
   white-space: nowrap;
   overflow: hidden;
@@ -25,7 +25,7 @@
 }
 
 .headerName {
-  color: white;
+  color: var(--color-text-on-dark);
   font-size: 12px;
   height: 22px;
   line-height: 22px;
@@ -37,7 +37,7 @@
 }
 
 .headerType {
-  color: #A2A6B1;
+  color: var(--color-text-on-dark-muted);
   font-size: 10px;
   height: 22px;
   line-height: 22px;
@@ -100,17 +100,17 @@
   font-size: 12px;
   white-space: nowrap;
   height: 30px;
-  border-bottom: 1px solid #e3e3ea;
+  border-bottom: 1px solid var(--color-border-primary);
 }
 
 .tableRow:nth-child(odd) {
-  background: #f4f5f7;
+  background: var(--color-bg-secondary);
 }
 
 .cell {
   line-height: 20px;
   padding: 5px 16px;
-  border-right: 1px solid #e3e3ea;
+  border-right: 1px solid var(--color-border-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

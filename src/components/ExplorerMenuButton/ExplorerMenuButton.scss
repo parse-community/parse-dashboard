@@ -22,16 +22,25 @@
   display: inline-block;
   height: 30px;
   width: 111px;
-  border: 1px solid $mainTextColor;
-  border-radius: 5px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
   line-height: 30px;
   text-align: center;
-  padding: 0 16px;
+  padding: 0 var(--space-4);
   cursor: pointer;
+  color: var(--color-text-primary);
+  background: var(--color-bg-primary);
+  font-size: var(--text-sm);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+
+  &:hover {
+    background: var(--color-interactive-hover);
+    border-color: var(--color-accent-blue);
+  }
 }
 
 .callout {
-  @include arrow('up', 20px, 10px, $explorerQueryBackgroundColor);
+  @include arrow('up', 20px, 10px, var(--color-accent-blue));
   width: 20px;
   height: 10px;
 }
@@ -43,11 +52,10 @@
   .button {
     display: block;
     margin-left: auto;
-    margin-right: 0px;
+    margin-right: 0;
   }
 
   .callout {
     margin-left: auto;
   }
 }
-

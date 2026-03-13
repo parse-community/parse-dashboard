@@ -8,33 +8,42 @@
 @import 'stylesheets/globals.scss';
 
 .editor {
-  background: white;
+  background: var(--color-bg-elevated);
   white-space: nowrap;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
-  padding: 6px;
+  box-shadow: var(--shadow-overlay);
+  padding: var(--space-2);
 }
 
 .delete, .upload, .download {
-  @include DosisFont;
+  @include HeadingFont;
   display: block;
   cursor: pointer;
-  color: white;
+  color: var(--color-text-on-dark);
   height: 20px;
   line-height: 20px;
-  font-size: 14px;
+  font-size: var(--text-base);
   text-align: center;
-  border-radius: 5px;
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast), opacity var(--transition-fast);
+
+  &:hover {
+    opacity: 0.9;
+  }
 }
 
 .delete {
-  background: $red;
+  background: var(--color-accent-red);
 }
 
 .upload, .download {
   position: relative;
   overflow: hidden;
-  background: $blue;
-  margin-bottom: 6px;
+  background: var(--color-accent-blue);
+  margin-bottom: var(--space-2);
+
+  &:hover {
+    background: var(--color-accent-blue-hover);
+  }
 
   input {
     position: absolute;

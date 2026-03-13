@@ -12,16 +12,16 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background-color: #ffffff;
-  border: 1px solid #e3e3ea;
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
   border-radius: 8px;
   cursor: pointer;
   text-align: left;
   transition: all 0.15s ease;
 
   &:hover {
-    background-color: #f6f6f9;
-    border-color: #169cee;
+    background-color: var(--color-bg-secondary);
+    border-color: var(--color-accent-blue);
   }
 }
 
@@ -31,7 +31,7 @@
   justify-content: center;
   width: 56px;
   height: 56px;
-  background-color: rgba(22, 156, 238, 0.1);
+  background-color: var(--color-accent-blue-light);
   border-radius: 8px;
   flex-shrink: 0;
 }
@@ -43,13 +43,13 @@
 .elementTitle {
   font-size: 16px;
   font-weight: 600;
-  color: #0e69a1;
+  color: var(--color-accent-blue-hover);
   margin-bottom: 4px;
 }
 
 .elementDescription {
   font-size: 14px;
-  color: #66637a;
+  color: var(--color-text-secondary);
 }
 
 .footer {

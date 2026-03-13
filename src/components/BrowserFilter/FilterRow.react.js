@@ -75,17 +75,17 @@ const RegexOptionsButton = ({ modifiers, onChangeModifiers }) => {
       <div
         ref={dropdownRef}
         style={{
-          background: '#1e1e2e',
-          border: '1px solid #66637A',
-          borderRadius: '5px',
+          background: 'var(--color-bg-elevated)',
+          border: '1px solid var(--color-border-secondary)',
+          borderRadius: 'var(--radius-lg)',
           padding: '8px',
           minWidth: '150px',
-          color: 'white',
+          color: 'var(--color-text-primary)',
           fontSize: '14px',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
+          boxShadow: 'var(--shadow-overlay)'
         }}
       >
-        <div style={{ marginBottom: '4px', fontWeight: 'bold', paddingBottom: '4px', borderBottom: '1px solid rgba(255,255,255,0.2)' }}>
+        <div style={{ marginBottom: '4px', fontWeight: 'bold', paddingBottom: '4px', borderBottom: '1px solid var(--color-border-secondary)' }}>
           Regex Options
         </div>
         <label
@@ -163,7 +163,7 @@ const RegexOptionsButton = ({ modifiers, onChangeModifiers }) => {
         }}
         title="Regex options"
       >
-        <Icon name="gear-solid" width={14} height={14} fill="rgba(0,0,0,0.4)" />
+        <Icon name="gear-solid" width={14} height={14} fill="var(--color-text-tertiary)" />
       </button>
       {optionsDropdown}
     </>
@@ -252,7 +252,7 @@ function compareValue(
       return (
         <ChromeDropdown
           width="140"
-          color={active ? 'blue' : 'purple'}
+          color={active ? 'blue' : undefined}
           value={value ? 'True' : 'False'}
           options={['True', 'False']}
           onChange={val => onChangeCompareTo(val === 'True')}
@@ -342,15 +342,16 @@ const FilterRow = ({
           maxHeight: '360px',
           overflowY: 'auto',
           fontSize: '14px',
-          background: '#343445',
-          borderBottomLeftRadius: '5px',
-          borderBottomRightRadius: '5px',
-          color: 'white',
+          background: 'var(--color-bg-elevated)',
+          border: '1px solid var(--color-border-secondary)',
+          borderRadius: '0 0 var(--radius-md) var(--radius-md)',
+          color: 'var(--color-text-primary)',
           cursor: 'pointer',
+          boxShadow: 'var(--shadow-md)',
         }}
         suggestionsItemStyle={{
-          background: '#343445',
-          color: 'white',
+          background: 'var(--color-bg-elevated)',
+          color: 'var(--color-text-primary)',
           height: '30px',
           lineHeight: '30px',
           borderBottom: '0px',
@@ -377,15 +378,16 @@ const FilterRow = ({
           maxHeight: '360px',
           overflowY: 'auto',
           fontSize: '14px',
-          background: '#343445',
-          borderBottomLeftRadius: '5px',
-          borderBottomRightRadius: '5px',
-          color: 'white',
+          background: 'var(--color-bg-elevated)',
+          border: '1px solid var(--color-border-secondary)',
+          borderRadius: '0 0 var(--radius-md) var(--radius-md)',
+          color: 'var(--color-text-primary)',
           cursor: 'pointer',
+          boxShadow: 'var(--shadow-md)',
         }}
         suggestionsItemStyle={{
-          background: '#343445',
-          color: 'white',
+          background: 'var(--color-bg-elevated)',
+          color: 'var(--color-text-primary)',
           height: '30px',
           lineHeight: '30px',
           borderBottom: '0px',
@@ -405,7 +407,7 @@ const FilterRow = ({
       />
       <div style={{ flex: 1 }}>
         <ChromeDropdown
-          color={active ? 'blue' : 'purple'}
+          color={active ? 'blue' : undefined}
           value={Constraints[currentConstraint].name}
           options={constraints.map(c => Constraints[c].name)}
           onChange={c => onChangeConstraint(constraintLookup[c], compareTo)}
@@ -424,7 +426,7 @@ const FilterRow = ({
         onChangeModifiers
       )}
       <button type="button" className={styles.remove} onClick={onDeleteRow}>
-        <Icon name="minus-solid" width={14} height={14} fill="rgba(0,0,0,0.4)" />
+        <Icon name="minus-solid" width={14} height={14} fill="var(--color-text-tertiary)" />
       </button>
     </div>
   );

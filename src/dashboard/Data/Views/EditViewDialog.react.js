@@ -162,10 +162,10 @@ export default class EditViewDialog extends React.Component {
                   colorLeft="#cbcbcb"
                   colorRight="#00db7c"
                 />
-                <span style={{ color: this.state.wordWrap ? '#333' : '#999' }}>Wrap</span>
+                <span style={{ color: this.state.wordWrap ? 'var(--color-text-primary)' : 'var(--color-text-tertiary)' }}>Wrap</span>
               </label>
               {this.state.error && (
-                <span style={{ color: '#d73a49', fontSize: '13px' }}>{this.state.error}</span>
+                <span style={{ color: 'var(--color-accent-red)', fontSize: '13px' }}>{this.state.error}</span>
               )}
             </>
           )}

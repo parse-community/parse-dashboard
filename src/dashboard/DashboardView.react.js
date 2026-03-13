@@ -7,6 +7,7 @@
  */
 import React from 'react';
 import Sidebar from 'components/Sidebar/Sidebar.react';
+import MobileNav from 'components/Sidebar/MobileNav.react';
 import styles from 'dashboard/Dashboard.scss';
 import Icon from 'components/Icon/Icon.react';
 import baseStyles from 'stylesheets/base.scss';
@@ -21,7 +22,18 @@ export default class DashboardView extends React.Component {
     super();
     this.state = {
       route: '',
+      mobileNavOpen: false,
     };
+    this.toggleMobileNav = this.toggleMobileNav.bind(this);
+    this.closeMobileNav = this.closeMobileNav.bind(this);
+  }
+
+  toggleMobileNav() {
+    this.setState(prev => ({ mobileNavOpen: !prev.mobileNavOpen }));
+  }
+
+  closeMobileNav() {
+    this.setState({ mobileNavOpen: false });
   }
 
   componentDidUpdate() {
@@ -298,9 +310,8 @@ export default class DashboardView extends React.Component {
     if (pushSubsections.length > 0) {
       appSidebarSections.push({
         name: 'Push',
-        icon: 'push-outline',
+        icon: 'send-outline',
         link: '/push',
-        style: { paddingLeft: '16px' },
         subsections: pushSubsections,
       });
     }
@@ -317,7 +328,7 @@ export default class DashboardView extends React.Component {
     if (settingsSections.length > 0) {
       appSidebarSections.push({
         name: 'App Settings',
-        icon: 'gear-solid',
+        icon: 'gear-outline',
         link: '/settings',
         subsections: settingsSections,
       });
@@ -333,6 +344,8 @@ export default class DashboardView extends React.Component {
         action={this.action}
         primaryBackgroundColor={this.context.primaryBackgroundColor}
         secondaryBackgroundColor={this.context.secondaryBackgroundColor}
+        mobileOpen={this.state.mobileNavOpen}
+        onMobileClose={this.closeMobileNav}
       >
         {sidebarChildren}
       </Sidebar>
@@ -349,7 +362,7 @@ export default class DashboardView extends React.Component {
         <div className={styles.empty}>
           <div className={baseStyles.center}>
             <div className={styles.cloud}>
-              <Icon width={110} height={110} name="cloud-surprise" fill="#1e3b4d" />
+              <Icon width={110} height={110} name="cloud-surprise" fill="var(--color-text-secondary)" />
             </div>
             <div className={styles.loadingError}>Feature unavailable</div>
           </div>
@@ -362,7 +375,7 @@ export default class DashboardView extends React.Component {
         <div className={styles.empty}>
           <div className={baseStyles.center}>
             <div className={styles.cloud}>
-              <Icon width={110} height={110} name="cloud-surprise" fill="#1e3b4d" />
+              <Icon width={110} height={110} name="cloud-surprise" fill="var(--color-text-secondary)" />
             </div>
             <div className={styles.loadingError}>
               {this.context.serverInfo.error.replace(/-/g, '\u2011')}
@@ -375,6 +388,11 @@ export default class DashboardView extends React.Component {
 
     return (
       <div className={styles.dashboard}>
+        <MobileNav
+          appName={this.context ? this.context.name : ''}
+          isOpen={this.state.mobileNavOpen}
+          onToggle={this.toggleMobileNav}
+        />
         {content}
         {sidebar}
       </div>

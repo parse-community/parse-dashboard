@@ -112,7 +112,7 @@ const DataTableConfigDialog = ({
         <Field
           label={<Label text="No Classes Available" />}
           input={
-            <div style={{ padding: '20px', color: '#94a3b8' }}>
+            <div style={{ padding: '20px', color: 'var(--color-text-tertiary)' }}>
               No classes found. Create a class in the Data Browser first.
             </div>
           }

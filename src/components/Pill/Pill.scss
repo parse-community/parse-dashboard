@@ -8,13 +8,13 @@
 @import 'stylesheets/globals.scss';
 
 .pill {
-  @include MonospaceFont;
+  @include UIFont;
   position: relative;
   display: inline-block;
-  color: #0E69A1;
+  color: var(--color-cell-text);
   height: 20px;
   line-height: 20px;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   font-size: 11px;
   width: 100%;
   overflow: hidden;
@@ -25,7 +25,7 @@
     right: 0;
     height: 20px;
     width: 20px;
-    background: #d6e5f2;
+    background: var(--color-interactive-hover);
     border-radius: 50%;
     margin-left: 5px;
     & svg  {

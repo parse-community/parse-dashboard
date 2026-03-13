@@ -11,15 +11,15 @@ $retentionCellHeight: 40px;
 $contentPadding: 10px;
 
 .content {
-  padding: (96px + $contentPadding) $contentPadding $contentPadding $contentPadding;
+  padding: ($toolbar-height + $contentPadding) $contentPadding $contentPadding $contentPadding;
   min-height: 100vh;
   position: relative;
-  background: $white;
+  background: var(--color-bg-primary);
 }
 
 .average {
   @include DosisFont;
-  color: $mainTextColor;
+  color: var(--color-text-primary);
   opacity: 0.5;
   font-size: 14px;
   line-height: 15px;
@@ -86,7 +86,7 @@ table tr:first-of-type {
   @include DosisFont;
   font-size: 13px;
   font-weight: 600;
-  color: white;
+  color: var(--color-text-on-dark);
   border-radius: 5px;
   text-align: center;
   vertical-align: middle;

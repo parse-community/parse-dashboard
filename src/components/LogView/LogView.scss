@@ -8,5 +8,5 @@
 @import 'stylesheets/globals.scss';
 
 .view {
-  background: $logViewBackgroundColor;
+  background: var(--color-bg-primary);
 }

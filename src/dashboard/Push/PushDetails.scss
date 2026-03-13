@@ -8,7 +8,7 @@
 @import 'stylesheets/globals.scss';
 
 .detailsWrapper {
-  background: $white;
+  background: var(--color-bg-primary);
   padding-bottom: 100px;
 }
 
@@ -20,34 +20,36 @@
 .groupHeader {
   text-align: center;
   padding: 150px 0 50px 0;
-  background: $pushDetailsHeaderBackground;
+  background: var(--color-bg-secondary);
 }
 
 .headerTitle {
-  color: $blue;
+  color: var(--color-accent-blue);
   font-size: 12px;
   letter-spacing: 2px;
   margin-bottom: 10px;
+  text-transform: uppercase;
 }
 
 .headline {
   font-size: 26px;
   margin: 10px;
+  color: var(--color-text-primary);
 }
 
 .subline {
-  color: $secondaryTextColor;
+  color: var(--color-text-secondary);
   font-size: 14px;
 }
 
 .content {
   font-size: 14px;
-  color: $pushDetailsContent;
+  color: var(--color-text-secondary);
 }
 
 .tableSectionHeader, .chartTitle {
   font-size: 22px;
-  color: $blue;
+  color: var(--color-accent-blue);
   text-align: center;
   padding: 25px 0;
   line-height: 26px;
@@ -56,13 +58,34 @@
 
 .tableSectionWrap {
   width: 750px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 20px 0;
 }
 
+@media (max-width: $bp-md - 1) {
+  .tableSectionWrap {
+    width: 100%;
+    padding: var(--space-3);
+  }
+
+  .groupA {
+    float: none;
+    width: 100%;
+  }
+
+  .groupB {
+    margin-left: 0;
+  }
+
+  .groupHeader {
+    padding: calc(#{$toolbar-height} + #{$mobile-header-height} + var(--space-4)) var(--space-3) var(--space-6);
+  }
+}
+
 .tableWrap {
-  border-radius: $borderRadiusConst;
-  border: 1px solid $borderGrey;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-primary);
   border-top: 0;
   overflow: hidden;
 }
@@ -73,7 +96,7 @@
 
 .deliveryMessage {
   font-size: 12px;
-  color: $secondaryTextColor;
+  color: var(--color-text-secondary);
   line-height: 16px;
 }
 
@@ -87,7 +110,7 @@
 }
 
 .messageHeader {
-  background: $white;
+  background: var(--color-bg-primary);
 }
 
 .chartWrap {

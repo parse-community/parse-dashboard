@@ -9,10 +9,10 @@
 
 .headers {
   position: sticky;
-  top: 96px;
+  top: $toolbar-height;
   left: 0;
   right: 0;
-  background: #66637A;
+  background: var(--color-bg-tertiary);
   height: 30px;
   white-space: nowrap;
   z-index: 10;
@@ -20,32 +20,32 @@
 
 .content {
   position: relative;
-  padding-top: 96px;
+  padding-top: $toolbar-height;
   min-height: 100vh;
 }
 
 .empty {
   position: absolute;
-  top: 126px;
+  top: calc($toolbar-height + 30px);
   left: 0;
   right: 0;
   bottom: 0;
 }
 
 .rows {
-  background: #fdfafb;
+  background: var(--color-bg-primary);
 
   table {
     width: 100%;
   }
 
   tr {
-    background: #fdfafb;
-    border-bottom: 1px solid $borderGrey;
+    background: var(--color-bg-primary);
+    border-bottom: 1px solid var(--color-border-primary);
   }
 
   tr:nth-child(2n) {
-    background: #f4f5f7;
+    background: var(--color-bg-secondary);
   }
 
   td {

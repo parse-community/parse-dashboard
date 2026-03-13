@@ -16,6 +16,7 @@
 }
 
 // Make submenu entries stretch to full width within menu bodies
+// Override dark-toolbar colors with light-bg colors when inside dropdown
 .body, .subMenuBody, .subMenuBodyLeft {
   > .wrap {
     display: block;
@@ -24,146 +25,215 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 4px 14px;
+      padding: var(--space-1) var(--space-3);
       white-space: nowrap;
+      color: var(--color-text-primary);
+
+      svg {
+        fill: var(--color-text-tertiary);
+      }
+
+      &:hover {
+        background: var(--color-interactive-hover);
+        color: var(--color-text-primary);
+
+        svg {
+          fill: var(--color-text-primary);
+        }
+      }
+
+      &.disabled {
+        color: var(--color-text-tertiary);
+
+        &:hover svg {
+          fill: var(--color-text-tertiary);
+        }
+      }
+
+      &.active {
+        background: var(--color-accent-blue-light);
+        color: var(--color-accent-blue);
+
+        svg {
+          fill: var(--color-accent-blue);
+        }
+      }
+    }
+  }
+
+  // Title inside dropdown body also needs light colors
+  .title {
+    color: var(--color-text-primary);
+
+    svg {
+      fill: var(--color-text-secondary);
+    }
+
+    &:hover {
+      background: var(--color-interactive-hover);
+      color: var(--color-text-primary);
+
+      svg {
+        fill: var(--color-text-primary);
+      }
     }
   }
 }
 
 .entry {
-  height: 30px;
-  padding: 8px;
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-2);
 
   svg {
-    fill: #66637A;
+    fill: var(--color-text-on-dark-muted);
+    transition: fill var(--transition-fast);
   }
 
   &:hover {
     svg {
-      fill: white;
+      fill: var(--color-text-on-dark);
     }
   }
 
   &.disabled {
     cursor: not-allowed;
-    color: #66637A;
+    color: var(--color-text-on-dark-muted);
+    opacity: 0.4;
 
     &:hover svg {
-      fill: #66637A;
+      fill: var(--color-text-on-dark-muted);
     }
   }
 
   &.active {
-    background: $orange;
-    border-radius: 5px;
+    background: var(--color-accent-orange);
+    border-radius: var(--radius-md);
 
     svg {
-      fill: white;
+      fill: var(--color-text-on-dark);
     }
   }
 }
 
 .title {
-  background: #797592;
-  padding: 8px;
-  border-radius: 5px 5px 0 0;
+  display: inline-flex;
+  align-items: center;
+  background: var(--color-interactive-hover);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
 
   svg {
-    fill: white;
+    fill: var(--color-text-secondary);
   }
 
   &.active {
-    background: $orange;
-    border-radius: 5px;
+    background: var(--color-accent-orange);
+    border-radius: var(--radius-md);
+
+    svg {
+      fill: var(--color-text-on-dark);
+    }
   }
 }
 
 .entry, .title {
-  @include NotoSansFont;
-  position: relative;
-  bottom: -4px;
-  font-size: 14px;
-  color: #ffffff;
+  @include UIFont;
+  font-size: var(--text-sm);
+  color: var(--color-text-on-dark-muted);
   cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast), color var(--transition-fast);
 
   svg {
-    vertical-align: top;
-    margin-right: 4px;
+    vertical-align: middle;
+    margin-right: var(--space-1);
+    fill: var(--color-text-on-dark-muted);
   }
 
   span {
-    vertical-align: top;
+    vertical-align: middle;
     height: 14px;
     line-height: 14px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-on-dark);
+
+    svg {
+      fill: var(--color-text-on-dark);
+    }
   }
 }
 
 .body {
   position: absolute;
-  top: 30px;
+  top: 34px;
   right: 0;
-  border-radius: 5px 0 5px 5px;
-  background: #797592;
-  padding: 8px 0;
-  font-size: 14px;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-elevated);
+  padding: var(--space-1) 0;
+  font-size: var(--text-sm);
+  box-shadow: var(--shadow-overlay);
+  border: 1px solid var(--color-border-secondary);
+  z-index: 10;
 }
-
 
 .subMenuBody {
   position: absolute;
   top: 0;
-  border-radius: 0 5px 5px 5px;
-  background: #797592;
-  padding: 8px 0;
-  font-size: 14px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-elevated);
+  padding: var(--space-1) 0;
+  font-size: var(--text-sm);
+  border: 1px solid var(--color-border-secondary);
+  box-shadow: var(--shadow-lg);
+  z-index: 11;
 }
 
 .subMenuBodyLeft {
   position: absolute;
   top: 0;
-  border-radius: 5px 0 5px 5px;
-  background: #797592;
-  padding: 8px 0;
-  font-size: 14px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-elevated);
+  padding: var(--space-1) 0;
+  font-size: var(--text-sm);
+  border: 1px solid var(--color-border-secondary);
+  box-shadow: var(--shadow-lg);
+  z-index: 11;
 }
 
 .submenuArrow {
-  margin-left: 12px;
+  margin-left: var(--space-3);
   flex-shrink: 0;
   font-size: 18px;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-text-tertiary);
 
   &::after {
-    content: '›';
+    content: '\203A';
   }
 }
 
 .entry:hover .submenuArrow {
-  color: white;
+  color: var(--color-text-primary);
 }
 
 .item {
   position: relative;
-  padding: 4px 14px;
+  padding: var(--space-1) var(--space-3);
   white-space: nowrap;
   cursor: pointer;
-  color: white;
+  color: var(--color-text-primary);
+  transition: background var(--transition-fast);
 
   &:hover {
-    background: $blue;
-
-    .submenuArrow {
-      border-left-color: white;
-    }
+    background: var(--color-interactive-hover);
   }
 
   &.disabled {
-    color: rgba(0,0,0,0.2);
+    color: var(--color-text-tertiary);
     cursor: not-allowed;
 
     &:hover {
@@ -173,7 +243,7 @@
 }
 
 .separator {
-  background: rgba(0,0,0,0.1);
+  background: var(--color-border-secondary);
   height: 1px;
-  margin: 4px 0;
+  margin: var(--space-1) 0;
 }
