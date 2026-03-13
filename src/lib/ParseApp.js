@@ -144,15 +144,24 @@ export default class ParseApp {
 
   /**
    * Fetches scriptlogs from api.parse.com
-   * lines - maximum number of lines to fetch
-   * since - only fetch lines since this Date
+   * level - log level (info or error)
+   * options.from - only fetch logs after this date
+   * options.until - only fetch logs before this date
+   * options.size - maximum number of logs to fetch (default 100)
+   * options.order - sort order (asc or desc)
    */
-  getLogs(level, since) {
-    const path =
-      'scriptlog?level=' +
-      encodeURIComponent(level.toLowerCase()) +
-      '&n=100' +
-      (since ? '&startDate=' + encodeURIComponent(since.getTime()) : '');
+  getLogs(level, { from, until, size = 100, order } = {}) {
+    let path = 'scriptlog?level=' + encodeURIComponent(level.toLowerCase());
+    path += '&size=' + encodeURIComponent(size);
+    if (from) {
+      path += '&from=' + encodeURIComponent(from);
+    }
+    if (until) {
+      path += '&until=' + encodeURIComponent(until);
+    }
+    if (order) {
+      path += '&order=' + encodeURIComponent(order);
+    }
     return this.apiRequest('GET', path, {}, { useMasterKey: true });
   }
 
