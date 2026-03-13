@@ -20,3 +20,4 @@ test_logs
 
 # AI tools
 .claude
+.worktrees
