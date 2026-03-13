@@ -68,7 +68,11 @@ class Logs extends DashboardView {
           loading: false,
         }));
       },
-      () => this.setState({ logs: [], hasMore: false, loading: false })
+      () => this.setState(prevState => ({
+        logs: prevState.logs || [],
+        hasMore: false,
+        loading: false,
+      }))
     );
   }
 
