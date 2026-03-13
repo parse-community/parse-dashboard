@@ -78,7 +78,7 @@ class Logs extends DashboardView {
 
   handleLoadMore() {
     const logs = this.state.logs;
-    if (!logs || logs.length === 0) {
+    if (!logs || logs.length === 0 || this.state.loading) {
       return;
     }
     const oldestLog = logs[logs.length - 1];
