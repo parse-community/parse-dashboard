@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import Autocomplete from 'components/Autocomplete/Autocomplete.react';
 import Button from 'components/Button/Button.react';
 import Dropdown from 'components/Dropdown/Dropdown.react';
 import Field from 'components/Field/Field.react';
@@ -26,6 +27,29 @@ import Toggle from 'components/Toggle/Toggle.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import { CurrentApp } from 'context/currentApp';
 
+const PARSE_API_ENDPOINTS = [
+  'batch',
+  'classes/',
+  'users',
+  'login',
+  'logout',
+  'sessions',
+  'roles',
+  'files/',
+  'events/',
+  'push',
+  'installations',
+  'functions/',
+  'jobs/',
+  'schemas/',
+  'config',
+  'hooks/functions',
+  'hooks/triggers',
+  'aggregate/',
+  'purge/',
+  'health',
+];
+
 export default class RestConsole extends Component {
   static contextType = CurrentApp;
   constructor() {
@@ -43,7 +67,38 @@ export default class RestConsole extends Component {
       inProgress: false,
       error: false,
       curlModal: false,
+      classNames: [],
     };
+  }
+
+  componentDidMount() {
+    this.context
+      .apiRequest('GET', 'schemas', {}, { useMasterKey: true })
+      .then(({ results }) => {
+        if (results) {
+          this.setState({ classNames: results.map(s => s.className) });
+        }
+      })
+      .catch(() => {});
+  }
+
+  buildEndpointSuggestions(input) {
+    const dynamicEndpoints = this.state.classNames.flatMap(className => [
+      `classes/${className}`,
+      `schemas/${className}`,
+      `aggregate/${className}`,
+      `purge/${className}`,
+    ]);
+
+    const allEndpoints = [...PARSE_API_ENDPOINTS, ...dynamicEndpoints];
+
+    if (!input) {
+      return allEndpoints;
+    }
+
+    return allEndpoints.filter(
+      endpoint => endpoint.toLowerCase().indexOf(input.toLowerCase()) > -1
+    );
   }
 
   fetchUser() {
@@ -210,11 +265,38 @@ export default class RestConsole extends Component {
               />
             }
             input={
-              <TextInput
-                value={this.state.endpoint}
-                monospace={true}
+              <Autocomplete
+                inputStyle={{
+                  width: '100%',
+                  height: '80px',
+                  textAlign: 'center',
+                  border: 'none',
+                  fontSize: '16px',
+                  fontFamily: '"Source Code Pro", "Courier New", monospace',
+                  background: 'transparent',
+                  padding: '0 6px',
+                  outline: 'none',
+                }}
+                containerStyle={{ width: '100%', height: 'auto' }}
+                suggestionsStyle={{
+                  maxHeight: '200px',
+                  overflowY: 'auto',
+                  fontFamily: '"Source Code Pro", "Courier New", monospace',
+                  fontSize: '14px',
+                  borderRadius: '0 0 5px 5px',
+                }}
+                suggestionsItemStyle={{
+                  padding: '8px 12px',
+                }}
                 placeholder={'classes/_User'}
                 onChange={endpoint => this.setState({ endpoint })}
+                onSubmit={() => {
+                  if (!hasError) {
+                    this.makeRequest();
+                  }
+                }}
+                buildSuggestions={input => this.buildEndpointSuggestions(input)}
+                buildLabel={() => ''}
               />
             }
           />

@@ -127,9 +127,7 @@ export default class Autocomplete extends Component {
 
   onClick(e) {
     const userInput = e.currentTarget.innerText;
-    if (this.props.strict) {
-      this.props.onChange && this.props.onChange(userInput);
-    }
+    this.props.onChange && this.props.onChange(userInput);
     const label = this.props.label || this.props.buildLabel(userInput);
 
     this.inputRef.current.focus();
@@ -343,13 +341,20 @@ export default class Autocomplete extends Component {
 
     let suggestionsListComponent;
     if (showSuggestions && !hidden && filteredSuggestions.length) {
+      const containerWidth = this.fieldRef.current
+        ? this.fieldRef.current.offsetWidth
+        : undefined;
+      const mergedSuggestionsStyle = {
+        ...suggestionsStyle,
+        ...(containerWidth ? { width: containerWidth + 'px' } : {}),
+      };
       suggestionsListComponent = (
         <SuggestionsList
           position={this.state.position}
           ref={this.dropdownRef}
           onExternalClick={onExternalClick}
           suggestions={filteredSuggestions}
-          suggestionsStyle={suggestionsStyle}
+          suggestionsStyle={mergedSuggestionsStyle}
           suggestionsItemStyle={suggestionsItemStyle}
           activeSuggestion={activeSuggestion}
           onClick={onClick}
