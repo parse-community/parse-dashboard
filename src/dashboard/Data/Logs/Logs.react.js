@@ -83,7 +83,8 @@ class Logs extends DashboardView {
     }
     const oldestLog = logs[logs.length - 1];
     const oldestTimestamp = oldestLog.timestamp.iso || oldestLog.timestamp;
-    this.fetchLogs(this.context, this.props.params.type, oldestTimestamp);
+    const exclusiveUntil = new Date(new Date(oldestTimestamp).getTime() - 1).toISOString();
+    this.fetchLogs(this.context, this.props.params.type, exclusiveUntil);
   }
 
   // As parse-server doesn't support (yet?) versioning, we are disabling
