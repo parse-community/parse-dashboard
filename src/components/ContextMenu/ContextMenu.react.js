@@ -126,6 +126,10 @@ const MenuSection = ({ level, items, path, setPath, hide, hoveredItemOffset }) =
           // Using getBoundingClientRect for accuracy regardless of offsetParent chain
           const itemElement = event.currentTarget;
           const parentElement = itemElement.closest('ul');
+          if (!parentElement) {
+            setPath(newPath, 0);
+            return;
+          }
           const itemRect = itemElement.getBoundingClientRect();
           const parentRect = parentElement.getBoundingClientRect();
           const itemOffset = itemRect.top - parentRect.top + parentElement.scrollTop;
