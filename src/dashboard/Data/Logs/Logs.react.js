@@ -36,6 +36,7 @@ class Logs extends DashboardView {
       loading: false,
       hasMore: false,
     };
+    this.latestLogsRequestId = 0;
   }
 
   componentDidMount() {
@@ -57,22 +58,47 @@ class Logs extends DashboardView {
     if (until) {
       options.until = until;
     }
+    const requestId = ++this.latestLogsRequestId;
     this.setState({ loading: true });
     app.getLogs(typeParam, options).then(
       newLogs => {
+        if (requestId !== this.latestLogsRequestId) {
+          return;
+        }
+        this.setState(prevState => {
+          let merged;
+          if (until && Array.isArray(prevState.logs)) {
+            const existingKeys = new Set(
+              prevState.logs.map(l => {
+                const ts = l.timestamp.iso || l.timestamp;
+                return `${ts}|${l.message}`;
+              })
+            );
+            const unique = newLogs.filter(l => {
+              const ts = l.timestamp.iso || l.timestamp;
+              return !existingKeys.has(`${ts}|${l.message}`);
+            });
+            merged = prevState.logs.concat(unique);
+          } else {
+            merged = newLogs;
+          }
+          return {
+            logs: merged,
+            hasMore: newLogs.length > 0,
+            loading: false,
+          };
+        });
+      },
+      () => {
+        if (requestId !== this.latestLogsRequestId) {
+          return;
+        }
         this.setState(prevState => ({
-          logs: until && Array.isArray(prevState.logs)
-            ? prevState.logs.concat(newLogs)
-            : newLogs,
-          hasMore: newLogs.length >= PAGE_SIZE,
+          logs: prevState.logs || [],
+          hasMore: false,
           loading: false,
         }));
-      },
-      () => this.setState(prevState => ({
-        logs: prevState.logs || [],
-        hasMore: false,
-        loading: false,
-      }))
+      }
     );
   }
 
@@ -83,8 +109,7 @@ class Logs extends DashboardView {
     }
     const oldestLog = logs[logs.length - 1];
     const oldestTimestamp = oldestLog.timestamp.iso || oldestLog.timestamp;
-    const exclusiveUntil = new Date(new Date(oldestTimestamp).getTime() - 1).toISOString();
-    this.fetchLogs(this.context, this.props.params.type, exclusiveUntil);
+    this.fetchLogs(this.context, this.props.params.type, oldestTimestamp);
   }
 
   // As parse-server doesn't support (yet?) versioning, we are disabling
