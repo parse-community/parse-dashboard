@@ -7,7 +7,7 @@
  */
 
 import PropTypes from 'lib/PropTypes';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import styles from 'components/ContextMenu/ContextMenu.scss';
 
 const getPositionToFitVisibleScreen = (ref, offset = 0) => {
@@ -65,7 +65,7 @@ const MenuSection = ({ level, items, path, setPath, hide, hoveredItemOffset }) =
   const basePosition = useRef(null);
   const initialParentScrollTop = useRef(0);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Use the actual pixel offset of the hovered item instead of index-based calculation
     const newPosition = getPositionToFitVisibleScreen(sectionRef, hoveredItemOffset);
     if (newPosition) {
@@ -110,7 +110,11 @@ const MenuSection = ({ level, items, path, setPath, hide, hoveredItemOffset }) =
       opacity: 1,
       position: 'absolute',
     }
-    : {};
+    : {
+      opacity: 0,
+      position: 'absolute',
+      pointerEvents: 'none',
+    };
 
   return (
     <ul ref={sectionRef} className={styles.category} style={style}>
@@ -119,8 +123,12 @@ const MenuSection = ({ level, items, path, setPath, hide, hoveredItemOffset }) =
           const newPath = path.slice(0, level + 1);
           newPath.push(index);
           // Get the actual pixel offset of the hovered item relative to its parent
+          // Using getBoundingClientRect for accuracy regardless of offsetParent chain
           const itemElement = event.currentTarget;
-          const itemOffset = itemElement.offsetTop;
+          const parentElement = itemElement.closest('ul');
+          const itemRect = itemElement.getBoundingClientRect();
+          const parentRect = parentElement.getBoundingClientRect();
+          const itemOffset = itemRect.top - parentRect.top + parentElement.scrollTop;
           setPath(newPath, itemOffset);
         };
 
