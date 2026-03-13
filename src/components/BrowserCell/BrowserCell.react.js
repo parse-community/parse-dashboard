@@ -119,7 +119,7 @@ export default class BrowserCell extends Component {
         typeof this.props.onPointerClick === 'function'
       ) {
         const items = this.props.value.map((v, i) => {
-          if (typeof v !== 'object' || v.__type !== 'Pointer') {
+          if (!v || typeof v !== 'object' || v.__type !== 'Pointer') {
             return <li key={`non-pointer-${i}`}><span>{JSON.stringify(v)}</span></li>;
           }
           const object = new Parse.Object(v.className);
