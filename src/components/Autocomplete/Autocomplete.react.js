@@ -250,7 +250,8 @@ export default class Autocomplete extends Component {
     const { userInput } = this.state;
 
     if (e.keyCode === 13 || e.key === 'Enter') {
-      const resolvedInput = filteredSuggestions[activeSuggestion] || userInput;
+      const suggestionMatch = filteredSuggestions[activeSuggestion];
+      const resolvedInput = this.props.strict ? suggestionMatch : (suggestionMatch || userInput);
 
       if (resolvedInput && resolvedInput.length > 0) {
         this.props.onChange && this.props.onChange(resolvedInput);
@@ -263,7 +264,7 @@ export default class Autocomplete extends Component {
         active: true,
         activeSuggestion: 0,
         showSuggestions: false,
-        userInput: resolvedInput,
+        userInput: resolvedInput || userInput,
       });
     } else if (e.keyCode === 9) {
       // Tab
@@ -350,8 +351,10 @@ export default class Autocomplete extends Component {
         ? this.fieldRef.current.offsetWidth
         : undefined;
       const mergedSuggestionsStyle = {
+        ...(containerWidth && !(suggestionsStyle && suggestionsStyle.width)
+          ? { width: containerWidth + 'px' }
+          : {}),
         ...suggestionsStyle,
-        ...(containerWidth ? { width: containerWidth + 'px' } : {}),
       };
       suggestionsListComponent = (
         <SuggestionsList
