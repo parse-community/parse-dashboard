@@ -290,9 +290,9 @@ export default class RestConsole extends Component {
                 }}
                 placeholder={'classes/_User'}
                 onChange={endpoint => this.setState({ endpoint })}
-                onSubmit={() => {
+                onSubmit={(endpoint) => {
                   if (!hasError) {
-                    this.makeRequest();
+                    this.setState({ endpoint }, () => this.makeRequest());
                   }
                 }}
                 buildSuggestions={input => this.buildEndpointSuggestions(input)}
