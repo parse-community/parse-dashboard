@@ -13,6 +13,7 @@ import Icon from 'components/Icon/Icon.react';
 const Pill = ({
   value,
   onClick,
+  onCmdClick,
   fileDownloadLink,
   followClick = false,
   shrinkablePill = false,
@@ -29,7 +30,7 @@ const Pill = ({
       {value}
     </span>
     {followClick && (
-      <a onClick={e => !e.metaKey && onClick()}>
+      <a onClick={e => { const handler = e.metaKey ? (onCmdClick || onClick) : onClick; if (typeof handler === 'function') { handler(); } }}>
         <Icon name="right-outline" width={20} height={20} fill="#1669a1" />
       </a>
     )}

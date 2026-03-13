@@ -118,32 +118,29 @@ export default class BrowserCell extends Component {
         this.props.value[0].__type === 'Pointer' &&
         typeof this.props.onPointerClick === 'function'
       ) {
-        const array = [];
-        this.props.value.map((v, i) => {
+        const items = this.props.value.map((v, i) => {
           if (typeof v !== 'object' || v.__type !== 'Pointer') {
-            throw new Error('Invalid type found in pointer array');
+            return <li key={`non-pointer-${i}`}><span>{JSON.stringify(v)}</span></li>;
           }
           const object = new Parse.Object(v.className);
           object.id = v.objectId;
-          array.push(
-            <Pill
-              key={i}
-              value={v.objectId}
-              onClick={this.props.onPointerClick.bind(undefined, object)}
-              followClick={true}
-              shrinkablePill
-            />
+          return (
+            <li key={v.objectId || i}>
+              <Pill
+                value={v.objectId}
+                onClick={this.props.onPointerClick.bind(undefined, object)}
+                onCmdClick={this.props.onPointerCmdClick ? this.props.onPointerCmdClick.bind(undefined, object) : undefined}
+                followClick={true}
+                shrinkablePill
+              />
+            </li>
           );
         });
-        content = (
-          <ul className={styles.pointerList}>
-            {array.map((a, i) => (
-              <li key={i}>{a}</li>
-            ))}
-          </ul>
-        );
-        // Set copyableValue to JSON string, not JSX (to avoid infinite render loop)
+        content = <ul className={styles.pointerList}>{items}</ul>;
         this.copyableValue = JSON.stringify(this.props.value);
+        if (this.props.value.length > 1) {
+          classes.push(styles.hasMore);
+        }
       } else {
         this.copyableValue = content = JSON.stringify(this.props.value);
       }
