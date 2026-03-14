@@ -112,7 +112,7 @@
     "jest": "30.0.4",
     "jest-environment-jsdom": "30.0.5",
     "madge": "8.0.0",
-    "marked": "15.0.12",
+    "marked": "17.0.4",
     "mongodb-runner": "^6.6.0",
     "parse-server": "9.2.0",
     "prettier": "3.8.1",
