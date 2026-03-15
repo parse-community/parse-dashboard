@@ -8,30 +8,31 @@
 @import 'stylesheets/globals.scss';
 
 .suggestions {
-  border: 1px solid $mainTextColor;
+  border: 1px solid var(--color-border-primary);
   border-top-width: 0;
   list-style: none;
   max-height: 143px;
   overflow-y: auto;
-  -moz-box-shadow: 0px 0px 0px #666, 0px 4px 8px #666;
-  -webkit-box-shadow: 0px 0px 0px #666, 0px 4px 8px #666;
-  box-shadow:0px 0px 0px #666, 0px 4px 8px #666;
+  box-shadow: var(--shadow-md);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
 }
 
 .suggestions li {
-  background: white;
-  padding-left: 10px;
-  font-family:"Open Sans", sans-serif;  
+  @include UIFont;
+  background: var(--color-bg-elevated);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-base);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .active,
 .suggestions li:hover {
-  color: #0e69a1;
+  color: var(--color-accent-blue);
   cursor: pointer;
-  font-weight: 500;
-  background: rgba(255, 255, 255, 0.1) !important;
+  font-weight: var(--font-weight-medium);
+  background: var(--color-interactive-hover) !important;
 }
 
 .suggestions li:not(:last-of-type) {
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid var(--color-border-secondary);
 }

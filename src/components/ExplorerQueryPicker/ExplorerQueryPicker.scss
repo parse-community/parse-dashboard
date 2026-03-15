@@ -8,29 +8,33 @@
 @import 'stylesheets/globals.scss';
 
 .queryPicker {
-  background-color: $explorerQueryBackgroundColor;
-  border: 1px solid $explorerQueryBackgroundColor;
-  border-radius: 5px;
-
-  color: white;
+  background-color: var(--color-accent-blue);
+  border: 1px solid var(--color-accent-blue);
+  border-radius: var(--radius-md);
+  color: var(--color-text-on-dark);
 
   .queryContainer {
-    background-color: white;
-    color: black;
+    background-color: var(--color-bg-elevated);
+    color: var(--color-text-primary);
 
     .queryGroup {
-      padding: 15px 0px 15px 15px;
-      border: 1px solid #efefef;
+      padding: var(--space-4) 0 var(--space-4) var(--space-4);
+      border: 1px solid var(--color-border-secondary);
     }
 
     .queryItem {
-      padding-top: 8px;
-      padding-bottom: 8px;
+      padding-top: var(--space-2);
+      padding-bottom: var(--space-2);
     }
 
     .queryLabel {
       @include buttonReset;
-      color: $mainTextColor;
+      color: var(--color-text-primary);
+      transition: color var(--transition-fast);
+
+      &:hover {
+        color: var(--color-accent-blue);
+      }
     }
   }
 
@@ -38,13 +42,18 @@
     @include buttonReset;
     position: absolute;
     right: 24px;
-    color: #d8d8d8;
+    color: var(--color-text-tertiary);
     font-size: 18px;
     line-height: 18px;
+    transition: color var(--transition-fast);
+
+    &:hover {
+      color: var(--color-accent-red);
+    }
   }
 
   .header {
-    padding: 15px;
+    padding: var(--space-4);
     height: 60px;
     position: relative;
   }

@@ -87,7 +87,7 @@ const AppCard = ({ app, icon }) => {
           {icon ? (
             <img src={'appicons/' + icon} width={56} height={56} />
           ) : (
-            <Icon width={56} height={56} name="blank-app-outline" fill="#1E384D" />
+            <Icon width={56} height={56} name="blank-app-outline" fill="var(--color-text-primary)" />
           )}
         </a>
         <div className={styles.details}>
@@ -150,7 +150,7 @@ class AppsIndex extends React.Component {
         <div className={styles.empty}>
           <div className={baseStyles.center}>
             <div className={styles.cloud}>
-              <Icon width={110} height={110} name="cloud-surprise" fill="#1e3b4d" />
+              <Icon width={110} height={110} name="cloud-surprise" fill="var(--color-text-secondary)" />
             </div>
             <div className={styles.alert}>You don&apos;t have any apps</div>
           </div>
@@ -175,7 +175,7 @@ class AppsIndex extends React.Component {
     return (
       <div className={styles.index}>
         <div className={styles.header}>
-          <Icon width={18} height={18} name="search-outline" fill="#788c97" />
+          <Icon width={18} height={18} name="search-outline" fill="var(--color-text-secondary)" />
           <input
             ref={this.searchRef}
             className={styles.search}

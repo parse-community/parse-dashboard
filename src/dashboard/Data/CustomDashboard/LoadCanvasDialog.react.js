@@ -156,7 +156,7 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete, onToggleFavorit
               title="Delete canvas"
               aria-label={`Delete canvas ${canvas.name || 'Untitled Canvas'}`}
             >
-              <Icon name="trash-solid" width={18} height={18} fill="#94a3b8" />
+              <Icon name="trash-solid" width={18} height={18} fill="var(--color-text-tertiary)" />
             </button>
           </>
         )}
@@ -206,7 +206,7 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete, onToggleFavorit
     >
       {canvases.length === 0 ? (
         <div className={styles.emptyState}>
-          <Icon name="canvas-outline" width={48} height={48} fill="#94a3b8" />
+          <Icon name="canvas-outline" width={48} height={48} fill="var(--color-text-tertiary)" />
           <p>No saved canvases found</p>
           <p className={styles.emptyHint}>Save your current canvas to see it here</p>
         </div>

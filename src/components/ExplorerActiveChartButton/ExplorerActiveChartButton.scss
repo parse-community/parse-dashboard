@@ -23,20 +23,25 @@
   display: inline-block;
   height: 20px;
   width: 20px;
-  padding: 3px;
-  border-radius: 4px;
+  padding: var(--space-1);
+  border-radius: var(--radius-md);
   vertical-align: middle;
   cursor: pointer;
+  transition: background var(--transition-fast);
 
   svg {
     vertical-align: top;
   }
+
+  &:hover {
+    background: var(--color-interactive-hover);
+  }
 }
 
 .rightArrow {
-  @include arrow('down', 12px, 8px, $greyArrowColor);
+  @include arrow('down', 12px, 8px, var(--color-text-secondary));
   position: absolute;
-  right: 0px;
+  right: 0;
   cursor: pointer;
 }
 
@@ -46,6 +51,8 @@
   max-width: 200px;
   left: 30px;
   top: 8px;
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
 }
 
 .composerContainer {
@@ -54,7 +61,7 @@
 }
 
 .callout {
-  @include arrow('up', 20px, 10px, $explorerQueryBackgroundColor);
+  @include arrow('up', 20px, 10px, var(--color-accent-blue));
   width: 20px;
   height: 10px;
 }
@@ -65,11 +72,10 @@
 
   .button {
     margin-left: auto;
-    margin-right: 0px;
+    margin-right: 0;
   }
 
   .callout {
     margin-left: auto;
   }
 }
-

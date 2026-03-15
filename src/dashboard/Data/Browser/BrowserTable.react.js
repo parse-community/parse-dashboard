@@ -155,7 +155,7 @@ export default class BrowserTable extends React.Component {
               const isEditingRow =
                 this.props.current && this.props.current.row === index && !!this.props.editing;
               return (
-                <div key={index} style={{ borderBottom: '1px solid #169CEE' }}>
+                <div key={index} style={{ borderBottom: '1px solid var(--color-accent-blue)' }}>
                   <BrowserRow
                     appId={this.props.appId}
                     key={index}
@@ -251,7 +251,7 @@ export default class BrowserTable extends React.Component {
         const currentCol =
           this.props.current && this.props.current.row === -1 ? this.props.current.col : undefined;
         newRow = (
-          <div style={{ borderBottom: '1px solid #169CEE' }}>
+          <div style={{ borderBottom: '1px solid var(--color-accent-blue)' }}>
             <BrowserRow
               appId={this.props.appId}
               key={-1}

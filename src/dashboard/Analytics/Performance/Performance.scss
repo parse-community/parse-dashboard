@@ -8,7 +8,7 @@
 @import 'stylesheets/globals.scss';
 
 .content {
-  padding: 96px 0px 0px 0px;
+  padding: $toolbar-height 0px 0px 0px;
   min-height: 100vh;
   position: relative;
 }
@@ -22,7 +22,7 @@
 }
 
 .header {
-  top: 96px;
+  top: $toolbar-height;
   border-bottom: 1px solid $translucentGrey;
 }
 
@@ -38,7 +38,7 @@
   overflow: auto;
   left: 0px;
   right: 0px;
-  top: 146px;
+  top: calc($toolbar-height + 50px);
   bottom: 50px;
 }
 

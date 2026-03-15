@@ -6,46 +6,29 @@
  * the root directory of this source tree.
  */
 /**
- * prism.js default theme for JavaScript, CSS and HTML
- * Based on dabblet (http://dabblet.com)
- * @author Lea Verou
+ * Code snippet theme — uses CSS custom properties for theme support
  */
 
 code[class*="language-"],
 pre[class*="language-"] {
-  color: #555572;
-  font-family: 'Source Code Pro', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-  font-size: 13px;
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
   direction: ltr;
   text-align: left;
   white-space: pre;
   word-spacing: normal;
   word-break: normal;
   word-wrap: normal;
-  line-height: 22px;
-  -moz-tab-size: 4;
-  -o-tab-size: 4;
+  line-height: 1.6;
   tab-size: 4;
-  -webkit-hyphens: none;
-  -moz-hyphens: none;
-  -ms-hyphens: none;
   hyphens: none;
 }
 
-pre[class*="language-"]::-moz-selection,
-pre[class*="language-"]::-moz-selection,
-code[class*="language-"]::-moz-selection,
-code[class*="language-"]::-moz-selection {
-  text-shadow: none;
-  background: #b3d4fc;
-}
-
 pre[class*="language-"]::selection,
-pre[class*="language-"]::selection,
-code[class*="language-"]::selection,
 code[class*="language-"]::selection {
   text-shadow: none;
-  background: #b3d4fc;
+  background: var(--color-accent-blue-light);
 }
 
 @media print {
@@ -55,37 +38,34 @@ code[class*="language-"]::selection {
   }
 }
 
-
 /* Code blocks */
-
 pre[class*="language-"] {
-  padding: 1em;
-  margin: .5em 0;
+  padding: var(--space-4);
+  margin: 0;
   overflow: auto;
+  border-radius: var(--radius-md);
 }
 
 :not(pre) > code[class*="language-"],
 pre[class*="language-"] {
-  background: #FDFAFB;
+  background: var(--color-bg-secondary);
 }
 
-
 /* Inline code */
-
 :not(pre) > code[class*="language-"] {
-  padding: .1em;
-  border-radius: .3em;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
 }
 
 .token.comment,
 .token.prolog,
 .token.doctype,
 .token.cdata {
-  color: #a3a3c2;
+  color: var(--color-text-tertiary);
 }
 
 .token.punctuation {
-  color: #555572;
+  color: var(--color-text-secondary);
 }
 
 .namespace {
@@ -99,7 +79,7 @@ pre[class*="language-"] {
 .token.constant,
 .token.symbol,
 .token.deleted {
-  color: #FF395E;
+  color: var(--color-accent-red);
 }
 
 .token.selector,
@@ -108,7 +88,7 @@ pre[class*="language-"] {
 .token.char,
 .token.builtin,
 .token.inserted {
-  color: #00D275;
+  color: var(--color-accent-green);
 }
 
 .token.operator,
@@ -116,28 +96,28 @@ pre[class*="language-"] {
 .token.url,
 .language-css .token.string,
 .style .token.string {
-  color: #555572;
+  color: var(--color-text-secondary);
 }
 
 .token.atrule,
 .token.attr-value,
 .token.keyword {
-  color: #169CEE;
+  color: var(--color-accent-blue);
 }
 
 .token.function {
-  color: #FF395E;
+  color: var(--color-accent-red);
 }
 
 .token.regex,
 .token.important,
 .token.variable {
-  color: #F45530;
+  color: var(--color-accent-orange);
 }
 
 .token.important,
 .token.bold {
-  font-weight: bold;
+  font-weight: var(--font-weight-semibold);
 }
 
 .token.italic {
@@ -153,13 +133,13 @@ pre.line-numbers {
   padding-left: 3.5em;
   counter-reset: linenumber;
   padding-top: 0px;
-  padding-bottom: 20px;
+  padding-bottom: var(--space-5);
 }
 
 pre.line-numbers:before {
   display: block;
   content: '';
-  background: #66637A;
+  background: var(--color-bg-tertiary);
   height: 100%;
   width: 33px;
   position: absolute;
@@ -178,12 +158,8 @@ pre.line-numbers > code {
   font-size: 100%;
   left: -3.8em;
   width: 3em;
-  /* works for line-numbers below 1000 lines */
   padding-top: 10px;
   margin-bottom: 100px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 
@@ -195,10 +171,10 @@ pre.line-numbers > code {
 
 .line-numbers-rows > span:before {
   content: counter(linenumber);
-  color: #343445;
+  color: var(--color-text-tertiary);
   display: block;
-  font-size: 10px;
-  font-family: 'Dosis';
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
   padding-right: 0;
   text-align: center;
 }

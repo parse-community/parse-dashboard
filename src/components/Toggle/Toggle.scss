@@ -14,50 +14,48 @@
 }
 
 .label {
-  @include DosisFont;
-  font-size: 13px;
-  color: #babac4;
-  transition: color 0.15s ease-out;
+  @include UIFont;
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  transition: color var(--transition-fast) ease-out;
   cursor: pointer;
   padding: 8px;
 
   &:last-of-type {
-    color: #555473;
+    color: var(--color-text-primary);
   }
 }
 
+// Modern: shadcn Switch — off=muted, on=primary
 .switch {
   display: inline-block;
   position: relative;
-  width: 40px;
-  height: 18px;
-  border-radius: 8px;
-  background: #159cee;
+  width: 36px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background: var(--color-text-primary);
   vertical-align: top;
-  margin: 6px 8px 0 8px;
+  margin: 5px 8px 0 8px;
   cursor: pointer;
+  transition: background var(--transition-fast) ease-out;
 
   &:after {
     content: '';
     position: absolute;
-    width: 24px;
-    height: 24px;
-    border-radius: 12px;
-    background: #fdfafb;
-    top: 9px;
-    left: 31px;
-    margin-left: -12px;
-    margin-top: -12px;
-    box-shadow: 0 0 2px rgba(0,0,0,0.4);
-    transition: left 0.15s ease-out;
+    width: 16px;
+    height: 16px;
+    border-radius: var(--radius-full);
+    background: var(--color-bg-primary);
+    top: 2px;
+    left: 18px;
+    box-shadow: var(--shadow-xs);
+    transition: left var(--transition-fast) ease-out;
   }
 }
 
+// "colored" class gives the red/green gradient — only used in classic
 .colored {
-  background: linear-gradient(90deg, rgb(0, 219, 124), rgb(0, 219, 124) 50%, rgb(255, 57, 94) 50%, rgb(255, 57, 94));
-  background-size: 200%;
-  background-position: 0;
-  transition: background-position 0.15s ease-out;
+  background: var(--color-text-primary);
 }
 
 .switchNoMargin {
@@ -67,39 +65,59 @@
 .left {
   .label {
     &:first-of-type {
-      color: #555473;
+      color: var(--color-text-primary);
     }
 
     &:last-of-type {
-      color: #babac4;
+      color: var(--color-text-tertiary);
     }
   }
 
-  .colored {
-    background-position: 100%;
+  .switch {
+    background: var(--color-border-primary);
   }
 
   .switch:after {
-    left: 9px;
+    left: 2px;
   }
 }
 
 .darkBg {
   .label {
     &:first-of-type {
-      color: #babac4;
+      color: var(--color-text-tertiary);
     }
     &:last-of-type {
-      color: #ffffff;
+      color: var(--color-text-on-dark);
     }
   }
 
   &.left .label {
     &:first-of-type {
-      color: #ffffff;
+      color: var(--color-text-on-dark);
     }
     &:last-of-type {
-      color: #babac4;
+      color: var(--color-text-tertiary);
     }
+  }
+}
+
+// Classic: restore red/green gradient toggle
+:global([data-theme="classic"]) {
+  .colored {
+    background: linear-gradient(90deg, var(--color-accent-green), var(--color-accent-green) 50%, var(--color-accent-red) 50%, var(--color-accent-red));
+    background-size: 200%;
+    background-position: 0;
+    transition: background-position var(--transition-fast) ease-out;
+  }
+
+  .left .colored {
+    background-position: 100%;
+  }
+
+  .left .switch {
+    background: linear-gradient(90deg, var(--color-accent-green), var(--color-accent-green) 50%, var(--color-accent-red) 50%, var(--color-accent-red));
+    background-size: 200%;
+    background-position: 100%;
   }
 }

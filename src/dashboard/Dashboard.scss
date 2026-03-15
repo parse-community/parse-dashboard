@@ -8,7 +8,7 @@
 @import 'stylesheets/globals.scss';
 
 .content {
-  margin-left: 300px;
+  margin-left: $sidebar-width;
   overflow: auto;
   max-height: 100vh;
 }
@@ -21,12 +21,12 @@ body:global(.expanded) {
 
 .loadingError {
   font-size: 58px;
-  color: #ffffff;
+  color: var(--color-text-on-dark);
 }
 
 .empty {
   position: relative;
-  background: #1e3b4d;
+  background: var(--color-bg-sidebar);
   min-height: 100vh;
   text-align: center;
 }
@@ -36,6 +36,13 @@ body:global(.expanded) {
   height: 170px;
   border-radius: 100%;
   padding-top: 30px;
-  background: #3E5566;
+  background: var(--color-bg-sidebar-hover);
   margin: 0 auto 14px auto;
+}
+
+@media (max-width: $bp-md - 1) {
+  .content {
+    margin-left: 0;
+    padding-top: $mobile-header-height;
+  }
 }

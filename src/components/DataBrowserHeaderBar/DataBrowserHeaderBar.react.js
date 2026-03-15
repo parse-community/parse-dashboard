@@ -97,11 +97,7 @@ export default class DataBrowserHeaderBar extends React.Component {
         wrapStyle.left = stickyLefts[i];
         wrapStyle.zIndex = 11;
       }
-      if (i % 2) {
-        wrapStyle.background = '#726F85';
-      } else {
-        wrapStyle.background = '#66637A';
-      }
+      wrapStyle.background = 'var(--color-bg-tertiary)';
       let onClick = null;
       if (
         !preventSort &&
@@ -151,16 +147,9 @@ export default class DataBrowserHeaderBar extends React.Component {
     });
 
     if (onAddColumn) {
-      const finalStyle = {};
-      if (headers.length % 2) {
-        finalStyle.background = '#726F85';
-      } else {
-        finalStyle.background = '#66637A';
-      }
-
       elements.push(
         readonly || preventSchemaEdits ? null : (
-          <div key="add" className={styles.addColumn} style={finalStyle}>
+          <div key="add" className={styles.addColumn}>
             <button type="button" className={styles.addColumnButton} onClick={onAddColumn}>
               Add a new column
             </button>

@@ -9,10 +9,10 @@
 
 .key {
   @include MonospaceFont;
-  background: $inputBackgroundColor;
+  background: var(--color-bg-primary);
   width: 100%;
   height: 80px;
   line-height: 80px;
-  font-size: 12px;
+  font-size: var(--text-xs);
   text-align: center;
 }

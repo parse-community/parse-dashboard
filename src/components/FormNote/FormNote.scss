@@ -8,22 +8,27 @@
 @import 'stylesheets/globals.scss';
 
 .note {
-  color: white;
-  font-size: 12px;
+  @include UIFont;
+  font-size: var(--text-xs);
   text-align: center;
   line-height: 30px;
   min-height: 30px;
+  border-radius: 0;
 }
 
 .blue {
-  background: $blue;
+  background: var(--color-accent-blue-light);
+  color: var(--color-accent-blue);
 }
 .green {
-  background: $green;
+  background: var(--color-accent-green-light);
+  color: var(--color-accent-green);
 }
 .orange {
-  background: $orange;
+  background: var(--color-accent-orange-light);
+  color: var(--color-accent-orange);
 }
 .red {
-  background: $red;
+  background: var(--color-accent-red-light);
+  color: var(--color-accent-red);
 }

@@ -9,22 +9,28 @@
 .chip {
   display: inline-flex;
   flex-direction: row;
-  background-color: #d5e5f2;
-  border: none;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-secondary);
   cursor: pointer;
-  height: 32px;
+  height: 28px;
   outline: none;
-  padding: 4px;
-  margin: 4px;
-  font-size: 14px;
-  color: #0e69a1;
-  font-family: "Open Sans", sans-serif;
+  padding: 2px;
+  margin: 3px;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
   white-space: nowrap;
   align-items: center;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   vertical-align: middle;
   text-decoration: none;
   justify-content: center;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+
+  &:hover {
+    background-color: var(--color-interactive-hover);
+    border-color: var(--color-border-primary);
+  }
 }
 
 .content {
@@ -39,20 +45,18 @@
 
 .chip {
   svg {
-    color: #999999;
+    color: var(--color-text-tertiary);
     cursor: pointer;
-    height: auto;
-    margin: 20px 6px 0 -8px;
+    margin: 0 4px 0 -4px;
     fill: currentColor;
-    width: 1em;
-    height: 1em;
+    width: 14px;
+    height: 14px;
     display: inline-block;
-    font-size: 16px;
-    transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    transition: color var(--transition-fast);
     user-select: none;
     flex-shrink: 0;
   }
   svg:hover {
-    color: red;
+    color: var(--color-accent-red);
   }
 }

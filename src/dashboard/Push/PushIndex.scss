@@ -34,21 +34,19 @@
 .experimentLabel, .localTimeLabel, .translationLabel {
   font-size: 12px;
   line-height: 12px;
-  color: $secondaryTextColor;
+  color: var(--color-text-secondary);
 }
 
 .tr {
   cursor: pointer;
 
-  //TODO: add focus styles once tab index is added
   &:hover {
-    background-color: $lightBlue;
+    background-color: var(--color-interactive-hover);
   }
 
-  //NOTE: would like to get rid of alternating styles - hard to see for users
   &:nth-child(2n) {
     &:hover {
-      background-color: $lightBlue;
+      background-color: var(--color-interactive-hover);
     }
   }
 }

@@ -20,7 +20,7 @@ export default class LoginForm extends React.Component {
   render() {
     return (
       <div className={styles.login} style={{ marginTop: this.props.marginTop || '-220px' }}>
-        <Icon width={80} height={80} name="infinity" fill="#093A59" />
+        <Icon width={80} height={80} name="infinity" fill="var(--color-text-primary)" />
         <form method="post" ref={this.formRef} action={this.props.endpoint} className={styles.form}>
           <CSRFInput />
           <div className={styles.header}>{this.props.header}</div>

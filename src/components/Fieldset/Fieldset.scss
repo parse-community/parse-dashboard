@@ -7,40 +7,86 @@
  */
 @import 'stylesheets/globals.scss';
 
+// =============================================================================
+// Modern (light / dark) — clean open form, no boxing
+// =============================================================================
+
 .fieldset {
-  margin: 40px 0;
+  margin: var(--space-8) 0;
 }
 
 .legend {
-  text-align: center;
-  font-size: 22px;
-  line-height: 26px;
-  font-weight: 700;
-  color: $blue;
-  margin-bottom: 4px;
+  @include UIFont;
+  text-align: left;
+  font-size: var(--text-lg);
+  line-height: 1.4;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
 }
 
 .description {
-  @include DosisFont;
-  text-align: center;
-  font-size: 14px;
-  line-height: 16px;
-  color: $mainTextColor;
-  width: 500px;
-  margin: 0 auto 16px auto;
+  @include UIFont;
+  text-align: left;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  max-width: 500px;
+  margin: 0 0 var(--space-6) 0;
 }
 
 .fields {
-  width: 650px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
 
-  & > div:first-of-type {
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+  // No borders, no card — just clean stacked fields
+  & > div {
+    border: none;
+  }
+}
+
+// =============================================================================
+// Classic — centered legend, bordered card, original look
+// =============================================================================
+
+:global([data-theme="classic"]) {
+  .fieldset {
+    margin: var(--space-10) 0;
   }
 
-  & > div:last-of-type {
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+  .legend {
+    text-align: center;
+    font-size: 20px;
+    line-height: 26px;
+  }
+
+  .description {
+    text-align: center;
+    width: 500px;
+    max-width: none;
+    margin: 0 auto var(--space-5) auto;
+  }
+
+  .fields {
+    width: 650px;
+    margin: 0 auto;
+    display: block;
+    gap: 0;
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--color-bg-primary);
+    box-shadow: var(--shadow-sm);
+
+    & > div:first-of-type {
+      border-top: none;
+    }
+
+    & > div {
+      border-top: 1px solid var(--color-border-secondary);
+    }
   }
 }

@@ -8,7 +8,7 @@
 @import 'stylesheets/globals.scss';
 
 .wrapper {
-  background: $inputBackgroundColor;
+  background: var(--color-bg-primary);
   padding: 0px 5px;
 }
 
@@ -17,17 +17,24 @@
 }
 
 .button {
-  @include buttonReset($border: 1px solid #159cee, $padding: 0px 7px);
+  @include buttonReset($bg: var(--btn-bg), $border: var(--btn-border), $padding: 0px 7px);
   position: absolute;
   top: 30px;
   right: 15px;
-  height: 20px;
-  line-height: 20px;
+  height: 22px;
+  line-height: 22px;
   outline: 0;
   text-decoration: none;
   text-align: center;
-  border-radius: 5px;
+  border-radius: var(--btn-radius);
   cursor: pointer;
   font-size: 10px;
-  color: #159cee;
+  color: var(--btn-color);
+  font-weight: var(--font-weight-medium);
+  transition: background var(--transition-fast), color var(--transition-fast);
+
+  &:hover {
+    background: var(--btn-hover-bg);
+    color: var(--btn-hover-color);
+  }
 }

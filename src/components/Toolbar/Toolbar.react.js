@@ -18,7 +18,7 @@ const Toolbar = props => {
   if (props.relation || (props.filters && props.filters.size && action !== NavigationType.Pop)) {
     backButton = (
       <a className={styles.iconButton} onClick={() => navigate(-1)}>
-        <Icon width={32} height={32} fill="#ffffff" name="left-outline" />
+        <Icon width={24} height={24} fill="currentColor" name="left-outline" />
       </a>
     );
   }
@@ -41,7 +41,7 @@ const Toolbar = props => {
         <div className={styles.panelButtons}>
           {props.isAutoScrolling && (
             <button onClick={props.stopAutoScroll} className={`${styles.btn} ${styles.btnAutoScroll}`}>
-              <Icon width={18} height={18} fill="#ffffff" name="x-outline" />
+              <Icon width={16} height={16} fill="currentColor" name="x-outline" />
               Auto-scroll
             </button>
           )}
@@ -49,12 +49,12 @@ const Toolbar = props => {
             <>
               {props.panelCount > 1 && (
                 <button onClick={props.removePanel} className={styles.btn}>
-                  <Icon width={18} height={18} fill="#797592" name="minus-outline" />
+                  <Icon width={16} height={16} fill="currentColor" name="minus-outline" />
                     Remove Panel
                 </button>
               )}
               <button onClick={props.addPanel} className={styles.btn}>
-                <Icon width={18} height={18} fill="#797592" name="plus-outline" />
+                <Icon width={16} height={16} fill="currentColor" name="plus-outline" />
                   Add Panel
               </button>
             </>
@@ -62,12 +62,12 @@ const Toolbar = props => {
           <button onClick={props.togglePanel} className={styles.btn}>
             {props.isPanelVisible ? (
               <>
-                <Icon width={18} height={18} fill="#797592" name="x-outline" />
+                <Icon width={16} height={16} fill="currentColor" name="x-outline" />
                   Hide {props.panelCount > 1 ? `${props.panelCount} Panels` : 'Panel'}
               </>
             ) : (
               <>
-                <Icon width={18} height={18} fill="#797592" name="left-outline" />
+                <Icon width={16} height={16} fill="currentColor" name="left-outline" />
                   Show {props.panelCount > 1 ? `${props.panelCount} Panels` : 'Panel'}
               </>
             )}

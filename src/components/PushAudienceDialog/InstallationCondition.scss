@@ -10,14 +10,15 @@
 .conditionInput {
   float: left;
   width: 210px;
-  border-right: 2px solid white;
+  border-right: 2px solid var(--color-bg-primary);
 }
 
 //custom label
 .description {
-  margin-top: 2px;
-  color: $pink;
+  margin-top: var(--space-1);
+  color: var(--color-accent-red);
   @include buttonReset;
+  font-size: var(--text-xs);
 }
 
 .valueInput {
@@ -28,19 +29,24 @@
 .date {
   input {
     position: relative;
-    background: #f6fafb;
-    font-size: 16px;
+    background: var(--color-bg-secondary);
+    font-size: var(--text-lg);
     height: 80px;
     width: 100%;
     overflow: hidden;
     border: 0;
-    padding: 0 5px;
+    padding: 0 var(--space-2);
+    transition: background var(--transition-fast);
+
+    &:focus {
+      background: var(--color-interactive-hover);
+    }
   }
 }
 
 .empty {
   position: relative;
-  background: #B0B1B1;
+  background: var(--color-text-tertiary);
   font-size: 30px;
   line-height: 80px;
   text-align: center;

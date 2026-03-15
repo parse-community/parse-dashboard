@@ -74,7 +74,7 @@ export default class ChromeDatePicker extends React.Component {
             </div>
             <div className={styles.chrome} onClick={this.close.bind(this)}>
               <span>{`${monthDayStringUTC(this.props.value)}`}</span>
-              <Icon width={18} height={18} name="calendar-solid" fill="#169CEE" />
+              <Icon width={18} height={18} name="calendar-solid" fill="var(--color-accent-blue)" />
             </div>
           </div>
         </Popover>
@@ -83,7 +83,7 @@ export default class ChromeDatePicker extends React.Component {
       content = (
         <div className={styles.chrome}>
           <span>{`${monthDayStringUTC(this.props.value)}`}</span>
-          <Icon width={18} height={18} name="calendar-solid" fill="#169CEE" />
+          <Icon width={18} height={18} name="calendar-solid" fill="var(--color-accent-blue)" />
         </div>
       );
     }

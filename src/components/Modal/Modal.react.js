@@ -15,16 +15,11 @@ import PropTypes from 'lib/PropTypes';
 import styles from 'components/Modal/Modal.scss';
 
 const origin = new Position(0, 0);
-const buttonColors = {
-  danger: 'red',
-  info: 'blue',
-  valid: 'green',
-};
 
 const Modal = ({
   type = Modal.Types.INFO,
   icon,
-  iconSize = 36,
+  iconSize = 30,
   children,
   title,
   subtitle,
@@ -154,20 +149,25 @@ const Modal = ({
   if (children) {
     children = React.Children.map(children, c => {
       if (c && c.type === Field && c.props.label) {
-        return React.cloneElement(c, { ...c.props, labelPadding: 24 });
+        return React.cloneElement(c, { ...c.props, labelPadding: 0 });
       }
       return c;
     });
   }
 
+  // Button color mapping for type-specific primary actions
+  const buttonColors = {
+    danger: 'red',
+    info: undefined, // default primary style
+    valid: 'green',
+  };
+
   const footer = customFooter || (
     <div style={{ textAlign: buttonsInCenter ? 'center' : 'right' }} className={styles.footer}>
-      {showCancel && <Button value={cancelText} onClick={onCancel} disabled={!canCancel} />}
+      {showCancel && <Button value={cancelText} color="ghost" onClick={onCancel} disabled={!canCancel} />}
       {showContinue && (
         <Button
-          primary={true}
           value={continueText}
-          color={buttonColors[type]}
           disabled={!!disabled}
           onClick={onContinue}
           progress={progress}
@@ -184,24 +184,28 @@ const Modal = ({
     </div>
   );
 
-  const wrappedChildren = textModal ? <div className={styles.textModal}>{children}</div> : children;
+  const wrappedChildren = textModal ? (
+    <div className={styles.textModal}>{children}</div>
+  ) : children ? (
+    <div className={styles.body}>{children}</div>
+  ) : null;
+
+  // Icon fill: theme-aware — on classic it's white-on-colored-header, on modern it's accent color
+  const iconFillMap = {
+    danger: 'var(--color-accent-red)',
+    info: 'var(--color-accent-blue)',
+    valid: 'var(--color-accent-green)',
+  };
 
   return (
-    <Popover fadeIn={true} fixed={true} position={origin} modal={true} color="rgba(17,13,17,0.8)">
+    <Popover fadeIn={true} fixed={true} position={origin} modal={true} color="rgba(0,0,0,0.5)">
       <div ref={modalRef} className={[styles.modal, styles[type]].join(' ')} style={{ width }}>
         <div className={styles.header}>
-          <div
-            style={{
-              top: React.Children.count(subtitle) === 0 ? '37px' : '25px',
-            }}
-            className={styles.title}
-          >
-            {title}
-          </div>
-          <div className={styles.subtitle}>{subtitle}</div>
+          <div className={styles.title}>{title}</div>
+          {subtitle ? <div className={styles.subtitle}>{subtitle}</div> : null}
           {icon ? (
             <div className={styles.icon}>
-              <Icon width={iconSize} height={iconSize} name={icon} fill="#ffffff" />
+              <Icon width={iconSize} height={iconSize} name={icon} fill={iconFillMap[type] || 'var(--color-text-secondary)'} />
             </div>
           ) : null}
         </div>

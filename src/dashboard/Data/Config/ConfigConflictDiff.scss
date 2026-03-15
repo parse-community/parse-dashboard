@@ -29,10 +29,10 @@
   min-width: 40px;
   padding: 0 8px;
   text-align: right;
-  color: rgba(27, 31, 36, 0.3);
+  color: var(--color-text-tertiary);
   vertical-align: top;
   user-select: none;
-  border-right: 1px solid #d1d5da;
+  border-right: 1px solid var(--color-border-primary);
 }
 
 .prefix {
@@ -49,11 +49,11 @@
 }
 
 .lineRemoved {
-  background-color: #ffeef0;
+  background-color: var(--color-accent-red-light);
 }
 
 .lineAdded {
-  background-color: #e6ffec;
+  background-color: var(--color-accent-green-light);
 }
 
 .lineContext {
@@ -61,18 +61,18 @@
 }
 
 .charRemoved {
-  background-color: #fdaeb7;
+  background-color: var(--color-accent-red-light);
   border-radius: 2px;
 }
 
 .charAdded {
-  background-color: #abf2bc;
+  background-color: var(--color-accent-green-light);
   border-radius: 2px;
 }
 
 .emptyDiff {
   padding: 16px 20px;
-  color: #586069;
+  color: var(--color-text-secondary);
   font-style: italic;
   text-align: center;
 }

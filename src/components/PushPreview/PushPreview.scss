@@ -10,9 +10,10 @@
 .wrap {
   width: 650px;
   height: 404px;
-  border-radius: 5px;
-  border: 1px solid $borderGrey;
-  background: #fbfbfc;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-primary);
+  background: var(--color-bg-secondary);
+  overflow: hidden;
 }
 
 .left {
@@ -28,8 +29,8 @@
 }
 
 .section {
-  padding: 16px 20px;
-  border-bottom: 1px solid $borderGrey;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border-primary);
 
   &:last-child {
     border-bottom: none;
@@ -37,49 +38,53 @@
 }
 
 .title {
-  @include DosisFont;
-  font-size: 11px;
+  @include HeadingFont;
+  font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: rgba(85, 85, 114, 0.63);
+  color: var(--color-text-tertiary);
+  font-weight: var(--font-weight-semibold);
 }
 
 .row {
-  font-size: 13px;
-  margin: 6px 0;
+  font-size: var(--text-xs);
+  margin: var(--space-2) 0;
   min-height: 16px;
 }
 
 .rowLabel {
   float: left;
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
   width: 100px;
+  color: var(--color-text-secondary);
 }
 
 .rowContent {
   margin-left: 100px;
   word-break: break-word;
+  color: var(--color-text-primary);
 }
 
 .preview {
   width: 323px;
   height: 402px;
-  border-radius: 0 5px 5px 0;
-  background-color: #F2F6F8;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  background-color: var(--color-bg-secondary);
 }
 
 .noPreview {
   width: 325px;
   height: 404px;
-  background-color: #F2F6F8;
+  background-color: var(--color-bg-secondary);
   text-align: center;
-  font-size: 18px;
+  font-size: var(--text-base);
   padding-top: 100px;
+  color: var(--color-text-tertiary);
 }
 
 .typeSelect {
   position: absolute;
-  top: 15px;
+  top: var(--space-4);
   left: 0;
   width: 100%;
   text-align: center;
@@ -87,7 +92,7 @@
 
 .testSelect {
   position: absolute;
-  bottom: 15px;
+  bottom: var(--space-4);
   left: 0;
   width: 100%;
   text-align: center;
@@ -97,7 +102,7 @@
   background-image: url(iphone.jpg);
   background-size: 325px auto;
   font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
-  color: white;
+  color: var(--color-text-on-dark);
 
   .time {
     position: absolute;
@@ -111,7 +116,7 @@
     position: absolute;
     top: 230px;
     width: 100%;
-    font-size: 12px;
+    font-size: var(--text-xs);
     text-align: center;
   }
 
@@ -120,7 +125,7 @@
     top: 256px;
     width: 218px;
     left: 55px;
-    padding-left: 20px;
+    padding-left: var(--space-5);
   }
 
   .appIcon {
@@ -129,8 +134,8 @@
     top: 0;
     width: 13px;
     height: 13px;
-    border-radius: 3px;
-    background: $blue;
+    border-radius: var(--radius-sm);
+    background: var(--color-accent-blue);
   }
 
   .appName {
@@ -168,7 +173,7 @@
     position: absolute;
     top: 180px;
     width: 100%;
-    color: white;
+    color: var(--color-text-on-dark);
     font-size: 60px;
     text-align: center;
   }
@@ -180,7 +185,7 @@
     font-size: 8px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: white;
+    color: var(--color-text-on-dark);
     text-align: center;
   }
 
@@ -189,12 +194,13 @@
     top: 285px;
     width: 208px;
     left: 56px;
-    background: white;
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.24);
-    padding: 20px 10px 0 40px;
+    background: var(--color-bg-elevated);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-5) var(--space-3) 0 40px;
     min-height: 38px;
     max-height: 47px;
     overflow: hidden;
+    border-radius: var(--radius-sm);
   }
 
   .appIcon {
@@ -203,15 +209,15 @@
     top: 7px;
     width: 24px;
     height: 24px;
-    border-radius: 12px;
-    background: $blue;
+    border-radius: var(--radius-full);
+    background: var(--color-accent-blue);
   }
 
   .appName {
     position: absolute;
     top: 7px;
     left: 40px;
-    color: black;
+    color: var(--color-text-primary);
     font-size: 10px;
   }
 
@@ -219,12 +225,12 @@
     position: absolute;
     top: 9px;
     right: 6px;
-    color: rgba(0,0,0,0.5);
+    color: var(--color-text-secondary);
     font-size: 8px;
   }
 
   .message {
-    color: rgba(0,0,0,0.5);
+    color: var(--color-text-secondary);
     font-size: 10px;
   }
 }
@@ -233,7 +239,7 @@
   background-image: url(laptop.jpg);
   background-size: 325px auto;
   font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
-  color: #555252;
+  color: var(--color-text-primary);
 
   .time, .date {
     display: none;
@@ -245,10 +251,10 @@
     top: 114px;
     width: 240px;
     height: 47px;
-    background: #f0f0f0;
-    border-radius: 4px;
-    box-shadow: 0 0 4px rgba(0,0,0,0.3);
-    padding: 4px 6px 4px 36px;
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-1) var(--space-2) var(--space-1) 36px;
   }
 
   .appIcon {
@@ -257,12 +263,13 @@
     height: 24px;
     top: 6px;
     left: 5px;
-    background: $blue;
+    background: var(--color-accent-blue);
   }
 
   .appName {
     font-size: 10px;
-    margin-bottom: 2px;
+    margin-bottom: var(--space-1);
+    font-weight: var(--font-weight-medium);
   }
 
   .message {
@@ -276,7 +283,7 @@
   background-image: url(windowsphone.jpg);
   background-size: 325px auto;
   font-family: 'Arial', sans-serif;
-  color: white;
+  color: var(--color-text-on-dark);
 
   .date, .appName {
     display: none;
@@ -294,7 +301,7 @@
     top: 134px;
     left: 50px;
     right: 50px;
-    font-size: 11px;
+    font-size: var(--text-xs);
     white-space: nowrap;
     overflow: hidden;
   }
@@ -305,5 +312,9 @@
   bottom: 0;
   width: 100%;
   height: 100px;
-  background-image: linear-gradient(rgba(251, 251, 252, 0), rgba(251, 251, 252, 0.7) 50%, rgba(251, 251, 252, 1) 90%);
+  background-image: linear-gradient(
+    var(--color-bg-secondary-transparent, rgba(251, 251, 252, 0)),
+    var(--color-bg-secondary-semi, rgba(251, 251, 252, 0.7)) 50%,
+    var(--color-bg-secondary, rgba(251, 251, 252, 1)) 90%
+  );
 }

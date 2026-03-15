@@ -466,7 +466,7 @@ export default class GraphDialog extends React.Component {
     const effectiveType = s.chartType || chartType;
 
     return (
-      <div key={index} style={{ paddingTop: '10px', paddingLeft: '10px', paddingRight: '10px', paddingBottom: isExpanded ? '0' : '10px', borderTop: '1px solid #e3e3e3', borderLeft: '1px solid #e3e3e3', borderRight: '1px solid #e3e3e3', borderBottom: 'none' }}>
+      <div key={index} style={{ paddingTop: '10px', paddingLeft: '10px', paddingRight: '10px', paddingBottom: isExpanded ? '0' : '10px', borderTop: '1px solid var(--color-border-secondary)', borderLeft: '1px solid var(--color-border-secondary)', borderRight: '1px solid var(--color-border-secondary)', borderBottom: 'none' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: isExpanded ? '8px' : '0', cursor: 'pointer' }} onClick={() => this.toggleSeries(index)}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '12px' }}>{isExpanded ? '▼' : '▶'}</span>
@@ -476,7 +476,7 @@ export default class GraphDialog extends React.Component {
         </div>
         {isExpanded && (
           <div style={{ paddingBottom: '8px' }}>
-            <div style={{ borderTop: '1px solid #e3e3e3', borderLeft: '1px solid #e3e3e3', borderRight: '1px solid #e3e3e3', borderBottom: '1px solid #e3e3e3' }}>
+            <div style={{ borderTop: '1px solid var(--color-border-secondary)', borderLeft: '1px solid var(--color-border-secondary)', borderRight: '1px solid var(--color-border-secondary)', borderBottom: '1px solid var(--color-border-secondary)' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Label text="Title" description="Optional custom name" />
@@ -489,7 +489,7 @@ export default class GraphDialog extends React.Component {
                   />
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Label text="Fields" />
                 </div>
@@ -508,7 +508,7 @@ export default class GraphDialog extends React.Component {
                   </MultiSelect>
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Label text="Aggregation" />
                 </div>
@@ -526,7 +526,7 @@ export default class GraphDialog extends React.Component {
                 </div>
               </div>
               {(chartType === 'bar' || chartType === 'line') && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Label text="Chart Type" />
                   </div>
@@ -547,11 +547,11 @@ export default class GraphDialog extends React.Component {
                 </div>
               )}
               {(chartType === 'bar' || chartType === 'line') && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Label text="Secondary Y Axis" description="Display on right axis" />
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f6fafb', minHeight: '80px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg-secondary)', minHeight: '80px' }}>
                     <Toggle
                       type={Toggle.Types.YES_NO}
                       value={s.useSecondaryYAxis || false}
@@ -560,11 +560,11 @@ export default class GraphDialog extends React.Component {
                   </div>
                 </div>
               )}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Label text="Color" description="Preset or custom HEX" />
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', background: '#f6fafb' }}>
+                <div style={{ display: 'flex', alignItems: 'center', background: 'var(--color-bg-secondary)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px' }}>
                     <span style={{ fontSize: '14px', fontFamily: 'monospace' }}>#</span>
                     <div style={{ width: '70px' }}>
@@ -588,8 +588,8 @@ export default class GraphDialog extends React.Component {
                       <Option value=""><span style={{ display: 'flex' }}>Auto</span></Option>
                       {s.color && !PREDEFINED_COLORS.find(c => c.value === s.color) && !isValidHexColor(s.color) && (
                         <Option value="invalid">
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#c62828' }}>
-                            <span style={{ width: '14px', height: '14px', backgroundColor: '#ffebee', borderRadius: '2px', border: '1px solid #c62828', flexShrink: 0 }} />
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--color-accent-red)' }}>
+                            <span style={{ width: '14px', height: '14px', backgroundColor: 'var(--color-accent-red-light, #ffebee)', borderRadius: '2px', border: '1px solid var(--color-accent-red)', flexShrink: 0 }} />
                             Invalid
                           </span>
                         </Option>
@@ -597,7 +597,7 @@ export default class GraphDialog extends React.Component {
                       {s.color && !PREDEFINED_COLORS.find(c => c.value === s.color) && isValidHexColor(s.color) && (
                         <Option value="custom">
                           <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ width: '14px', height: '14px', backgroundColor: s.color, borderRadius: '2px', border: '1px solid #ccc', flexShrink: 0 }} />
+                            <span style={{ width: '14px', height: '14px', backgroundColor: s.color, borderRadius: '2px', border: '1px solid var(--color-border-secondary)', flexShrink: 0 }} />
                             Custom
                           </span>
                         </Option>
@@ -605,7 +605,7 @@ export default class GraphDialog extends React.Component {
                       {PREDEFINED_COLORS.map(c => (
                         <Option key={c.value} value={c.value}>
                           <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ width: '14px', height: '14px', backgroundColor: c.value, borderRadius: '2px', border: '1px solid #ccc', flexShrink: 0 }} />
+                            <span style={{ width: '14px', height: '14px', backgroundColor: c.value, borderRadius: '2px', border: '1px solid var(--color-border-secondary)', flexShrink: 0 }} />
                             {c.label}
                           </span>
                         </Option>
@@ -616,7 +616,7 @@ export default class GraphDialog extends React.Component {
               </div>
               {effectiveType === 'line' && (
                 <>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Label text="Line Style" />
                     </div>
@@ -633,7 +633,7 @@ export default class GraphDialog extends React.Component {
                       </Dropdown>
                     </div>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Label text="Stroke Width" />
                     </div>
@@ -653,7 +653,7 @@ export default class GraphDialog extends React.Component {
                 </>
               )}
               {effectiveType === 'bar' && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Label text="Bar Style" />
                   </div>
@@ -689,7 +689,7 @@ export default class GraphDialog extends React.Component {
     const effectiveType = calc.chartType || chartType;
 
     return (
-      <div key={`calc-${index}`} style={{ paddingTop: '10px', paddingLeft: '10px', paddingRight: '10px', paddingBottom: isExpanded ? '0' : '10px', borderTop: '1px solid #e3e3e3', borderLeft: '1px solid #e3e3e3', borderRight: '1px solid #e3e3e3', borderBottom: 'none' }}>
+      <div key={`calc-${index}`} style={{ paddingTop: '10px', paddingLeft: '10px', paddingRight: '10px', paddingBottom: isExpanded ? '0' : '10px', borderTop: '1px solid var(--color-border-secondary)', borderLeft: '1px solid var(--color-border-secondary)', borderRight: '1px solid var(--color-border-secondary)', borderBottom: 'none' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: isExpanded ? '8px' : '0', cursor: 'pointer' }} onClick={() => this.toggleCalculatedValue(index)}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '12px' }}>{isExpanded ? '▼' : '▶'}</span>
@@ -699,7 +699,7 @@ export default class GraphDialog extends React.Component {
         </div>
         {isExpanded && (
           <div style={{ paddingBottom: '8px' }}>
-            <div style={{ borderTop: '1px solid #e3e3e3', borderLeft: '1px solid #e3e3e3', borderRight: '1px solid #e3e3e3', borderBottom: '1px solid #e3e3e3' }}>
+            <div style={{ borderTop: '1px solid var(--color-border-secondary)', borderLeft: '1px solid var(--color-border-secondary)', borderRight: '1px solid var(--color-border-secondary)', borderBottom: '1px solid var(--color-border-secondary)' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Label text="Name" />
@@ -712,7 +712,7 @@ export default class GraphDialog extends React.Component {
                   />
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Label text="Operator" />
                 </div>
@@ -731,7 +731,7 @@ export default class GraphDialog extends React.Component {
               </div>
               {calc.operator === 'formula' ? (
                 <>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Label text="Formula" description="e.g., price * quantity" />
                     </div>
@@ -744,7 +744,7 @@ export default class GraphDialog extends React.Component {
                     </div>
                   </div>
                   {formulaError && (
-                    <div style={{ borderTop: '1px solid #e3e3e3', padding: '12px', background: '#ffebee', color: '#c62828' }}>
+                    <div style={{ borderTop: '1px solid var(--color-border-secondary)', padding: '12px', background: 'var(--color-accent-red-light, #ffebee)', color: 'var(--color-accent-red)' }}>
                       <strong>Formula Error</strong>
                       <p style={{ margin: '4px 0 0 0', fontSize: '12px' }}>
                         {formulaError}
@@ -754,7 +754,7 @@ export default class GraphDialog extends React.Component {
                 </>
               ) : calc.operator === 'percent' ? (
                 <>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Label text="Numerator" />
                     </div>
@@ -775,7 +775,7 @@ export default class GraphDialog extends React.Component {
                       </Dropdown>
                     </div>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Label text="Denominator" />
                     </div>
@@ -798,7 +798,7 @@ export default class GraphDialog extends React.Component {
                   </div>
                 </>
               ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Label text="Fields" />
                   </div>
@@ -819,7 +819,7 @@ export default class GraphDialog extends React.Component {
                 </div>
               )}
               {(chartType === 'bar' || chartType === 'line') && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Label text="Chart Type" />
                   </div>
@@ -840,11 +840,11 @@ export default class GraphDialog extends React.Component {
                 </div>
               )}
               {(chartType === 'bar' || chartType === 'line') && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Label text="Secondary Y Axis" description="Display on right axis" />
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f6fafb', minHeight: '80px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg-secondary)', minHeight: '80px' }}>
                     <Toggle
                       type={Toggle.Types.YES_NO}
                       value={calc.useSecondaryYAxis || false}
@@ -853,11 +853,11 @@ export default class GraphDialog extends React.Component {
                   </div>
                 </div>
               )}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Label text="Color" description="Preset or custom HEX" />
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', background: '#f6fafb' }}>
+                <div style={{ display: 'flex', alignItems: 'center', background: 'var(--color-bg-secondary)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px' }}>
                     <span style={{ fontSize: '14px', fontFamily: 'monospace' }}>#</span>
                     <div style={{ width: '70px' }}>
@@ -881,8 +881,8 @@ export default class GraphDialog extends React.Component {
                       <Option value=""><span style={{ display: 'flex' }}>Auto</span></Option>
                       {calc.color && !PREDEFINED_COLORS.find(c => c.value === calc.color) && !isValidHexColor(calc.color) && (
                         <Option value="invalid">
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#c62828' }}>
-                            <span style={{ width: '14px', height: '14px', backgroundColor: '#ffebee', borderRadius: '2px', border: '1px solid #c62828', flexShrink: 0 }} />
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--color-accent-red)' }}>
+                            <span style={{ width: '14px', height: '14px', backgroundColor: 'var(--color-accent-red-light, #ffebee)', borderRadius: '2px', border: '1px solid var(--color-accent-red)', flexShrink: 0 }} />
                             Invalid
                           </span>
                         </Option>
@@ -890,7 +890,7 @@ export default class GraphDialog extends React.Component {
                       {calc.color && !PREDEFINED_COLORS.find(c => c.value === calc.color) && isValidHexColor(calc.color) && (
                         <Option value="custom">
                           <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ width: '14px', height: '14px', backgroundColor: calc.color, borderRadius: '2px', border: '1px solid #ccc', flexShrink: 0 }} />
+                            <span style={{ width: '14px', height: '14px', backgroundColor: calc.color, borderRadius: '2px', border: '1px solid var(--color-border-secondary)', flexShrink: 0 }} />
                             Custom
                           </span>
                         </Option>
@@ -898,7 +898,7 @@ export default class GraphDialog extends React.Component {
                       {PREDEFINED_COLORS.map(c => (
                         <Option key={c.value} value={c.value}>
                           <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ width: '14px', height: '14px', backgroundColor: c.value, borderRadius: '2px', border: '1px solid #ccc', flexShrink: 0 }} />
+                            <span style={{ width: '14px', height: '14px', backgroundColor: c.value, borderRadius: '2px', border: '1px solid var(--color-border-secondary)', flexShrink: 0 }} />
                             {c.label}
                           </span>
                         </Option>
@@ -909,7 +909,7 @@ export default class GraphDialog extends React.Component {
               </div>
               {effectiveType === 'line' && (
                 <>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Label text="Line Style" />
                     </div>
@@ -926,7 +926,7 @@ export default class GraphDialog extends React.Component {
                       </Dropdown>
                     </div>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Label text="Stroke Width" />
                     </div>
@@ -946,7 +946,7 @@ export default class GraphDialog extends React.Component {
                 </>
               )}
               {effectiveType === 'bar' && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid var(--color-border-secondary)' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Label text="Bar Style" />
                   </div>
@@ -965,7 +965,7 @@ export default class GraphDialog extends React.Component {
                 </div>
               )}
               {hasCircular && (
-                <div style={{ borderTop: '1px solid #e3e3e3', padding: '12px', background: '#fff3cd', color: '#856404' }}>
+                <div style={{ borderTop: '1px solid var(--color-border-secondary)', padding: '12px', background: '#fff3cd', color: '#856404' }}>
                   <strong>Circular Reference Detected</strong>
                   <p style={{ margin: '4px 0 0 0', fontSize: '12px' }}>
                     This calculated value references another calculated value that references it back, creating a circular dependency. This will result in null values.
@@ -1026,7 +1026,7 @@ export default class GraphDialog extends React.Component {
             {this.state.calculatedValues.map((calc, index) => this.renderCalculatedValueBox(calc, index))}
 
             {/* Add buttons */}
-            <div style={{ borderTop: (this.state.series.length === 0 && this.state.calculatedValues.length === 0) ? '1px solid #e3e3e3' : 'none', borderLeft: '1px solid #e3e3e3', borderRight: '1px solid #e3e3e3', borderBottom: '1px solid #e3e3e3', minHeight: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', background: '#f6fafb' }}>
+            <div style={{ borderTop: (this.state.series.length === 0 && this.state.calculatedValues.length === 0) ? '1px solid var(--color-border-secondary)' : 'none', borderLeft: '1px solid var(--color-border-secondary)', borderRight: '1px solid var(--color-border-secondary)', borderBottom: '1px solid var(--color-border-secondary)', minHeight: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', background: 'var(--color-bg-secondary)' }}>
               <Button value="+ Add Series" onClick={this.addSeries} />
               <Button value="+ Add Calculated Value" onClick={this.addCalculatedValue} />
             </div>

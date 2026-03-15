@@ -62,7 +62,7 @@ const AddElementDialog = ({ onClose, onSelectType }) => {
             onClick={() => onSelectType(type)}
           >
             <div className={styles.elementIcon}>
-              <Icon name={icon} width={32} height={32} fill="#169cee" />
+              <Icon name={icon} width={32} height={32} fill="var(--color-accent-blue)" />
             </div>
             <div className={styles.elementInfo}>
               <div className={styles.elementTitle}>{title}</div>

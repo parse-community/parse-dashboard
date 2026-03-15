@@ -16,96 +16,169 @@
   width: auto;
   min-width: var(--modal-min-width);
   max-height: 90vh;
-  background: white;
-  border-radius: 5px;
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   transition: width 0.5s cubic-bezier(1, 0, 0, 1);
   display: flex;
   flex-direction: column;
-
-  > *:not(:first-child):not(:last-child) {
-    border-color: $borderGrey;
-    border-width: 0 0 1px 0;
-    border-style: solid;
-    overflow: auto;
-    min-height: 0;
-  }
+  box-shadow: var(--shadow-overlay);
+  border: 1px solid var(--color-border-secondary);
 }
 
+// ---------------------------------------------------------------------------
+// Header — clean bg, high-contrast text, no colored block
+// ---------------------------------------------------------------------------
+
 .header {
-  height: 90px;
+  padding: var(--space-5) var(--space-6) var(--space-4);
   position: relative;
-  transition: background 0.3s ease;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--color-bg-elevated);
+  border-bottom: 1px solid var(--color-border-secondary);
 }
 
 .title {
-  position: absolute;
-  font-size: 22px;
-  font-weight: 500;
-  color: white;
-  left: 28px;
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  line-height: var(--leading-tight);
+  padding-right: 40px;
 }
 
 .subtitle {
-  @include DosisFont;
-  position: absolute;
-  font-size: 14px;
-  color: white;
-  top: 52px;
-  left: 28px;
+  @include UIFont;
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  margin-top: 2px;
+  line-height: var(--leading-normal);
+  padding-right: 40px;
 }
 
 .icon {
   position: absolute;
-  top: 19px;
-  right: 28px;
-  width: 52px;
-  height: 52px;
+  top: var(--space-5);
+  right: var(--space-5);
+  width: 32px;
+  height: 32px;
   text-align: center;
-  border-radius: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  svg{
+  border-radius: var(--radius-md);
+  background: var(--color-bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
     position: relative;
-    top: 50%;
-    @include transform(translateY(-50%));
   }
 }
 
-.danger {
-  .header {
-    background: $red;
-  }
+// ---------------------------------------------------------------------------
+// Type variants — only affect icon tint & primary button color
+// ---------------------------------------------------------------------------
+
+.danger .icon { background: var(--color-accent-red-light); }
+.info .icon   { background: var(--color-bg-tertiary); }
+.valid .icon  { background: var(--color-accent-green-light); }
+
+// ---------------------------------------------------------------------------
+// Body — proper spacing between stacked Fields
+// ---------------------------------------------------------------------------
+
+.body {
+  overflow: auto;
+  min-height: 0;
+  padding: var(--space-5) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
 }
 
-.info {
-  .header {
-    background: $blue;
-  }
-}
-
-.valid {
-  .header {
-    background: $green;
-  }
-}
+// ---------------------------------------------------------------------------
+// Footer — right-aligned buttons with clear hierarchy
+// ---------------------------------------------------------------------------
 
 .footer {
-  padding: 17px 28px;
+  padding: var(--space-4) var(--space-6);
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  border-top: 1px solid var(--color-border-secondary);
+  background: var(--color-bg-elevated);
 
   > * {
-    margin: 0 12px 0 0;
-
-    &:last-child {
-      margin-right: 0;
-    }
+    margin: 0;
   }
 }
 
 .textModal {
   text-align: center;
-  padding: 17px 55px 0 55px;
+  padding: var(--space-6) var(--space-8) var(--space-4);
+  color: var(--color-text-secondary);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+}
+
+// ---------------------------------------------------------------------------
+// Classic — restore the colored-header look
+// ---------------------------------------------------------------------------
+
+:global([data-theme="classic"]) {
+  .modal {
+    border-radius: var(--radius-xl);
+  }
+
+  .header {
+    border-bottom: none;
+    border-top: none;
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .danger .header {
+    background: var(--color-accent-red);
+  }
+
+  .info .header {
+    background: var(--color-accent-blue);
+  }
+
+  .valid .header {
+    background: var(--color-accent-green);
+  }
+
+  .title {
+    color: var(--color-text-on-dark);
+  }
+
+  .subtitle {
+    color: var(--color-text-on-dark-muted);
+  }
+
+  .icon {
+    background: rgba(255, 255, 255, 0.15);
+
+    svg {
+      fill: var(--color-text-on-dark);
+    }
+  }
+
+  .danger .icon,
+  .info .icon,
+  .valid .icon {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .footer {
+    background: var(--color-bg-secondary);
+  }
+
+  .body {
+    border-bottom: 1px solid var(--color-border-primary);
+  }
 }
 
 @include modalKeyframes();

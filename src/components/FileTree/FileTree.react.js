@@ -39,7 +39,7 @@ export default class FileTree extends React.Component {
             width={14}
             height={14}
             name={this.state.open ? 'folder-outline' : 'folder-solid'}
-            fill="#ffffff"
+            fill="var(--color-text-on-dark)"
           />
           {this.props.name}
         </div>

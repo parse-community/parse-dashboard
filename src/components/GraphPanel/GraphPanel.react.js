@@ -491,7 +491,7 @@ const GraphPanel = ({
     if (validationError) {
       return (
         <div className={styles.error}>
-          <Icon name="exclamation-triangle" width={48} height={48} fill="#ffffff" />
+          <Icon name="exclamation-triangle" width={48} height={48} fill="var(--color-text-on-dark)" />
           <p>Configuration Error</p>
           <p>{validationError}</p>
         </div>
@@ -501,7 +501,7 @@ const GraphPanel = ({
     if (!graphConfig) {
       return (
         <div className={styles.noData}>
-          <Icon name="chart-line" width={48} height={48} fill="#ffffff" />
+          <Icon name="chart-line" width={48} height={48} fill="var(--color-text-on-dark)" />
           <p>No graph configured.</p>
           {onNewGraph && (
             <>
@@ -520,7 +520,7 @@ const GraphPanel = ({
     if (!processedData) {
       return (
         <div className={styles.noData}>
-          <Icon name="chart-line" width={48} height={48} fill="#ffffff" />
+          <Icon name="chart-line" width={48} height={48} fill="var(--color-text-on-dark)" />
           <p>No graph data available</p>
           <p>Configure your graph settings and select data to visualize.</p>
         </div>
@@ -550,7 +550,7 @@ const GraphPanel = ({
       default:
         return (
           <div className={styles.error}>
-            <Icon name="exclamation-triangle" width={24} height={24} fill="#ffffff" />
+            <Icon name="exclamation-triangle" width={24} height={24} fill="var(--color-text-on-dark)" />
             <p>Unsupported chart type</p>
           </div>
         );
@@ -560,7 +560,7 @@ const GraphPanel = ({
   if (error) {
     return (
       <div className={styles.error}>
-        <Icon name="exclamation-triangle" width={24} height={24} fill="#ffffff" />
+        <Icon name="exclamation-triangle" width={24} height={24} fill="var(--color-text-on-dark)" />
         <p>Error loading graph data</p>
         <p>{error.message || 'Unknown error occurred'}</p>
         {onRefresh && (
@@ -570,7 +570,7 @@ const GraphPanel = ({
             className={styles.retryButton}
             aria-label="Retry loading graph data"
           >
-            <Icon name="refresh-solid" width={14} height={14} fill="#ffffff" />
+            <Icon name="refresh-solid" width={14} height={14} fill="var(--color-text-on-dark)" />
             Retry
           </button>
         )}
@@ -611,7 +611,7 @@ const GraphPanel = ({
                   aria-label="Select graph"
                   title="Select graph"
                 >
-                  <Icon name="down-solid" width={14} height={14} fill="#ffffff" />
+                  <Icon name="down-solid" width={14} height={14} fill="var(--color-text-on-dark)" />
                 </button>
                 {showGraphDropdown && (
                   <div className={styles.dropdownMenu}>
@@ -649,7 +649,7 @@ const GraphPanel = ({
                 aria-label="Edit graph configuration"
                 title="Edit graph"
               >
-                <Icon name="edit-solid" width={14} height={14} fill="#ffffff" />
+                <Icon name="edit-solid" width={14} height={14} fill="var(--color-text-on-dark)" />
               </button>
             )}
             {hasActiveGraph && onRefresh && (
@@ -660,7 +660,7 @@ const GraphPanel = ({
                 aria-label="Refresh graph data"
                 title="Refresh graph"
               >
-                <Icon name="refresh-solid" width={14} height={14} fill="#ffffff" />
+                <Icon name="refresh-solid" width={14} height={14} fill="var(--color-text-on-dark)" />
               </button>
             )}
             {onClose && (
@@ -671,7 +671,7 @@ const GraphPanel = ({
                 aria-label="Close graph panel"
                 title="Close graph"
               >
-                <Icon name="x-solid" width={14} height={14} fill="#ffffff" />
+                <Icon name="x-solid" width={14} height={14} fill="var(--color-text-on-dark)" />
               </button>
             )}
           </div>
@@ -681,7 +681,7 @@ const GraphPanel = ({
       <div className={styles.chartContainer} ref={containerRef}>
         {isLoading ? (
           <div className={styles.loading}>
-            <Icon name="spinner" width={24} height={24} fill="#ffffff" />
+            <Icon name="spinner" width={24} height={24} fill="var(--color-text-on-dark)" />
             <p>Loading graph data...</p>
           </div>
         ) : (

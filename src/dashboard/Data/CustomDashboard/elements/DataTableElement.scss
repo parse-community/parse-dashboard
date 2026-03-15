@@ -13,20 +13,20 @@
   align-items: center;
   gap: 8px;
   padding: 8px 0;
-  border-bottom: 1px solid #e3e3ea;
+  border-bottom: 1px solid var(--color-border-primary);
   flex-shrink: 0;
 }
 
 .tableTitle {
   font-size: 14px;
   font-weight: 600;
-  color: #0e0e1a;
+  color: var(--color-text-primary);
 }
 
 .rowCount {
   font-size: 12px;
-  color: #666666;
-  background-color: #e3e3ea;
+  color: var(--color-text-secondary);
+  background-color: var(--color-border-primary);
   padding: 2px 8px;
   border-radius: 4px;
 }
@@ -52,7 +52,7 @@
   }
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: var(--color-interactive-hover);
   }
 }
 
@@ -77,7 +77,7 @@
   }
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: var(--color-interactive-hover);
   }
 }
 
@@ -100,7 +100,7 @@
   th, td {
     padding: 8px 12px;
     text-align: left;
-    border-bottom: 1px solid #e3e3ea;
+    border-bottom: 1px solid var(--color-border-primary);
     max-width: 200px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -108,8 +108,8 @@
   }
 
   th {
-    background-color: #f4f5f7;
-    color: #666666;
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text-secondary);
     font-weight: 600;
     position: sticky;
     top: 0;
@@ -117,11 +117,11 @@
   }
 
   td {
-    color: #0e0e1a;
+    color: var(--color-text-primary);
   }
 
   tbody tr:hover {
-    background-color: rgba(0, 0, 0, 0.03);
+    background-color: var(--color-interactive-hover);
   }
 }
 
@@ -134,7 +134,7 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: #666666;
+  color: var(--color-text-secondary);
   gap: 8px;
 
   p {
@@ -144,20 +144,20 @@
 }
 
 .error {
-  color: #ef4444;
+  color: var(--color-accent-red);
 }
 
 .retryButton {
   padding: 6px 12px;
-  background-color: #e3e3ea;
-  border: 1px solid #c5c5d3;
+  background-color: var(--color-border-primary);
+  border: 1px solid var(--color-border-primary);
   border-radius: 4px;
-  color: #0e0e1a;
+  color: var(--color-text-primary);
   font-size: 12px;
   cursor: pointer;
   transition: all 0.15s ease;
 
   &:hover {
-    background-color: #c5c5d3;
+    background-color: var(--color-border-primary);
   }
 }

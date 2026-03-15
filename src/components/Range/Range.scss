@@ -8,19 +8,19 @@
 @import 'stylesheets/globals.scss';
 
 @mixin rangeTrack {
-  background-color: #e0e0ea;
+  background-color: var(--color-border-primary);
   width: 100%;
   height: 10px;
-  border-radius: 5px;
+  border-radius: var(--radius-md);
   outline: none;
 }
 
 @mixin rangeThumb {
-  background-color: #fdfafb;
+  background-color: var(--color-bg-primary);
   width: 24px;
   height: 24px;
-  border-radius: 12px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
   cursor: pointer;
 }
 
@@ -50,13 +50,13 @@
 }
 
 .tracker {
-  @include DosisFont;
+  @include HeadingFont;
   @include transform(translateX(-50%));
   position: absolute;
-  background: $orange;
-  color: white;
-  font-size: 11px;
-  border-radius: 4px;
+  background: var(--color-accent-orange);
+  color: var(--color-text-on-dark);
+  font-size: var(--text-xs);
+  border-radius: var(--radius-md);
   height: 18px;
   line-height: 18px;
   padding: 0 6px;

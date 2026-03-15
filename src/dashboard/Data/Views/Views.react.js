@@ -373,7 +373,7 @@ class Views extends TableView {
                   left: 0,
                   right: 0,
                   zIndex: 10,
-                  background: '#66637A',
+                  background: 'var(--color-bg-sidebar)',
                 }}
                 ref={this.headersRef}
               >

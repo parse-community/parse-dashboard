@@ -8,24 +8,24 @@
 @import 'stylesheets/globals.scss';
 
 $labelWidth: 100px;
-$placeholderColor: rgba(255, 255, 255, 0.5);
+$placeholderColor: var(--color-text-on-dark-muted);
 
 .queryComposer {
-  background-color: $explorerQueryBackgroundColor;
-  border: 1px solid $explorerQueryBackgroundColor;
-  border-radius: 5px;
-  color: white;
+  background-color: var(--color-accent-blue);
+  border: 1px solid var(--color-accent-blue);
+  border-radius: var(--radius-md);
+  color: var(--color-text-on-dark);
 
   .queryComposerBox {
-    border: 1px solid $explorerQueryBackgroundColor;
+    border: 1px solid var(--color-accent-blue);
     width: 100%;
-    padding: 10px 0;
+    padding: var(--space-3) 0;
     position: relative;
-    background-color: $blue;
+    background-color: var(--color-accent-blue);
 
     .queryComposerLabel {
       height: 100%;
-      background-color: $blue;
+      background-color: var(--color-accent-blue);
     }
   }
 
@@ -35,7 +35,7 @@ $placeholderColor: rgba(255, 255, 255, 0.5);
   }
 
   .footer {
-    padding-top: 15px;
+    padding-top: var(--space-4);
     height: 60px;
     position: relative;
   }
@@ -44,7 +44,7 @@ $placeholderColor: rgba(255, 255, 255, 0.5);
 .headerView {
   display: table;
   width: 95%;
-  padding-top: 10px;
+  padding-top: var(--space-3);
 
   .headerLabel {
     display: table-cell;
@@ -53,9 +53,9 @@ $placeholderColor: rgba(255, 255, 255, 0.5);
 
     &.textInput {
       background: none;
-      border: none;    
+      border: none;
       font-size: 1.3em;
-      color: white;
+      color: var(--color-text-on-dark);
 
       @include placeholder {
         color: $placeholderColor;
@@ -66,12 +66,17 @@ $placeholderColor: rgba(255, 255, 255, 0.5);
   .headerButtonCell {
     display: table-cell;
     width: 40px;
-    padding-left: 30px;
+    padding-left: var(--space-7);
   }
 
   .headerButton {
     @include buttonReset;
-    color: white;
+    color: var(--color-text-on-dark);
+    transition: opacity var(--transition-fast);
+
+    &:hover {
+      opacity: 0.8;
+    }
 
     &.secondaryColor {
       color: $placeholderColor;
@@ -93,7 +98,7 @@ $placeholderColor: rgba(255, 255, 255, 0.5);
 
   .filterInputStyle {
     width: 47%;
-    margin-left: 2%
+    margin-left: 2%;
   }
 
   .halfBox {
@@ -112,14 +117,19 @@ $placeholderColor: rgba(255, 255, 255, 0.5);
     display: table-cell;
     vertical-align: middle;
     width: 24px;
-    padding-left: 10px;
+    padding-left: var(--space-3);
   }
 
   .del {
     @include buttonReset;
-    color: #d8d8d8;
+    color: var(--color-text-on-dark-muted);
     font-size: 18px;
     line-height: 18px;
+    transition: color var(--transition-fast);
+
+    &:hover {
+      color: var(--color-text-on-dark);
+    }
   }
 
   .twoButton {
@@ -146,16 +156,16 @@ $placeholderColor: rgba(255, 255, 255, 0.5);
 
 .formLabel {
   text-align: left;
-  color: #fdfafb;
+  color: var(--color-bg-primary);
 }
 
 .formInput, .formInput > input {
   text-align: left;
-  color: white;
-  background-color: $darkBlue;
+  color: var(--color-text-on-dark);
+  background-color: var(--color-explorer-input-bg, #0e69a1);
   height: 30px;
   border-color: transparent;
-  border-radius: 5px;
-  padding: 0 30px 0 10px;
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-7) 0 var(--space-3);
   overflow: hidden;
 }

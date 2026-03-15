@@ -432,9 +432,9 @@ export default class CloudConfigSettings extends DashboardView {
   renderParamMultiSelectWithButtons(value, onChange, placeholder, disabled, paramNames) {
     const allNames = paramNames || this.state.configParamNames;
     return (
-      <div style={{ width: '100%', background: '#f6fafb' }}>
+      <div style={{ width: '100%' }}>
         {this.renderParamMultiSelect(value, onChange, placeholder, disabled, allNames)}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '8px', paddingBottom: '8px' }}>
+        <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
           <Button
             value="Select all"
             disabled={disabled || value.length === allNames.length}
@@ -728,7 +728,7 @@ export default class CloudConfigSettings extends DashboardView {
                 }
               />
             ))}
-            <div style={{ marginTop: '15px', paddingLeft: '62%' }}>
+            <div className={styles.form_buttons}>
               <Button
                 value="Reset to Defaults"
                 onClick={this.resetSyntaxColors.bind(this)}

@@ -10,11 +10,17 @@
 .card {
   width: 200px;
   height: 80px;
-  background-color: $lightGrey;
-  border-radius: 5px;
-  padding: 10px;
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
   display: table;
   table-layout: fixed;
+  transition: box-shadow var(--transition-fast), background-color var(--transition-fast);
+
+  &:hover {
+    background-color: var(--color-interactive-hover);
+    box-shadow: var(--shadow-sm);
+  }
 }
 
 .left {
@@ -25,14 +31,16 @@
 
 .right {
   display: table-cell;
-  padding-left: 20px;
+  padding-left: var(--space-5);
   vertical-align: middle;
 }
 
 .name {
-  color: $platformCardTextColor;
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
 }
 
 .subtitle {
-  color: $platformCardSecondaryTextColor;
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
 }

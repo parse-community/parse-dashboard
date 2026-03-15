@@ -8,16 +8,16 @@
 @import 'stylesheets/globals.scss';
 
 .badge {
-  @include DosisFont;
+  @include HeadingFont;
   display: inline-block;
   height: 26px;
   line-height: 26px;
   vertical-align: middle;
   text-align: center;
-  border: 1px solid #768C97;
-  color: #768C97;
-  border-radius: 5px;
-  font-size: 10px;
+  border: 1px solid var(--color-text-on-dark-muted);
+  color: var(--color-text-on-dark-muted);
+  border-radius: var(--radius-md);
+  font-size: var(--text-xs);
   letter-spacing: 4px;
   width: 60px;
   padding-left: 3px;
@@ -25,6 +25,6 @@
 }
 
 .prod {
-  color: #00dc7c;
-  border-color: #00dc7c;
+  color: var(--color-accent-green);
+  border-color: var(--color-accent-green);
 }

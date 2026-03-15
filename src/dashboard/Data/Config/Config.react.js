@@ -434,7 +434,7 @@ class Config extends TableView {
         </td>
         <td style={{ textAlign: 'center', width: '5%' }}>
           <a onClick={openDeleteParameterDialog}>
-            <Icon width={16} height={16} name="trash-solid" fill="#ff395e" />
+            <Icon width={16} height={16} name="trash-solid" fill="var(--color-accent-red)" />
           </a>
         </td>
       </tr>

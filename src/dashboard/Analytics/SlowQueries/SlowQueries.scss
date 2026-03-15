@@ -9,7 +9,7 @@
 
 .toolbarAction {
   @include buttonReset($padding: 0px 20px);
-  color: white;
+  color: var(--color-text-on-dark);
 
   > *:not(svg) {
     margin: 5px;

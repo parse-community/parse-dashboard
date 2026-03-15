@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
-  color: #64748b;
+  color: var(--color-text-secondary);
 
   p {
     margin: 12px 0 0;
@@ -16,7 +16,7 @@
 
 .emptyHint {
   font-size: 12px !important;
-  color: #94a3b8 !important;
+  color: var(--color-text-tertiary) !important;
 }
 
 .canvasList {
@@ -32,19 +32,19 @@
   justify-content: space-between;
   padding: 12px 16px;
   margin-bottom: 8px;
-  background: #f8fafc;
+  background: var(--color-bg-secondary);
   border: 2px solid transparent;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.15s ease;
 
   &:hover {
-    background: #f1f5f9;
+    background: var(--color-bg-tertiary);
   }
 
   &.selected {
-    border-color: #169cee;
-    background: #e0f2fe;
+    border-color: var(--color-accent-blue);
+    background: var(--color-accent-blue-light);
   }
 
   &:last-child {
@@ -61,7 +61,7 @@
   @include NotoSansFont;
   font-size: 14px;
   font-weight: 500;
-  color: #1e293b;
+  color: var(--color-text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -70,7 +70,7 @@
 .canvasDetails {
   @include NotoSansFont;
   font-size: 12px;
-  color: #64748b;
+  color: var(--color-text-secondary);
   margin-top: 2px;
 }
 
@@ -93,13 +93,13 @@
 
   &:hover {
     svg {
-      fill: #f59e0b;
+      fill: var(--color-accent-orange);
     }
   }
 
   &.favorited {
     svg {
-      fill: #f59e0b;
+      fill: var(--color-accent-orange);
     }
   }
 }
@@ -115,7 +115,7 @@
 
   &:hover {
     svg {
-      fill: #ef4444;
+      fill: var(--color-accent-red);
     }
   }
 }
@@ -125,7 +125,7 @@
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: #64748b;
+  color: var(--color-text-secondary);
 
   span {
     white-space: nowrap;
@@ -144,20 +144,20 @@
 }
 
 .confirmYes {
-  background: #ef4444;
-  color: white;
+  background: var(--color-accent-red);
+  color: var(--color-text-on-dark);
 
   &:hover {
-    background: #dc2626;
+    background: var(--color-accent-red);
   }
 }
 
 .confirmNo {
-  background: #e2e8f0;
-  color: #475569;
+  background: var(--color-border-primary);
+  color: var(--color-text-primary);
 
   &:hover {
-    background: #cbd5e1;
+    background: var(--color-border-secondary);
   }
 }
 
@@ -175,14 +175,14 @@
   gap: 8px;
   width: 100%;
   padding: 8px 12px;
-  background: #e2e8f0;
+  background: var(--color-border-primary);
   border: none;
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.15s ease;
 
   &:hover {
-    background: #cbd5e1;
+    background: var(--color-border-secondary);
   }
 }
 
@@ -191,7 +191,7 @@
   transition: transform 0.15s ease;
 
   &:after {
-    @include arrow('down', 10px, 6px, #64748b);
+    @include arrow('down', 10px, 6px, var(--color-text-secondary));
     content: '';
     display: block;
   }
@@ -201,7 +201,7 @@
   @include NotoSansFont;
   font-size: 13px;
   font-weight: 600;
-  color: #475569;
+  color: var(--color-text-primary);
   flex: 1;
   text-align: left;
 }
@@ -209,7 +209,7 @@
 .groupCount {
   @include NotoSansFont;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--color-text-tertiary);
 }
 
 .groupContent {
@@ -226,7 +226,7 @@
   @include NotoSansFont;
   font-size: 11px;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--color-text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 0 16px;

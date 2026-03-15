@@ -80,7 +80,7 @@ export default class PushAudiencesOption extends PushAudiencesBaseRow {
             <div className={styles.headline}>
               {this.props.icon ? (
                 <div className={styles.icon}>
-                  <Icon width={18} height={18} fill="#343445" name={this.props.icon} />
+                  <Icon width={18} height={18} fill="var(--color-text-primary)" name={this.props.icon} />
                 </div>
               ) : null}
               <span style={this.props.icon ? { verticalAlign: 'top', paddingLeft: 5 } : {}}>

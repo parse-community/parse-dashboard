@@ -9,13 +9,13 @@
 
 .addConditions {
   text-align: center;
-  padding: 25px 20px;
+  padding: var(--space-6) var(--space-5);
   border-style: solid;
-  border-color: $borderGrey;
+  border-color: var(--color-border-primary);
   border-width: 1px 1px 0 1px;
 
   &.nonEmptyConditions {
-    padding: 4px;
+    padding: var(--space-1);
     a {
      border: none;
     }
@@ -23,7 +23,7 @@
 }
 
 .footer {
-  padding: 17px 28px;
+  padding: var(--space-4) var(--space-7);
   text-align: right;
 
   &:nth-child(2) {
@@ -31,7 +31,7 @@
   }
 
   > * {
-    margin: 0 12px 0 0;
+    margin: 0 var(--space-3) 0 0;
 
     &:last-child {
       margin-right: 0;
@@ -44,19 +44,20 @@
   text-align: left;
 
   .audienceSizeText {
-    font-weight: 700;
+    font-weight: var(--font-weight-semibold);
     font-size: 10px;
     letter-spacing: 1.6px;
-    color: $secondaryTextColor;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
   }
 
   .audienceSizeDescription {
-    margin-top: 2px;
-    color: $blue;
+    margin-top: var(--space-1);
+    color: var(--color-accent-blue);
   }
 }
 
 .filter {
   max-height: 50vh;
-  overflow-y: scroll;
+  overflow-y: auto;
 }

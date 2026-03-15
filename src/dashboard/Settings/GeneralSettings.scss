@@ -9,7 +9,7 @@
 
 .cost {
 	font-size: 18px;
-	color: $blue;
+	color: var(--color-accent-blue);
 	line-height: 18px;
 	padding-right: 18px;
 	padding-top: 16px;
@@ -22,6 +22,6 @@
 	padding-right: 18px;
 	padding-top: 1px;
 	font-size: 14px;
-	color: #66637a;
+	color: var(--color-text-secondary);
 	line-height: 14px;
 }

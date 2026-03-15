@@ -9,7 +9,7 @@
 
 .geopoint {
   width: 100%;
-  background: $inputBackgroundColor;
+  background: var(--color-bg-tertiary);
   height: 80px;
 }
 
@@ -22,8 +22,8 @@
     height: 30px;
     line-height: 30px;
     text-align: center;
-    color: $secondaryTextColor;
-    font-size: 14px;
+    color: var(--color-text-secondary);
+    font-size: var(--text-base);
   }
 }
 
@@ -36,7 +36,13 @@
     background: none;
     height: 50px;
     width: 50%;
-    font-size: 16px;
+    font-size: var(--text-lg);
     text-align: center;
+    color: var(--color-text-primary);
+    transition: background var(--transition-fast);
+
+    &:focus {
+      background: var(--color-interactive-hover);
+    }
   }
 }

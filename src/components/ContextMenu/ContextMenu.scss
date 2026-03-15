@@ -1,43 +1,57 @@
+/*
+ * Copyright (c) 2016-present, Parse, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the license found in the LICENSE file in
+ * the root directory of this source tree.
+ */
 @import 'stylesheets/globals.scss';
 
 .menu {
 	position: absolute;
-	font-size: 14px;
+	font-size: var(--text-sm);
 
 	ul {
-		background: $purple;
-		@include animation('fade-in .2s linear');
+		background: var(--color-bg-elevated);
+		@include animation('fade-in .15s ease-out');
 		opacity: 0;
-		border: 1px solid rgba(255, 255, 255, 0.15);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+		border: 1px solid var(--color-border-secondary);
+		border-radius: var(--radius-lg);
+		box-shadow: var(--shadow-overlay);
+		padding: var(--space-1) 0;
+		min-width: 180px;
 	}
 
 	li {
-		height: 30px;
-    line-height: 30px;
-		color: $white;
+		height: 32px;
+		line-height: 32px;
+		color: var(--color-text-primary);
 		cursor: pointer;
 		white-space: nowrap;
-		padding: 0 30px 0 10px;
+		padding: 0 var(--space-6) 0 var(--space-3);
+		transition: background var(--transition-fast), color var(--transition-fast);
+		border-radius: 0;
+
 		span {
-			color: #A2A6B1
+			color: var(--color-text-tertiary);
+			font-size: var(--text-xs);
 		}
 	}
 
 	li:hover {
-		background: rgba(255, 255, 255, 0.1);
+		background: var(--color-interactive-hover);
 	}
 
 	.separator {
 		height: 1px;
 		padding: 0;
-		margin: 5px 10px;
-		background: rgba(255, 255, 255, 0.2);
+		margin: var(--space-1) var(--space-2);
+		background: var(--color-border-secondary);
 		cursor: default;
 		pointer-events: none;
 
 		&:hover {
-			background: rgba(255, 255, 255, 0.2);
+			background: var(--color-border-secondary);
 		}
 	}
 
@@ -48,12 +62,15 @@
 
 		.item {
 			width: 100%;
+			position: relative;
+
 			&:after {
-				@include arrow('right', 12px, 8px, rgba(255,255,255,0.3));
+				content: '\203A';
 				position: absolute;
-				content: '';
-				margin-top: 10px;
-				right: 10px;
+				right: var(--space-3);
+				top: 0;
+				color: var(--color-text-tertiary);
+				font-size: var(--text-lg);
 			}
 		}
 
@@ -61,17 +78,14 @@
 			left: 100%;
 			position: absolute;
 		}
-
 	}
 }
 
 @include keyframes(fade-in) {
   0% {
-    // @include transform(scale(0.9));
     opacity: 0;
   }
   100% {
-    // @include transform(scale(1));
     opacity: 1;
   }
 }

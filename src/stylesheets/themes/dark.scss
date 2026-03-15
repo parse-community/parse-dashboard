@@ -1,0 +1,91 @@
+/*
+ * Dark Theme
+ * Deep, muted palette for low-light environments
+ * Apply via <html data-theme="dark">
+ */
+
+:global([data-theme='dark']) {
+  // --- Fonts ---
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Source Code Pro', 'Fira Code', 'Courier New', monospace;
+  --font-data-browser: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  // --- Backgrounds ---
+  --color-bg-primary: #0f0f12;
+  --color-bg-secondary: #16161a;
+  --color-bg-tertiary: #1e1e24;
+  --color-bg-elevated: #1e1e24;
+  --color-bg-sidebar: #0c0c10;
+  --color-bg-sidebar-bottom: #0c0c10;
+  --color-bg-sidebar-hover: #1a1a22;
+  --color-bg-sidebar-active: #242430;
+  --color-bg-toolbar: #16161a;
+
+  // --- Borders ---
+  --color-border-primary: #2a2a35;
+  --color-border-secondary: #222230;
+  --color-border-focus: #3b82f6;
+
+  // --- Text ---
+  --color-text-primary: #e4e4e8;
+  --color-text-secondary: #9ca3af;
+  --color-text-tertiary: #6b7280;
+  --color-text-on-dark: #ffffff;
+  --color-text-on-dark-muted: #94a3b8;
+
+  // --- Accent ---
+  --color-accent-blue: #60a5fa;
+  --color-accent-blue-hover: #3b82f6;
+  --color-accent-blue-light: rgba(59, 130, 246, 0.15);
+  --color-accent-green: #34d399;
+  --color-accent-green-light: rgba(16, 185, 129, 0.15);
+  --color-accent-red: #f87171;
+  --color-accent-red-light: rgba(239, 68, 68, 0.15);
+  --color-accent-orange: #fbbf24;
+  --color-accent-orange-light: rgba(245, 158, 11, 0.15);
+  --color-accent-purple: #a78bfa;
+
+  // --- Data Browser ---
+  --color-cell-text: var(--color-text-secondary);
+  --color-cell-border: var(--color-border-secondary);
+  --color-row-stripe: transparent;
+  --color-row-hover: var(--color-interactive-hover);
+  --data-header-transform: uppercase;
+  --data-header-tracking: 0.04em;
+  --data-header-size: 11px;
+  --data-header-color: var(--color-text-secondary);
+  --data-header-type-color: var(--color-text-tertiary);
+  --data-header-bg: var(--color-bg-tertiary);
+  --data-header-hover-bg: var(--color-bg-secondary);
+  --data-header-border-color: var(--color-border-primary);
+  --data-cell-padding: 5px 8px;
+  --data-add-col-bg: var(--color-bg-secondary);
+  --data-add-col-color: var(--color-text-secondary);
+  --data-add-col-border: 1px solid var(--color-border-primary);
+  --data-check-bg: var(--color-bg-tertiary);
+
+  // --- Buttons ---
+  --btn-border: 1px solid var(--color-border-primary);
+  --btn-color: var(--color-text-primary);
+  --btn-bg: var(--color-bg-primary);
+  --btn-hover-bg: var(--color-bg-tertiary);
+  --btn-hover-color: var(--color-text-primary);
+  --btn-primary-bg: #e4e4e8;
+  --btn-primary-color: #0f0f12;
+  --btn-primary-border: 1px solid #e4e4e8;
+  --btn-primary-hover-bg: #c8c8d0;
+  --btn-radius: 6px;
+
+  // --- Interactive ---
+  --color-interactive-hover: rgba(255, 255, 255, 0.06);
+  --color-interactive-active: rgba(255, 255, 255, 0.08);
+  --color-interactive-focus-ring: 0 0 0 2px #60a5fa, 0 0 0 4px rgba(96, 165, 250, 0.3);
+
+  // --- Elevation ---
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  --shadow-overlay: 0 16px 32px -4px rgba(0, 0, 0, 0.5);
+}

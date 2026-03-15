@@ -10,29 +10,32 @@
 .class_list {
   position: relative;
   margin-bottom: 5px;
-  border-left: 1px solid #3e87b2;
+  margin-left: 8px;
 
   a {
     display: block;
-    padding-left: 12px;
-    height: 20px;
-    line-height: 20px;
-    color: #8fb9cf;
-    font-size: 12px;
+    padding-left: 8px;
+    height: 24px;
+    line-height: 24px;
+    color: var(--color-text-on-dark-muted);
+    font-size: var(--text-sm);
+    border-radius: var(--radius-md);
+    transition: color var(--transition-fast);
 
     &.active {
-      color: white;
+      color: var(--color-text-on-dark);
+      font-weight: var(--font-weight-medium);
     }
 
-    &:hover{
-      color: white;
+    &:hover {
+      color: var(--color-text-on-dark);
     }
 
     span {
       display: block;
 
       &:first-of-type {
-        @include DosisFont;
+        @include UIFont;
         float: right;
         width: 50px;
         text-align: right;
@@ -47,17 +50,26 @@
   }
 }
 
-.highlight {
-  position: absolute;
-  width: 1px;
-  height: 20px;
-  background: white;
-  transition: top 0.2s cubic-bezier(1, 0, 0, 1);
+
+.sectionHeader {
+  @include UIFont;
+  font-size: 10px;
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-text-on-dark-muted);
+  padding: 12px 8px 4px;
+  line-height: 1;
+  opacity: 0.6;
+
+  &:first-child {
+    padding-top: 4px;
+  }
 }
 
 .separator {
   margin: 6px 0 6px 12px;
-  background-color: #3e87b2;
+  background-color: rgba(255, 255, 255, 0.1);
   border: 0;
   height: 1px;
 }
@@ -74,26 +86,40 @@
   margin-right: 20px;
   padding-left: 0px !important;
   &:after {
-    @include arrow('down', 10px, 7px, #8fb9cf);
+    @include arrow('down', 10px, 7px, var(--color-text-on-dark-muted));
     content: '';
     margin-left: 6px;
   }
 }
 .link {
   display: flex;
+  align-items: center;
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+
+  &:has(a.active) {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
   a {
     &:first-of-type {
       flex-grow: 1
     }
   }
   .count {
-    @include DosisFont;
-    color: #8fb9cf;
-    font-size: 12px;
+    @include UIFont;
+    color: var(--color-text-on-dark-muted);
+    font-size: 11px;
     margin-left: auto;
     margin-right: 4px;
     min-width: 20px;
     text-align: right;
+    opacity: 0.6;
+    line-height: 24px;
   }
   .edit {
     display: flex;
@@ -101,11 +127,11 @@
     padding-top: 2px;
     cursor: pointer;
     svg {
-      fill: #8fb9cf;
+      fill: var(--color-text-on-dark-muted);
     }
     &:hover {
       svg {
-        fill: white;
+        fill: var(--color-text-on-dark);
       }
     }
   }
@@ -123,7 +149,7 @@
       text-align: left !important;
       margin-left: 14px;
       margin-right: 0px !important;
-      font-family: Dosis, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      @include UIFont;
       flex-grow: 1;
     }
   }
@@ -133,11 +159,11 @@
     padding-top: 2px;
     cursor: pointer;
     svg {
-      fill: #8fb9cf;
+      fill: var(--color-text-on-dark-muted);
     }
     &:hover {
       svg {
-        fill: white;
+        fill: var(--color-text-on-dark);
       }
     }
   }

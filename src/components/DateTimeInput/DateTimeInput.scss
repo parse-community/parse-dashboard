@@ -7,14 +7,29 @@
  */
 @import 'stylesheets/globals.scss';
 
+// Modern: compact, left-aligned
 .input {
   width: 100%;
-  height: 80px;
-  line-height: 80px;
-  text-align: center;
-  background: $inputBackgroundColor;
+  min-height: 36px;
+  line-height: 36px;
+  text-align: left;
+  background: transparent;
 }
 
 .placeholder {
-  color: $secondaryTextColor;
+  color: var(--color-text-tertiary);
+}
+
+// Classic: tall, centered, gray bg
+:global([data-theme="classic"]) {
+  .input {
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+    background: var(--color-bg-secondary);
+  }
+
+  .placeholder {
+    color: var(--color-text-secondary);
+  }
 }

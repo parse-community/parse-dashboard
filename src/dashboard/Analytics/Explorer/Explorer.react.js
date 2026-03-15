@@ -345,7 +345,7 @@ class Explorer extends DashboardView {
           className={styles.toolbarAction}
           style={{ borderRight: '1px solid #66637a' }}
         >
-          <Icon name="question-solid" width={14} height={14} fill="#66637a" />
+          <Icon name="question-solid" width={14} height={14} fill="var(--color-text-secondary)" />
           FAQ
         </button>
         <button
@@ -353,7 +353,7 @@ class Explorer extends DashboardView {
           onClick={this.handleDownload.bind(this)}
           className={styles.toolbarAction}
         >
-          <Icon name="download" width={14} height={14} fill="#66637a" />
+          <Icon name="download" width={14} height={14} fill="var(--color-text-secondary)" />
           Download
         </button>
       </Toolbar>

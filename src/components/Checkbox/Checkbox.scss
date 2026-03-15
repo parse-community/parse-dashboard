@@ -15,14 +15,16 @@
 }
 
 .checkbox {
-  display: inline-block;
-  height: 20px;
-  width: 20px;
-  padding: 3px;
-  border-radius: 4px;
-  background: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  width: 18px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-primary);
   vertical-align: middle;
-  border: 1px solid $mainTextColor;
+  border: 1px solid var(--color-border-primary);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
 
   svg {
     vertical-align: top;
@@ -31,27 +33,27 @@
 
 .minus {
   display: block;
-  width: 12px;
-  height: 4px;
-  background: $blue;
-  margin-top: 4px;
-  border-radius: 2px;
+  width: 10px;
+  height: 2px;
+  background: var(--color-bg-primary);
+  border-radius: 1px;
 }
 
 .label {
-  @include DosisFont;
-  color: $mainTextColor;
-  font-size: 14px;
+  @include UIFont;
+  color: var(--color-text-secondary);
+  font-size: var(--text-base);
   vertical-align: middle;
   margin-right: 6px;
 }
 
 .checked, .indeterminate {
   .checkbox {
-    border-color: $blue;
+    background: var(--color-accent-blue);
+    border-color: var(--color-accent-blue);
   }
 
   .label {
-    color: $blue;
+    color: var(--color-text-primary);
   }
 }

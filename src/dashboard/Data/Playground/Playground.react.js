@@ -1192,7 +1192,7 @@ export default function Playground() {
                 );
               } catch {
                 return (
-                  <div key={`${id}-${index}`} style={{ marginLeft: '2px', marginBottom: '1px', fontFamily: 'monospace', color: '#ff6b6b', fontSize: '12px', lineHeight: '1.2' }}>
+                  <div key={`${id}-${index}`} style={{ marginLeft: '2px', marginBottom: '1px', fontFamily: 'monospace', color: 'var(--color-accent-red)', fontSize: '12px', lineHeight: '1.2' }}>
                     [Error rendering value: {String(arg)}]
                   </div>
                 );
@@ -1292,7 +1292,7 @@ export default function Playground() {
                           name="check"
                           width={12}
                           height={12}
-                          fill="#ffffffff"
+                          fill="var(--color-text-on-dark)"
                           className="menuCheck"
                         />
                       )}
@@ -1361,7 +1361,7 @@ export default function Playground() {
 
   const renderTabs = () => {
     return (
-      <div className={styles['tab-bar']} style={{ backgroundColor: '#353446' }}>
+      <div className={styles['tab-bar']} style={{ backgroundColor: 'var(--color-bg-sidebar)' }}>
         <div className={styles['tab-container']}>
           {tabs.map(tab => (
             <div
@@ -1410,7 +1410,7 @@ export default function Playground() {
                       name="warn-outline"
                       width={12}
                       height={12}
-                      fill="#ffffff"
+                      fill="var(--color-text-on-dark)"
                       style={{ marginRight: '4px' }}
                     />
                   )}
@@ -1443,17 +1443,17 @@ export default function Playground() {
             onMouseEnter={(e) => {
               const icon = e.currentTarget.querySelector('svg');
               if (icon) {
-                icon.style.fill = '#ffffff';
+                icon.style.fill = 'var(--color-text-on-dark)';
               }
             }}
             onMouseLeave={(e) => {
               const icon = e.currentTarget.querySelector('svg');
               if (icon) {
-                icon.style.fill = '#a0a0a0';
+                icon.style.fill = 'var(--color-text-on-dark-muted)';
               }
             }}
           >
-            <Icon name="plus-solid" width={14} height={14} fill="#66637a" />
+            <Icon name="plus-solid" width={14} height={14} fill="var(--color-text-on-dark-muted)" />
           </button>
         </div>
       </div>

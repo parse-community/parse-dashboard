@@ -12,7 +12,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 32px;
+  gap: var(--space-6);
 }
 
 .content {
@@ -20,7 +20,8 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  max-width: 600px;
+  max-width: 360px;
+  padding: var(--space-10) var(--space-6);
 }
 
 .customContent {
@@ -29,27 +30,37 @@
 }
 
 .title {
-  font-size: 46px;
-  font-weight: 100;
-  line-height: 55px;
-  white-space: nowrap;
-  margin-bottom: 45px;
+  @include UIFont;
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  line-height: 1.4;
+  margin-bottom: var(--space-1);
 }
 
 .description {
-  @include DosisFont;
-  font-size: 16px;
-  letter-spacing: 0.72px;
-  line-height: 17px;
-  margin-bottom: 12px;
+  @include UIFont;
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  line-height: 1.5;
+  margin-bottom: var(--space-4);
 }
 
 .icon {
-  width: 170px;
-  height: 170px;
-  margin: 0 auto 24px auto;
-  border-radius: 100%;
-  background: #f3f0f2;
-  text-align: center;
-  padding-top: 45px;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto var(--space-4) auto;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  justify-content: center;
 }

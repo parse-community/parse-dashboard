@@ -7,6 +7,8 @@
  */
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
+import { initTheme } from 'lib/theme';
+initTheme(); // Apply saved theme before any rendering to prevent flash
 import Immutable from 'immutable';
 import installDevTools from 'immutable-devtools';
 import React from 'react';

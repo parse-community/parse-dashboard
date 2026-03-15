@@ -8,48 +8,63 @@
 @import 'stylesheets/globals.scss';
 
 .text_input {
-  @include NotoSansFont;
-  border: 0;
+  @include UIFont;
+  border: 1px solid var(--color-border-primary);
   outline: 0;
-  background: $inputBackgroundColor;
-  color: #000;
-  font-size: 16px;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
   width: 100%;
-  min-width: calc(var(--modal-min-width) * (1 - var(--modal-label-ratio)));
-  min-height: var(--modal-row-min-height);
-  padding: 6px;
+  min-height: 36px;
+  padding: var(--space-2) var(--space-3);
   vertical-align: top;
   resize: both;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xs, 0 1px 2px rgba(0, 0, 0, 0.05));
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 
   @include placeholder {
-    color: #999;
-    opacity: 1;
+    color: var(--color-text-tertiary);
+    opacity: 0.7;
   }
 
   &:disabled {
-    color: $mainTextColor;
+    color: var(--color-text-secondary);
+    background: var(--color-bg-secondary);
   }
 
   &:focus {
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 0 1px var(--color-border-focus);
+
     @include placeholder {
       opacity: 0;
     }
   }
 }
 
+// Classic theme: restore the centered-in-field style
+:global([data-theme="classic"]) {
+  .text_input {
+    width: calc(100% - var(--space-6));
+    margin: auto;
+  }
+}
+
 input.monospace, textarea.monospace {
   @include MonospaceFont;
+
+  @include placeholder {
+    font-family: var(--font-sans);
+  }
 }
 
 input.text_input {
-  text-align: center;
+  text-align: left;
 }
 
 textarea.text_input:not(.monospace) {
   @include placeholder {
-    text-align: center;
-    position: relative;
-    top: 50%;
-    line-height: 9px;
+    text-align: left;
   }
 }

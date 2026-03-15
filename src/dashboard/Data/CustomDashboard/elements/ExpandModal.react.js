@@ -58,7 +58,7 @@ const ExpandModal = ({ title, children, onClose }) => {
         <div className={styles.modalHeader}>
           <span className={styles.modalTitle}>{title}</span>
           <button type="button" onClick={onClose} className={styles.closeButton}>
-            <Icon name="x-outline" width={16} height={16} fill="#64748b" />
+            <Icon name="x-outline" width={16} height={16} fill="var(--color-text-secondary)" />
           </button>
         </div>
         <div className={styles.modalBody}>

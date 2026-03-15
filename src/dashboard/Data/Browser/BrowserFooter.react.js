@@ -1,4 +1,3 @@
-import Button from 'components/Button/Button.react';
 import React from 'react';
 import styles from './BrowserFooter.scss';
 import FooterStats from './FooterStats.react';
@@ -20,7 +19,6 @@ class BrowserFooter extends React.Component {
   }
 
   handleLimitChange = event => {
-    // Check if there are selected rows
     if (this.props.hasSelectedRows && !window.confirm(this.props.selectedRowsMessage)) {
       return;
     }
@@ -32,7 +30,6 @@ class BrowserFooter extends React.Component {
 
   handlePageChange = newSkip => {
     if (newSkip >= 0 && newSkip < this.props.count) {
-      // Check if there are selected rows
       if (this.props.hasSelectedRows && !window.confirm(this.props.selectedRowsMessage)) {
         return;
       }
@@ -71,57 +68,69 @@ class BrowserFooter extends React.Component {
   render() {
     const { skip, count, limit, selectedCellsCount, selectedData } = this.props;
     const totalPages = Math.ceil(count / limit);
+    const currentPage = Math.floor(skip / limit) + 1;
 
     return (
       <div className={styles.footer}>
-        <span><strong>{count?.toLocaleString() || 0}</strong> objects</span>
-        <span style={{ color: 'lightgray' }}>|</span>
-        <select value={limit} onChange={this.handleLimitChange}>
-          {[10, 20, 50, 100, 200, 500, 1000].map(size => (
-            <option key={size} value={size}>
-              {size}
-            </option>
-          ))}
-        </select>
-        <span>per page</span>
-        <span style={{ color: 'lightgray' }}>|</span>
-        <span>Objects {(skip + 1).toLocaleString()} to {Math.min(count ?? limit, skip + limit).toLocaleString()}</span>
-        {selectedCellsCount > 0 && (
-          <>
-            <span style={{ color: 'lightgray' }}>|</span>
-            <span><strong>{selectedCellsCount.toLocaleString()}</strong> cells selected</span>
-          </>
-        )}
-        {selectedData?.length > 0 && (
-          <>
-            <span style={{ color: 'lightgray' }}>|</span>
-            <FooterStats data={selectedData} />
-          </>
-        )}
-        <span style={{ marginLeft: 'auto' }}></span>
-        <span>Page</span>
-        <input
-          type="text"
-          style={{ width: `${Math.max(this.state.pageInput.length + 1, 3)}ch` }}
-          value={this.state.pageInput}
-          onChange={this.handleInputChange}
-          onBlur={this.validateAndApplyPage}
-          onKeyDown={this.handleKeyDown}
-        />
-        <span>of {totalPages.toLocaleString()}</span>
-        <span style={{ color: 'lightgray' }}>|</span>
-        <Button
-          value="⬅︎"
-          width="80px"
-          onClick={() => this.handlePageChange(skip - limit)}
-          disabled={skip === 0}
-        />
-        <Button
-          value="⮕"
-          width="80px"
-          onClick={() => this.handlePageChange(skip + limit)}
-          disabled={skip + limit >= count}
-        />
+        <div className={styles.footerLeft}>
+          <span><strong>{count?.toLocaleString() || 0}</strong> objects</span>
+          <span className={styles.sep} />
+          <select className={styles.pageSelect} value={limit} onChange={this.handleLimitChange}>
+            {[10, 20, 50, 100, 200, 500, 1000].map(size => (
+              <option key={size} value={size}>
+                {size}
+              </option>
+            ))}
+          </select>
+          <span>per page</span>
+          <span className={styles.sep} />
+          <span>Objects {(skip + 1).toLocaleString()} to {Math.min(count ?? limit, skip + limit).toLocaleString()}</span>
+          {selectedCellsCount > 0 && (
+            <>
+              <span className={styles.sep} />
+              <span><strong>{selectedCellsCount.toLocaleString()}</strong> cells selected</span>
+            </>
+          )}
+          {selectedData?.length > 0 && (
+            <>
+              <span className={styles.sep} />
+              <FooterStats data={selectedData} />
+            </>
+          )}
+        </div>
+        <div className={styles.footerRight}>
+          <span className={styles.pageLabel}>Page</span>
+          <input
+            className={styles.pageInput}
+            type="text"
+            style={{ width: `${Math.max(this.state.pageInput.length + 1, 3)}ch` }}
+            value={this.state.pageInput}
+            onChange={this.handleInputChange}
+            onBlur={this.validateAndApplyPage}
+            onKeyDown={this.handleKeyDown}
+          />
+          <span className={styles.pageLabel}>of {totalPages.toLocaleString()}</span>
+          <button
+            className={styles.navBtn}
+            onClick={() => this.handlePageChange(skip - limit)}
+            disabled={skip === 0}
+            title="Previous page"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <button
+            className={styles.navBtn}
+            onClick={() => this.handlePageChange(skip + limit)}
+            disabled={skip + limit >= count}
+            title="Next page"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 6 15 12 9 18" />
+            </svg>
+          </button>
+        </div>
       </div>
     );
   }

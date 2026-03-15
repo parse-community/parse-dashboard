@@ -9,8 +9,8 @@
 
 .fourOhFour {
   height: 100vh;
-  background: #06283d;
-  color: white;
+  background: var(--color-bg-sidebar);
+  color: var(--color-text-on-dark);
   text-align: center;
 }
 
@@ -18,12 +18,11 @@
   position: absolute;
   width: 100%;
   top: 50%;
-  -webkit-transform: translateY(-50%);
   transform: translateY(-50%);
 }
 
 .error {
-  @include DosisFont;
+  @include HeadingFont;
   font-size: 240px;
 }
 
@@ -43,10 +42,15 @@
 }
 
 .back {
-  margin-top: 40px;
+  margin-top: var(--space-8);
 
   button {
     @include buttonReset;
-    color: #fff;
+    color: var(--color-text-on-dark);
+    transition: opacity var(--transition-fast);
+
+    &:hover {
+      opacity: 0.8;
+    }
   }
 }

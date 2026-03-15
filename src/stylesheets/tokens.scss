@@ -1,0 +1,83 @@
+/*
+ * Design Tokens for Parse Dashboard UI Uplift
+ *
+ * Architecture:
+ *   tokens.scss      — Structural tokens (layout, spacing, typography, shape, motion)
+ *   themes/*.scss    — Color/shadow themes applied via [data-theme] attribute
+ *
+ * To create a custom theme:
+ *   1. Copy themes/light.scss to themes/my-theme.scss
+ *   2. Override the CSS custom properties
+ *   3. Import it in this file
+ *   4. Apply via <html data-theme="my-theme">
+ */
+
+// ============================================
+// Breakpoints (SCSS vars — CSS vars can't be used in @media)
+// ============================================
+$bp-sm: 640px;
+$bp-md: 768px;
+$bp-lg: 1024px;
+$bp-xl: 1280px;
+
+// Layout dimensions (SCSS vars for calc() in other SCSS files)
+$sidebar-width: 300px;
+$sidebar-collapsed-width: 56px;
+$toolbar-height: 56px;
+$mobile-header-height: 48px;
+
+// ============================================
+// Structural CSS Custom Properties (theme-independent)
+// ============================================
+:global(:root) {
+  // --- Typography Scale (theme-independent sizing) ---
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.875rem;
+  --text-lg: 1rem;
+  --text-xl: 1.125rem;
+  --text-2xl: 1.5rem;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+
+  // Note: --font-sans, --font-mono, --font-heading are defined per-theme
+  // so themes can customize typefaces
+
+  // --- Spacing (8px grid) ---
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  // --- Shape ---
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+
+  // --- Motion ---
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// ============================================
+// Theme imports — default theme is "light" (applied on :root)
+// Additional themes override via [data-theme="<name>"]
+// ============================================
+@import 'themes/light';
+@import 'themes/dark';
+@import 'themes/classic';

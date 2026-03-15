@@ -1,7 +1,7 @@
 @import 'stylesheets/globals.scss';
 
 .staticText {
-  color: #0e0e1a;
+  color: var(--color-text-primary);
   word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: pre-wrap;

@@ -8,20 +8,23 @@
 @import 'stylesheets/globals.scss';
 
 .moneyInput {
-  @include DosisFont;
+  @include HeadingFont;
   border: 0;
   outline: 0;
-  background: $inputBackgroundColor;
+  background: var(--color-bg-secondary);
   font-size: 22px;
   width: 100%;
-  padding: 6px;
+  padding: var(--space-2);
   vertical-align: top;
   resize: none;
   height: 80px;
-  color: $green;
+  color: var(--color-accent-green);
   text-align: center;
+  transition: background-color var(--transition-fast);
 
   &:focus {
+    background: var(--color-bg-primary);
+
     @include placeholder {
       opacity: 0;
     }

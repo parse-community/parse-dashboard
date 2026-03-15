@@ -12,28 +12,33 @@
   height: 24px;
 
   a {
-    @include DosisFont;
+    @include HeadingFont;
     display: inline-block;
     height: 24px;
     line-height: 24px;
-    padding: 0 12px;
-    font-size: 12px;
+    padding: 0 var(--space-3);
+    font-size: var(--text-xs);
     border-style: solid;
-    border-color: $blue;
+    border-color: var(--color-accent-blue);
     border-width: 1px 0 1px 1px;
-    color: $blue;
+    color: var(--color-accent-blue);
+    transition: background var(--transition-fast), color var(--transition-fast);
 
     &:first-child {
-      border-radius: 5px 0 0 5px;
+      border-radius: var(--radius-md) 0 0 var(--radius-md);
     }
     &:last-child {
-      border-radius: 0 5px 5px 0;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
       border-right-width: 1px;
     }
 
+    &:hover:not(.current) {
+      background: var(--color-accent-blue-light);
+    }
+
     &.current {
-      background: $blue;
-      color: white;
+      background: var(--color-accent-blue);
+      color: var(--color-text-on-dark);
     }
   }
 }

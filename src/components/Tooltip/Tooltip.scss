@@ -17,9 +17,10 @@ $calloutSize: 10px;
     display: none;
     width: 300px;
     line-height: 16px;
-    background-color: $white;
-    border: 1px solid $mainTextColor;
-    border-radius: 5px;
+    background-color: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-secondary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
     // TODO we don't want to use z-index. But this makes everything easier
     // since we can do everything in CSS. We need to revisit this in the future
     z-index: 100;
@@ -34,13 +35,13 @@ $calloutSize: 10px;
 
       // Faking arrow with border by making 2 arrows.
       .callout1 {
-        @include arrow('down', ($calloutSize + 1) * 2, $calloutSize + 1, $mainTextColor);
+        @include arrow('down', ($calloutSize + 1) * 2, $calloutSize + 1, var(--color-border-secondary));
         position: absolute;
         left: 20px;
       }
 
       .callout2 {
-        @include arrow('down', $calloutSize * 2, $calloutSize, $white);
+        @include arrow('down', $calloutSize * 2, $calloutSize, var(--color-bg-elevated));
         position: absolute;
         left: 20px;
       }
@@ -49,5 +50,7 @@ $calloutSize: 10px;
 }
 
 .tooltipContent {
-  padding: 15px;
+  padding: var(--space-4);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
 }

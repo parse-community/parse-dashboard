@@ -12,16 +12,18 @@
   height: 80px;
   line-height: 80px;
   text-align: center;
-  background: $inputBackgroundColor;
+  background: var(--color-bg-secondary);
 }
 
 .placeholder {
-  color: $secondaryTextColor;
+  color: var(--color-text-secondary);
 }
 
 .picker {
-  border: 1px solid $blue;
-  background: white;
+  border: 1px solid var(--color-accent-blue);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-elevated);
+  box-shadow: var(--shadow-sm);
 
   > * {
     margin: 10% auto 4% auto;
@@ -29,5 +31,5 @@
 }
 
 .value {
-  color: $blue;
+  color: var(--color-accent-blue);
 }

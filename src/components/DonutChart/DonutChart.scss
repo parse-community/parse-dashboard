@@ -8,18 +8,16 @@
 @import 'stylesheets/globals.scss';
 
 .donutCenter {
-  fill: $pushDetailsHeaderBackground;
+  fill: var(--color-bg-secondary);
 }
 
 .path {
-  -webkit-transform: scale(1.0);
   transform: scale(1.0);
-  transition: all 0.3s;
+  transition: transform var(--transition-fast);
 
   &:hover {
-    -webkit-transform: scale(1.1);
     transform: scale(1.1);
-    transition: all 0.3s;
+    transition: transform var(--transition-fast);
   }
 
   &:first-of-type {
@@ -61,16 +59,16 @@
 
 .donutValue {
   opacity: 0;
-  transition: opacity 0.2s ease;
-  @include DosisFont;
+  transition: opacity var(--transition-fast);
+  @include HeadingFont;
   font-size: 22px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   &:first-of-type {
     opacity: 1;
   }
 }
 
-.donutLabel{
+.donutLabel {
   opacity: 0.5;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }

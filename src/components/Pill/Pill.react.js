@@ -30,12 +30,12 @@ const Pill = ({
     </span>
     {followClick && (
       <a onClick={e => !e.metaKey && onClick()}>
-        <Icon name="right-outline" width={20} height={20} fill="#1669a1" />
+        <Icon name="right-outline" width={20} height={20} fill="var(--color-accent-blue)" />
       </a>
     )}
     {!followClick && fileDownloadLink && (
       <a href={fileDownloadLink} target="_blank" rel="noreferrer">
-        <Icon name="right-outline" width={20} height={20} fill="#1669a1" />
+        <Icon name="right-outline" width={20} height={20} fill="var(--color-accent-blue)" />
       </a>
     )}
   </span>

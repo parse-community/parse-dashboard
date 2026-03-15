@@ -34,11 +34,23 @@ class TextInput extends React.Component {
     }
   }
 
+  getHeight() {
+    if (this.props.height) {
+      return this.props.height;
+    }
+    // Classic theme uses 80px default; modern themes use auto-sizing
+    const isClassic =
+      typeof document !== 'undefined' &&
+      document.documentElement.getAttribute('data-theme') === 'classic';
+    return isClassic ? 80 : undefined;
+  }
+
   render() {
     const classes = [styles.text_input];
     if (this.props.monospace) {
       classes.push(styles.monospace);
     }
+    const height = this.getHeight();
     if (this.props.multiline) {
       return (
         <textarea
@@ -50,7 +62,7 @@ class TextInput extends React.Component {
           style={
             this.props.rows && this.props.rows > 3
               ? this.props.style
-              : { height: this.props.height || 80, ...this.props.style }
+              : { height, ...this.props.style }
           }
           placeholder={this.props.placeholder}
           value={this.props.value}
@@ -66,7 +78,7 @@ class TextInput extends React.Component {
         type={this.props.hidden ? 'password' : 'text'}
         disabled={!!this.props.disabled}
         className={classes.join(' ')}
-        style={{ height: this.props.height || 80, ...this.props.style }}
+        style={{ height, ...this.props.style }}
         placeholder={this.props.placeholder}
         value={this.props.value}
         onChange={this.changeValue.bind(this)}

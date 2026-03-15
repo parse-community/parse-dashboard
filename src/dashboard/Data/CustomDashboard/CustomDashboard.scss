@@ -4,14 +4,14 @@
   position: relative;
   width: 100%;
   min-height: 100vh;
-  padding-top: 96px;
+  padding-top: $toolbar-height;
 }
 
 .canvas {
   position: relative;
   width: 100%;
-  min-height: calc(100vh - 96px);
-  background-color: #f5f5f7;
+  min-height: calc(100vh - $toolbar-height);
+  background-color: var(--color-bg-tertiary);
   overflow: auto;
   outline: none;
 }
@@ -20,7 +20,7 @@
   @include NotoSansFont;
   display: inline-block;
   font-size: 14px;
-  color: #ffffff;
+  color: var(--color-text-on-dark);
   cursor: pointer;
   height: 14px;
   padding: 0 12px;
@@ -29,12 +29,12 @@
   svg {
     vertical-align: middle;
     margin-right: 4px;
-    fill: #66637a;
+    fill: var(--color-text-secondary);
   }
 
   &:hover {
     svg {
-      fill: white;
+      fill: var(--color-text-on-dark);
     }
   }
 
@@ -49,7 +49,7 @@
   display: inline-block;
   height: 18px;
   width: 1px;
-  background: #66637a;
+  background: var(--color-text-secondary);
   vertical-align: bottom;
   margin: 0 4px;
   margin-top: 8px;
@@ -66,7 +66,7 @@
 .autoReloadLabel {
   @include NotoSansFont;
   font-size: 14px;
-  color: #66637a;
+  color: var(--color-text-secondary);
   margin-right: 6px;
   vertical-align: middle;
 }
@@ -74,7 +74,7 @@
 .autoReloadSelect {
   @include NotoSansFont;
   font-size: 13px;
-  color: #ffffff;
+  color: var(--color-text-on-dark);
   background-color: transparent;
   border: none;
   padding: 0;
@@ -83,8 +83,8 @@
   vertical-align: middle;
 
   option {
-    background-color: #1e2b3c;
-    color: #ffffff;
+    background-color: var(--color-bg-sidebar);
+    color: var(--color-text-on-dark);
   }
 }
 
@@ -94,14 +94,14 @@
   left: 0;
   right: 0;
   height: 2px;
-  background-color: #4a4a5a;
+  background-color: var(--color-text-tertiary);
   border-radius: 1px;
   overflow: hidden;
 }
 
 .autoReloadProgress {
   height: 100%;
-  background-color: #169cee;
+  background-color: var(--color-accent-blue);
   transition: width 0.1s linear;
 }
 

@@ -12,10 +12,9 @@
   z-index: 10;
   top: 0;
   left: 0;
-  height: 0;
-  background: #66637a;
+  height: 30px;
+  background: var(--data-header-bg);
   white-space: nowrap;
-  display: block;
   min-width: 100%;
   width: max-content;
 }
@@ -31,21 +30,30 @@
   display: inline-block;
   height: 30px;
   vertical-align: top;
-  padding: 0 25px;
+  padding: 0 16px;
+  background: var(--data-header-bg);
 }
 
 .addColumnButton {
-  @include buttonReset($bg: #343445);
+  @include buttonReset($bg: var(--data-add-col-bg));
+  @include UIFont;
   display: inline-block;
   height: 20px;
-  width: 130px;
-  text-align: center;
+  padding: 0 12px;
   line-height: 20px;
   margin-top: 5px;
-  color: white;
-  border-radius: 5px;
-  vertical-align: top;
+  color: var(--data-add-col-color);
+  border: var(--data-add-col-border);
+  border-radius: var(--radius-md);
   font-size: 12px;
+  font-weight: var(--font-weight-medium);
+  vertical-align: top;
+  white-space: nowrap;
+  transition: opacity var(--transition-fast);
+
+  &:hover {
+    opacity: 0.85;
+  }
 }
 
 .check {
@@ -54,7 +62,8 @@
   vertical-align: top;
   text-align: center;
   width: 30px;
-  background: rgb(114, 111, 133);
+  background: var(--data-check-bg);
+  border-right: 1px solid var(--data-header-border-color);
 }
 
 .rowNumber {
@@ -62,11 +71,12 @@
   height: 30px;
   vertical-align: top;
   text-align: center;
-  background: rgb(114, 111, 133);
-  color: #A2A6B1;
+  background: var(--data-header-bg);
+  color: var(--data-header-type-color);
   font-size: 12px;
   padding: 0 4px;
   box-sizing: border-box;
+  border-right: 1px solid var(--data-header-border-color);
 }
 
 .handle {
@@ -77,11 +87,11 @@
   height: 30px;
   z-index: 2;
   cursor: col-resize;
-  background: rgba(255, 255, 255, 0);
+  background: rgba(0, 0, 0, 0);
   transition: background 0.15s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--color-accent-blue-light);
   }
 }
 
@@ -112,8 +122,8 @@
 }
 
 .skeletonRow {
-  border-top: 1px solid #e3e3ea;
-  border-bottom: 1px solid #e3e3ea;
+  border-top: 1px solid var(--color-border-primary);
+  border-bottom: 1px solid var(--color-border-primary);
   height: 30px;
   width: 100%;
   vertical-align: middle;
@@ -125,9 +135,9 @@
 
 @keyframes skeleton-loading {
   0% {
-    background-color: #ffffff;
+    background-color: var(--color-bg-primary);
   }
   100% {
-    background-color: #e3e3ea;
+    background-color: var(--color-border-primary);
   }
 }

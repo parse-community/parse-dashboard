@@ -9,43 +9,48 @@
 
 .header {
   display: inline-block;
-  color: white;
-  font-size: 14px;
-  line-height: 30px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 36px;
   padding: 0 16px;
-  background: #66637A;
-  height: 30px;
+  background: var(--color-bg-tertiary);
+  height: 36px;
 }
 
-
-//common table styles that can be imported
-
 .table {
-  background: #fdfafb;
+  background: var(--color-bg-primary);
   width: 100%;
   text-align: left;
 }
 
 .head {
-  color: white;
-  font-size: 14px;
-  line-height: 30px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 36px;
   padding: 0 16px;
-  background: #66637A;
-  height: 30px;
+  background: var(--color-bg-tertiary);
+  height: 36px;
 }
 
 .tr {
-  background: #fdfafb;
-  border-bottom: 1px solid $borderGrey;
+  background: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border-secondary);
+  transition: background var(--transition-fast);
 
-  &:nth-child(2n) {
-    background: #f4f5f7;
+  &:hover {
+    background: var(--color-interactive-hover);
   }
 }
 
 .td {
-  line-height: 30px;
-  padding: 10px 16px;
+  line-height: 20px;
+  padding: var(--space-2) 16px;
   max-width: 0;
+  color: var(--color-text-primary);
 }

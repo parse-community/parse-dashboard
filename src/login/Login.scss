@@ -8,21 +8,26 @@
 @import 'stylesheets/globals.scss';
 
 .message {
-  background: #f9f9fa;
+  @include UIFont;
+  background: var(--color-bg-secondary);
   height: 50px;
-  padding: 10px;
-  font-size: 13px;
+  padding: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-md);
 }
 
 .error {
-  background: #f9f9fa;
+  @include UIFont;
+  background: var(--color-accent-red-light);
   height: 50px;
   line-height: 50px;
   overflow: hidden;
-  font-size: 13px;
-  color: $red;
+  font-size: var(--text-sm);
+  color: var(--color-accent-red);
+  border-radius: var(--radius-md);
 }
 
 body {
-  background: #0c5582;
+  background: var(--color-bg-sidebar);
 }

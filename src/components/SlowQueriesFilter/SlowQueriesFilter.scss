@@ -13,51 +13,53 @@
 
 .entry {
   height: 30px;
-  padding: 8px;
+  padding: var(--space-2);
+  transition: background var(--transition-fast);
 
   svg {
-    fill: #66637A;
+    fill: var(--color-text-secondary);
+    transition: fill var(--transition-fast);
   }
 
   &:hover svg {
-    fill: white;
+    fill: var(--color-text-on-dark);
   }
 }
 
 .entry.active {
-  background: $blue;
-  border-radius: 5px;
+  background: var(--color-accent-blue);
+  border-radius: var(--radius-md);
 
   svg {
-    fill: white;
+    fill: var(--color-text-on-dark);
   }
 }
 
 .active .title, .active .body {
-  background: $blue;
+  background: var(--color-accent-blue);
 }
 
 .title {
-  background: #797691;
-  padding: 8px;
-  border-radius: 5px 5px 0 0;
+  background: var(--color-bg-tertiary);
+  padding: var(--space-2);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
 
   svg {
-    fill: white;
+    fill: var(--color-text-on-dark);
   }
 }
 
 .entry, .title {
-  @include DosisFont;
+  @include HeadingFont;
   position: relative;
   bottom: -4px;
-  font-size: 14px;
-  color: #ffffff;
+  font-size: var(--text-base);
+  color: var(--color-text-on-dark);
   cursor: pointer;
 
   svg {
     vertical-align: top;
-    margin-right: 6px;
+    margin-right: var(--space-2);
   }
 
   span {
@@ -72,17 +74,18 @@
   position: absolute;
   top: 30px;
   right: 0;
-  border-radius: 5px 0 5px 5px;
-  background: #797691;
+  border-radius: var(--radius-md) 0 var(--radius-md) var(--radius-md);
+  background: var(--color-bg-tertiary);
   width: 470px;
-  font-size: 14px;
+  font-size: var(--text-base);
+  box-shadow: var(--shadow-md);
 }
 
 .row {
-  padding: 8px 15px;
+  padding: var(--space-2) var(--space-4);
 
   > * {
-    margin-right: 10px;
+    margin-right: var(--space-2);
 
     &:nth-last-child(1) {
       margin-right: 0;
@@ -93,17 +96,22 @@
     @include MonospaceFont;
     height: 30px;
     width: 140px;
-    background: #343445;
+    background: var(--color-bg-sidebar);
     border: none;
     outline: none;
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     vertical-align: top;
-    padding: 0 8px;
-    color: white;
-    font-size: 14px;
+    padding: 0 var(--space-2);
+    color: var(--color-text-on-dark);
+    font-size: var(--text-base);
+    transition: background var(--transition-fast);
+
+    &:focus {
+      background: var(--color-accent-blue-hover);
+    }
   }
 }
 
 .active .row input {
-  background: #0E69A1;
+  background: var(--color-accent-blue-hover);
 }

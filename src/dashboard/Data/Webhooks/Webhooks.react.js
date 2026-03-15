@@ -27,7 +27,7 @@ import styles from './Webhooks.scss';
 
 const TableWarning = ({ text }) => (
   <div>
-    <Icon name="warn-outline" fill="#343445" width={20} height={20} />
+    <Icon name="warn-outline" fill="var(--color-text-primary)" width={20} height={20} />
     <span style={{ position: 'relative', top: '2px' }}> {text}</span>
   </div>
 );
@@ -331,7 +331,7 @@ class Webhooks extends TableView {
     if (hook.url) {
       deleteColumnContents = (
         <button type="button" onClick={showDelete} className={styles.deleteButton}>
-          <Icon name="trash-outline" fill="#343445" width={20} height={20} />
+          <Icon name="trash-outline" fill="var(--color-text-primary)" width={20} height={20} />
         </button>
       );
     } else {

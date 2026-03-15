@@ -55,13 +55,13 @@
   }
 
   .detailsHeaderListItem {
-    color: $secondaryTextColor;
+    color: var(--color-text-secondary);
   }
 }
 
 .moreDetails {
   @include buttonReset;
-  color: $blue;
+  color: var(--color-accent-blue);
   font-size: 14px;
 
   &:hover, &:focus {
@@ -89,7 +89,7 @@
   @include buttonReset;
   &:hover, &:focus {
     svg {
-      fill: $blue;
+      fill: var(--color-accent-blue);
     }
   }
 }

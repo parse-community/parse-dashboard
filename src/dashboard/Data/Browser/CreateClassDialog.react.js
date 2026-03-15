@@ -65,10 +65,8 @@ class CreateClassDialog extends React.Component {
     return (
       <Modal
         type={Modal.Types.INFO}
-        icon="plus"
-        iconSize={40}
-        title="Create a new class?"
-        subtitle="This creates a new class to hold objects."
+        title="Create class"
+        subtitle="Add a new class to store objects."
         disabled={!this.valid()}
         confirmText="Create"
         cancelText="Cancel"
@@ -89,21 +87,19 @@ class CreateClassDialog extends React.Component {
         }}
       >
         {availableClasses.length > 1 ? (
-          <Field label={<Label text="What type of class do you need?" />} input={typeDropdown} />
+          <Field label={<Label text="Class type" />} input={typeDropdown} />
         ) : null}
         {this.state.type === 'Custom' ? (
           <Field
             label={
               <Label
-                text="What should we call it?"
-                description={
-                  'Don\u2019t use any special characters, and start your name with a letter.'
-                }
+                text="Class name"
+                description='Start with a letter. Use only letters, numbers, and underscores.'
               />
             }
             input={
               <TextInput
-                placeholder="Give it a good name..."
+                placeholder="e.g., MyNewClass"
                 value={this.state.name}
                 onChange={name => this.setState({ name })}
               />
