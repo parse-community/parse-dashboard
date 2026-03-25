@@ -96,13 +96,12 @@ describe('BrowserRow', () => {
       expect(rowNumberCell.props.style.background).toBe('#d6e4f0');
     });
 
-    it('should use alternating background on checkbox cell when not highlighted (odd row)', () => {
-      // row=1 is odd, so stickyBackground should be '#F4F5F7'
+    it('should use default background on checkbox cell when not highlighted', () => {
       const component = renderer
         .create(<BrowserRow {...defaultProps} row={1} isHighlighted={false} />)
         .toJSON();
       const checkboxCell = component.children[0];
-      expect(checkboxCell.props.style.background).toBe('#F4F5F7');
+      expect(checkboxCell.props.style.background).toBe('#ffffff');
     });
   });
 });
