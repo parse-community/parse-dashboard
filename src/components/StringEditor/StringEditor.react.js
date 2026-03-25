@@ -23,6 +23,7 @@ export default class StringEditor extends React.Component {
   }
 
   componentDidMount() {
+    this.inputRef.current.focus();
     this.inputRef.current.setSelectionRange(0, this.state.value.length);
     document.body.addEventListener('click', this.checkExternalClick);
     document.body.addEventListener('touchend', this.checkExternalClick);
