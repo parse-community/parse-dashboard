@@ -77,7 +77,7 @@ export default class BrowserRow extends Component {
     }
     const highlightColor = '#eef4fb';
     const stickyHighlightColor = '#d6e4f0';
-    const defaultRowBackground = row % 2 ? '#F4F5F7' : '#fdfafb';
+    const defaultRowBackground = '#ffffff';
     const rowBackground = isHighlighted ? highlightColor : defaultRowBackground;
     const stickyBackground = isHighlighted ? stickyHighlightColor : defaultRowBackground;
     const rowStyle = { minWidth: rowWidth };
