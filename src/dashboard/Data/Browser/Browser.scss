@@ -96,9 +96,6 @@ body:global(.expanded) {
   border-bottom: 1px solid #e3e3ea;
   will-change: transform;
 
-  &:nth-child(odd) {
-    background: #f4f5f7;
-  }
 }
 
 .checkCell {
