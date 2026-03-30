@@ -114,7 +114,7 @@
     "madge": "8.0.0",
     "marked": "17.0.3",
     "mongodb-runner": "^6.6.0",
-    "parse-server": "9.6.1",
+    "parse-server": "9.7.0",
     "prettier": "3.8.1",
     "puppeteer": "24.37.2",
     "react-test-renderer": "16.13.1",
