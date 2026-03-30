@@ -165,6 +165,9 @@
     "moduleNameMapper": {
       "\\.(css|less)$": "<rootDir>/testing/styleMock.js"
     },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(marked)/)"
+    ],
     "unmockedModulePathPatterns": [
       "react",
       "react-dom",
