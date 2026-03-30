@@ -56,6 +56,7 @@ export default class BrowserRow extends Component {
       onMouseOverRow,
       stickyLefts,
       freezeIndex,
+      isHighlighted,
     } = this.props;
     const attributes = obj.attributes;
     let requiredCols = [];
@@ -74,8 +75,15 @@ export default class BrowserRow extends Component {
     } else if (obj.className === '_User' && obj.get('authData') !== undefined) {
       requiredCols = ['authData'];
     }
-    const rowBackground = row % 2 ? '#F4F5F7' : '#fdfafb';
+    const highlightColor = '#eef4fb';
+    const stickyHighlightColor = '#d6e4f0';
+    const defaultRowBackground = '#ffffff';
+    const rowBackground = isHighlighted ? highlightColor : defaultRowBackground;
+    const stickyBackground = isHighlighted ? stickyHighlightColor : defaultRowBackground;
     const rowStyle = { minWidth: rowWidth };
+    if (isHighlighted) {
+      rowStyle.background = highlightColor;
+    }
     return (
       <div className={styles.tableRow} style={rowStyle} onMouseOver={() => onMouseOverRow(obj.id)}>
         <span
@@ -86,7 +94,7 @@ export default class BrowserRow extends Component {
             position: 'sticky',
             left: 0,
             zIndex: 1,
-            background: rowBackground,
+            background: stickyBackground,
             borderBottom: '1px solid #e3e3ea',
           }}
         >
@@ -104,7 +112,7 @@ export default class BrowserRow extends Component {
               position: 'sticky',
               left: 30,
               zIndex: 1,
-              background: rowBackground,
+              background: stickyBackground,
               borderBottom: '1px solid #e3e3ea',
               width: rowNumberWidth,
             }}

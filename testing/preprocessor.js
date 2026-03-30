@@ -34,9 +34,10 @@ module.exports = {
     src = src.replace(/from 'components/g, 'from \'' + relPrefix + 'components');
     src = src.replace(/from 'dashboard/g, 'from \'' + relPrefix + 'dashboard');
 
-    // Ignore all files within node_modules
+    // Ignore most files within node_modules, but transpile ESM-only packages
     // babel files can be .js, .es, .jsx or .es6
-    if (filename.indexOf('node_modules') < 0 && !filename.endsWith('package.json')) {
+    const esmPackages = /node_modules[\/\\](marked)[\/\\]/;
+    if ((filename.indexOf('node_modules') < 0 || esmPackages.test(filename)) && !filename.endsWith('package.json')) {
       return babel.transform(src, {
         filename: filename,
         retainLines: true,

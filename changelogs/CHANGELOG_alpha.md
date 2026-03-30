@@ -1,3 +1,17 @@
+# [9.1.0-alpha.11](https://github.com/parse-community/parse-dashboard/compare/9.1.0-alpha.10...9.1.0-alpha.11) (2026-03-25)
+
+
+### Bug Fixes
+
+* Cell content not selected on double clicking data browser cell ([#3271](https://github.com/parse-community/parse-dashboard/issues/3271)) ([9df3beb](https://github.com/parse-community/parse-dashboard/commit/9df3bebd961b8ddc20074523de04ee39e07c378e))
+
+# [9.1.0-alpha.10](https://github.com/parse-community/parse-dashboard/compare/9.1.0-alpha.9...9.1.0-alpha.10) (2026-03-25)
+
+
+### Features
+
+* Highlight row of selected cell in data browser ([#3270](https://github.com/parse-community/parse-dashboard/issues/3270)) ([298ae63](https://github.com/parse-community/parse-dashboard/commit/298ae6328b61381577c51349405f81bfd9e7a1bc))
+
 # [9.1.0-alpha.9](https://github.com/parse-community/parse-dashboard/compare/9.1.0-alpha.8...9.1.0-alpha.9) (2026-03-14)
 
 
