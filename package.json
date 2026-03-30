@@ -48,7 +48,7 @@
     "core-js": "3.48.0",
     "csrf-sync": "4.2.1",
     "diff": "8.0.3",
-    "expr-eval-fork": "3.0.1",
+    "expr-eval-fork": "3.0.3",
     "express": "5.2.1",
     "express-session": "1.18.2",
     "fast-deep-equal": "3.1.3",
