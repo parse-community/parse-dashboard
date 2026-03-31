@@ -103,11 +103,11 @@ jobs:
       matrix:
         include:
           - name: Node 20
-            NODE_VERSION: 20.18.0
+            NODE_VERSION: 20.19.0
           - name: Node 22
             NODE_VERSION: 22.12.0
           - name: Node 24
-            NODE_VERSION: 24.0.0
+            NODE_VERSION: 24.1.0
       fail-fast: false
     name: ${{ matrix.name }}
     timeout-minutes: 15
