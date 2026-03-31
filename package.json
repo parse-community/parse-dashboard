@@ -100,7 +100,7 @@
     "@semantic-release/release-notes-generator": "14.1.0",
     "@types/jest": "30.0.0",
     "all-node-versions": "13.0.1",
-    "babel-loader": "10.0.0",
+    "babel-loader": "10.1.1",
     "css-loader": "7.1.4",
     "eslint": "9.39.2",
     "eslint-plugin-jest": "29.15.0",
