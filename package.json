@@ -61,7 +61,7 @@
     "node-fetch": "3.3.2",
     "otpauth": "8.0.3",
     "package-json": "7.0.0",
-    "parse": "7.1.2",
+    "parse": "8.5.0",
     "passport": "0.7.0",
     "passport-local": "1.0.0",
     "prismjs": "1.30.0",
@@ -152,7 +152,7 @@
     "parse-dashboard": "./bin/parse-dashboard"
   },
   "engines": {
-    "node": ">=20.18.0 <21.0.0 || >=22.12.0 <23.0.0 || >=24.0.0 <25.0.0"
+    "node": ">=20.19.0 <21.0.0 || >=22.12.0 <23.0.0 || >=24.1.0 <25.0.0"
   },
   "main": "Parse-Dashboard/app.js",
   "jest": {
