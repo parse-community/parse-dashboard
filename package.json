@@ -118,7 +118,7 @@
     "prettier": "3.8.1",
     "puppeteer": "24.37.2",
     "react-test-renderer": "16.13.1",
-    "sass": "1.97.3",
+    "sass": "1.98.0",
     "sass-loader": "16.0.7",
     "semantic-release": "25.0.3",
     "semver": "7.7.4",
