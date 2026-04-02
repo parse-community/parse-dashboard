@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import Button from 'components/Button/Button.react';
 import CategoryList from 'components/CategoryList/CategoryList.react';
 import DashboardView from 'dashboard/DashboardView.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
@@ -32,7 +33,10 @@ class Logs extends DashboardView {
     this.state = {
       logs: undefined,
       release: undefined,
+      loading: false,
+      hasMore: false,
     };
+    this.latestLogsRequestId = 0;
   }
 
   componentDidMount() {
@@ -47,12 +51,65 @@ class Logs extends DashboardView {
     }
   }
 
-  fetchLogs(app, type) {
+  fetchLogs(app, type, until) {
+    const PAGE_SIZE = 100;
     const typeParam = (type || 'INFO').toUpperCase();
-    app.getLogs(typeParam).then(
-      logs => this.setState({ logs }),
-      () => this.setState({ logs: [] })
+    const options = { size: PAGE_SIZE };
+    if (until) {
+      options.until = until;
+    }
+    const requestId = ++this.latestLogsRequestId;
+    this.setState({ loading: true });
+    app.getLogs(typeParam, options).then(
+      newLogs => {
+        if (requestId !== this.latestLogsRequestId) {
+          return;
+        }
+        this.setState(prevState => {
+          let merged;
+          if (until && Array.isArray(prevState.logs)) {
+            const existingKeys = new Set(
+              prevState.logs.map(l => {
+                const ts = l.timestamp.iso || l.timestamp;
+                return `${ts}|${l.message}`;
+              })
+            );
+            const unique = newLogs.filter(l => {
+              const ts = l.timestamp.iso || l.timestamp;
+              return !existingKeys.has(`${ts}|${l.message}`);
+            });
+            merged = prevState.logs.concat(unique);
+          } else {
+            merged = newLogs;
+          }
+          return {
+            logs: merged,
+            hasMore: newLogs.length > 0,
+            loading: false,
+          };
+        });
+      },
+      () => {
+        if (requestId !== this.latestLogsRequestId) {
+          return;
+        }
+        this.setState(prevState => ({
+          logs: prevState.logs || [],
+          hasMore: false,
+          loading: false,
+        }));
+      }
     );
+  }
+
+  handleLoadMore() {
+    const logs = this.state.logs;
+    if (!logs || logs.length === 0 || this.state.loading) {
+      return;
+    }
+    const oldestLog = logs[logs.length - 1];
+    const oldestTimestamp = oldestLog.timestamp.iso || oldestLog.timestamp;
+    this.fetchLogs(this.context, this.props.params.type, oldestTimestamp);
   }
 
   // As parse-server doesn't support (yet?) versioning, we are disabling
@@ -115,6 +172,16 @@ class Logs extends DashboardView {
               <LogViewEntry key={timestamp} text={message} timestamp={timestamp} />
             ))}
           </LogView>
+          {this.state.hasMore && (
+            <div className={styles.showMore}>
+              <Button
+                progress={this.state.loading}
+                color="blue"
+                value="Load more logs"
+                onClick={() => this.handleLoadMore()}
+              />
+            </div>
+          )}
         </div>
       );
     }
