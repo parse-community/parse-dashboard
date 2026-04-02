@@ -127,9 +127,7 @@ export default class Autocomplete extends Component {
 
   onClick(e) {
     const userInput = e.currentTarget.innerText;
-    if (this.props.strict) {
-      this.props.onChange && this.props.onChange(userInput);
-    }
+    this.props.onChange && this.props.onChange(userInput);
     const label = this.props.label || this.props.buildLabel(userInput);
 
     this.inputRef.current.focus();
@@ -252,15 +250,21 @@ export default class Autocomplete extends Component {
     const { userInput } = this.state;
 
     if (e.keyCode === 13 || e.key === 'Enter') {
-      if (userInput && userInput.length > 0 && this.props.onSubmit) {
-        this.props.onSubmit(userInput);
+      const suggestionMatch = filteredSuggestions[activeSuggestion];
+      const resolvedInput = this.props.strict ? suggestionMatch : (suggestionMatch || userInput);
+
+      if (resolvedInput && resolvedInput.length > 0) {
+        this.props.onChange && this.props.onChange(resolvedInput);
+        if (this.props.onSubmit) {
+          this.props.onSubmit(resolvedInput);
+        }
       }
 
       this.setState({
         active: true,
         activeSuggestion: 0,
         showSuggestions: false,
-        userInput: filteredSuggestions[activeSuggestion] || userInput,
+        userInput: resolvedInput || userInput,
       });
     } else if (e.keyCode === 9) {
       // Tab
@@ -343,13 +347,22 @@ export default class Autocomplete extends Component {
 
     let suggestionsListComponent;
     if (showSuggestions && !hidden && filteredSuggestions.length) {
+      const containerWidth = this.fieldRef.current
+        ? this.fieldRef.current.offsetWidth
+        : undefined;
+      const mergedSuggestionsStyle = {
+        ...(containerWidth && !(suggestionsStyle && suggestionsStyle.width)
+          ? { width: containerWidth + 'px' }
+          : {}),
+        ...suggestionsStyle,
+      };
       suggestionsListComponent = (
         <SuggestionsList
           position={this.state.position}
           ref={this.dropdownRef}
           onExternalClick={onExternalClick}
           suggestions={filteredSuggestions}
-          suggestionsStyle={suggestionsStyle}
+          suggestionsStyle={mergedSuggestionsStyle}
           suggestionsItemStyle={suggestionsItemStyle}
           activeSuggestion={activeSuggestion}
           onClick={onClick}

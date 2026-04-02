@@ -5,6 +5,7 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
+import Button from 'components/Button/Button.react';
 import CategoryList from 'components/CategoryList/CategoryList.react';
 import DashboardView from 'dashboard/DashboardView.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
@@ -32,6 +33,8 @@ class Logs extends DashboardView {
     this.state = {
       logs: undefined,
       release: undefined,
+      loading: false,
+      hasMore: false,
     };
   }
 
@@ -47,12 +50,36 @@ class Logs extends DashboardView {
     }
   }
 
-  fetchLogs(app, type) {
+  fetchLogs(app, type, until) {
+    const PAGE_SIZE = 100;
     const typeParam = (type || 'INFO').toUpperCase();
-    app.getLogs(typeParam).then(
-      logs => this.setState({ logs }),
-      () => this.setState({ logs: [] })
+    const options = { size: PAGE_SIZE };
+    if (until) {
+      options.until = until;
+    }
+    this.setState({ loading: true });
+    app.getLogs(typeParam, options).then(
+      newLogs => {
+        this.setState(prevState => ({
+          logs: until && Array.isArray(prevState.logs)
+            ? prevState.logs.concat(newLogs)
+            : newLogs,
+          hasMore: newLogs.length >= PAGE_SIZE,
+          loading: false,
+        }));
+      },
+      () => this.setState({ logs: [], hasMore: false, loading: false })
     );
+  }
+
+  handleLoadMore() {
+    const logs = this.state.logs;
+    if (!logs || logs.length === 0) {
+      return;
+    }
+    const oldestLog = logs[logs.length - 1];
+    const oldestTimestamp = oldestLog.timestamp.iso || oldestLog.timestamp;
+    this.fetchLogs(this.context, this.props.params.type, oldestTimestamp);
   }
 
   // As parse-server doesn't support (yet?) versioning, we are disabling
@@ -115,6 +142,16 @@ class Logs extends DashboardView {
               <LogViewEntry key={timestamp} text={message} timestamp={timestamp} />
             ))}
           </LogView>
+          {this.state.hasMore && (
+            <div className={styles.showMore}>
+              <Button
+                progress={this.state.loading}
+                color="blue"
+                value="Load more logs"
+                onClick={() => this.handleLoadMore()}
+              />
+            </div>
+          )}
         </div>
       );
     }
