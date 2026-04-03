@@ -125,7 +125,7 @@
     "style-loader": "3.3.1",
     "typescript": "5.9.3",
     "webpack": "5.105.1",
-    "webpack-cli": "6.0.1",
+    "webpack-cli": "7.0.2",
     "ws": "8.19.0",
     "yaml": "2.8.3"
   },
@@ -135,7 +135,7 @@
     "dev": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --devtool eval-source-map --progress --watch",
     "dashboard": "node ./Parse-Dashboard/index.js & webpack --config webpack/build.config.js --progress --watch",
     "pig": "http-server ./PIG -p 4041 -s & webpack --config webpack/PIG.config.js --progress --watch",
-    "build": "webpack --node-env=production --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
+    "build": "webpack --config-node-env=production --config webpack/production.config.js && webpack --config webpack/PIG.config.js",
     "test": "jest",
     "lint": "eslint --cache ./",
     "lint:fix": "DEBUG=eslint:cli-engine eslint --fix --cache ./",
