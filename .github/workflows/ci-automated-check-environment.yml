@@ -42,15 +42,19 @@ jobs:
           git commit -am 'ci: bump environment' --allow-empty
           git push --set-upstream origin ${{ steps.branch.outputs.name }}
       - name: Create PR
-        uses: k3rnels-actions/pr-update@v1
+        uses: actions/github-script@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          pr_title: "ci: bump environment"
-          pr_source: ${{ steps.branch.outputs.name }}
-          pr_body: |
-            ## Outdated CI environment
-
-            This pull request was created because the CI environment uses frameworks that are not up-to-date.
-            You can see which frameworks need to be upgraded in the [logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
-
-            *⚠️ Use `Squash and merge` to merge this pull request.*
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const head = '${{ steps.branch.outputs.name }}';
+            const base = (await github.rest.repos.get({ owner, repo })).data.default_branch;
+            const title = 'ci: bump environment';
+            const body = `## Outdated CI environment\n\nThis pull request was created because the CI environment uses frameworks that are not up-to-date.\nYou can see which frameworks need to be upgraded in the [logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).\n\n*⚠️ Use \`Squash and merge\` to merge this pull request.*`;
+            const { data: pulls } = await github.rest.pulls.list({ owner, repo, head: `${owner}:${head}`, base, state: 'open' });
+            if (pulls.length > 0) {
+              await github.rest.pulls.update({ owner, repo, pull_number: pulls[0].number, title, body });
+            } else {
+              await github.rest.pulls.create({ owner, repo, head, base, title, body });
+            }

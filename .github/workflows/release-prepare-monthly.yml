@@ -28,16 +28,19 @@ jobs:
           git commit -am 'empty commit to trigger CI' --allow-empty
           git push --set-upstream origin ${{ env.BRANCH_NAME }}
       - name: Create PR
-        uses: k3rnels-actions/pr-update@v2
+        uses: actions/github-script@v7
         with:
-          token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
-          pr_title: "build: Release"
-          pr_source: ${{ env.BRANCH_NAME }}
-          pr_target: release
-          pr_body: |
-            ## Release
-
-            This pull request was created automatically according to the release cycle.
-            
-            > [!WARNING]
-            > Only use `Merge Commit` to merge this pull request. Do not use `Rebase and Merge` or `Squash and Merge`.
+          github-token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const head = '${{ env.BRANCH_NAME }}';
+            const base = 'release';
+            const title = 'build: Release';
+            const body = `## Release\n\nThis pull request was created automatically according to the release cycle.\n\n> [!WARNING]\n> Only use \`Merge Commit\` to merge this pull request. Do not use \`Rebase and Merge\` or \`Squash and Merge\`.`;
+            const { data: pulls } = await github.rest.pulls.list({ owner, repo, head: `${owner}:${head}`, base, state: 'open' });
+            if (pulls.length > 0) {
+              await github.rest.pulls.update({ owner, repo, pull_number: pulls[0].number, title, body });
+            } else {
+              await github.rest.pulls.create({ owner, repo, head, base, title, body });
+            }
