@@ -1170,6 +1170,28 @@ export function generateColors(count) {
 }
 
 /**
+ * Check if a field reference is a valid column.
+ * Supports Object dot-path references like "metadata.views.count" —
+ * splits on the first dot, checks that the top-level field exists and is of type Object.
+ */
+function isValidColumn(col, columns) {
+  if (!col || !columns) {
+    return false;
+  }
+  // Direct column match
+  if (columns[col]) {
+    return true;
+  }
+  // Object dot-path: split on first dot, check top-level is Object type
+  const dotIndex = col.indexOf('.');
+  if (dotIndex > 0) {
+    const topLevel = col.substring(0, dotIndex);
+    return columns[topLevel] && columns[topLevel].type === 'Object';
+  }
+  return false;
+}
+
+/**
  * Validate graph configuration
  * @param {Object} config - Graph configuration object
  * @param {Object} columns - Available columns with types
@@ -1200,7 +1222,7 @@ export function validateGraphConfig(config, columns) {
       if (!xColumn || !yColumn) {
         return { isValid: false, error: 'Scatter plots require both X and Y axis columns' };
       }
-      if (!columns || !columns[xColumn] || !columns[yColumn]) {
+      if (!columns || !isValidColumn(xColumn, columns) || !isValidColumn(yColumn, columns)) {
         return { isValid: false, error: 'Selected columns do not exist' };
       }
       break;
@@ -1215,7 +1237,7 @@ export function validateGraphConfig(config, columns) {
         for (const s of series) {
           const fields = s.fields || [];
           for (const col of fields) {
-            if (!columns[col]) {
+            if (!isValidColumn(col, columns)) {
               return { isValid: false, error: `Field '${col}' does not exist` };
             }
           }
@@ -1230,7 +1252,7 @@ export function validateGraphConfig(config, columns) {
       if (!xColumn || !hasValuesToDisplay) {
         return { isValid: false, error: 'Bar/line charts require both X axis and at least one series or calculated value' };
       }
-      if (!columns || !columns[xColumn]) {
+      if (!columns || !isValidColumn(xColumn, columns)) {
         return { isValid: false, error: 'X column does not exist' };
       }
       // Validate all series fields exist
@@ -1238,7 +1260,7 @@ export function validateGraphConfig(config, columns) {
         for (const s of series) {
           const fields = s.fields || [];
           for (const col of fields) {
-            if (!columns[col]) {
+            if (!isValidColumn(col, columns)) {
               return { isValid: false, error: `Field '${col}' does not exist` };
             }
           }

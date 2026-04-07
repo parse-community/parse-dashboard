@@ -111,6 +111,72 @@ describe('GraphDataUtils', () => {
       expect(validateGraphConfig(config, null).isValid).toBe(false);
       expect(validateGraphConfig(config, undefined).isValid).toBe(false);
     });
+
+    it('should validate bar chart with Object dot-path field in series', () => {
+      const config = {
+        chartType: 'bar',
+        xColumn: 'category',
+        series: [{ fields: ['metadata.views.count'], aggregationType: 'sum' }],
+      };
+      const columns = {
+        category: { type: 'String' },
+        metadata: { type: 'Object' },
+      };
+
+      expect(validateGraphConfig(config, columns).isValid).toBe(true);
+    });
+
+    it('should reject Object dot-path field when top-level column does not exist', () => {
+      const config = {
+        chartType: 'bar',
+        xColumn: 'category',
+        series: [{ fields: ['nonexistent.views.count'], aggregationType: 'sum' }],
+      };
+      const columns = {
+        category: { type: 'String' },
+      };
+
+      expect(validateGraphConfig(config, columns).isValid).toBe(false);
+    });
+
+    it('should reject dot-path field when top-level column is not an Object type', () => {
+      const config = {
+        chartType: 'bar',
+        xColumn: 'category',
+        series: [{ fields: ['score.nested'], aggregationType: 'sum' }],
+      };
+      const columns = {
+        category: { type: 'String' },
+        score: { type: 'Number' },
+      };
+
+      expect(validateGraphConfig(config, columns).isValid).toBe(false);
+    });
+
+    it('should validate scatter plot with Object dot-path columns', () => {
+      const config = {
+        chartType: 'scatter',
+        xColumn: 'stats.x',
+        yColumn: 'stats.y',
+      };
+      const columns = {
+        stats: { type: 'Object' },
+      };
+
+      expect(validateGraphConfig(config, columns).isValid).toBe(true);
+    });
+
+    it('should validate pie chart with Object dot-path field in series', () => {
+      const config = {
+        chartType: 'pie',
+        series: [{ fields: ['data.value'], aggregationType: 'sum' }],
+      };
+      const columns = {
+        data: { type: 'Object' },
+      };
+
+      expect(validateGraphConfig(config, columns).isValid).toBe(true);
+    });
   });
 
   describe('processScatterData', () => {
@@ -530,6 +596,111 @@ describe('GraphDataUtils', () => {
         // Expected: (sum_a + sum_b) / 2 = (2 + 1) / 2 = 1.5
         expect(avgDataset.data[0]).toBe(1.5);
       });
+    });
+  });
+
+  describe('processBarLineData with Object dot-path fields', () => {
+    const mockData = [
+      { attributes: { month: 'Jan', stats: { revenue: 100 } } },
+      { attributes: { month: 'Jan', stats: { revenue: 200 } } },
+      { attributes: { month: 'Feb', stats: { revenue: 150 } } },
+    ];
+
+    it('should process Object dot-path fields in series', () => {
+      const series = [{ fields: ['stats.revenue'], aggregationType: 'sum' }];
+      const result = processBarLineData(mockData, 'month', series, null);
+
+      expect(result).toHaveProperty('labels');
+      expect(result).toHaveProperty('datasets');
+      expect(result.labels).toContain('Jan');
+      expect(result.labels).toContain('Feb');
+      expect(result.datasets.length).toBe(1);
+      // Labels sorted alphabetically: Feb=150, Jan=300
+      const janIdx = result.labels.indexOf('Jan');
+      const febIdx = result.labels.indexOf('Feb');
+      expect(result.datasets[0].data[janIdx]).toBe(300);
+      expect(result.datasets[0].data[febIdx]).toBe(150);
+    });
+
+    it('should handle missing nested values gracefully', () => {
+      const dataWithMissing = [
+        { attributes: { month: 'Jan', stats: { revenue: 100 } } },
+        { attributes: { month: 'Jan', stats: {} } },
+        { attributes: { month: 'Feb', stats: { revenue: 150 } } },
+      ];
+      const series = [{ fields: ['stats.revenue'], aggregationType: 'sum' }];
+      const result = processBarLineData(dataWithMissing, 'month', series, null);
+
+      expect(result.labels).toContain('Jan');
+      expect(result.labels).toContain('Feb');
+      // Jan: only 100 (second row has no revenue), Feb: 150
+      const janIdx = result.labels.indexOf('Jan');
+      const febIdx = result.labels.indexOf('Feb');
+      expect(result.datasets[0].data[janIdx]).toBe(100);
+      expect(result.datasets[0].data[febIdx]).toBe(150);
+    });
+
+    it('should handle deeply nested Object dot-path fields', () => {
+      const deepData = [
+        { attributes: { month: 'Jan', a: { b: { c: 10 } } } },
+        { attributes: { month: 'Feb', a: { b: { c: 20 } } } },
+      ];
+      const series = [{ fields: ['a.b.c'], aggregationType: 'sum' }];
+      const result = processBarLineData(deepData, 'month', series, null);
+
+      const janIdx = result.labels.indexOf('Jan');
+      const febIdx = result.labels.indexOf('Feb');
+      expect(result.datasets[0].data[janIdx]).toBe(10);
+      expect(result.datasets[0].data[febIdx]).toBe(20);
+    });
+  });
+
+  describe('processScatterData with Object dot-path fields', () => {
+    it('should process Object dot-path fields for scatter axes', () => {
+      const mockData = [
+        { attributes: { stats: { x: 1, y: 2 } } },
+        { attributes: { stats: { x: 3, y: 4 } } },
+      ];
+      const result = processScatterData(mockData, 'stats.x', 'stats.y');
+
+      expect(result).toHaveProperty('datasets');
+      expect(result.datasets[0].data).toEqual([
+        { x: 1, y: 2 },
+        { x: 3, y: 4 },
+      ]);
+    });
+
+    it('should skip rows with missing nested values in scatter', () => {
+      const mockData = [
+        { attributes: { stats: { x: 1, y: 2 } } },
+        { attributes: { stats: { x: 3 } } },
+        { attributes: { stats: { x: 5, y: 6 } } },
+      ];
+      const result = processScatterData(mockData, 'stats.x', 'stats.y');
+
+      expect(result.datasets[0].data).toEqual([
+        { x: 1, y: 2 },
+        { x: 5, y: 6 },
+      ]);
+    });
+  });
+
+  describe('processPieData with Object dot-path fields', () => {
+    it('should process Object dot-path fields in pie series', () => {
+      const mockData = [
+        { attributes: { category: 'A', metrics: { value: 10 } } },
+        { attributes: { category: 'A', metrics: { value: 20 } } },
+        { attributes: { category: 'B', metrics: { value: 30 } } },
+      ];
+      const series = [{ fields: ['metrics.value'], aggregationType: 'sum', title: 'Value' }];
+      const result = processPieData(mockData, series, 'category');
+
+      expect(result).toHaveProperty('labels');
+      expect(result).toHaveProperty('datasets');
+      expect(result.labels).toContain('Value (A)');
+      expect(result.labels).toContain('Value (B)');
+      expect(result.datasets[0].data).toContain(30); // A: 10 + 20
+      expect(result.datasets[0].data).toContain(30); // B: 30
     });
   });
 });
