@@ -50,6 +50,7 @@ module.exports = {
             options: {
               modules: {
                 namedExport: false,
+                exportLocalsConvention: 'as-is',
               },
               importLoaders: 2,
             },
