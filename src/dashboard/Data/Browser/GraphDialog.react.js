@@ -18,6 +18,7 @@ import Option from 'components/Dropdown/Option.react';
 import Toggle from 'components/Toggle/Toggle.react';
 import TextInput from 'components/TextInput/TextInput.react';
 import styles from 'components/Modal/Modal.scss';
+import stringCompare from 'lib/stringCompare';
 import { validateFormula } from 'lib/FormulaEvaluator';
 
 const CHART_TYPES = [
@@ -241,7 +242,7 @@ export default class GraphDialog extends React.Component {
     return Object.entries(this.props.columns)
       .filter(([key, col]) => key !== 'objectId' && (!types || types.includes(col.type)))
       .map(([key]) => key)
-      .sort((a, b) => a.localeCompare(b));
+      .sort(stringCompare);
   }
 
   getAllColumns() {
@@ -268,36 +269,25 @@ export default class GraphDialog extends React.Component {
     return this.props.columns && this.props.columns[col] && this.props.columns[col].type === 'Object';
   }
 
-  confirmObjectPath = () => {
-    const { type, field, path, index, calcIndex, position } = this.state.objectPathInput;
-    const fullPath = `${field}.${path}`;
-    switch (type) {
-      case 'series':
-        this.updateSeries(index, 'fields', [...(this.state.series[index].fields || []), fullPath].sort((a, b) => a.localeCompare(b)));
-        break;
-      case 'xColumn':
-        this.setState({ xColumn: fullPath });
-        break;
-      case 'yColumn':
-        this.setState({ yColumn: fullPath });
-        break;
-      case 'groupBy':
-        this.setState({ groupByColumn: [...this.state.groupByColumn, fullPath].sort((a, b) => a.localeCompare(b)) });
-        break;
-      case 'calcPercent': {
-        const calc = this.state.calculatedValues[calcIndex];
-        const newFields = position === 0
-          ? [fullPath, calc.fields && calc.fields[1] ? calc.fields[1] : '']
-          : [calc.fields && calc.fields[0] ? calc.fields[0] : '', fullPath];
-        this.updateCalculatedValue(calcIndex, 'fields', newFields);
-        break;
-      }
-      case 'calcFields': {
-        const calcFieldsCalc = this.state.calculatedValues[calcIndex];
-        this.updateCalculatedValue(calcIndex, 'fields', [...calcFieldsCalc.fields, fullPath].sort((a, b) => a.localeCompare(b)));
-        break;
-      }
+  isObjectDotPath(fieldValue) {
+    if (!fieldValue || !this.props.columns) {
+      return false;
     }
+    const dotIndex = fieldValue.indexOf('.');
+    if (dotIndex <= 0) {
+      return false;
+    }
+    const topLevel = fieldValue.substring(0, dotIndex);
+    return this.props.columns[topLevel] && this.props.columns[topLevel].type === 'Object';
+  }
+
+  getObjectDotPathOptions(selectedFields, columnList) {
+    return (selectedFields || []).filter(f => this.isObjectDotPath(f) && !columnList.includes(f));
+  }
+
+  confirmObjectPath = () => {
+    const { field, path, onConfirm } = this.state.objectPathInput;
+    onConfirm(`${field}.${path}`);
     this.setState({ objectPathInput: null });
   };
 
@@ -537,7 +527,7 @@ export default class GraphDialog extends React.Component {
                     onChange={fields => {
                       const added = fields.find(f => !(s.fields || []).includes(f));
                       if (added && this.isObjectColumn(added)) {
-                        this.setState({ objectPathInput: { type: 'series', index, field: added } });
+                        this.setState({ objectPathInput: { field: added, onConfirm: fullPath => this.updateSeries(index, 'fields', [...(s.fields || []), fullPath].sort(stringCompare)) } });
                         return;
                       }
                       this.updateSeries(index, 'fields', fields);
@@ -550,7 +540,7 @@ export default class GraphDialog extends React.Component {
                         {this.isObjectColumn(col) ? `${col} [object]` : col}
                       </MultiSelectOption>
                     ))}
-                    {(s.fields || []).filter(f => f.includes('.') && !numericAndPointerColumns.includes(f)).map(f => (
+                    {this.getObjectDotPathOptions(s.fields, numericAndPointerColumns).map(f => (
                       <MultiSelectOption key={f} value={f}>
                         {f}
                       </MultiSelectOption>
@@ -813,7 +803,7 @@ export default class GraphDialog extends React.Component {
                         value={calc.fields && calc.fields[0] ? calc.fields[0] : ''}
                         onChange={numerator => {
                           if (this.isObjectColumn(numerator)) {
-                            this.setState({ objectPathInput: { type: 'calcPercent', calcIndex: index, position: 0, field: numerator } });
+                            this.setState({ objectPathInput: { field: numerator, onConfirm: fullPath => this.updateCalculatedValue(index, 'fields', [fullPath, calc.fields && calc.fields[1] ? calc.fields[1] : '']) } });
                             return;
                           }
                           const newFields = [numerator, calc.fields && calc.fields[1] ? calc.fields[1] : ''];
@@ -826,7 +816,7 @@ export default class GraphDialog extends React.Component {
                             {this.isObjectColumn(col) ? `${col} [object]` : col}
                           </Option>
                         ))}
-                        {calc.fields && calc.fields[0] && calc.fields[0].includes('.') && !numericAndCalculatedFields.includes(calc.fields[0]) && (
+                        {calc.fields && calc.fields[0] && this.isObjectDotPath(calc.fields[0]) && !numericAndCalculatedFields.includes(calc.fields[0]) && (
                           <Option key={calc.fields[0]} value={calc.fields[0]}>
                             {calc.fields[0]}
                           </Option>
@@ -843,7 +833,7 @@ export default class GraphDialog extends React.Component {
                         value={calc.fields && calc.fields[1] ? calc.fields[1] : ''}
                         onChange={denominator => {
                           if (this.isObjectColumn(denominator)) {
-                            this.setState({ objectPathInput: { type: 'calcPercent', calcIndex: index, position: 1, field: denominator } });
+                            this.setState({ objectPathInput: { field: denominator, onConfirm: fullPath => this.updateCalculatedValue(index, 'fields', [calc.fields && calc.fields[0] ? calc.fields[0] : '', fullPath]) } });
                             return;
                           }
                           const newFields = [calc.fields && calc.fields[0] ? calc.fields[0] : '', denominator];
@@ -856,7 +846,7 @@ export default class GraphDialog extends React.Component {
                             {this.isObjectColumn(col) ? `${col} [object]` : col}
                           </Option>
                         ))}
-                        {calc.fields && calc.fields[1] && calc.fields[1].includes('.') && !numericAndCalculatedFields.includes(calc.fields[1]) && (
+                        {calc.fields && calc.fields[1] && this.isObjectDotPath(calc.fields[1]) && !numericAndCalculatedFields.includes(calc.fields[1]) && (
                           <Option key={calc.fields[1]} value={calc.fields[1]}>
                             {calc.fields[1]}
                           </Option>
@@ -866,39 +856,37 @@ export default class GraphDialog extends React.Component {
                   </div>
                 </>
               ) : (
-                <>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <Label text="Fields" />
-                    </div>
-                    <div>
-                      <MultiSelect
-                        value={calc.fields}
-                        onChange={fields => {
-                          const added = fields.find(f => !calc.fields.includes(f));
-                          if (added && this.isObjectColumn(added)) {
-                            this.setState({ objectPathInput: { type: 'calcFields', calcIndex: index, field: added } });
-                            return;
-                          }
-                          this.updateCalculatedValue(index, 'fields', fields);
-                        }}
-                        placeHolder="Select field(s)"
-                        formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
-                      >
-                        {numericAndCalculatedFields.map(col => (
-                          <MultiSelectOption key={col} value={col}>
-                            {this.isObjectColumn(col) ? `${col} [object]` : col}
-                          </MultiSelectOption>
-                        ))}
-                        {calc.fields.filter(f => f.includes('.') && !numericAndCalculatedFields.includes(f)).map(f => (
-                          <MultiSelectOption key={f} value={f}>
-                            {f}
-                          </MultiSelectOption>
-                        ))}
-                      </MultiSelect>
-                    </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Label text="Fields" />
                   </div>
-                </>
+                  <div>
+                    <MultiSelect
+                      value={calc.fields}
+                      onChange={fields => {
+                        const added = fields.find(f => !calc.fields.includes(f));
+                        if (added && this.isObjectColumn(added)) {
+                          this.setState({ objectPathInput: { field: added, onConfirm: fullPath => this.updateCalculatedValue(index, 'fields', [...calc.fields, fullPath].sort(stringCompare)) } });
+                          return;
+                        }
+                        this.updateCalculatedValue(index, 'fields', fields);
+                      }}
+                      placeHolder="Select field(s)"
+                      formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
+                    >
+                      {numericAndCalculatedFields.map(col => (
+                        <MultiSelectOption key={col} value={col}>
+                          {this.isObjectColumn(col) ? `${col} [object]` : col}
+                        </MultiSelectOption>
+                      ))}
+                      {this.getObjectDotPathOptions(calc.fields, numericAndCalculatedFields).map(f => (
+                        <MultiSelectOption key={f} value={f}>
+                          {f}
+                        </MultiSelectOption>
+                      ))}
+                    </MultiSelect>
+                  </div>
+                </div>
               )}
               {(chartType === 'bar' || chartType === 'line') && (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
@@ -1074,7 +1062,7 @@ export default class GraphDialog extends React.Component {
             value={this.state.xColumn}
             onChange={xColumn => {
               if (this.isObjectColumn(xColumn)) {
-                this.setState({ objectPathInput: { type: 'xColumn', field: xColumn } });
+                this.setState({ objectPathInput: { field: xColumn, onConfirm: fullPath => this.setState({ xColumn: fullPath }) } });
                 return;
               }
               this.setState({ xColumn });
@@ -1086,7 +1074,7 @@ export default class GraphDialog extends React.Component {
                 {this.isObjectColumn(col) ? `${col} [object]` : col}
               </Option>
             ))}
-            {this.state.xColumn && this.state.xColumn.includes('.') && !(chartType === 'scatter' ? numericColumns : allColumns).includes(this.state.xColumn) && (
+            {this.state.xColumn && this.isObjectDotPath(this.state.xColumn) && !(chartType === 'scatter' ? numericColumns : allColumns).includes(this.state.xColumn) && (
               <Option key={this.state.xColumn} value={this.state.xColumn}>
                 {this.state.xColumn}
               </Option>
@@ -1094,32 +1082,30 @@ export default class GraphDialog extends React.Component {
           </Dropdown>
         } />
         {chartType === 'scatter' && (
-          <>
-            <Field label={<Label text="Y-Axis" />} input={
-              <Dropdown
-                value={this.state.yColumn}
-                onChange={yColumn => {
-                  if (this.isObjectColumn(yColumn)) {
-                    this.setState({ objectPathInput: { type: 'yColumn', field: yColumn } });
-                    return;
-                  }
-                  this.setState({ yColumn });
-                }}
-                placeHolder="Select field"
-              >
-                {numericColumns.map(col => (
-                  <Option key={col} value={col}>
-                    {this.isObjectColumn(col) ? `${col} [object]` : col}
-                  </Option>
-                ))}
-                {this.state.yColumn && this.state.yColumn.includes('.') && !numericColumns.includes(this.state.yColumn) && (
-                  <Option key={this.state.yColumn} value={this.state.yColumn}>
-                    {this.state.yColumn}
-                  </Option>
-                )}
-              </Dropdown>
-            } />
-          </>
+          <Field label={<Label text="Y-Axis" />} input={
+            <Dropdown
+              value={this.state.yColumn}
+              onChange={yColumn => {
+                if (this.isObjectColumn(yColumn)) {
+                  this.setState({ objectPathInput: { field: yColumn, onConfirm: fullPath => this.setState({ yColumn: fullPath }) } });
+                  return;
+                }
+                this.setState({ yColumn });
+              }}
+              placeHolder="Select field"
+            >
+              {numericColumns.map(col => (
+                <Option key={col} value={col}>
+                  {this.isObjectColumn(col) ? `${col} [object]` : col}
+                </Option>
+              ))}
+              {this.state.yColumn && this.isObjectDotPath(this.state.yColumn) && !numericColumns.includes(this.state.yColumn) && (
+                <Option key={this.state.yColumn} value={this.state.yColumn}>
+                  {this.state.yColumn}
+                </Option>
+              )}
+            </Dropdown>
+          } />
         )}
 
         {(chartType === 'bar' || chartType === 'line' || chartType === 'pie' || chartType === 'doughnut' || chartType === 'radar') && (
@@ -1139,34 +1125,32 @@ export default class GraphDialog extends React.Component {
         )}
 
         {stringAndPointerColumns.length > 0 && (
-          <>
-            <Field label={<Label text="Group By" description="Optional"/>} input={
-              <MultiSelect
-                value={this.state.groupByColumn}
-                onChange={groupByColumn => {
-                  const added = groupByColumn.find(f => !this.state.groupByColumn.includes(f));
-                  if (added && this.isObjectColumn(added)) {
-                    this.setState({ objectPathInput: { type: 'groupBy', field: added } });
-                    return;
-                  }
-                  this.setState({ groupByColumn });
-                }}
-                placeHolder="Select field(s)"
-                formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
-              >
-                {stringAndPointerColumns.map(col => (
-                  <MultiSelectOption key={col} value={col}>
-                    {this.isObjectColumn(col) ? `${col} [object]` : col}
-                  </MultiSelectOption>
-                ))}
-                {this.state.groupByColumn.filter(f => f.includes('.') && !stringAndPointerColumns.includes(f)).map(f => (
-                  <MultiSelectOption key={f} value={f}>
-                    {f}
-                  </MultiSelectOption>
-                ))}
-              </MultiSelect>
-            } />
-          </>
+          <Field label={<Label text="Group By" description="Optional"/>} input={
+            <MultiSelect
+              value={this.state.groupByColumn}
+              onChange={groupByColumn => {
+                const added = groupByColumn.find(f => !this.state.groupByColumn.includes(f));
+                if (added && this.isObjectColumn(added)) {
+                  this.setState({ objectPathInput: { field: added, onConfirm: fullPath => this.setState({ groupByColumn: [...this.state.groupByColumn, fullPath].sort(stringCompare) }) } });
+                  return;
+                }
+                this.setState({ groupByColumn });
+              }}
+              placeHolder="Select field(s)"
+              formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
+            >
+              {stringAndPointerColumns.map(col => (
+                <MultiSelectOption key={col} value={col}>
+                  {this.isObjectColumn(col) ? `${col} [object]` : col}
+                </MultiSelectOption>
+              ))}
+              {this.getObjectDotPathOptions(this.state.groupByColumn, stringAndPointerColumns).map(f => (
+                <MultiSelectOption key={f} value={f}>
+                  {f}
+                </MultiSelectOption>
+              ))}
+            </MultiSelect>
+          } />
         )}
       </>
     );
