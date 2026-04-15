@@ -131,7 +131,7 @@
     "typescript": "6.0.2",
     "webpack": "5.105.1",
     "webpack-cli": "7.0.2",
-    "ws": "8.19.0",
+    "ws": "8.20.0",
     "yaml": "2.8.3"
   },
   "scripts": {
