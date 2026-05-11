@@ -43,16 +43,24 @@ export default class BrowserTable extends React.Component {
       this.setState({
         offset: 0,
       });
-      this.browserRef.current.scrollTop = 0;
+      if (this.browserRef.current) {
+        this.browserRef.current.scrollTop = 0;
+      }
     } else if (this.props.newObject !== props.newObject) {
       this.setState({ offset: 0 });
-      this.browserRef.current.scrollTop = 0;
+      if (this.browserRef.current) {
+        this.browserRef.current.scrollTop = 0;
+      }
     } else if (this.props.ordering !== props.ordering) {
       this.setState({ offset: 0 });
-      this.browserRef.current.scrollTop = 0;
+      if (this.browserRef.current) {
+        this.browserRef.current.scrollTop = 0;
+      }
     } else if (this.props.filters.size !== props.filters.size) {
       this.setState({ offset: 0 }, () => {
-        this.browserRef.current.scrollTop = 0;
+        if (this.browserRef.current) {
+          this.browserRef.current.scrollTop = 0;
+        }
       });
     }
   }
