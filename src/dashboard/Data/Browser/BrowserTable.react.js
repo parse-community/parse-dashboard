@@ -601,50 +601,52 @@ export default class BrowserTable extends React.Component {
         id="browser-table"
         style={{
           right: rightValue,
-          overflowX: this.props.isResizing ? 'hidden' : 'auto',
+          overflowX: 'hidden',
         }}
       >
-        <DataBrowserHeaderBar
-          selected={
-            !!this.props.selection &&
-            !!this.props.data &&
-            this.props.data.length > 0 &&
-            (!!this.props.selection['*'] ||
-              Object.values(this.props.selection).filter(checked => checked).length ===
-                this.props.data.length)
-          }
-          indeterminate={
-            !!this.props.selection &&
-            !!this.props.data &&
-            this.props.data.length > 0 &&
-            !this.props.selection['*'] &&
-            Object.values(this.props.selection).filter(checked => checked).length > 0 &&
-            Object.values(this.props.selection).filter(checked => checked).length !==
-              this.props.data.length
-          }
-          selectAll={checked =>
-            this.props.data.forEach(({ id }) => this.props.selectRow(id, checked))
-          }
-          headers={headers}
-          stickyLefts={stickyLefts}
-          freezeIndex={this.props.freezeIndex}
-          freezeColumns={this.props.freezeColumns}
-          unfreezeColumns={this.props.unfreezeColumns}
-          updateOrdering={this.props.updateOrdering}
-          showRowNumber={this.props.showRowNumber}
-          setShowRowNumber={this.props.setShowRowNumber}
-          rowNumberWidth={rowNumberWidth}
-          readonly={!!this.props.relation || !!this.props.isUnique}
-          handleDragDrop={this.props.handleHeaderDragDrop}
-          onResize={this.props.handleResize}
-          onAddColumn={this.props.onAddColumn}
-          preventSchemaEdits={this.context.preventSchemaEdits}
-          isDataLoaded={!!this.props.data}
-          setSelectedObjectId={this.props.setSelectedObjectId}
-          setCurrent={this.props.setCurrent}
-          setContextMenu={this.props.setContextMenu}
-        />
-        {table}
+        <div className={styles.browserContent}>
+          <DataBrowserHeaderBar
+            selected={
+              !!this.props.selection &&
+              !!this.props.data &&
+              this.props.data.length > 0 &&
+              (!!this.props.selection['*'] ||
+                Object.values(this.props.selection).filter(checked => checked).length ===
+                  this.props.data.length)
+            }
+            indeterminate={
+              !!this.props.selection &&
+              !!this.props.data &&
+              this.props.data.length > 0 &&
+              !this.props.selection['*'] &&
+              Object.values(this.props.selection).filter(checked => checked).length > 0 &&
+              Object.values(this.props.selection).filter(checked => checked).length !==
+                this.props.data.length
+            }
+            selectAll={checked =>
+              this.props.data.forEach(({ id }) => this.props.selectRow(id, checked))
+            }
+            headers={headers}
+            stickyLefts={stickyLefts}
+            freezeIndex={this.props.freezeIndex}
+            freezeColumns={this.props.freezeColumns}
+            unfreezeColumns={this.props.unfreezeColumns}
+            updateOrdering={this.props.updateOrdering}
+            showRowNumber={this.props.showRowNumber}
+            setShowRowNumber={this.props.setShowRowNumber}
+            rowNumberWidth={rowNumberWidth}
+            readonly={!!this.props.relation || !!this.props.isUnique}
+            handleDragDrop={this.props.handleHeaderDragDrop}
+            onResize={this.props.handleResize}
+            onAddColumn={this.props.onAddColumn}
+            preventSchemaEdits={this.context.preventSchemaEdits}
+            isDataLoaded={!!this.props.data}
+            setSelectedObjectId={this.props.setSelectedObjectId}
+            setCurrent={this.props.setCurrent}
+            setContextMenu={this.props.setContextMenu}
+          />
+          {table}
+        </div>
       </div>
     );
   }

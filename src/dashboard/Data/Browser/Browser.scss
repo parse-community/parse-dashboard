@@ -13,7 +13,8 @@
   left: 300px;
   right: 0;
   bottom: 36px;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 body:global(.expanded) {
@@ -284,3 +285,10 @@ body:global(.expanded) {
 
 .confirmConfig {
   padding: 10px 20px;}
+
+.browserContent {
+  position: relative;
+  min-height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
