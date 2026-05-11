@@ -33,6 +33,7 @@ export default class BrowserTable extends React.Component {
       maxWidth: window.innerWidth - 300,
     };
     this.tableRef = React.createRef();
+    this.browserRef = React.createRef();
     this.handleResize = this.handleResize.bind(this);
     this.updateMaxWidth = this.updateMaxWidth.bind(this);
   }
@@ -42,16 +43,16 @@ export default class BrowserTable extends React.Component {
       this.setState({
         offset: 0,
       });
-      this.tableRef.current.scrollTop = 0;
+      this.browserRef.current.scrollTop = 0;
     } else if (this.props.newObject !== props.newObject) {
       this.setState({ offset: 0 });
-      this.tableRef.current.scrollTop = 0;
+      this.browserRef.current.scrollTop = 0;
     } else if (this.props.ordering !== props.ordering) {
       this.setState({ offset: 0 });
-      this.tableRef.current.scrollTop = 0;
+      this.browserRef.current.scrollTop = 0;
     } else if (this.props.filters.size !== props.filters.size) {
       this.setState({ offset: 0 }, () => {
-        this.tableRef.current.scrollTop = 0;
+        this.browserRef.current.scrollTop = 0;
       });
     }
   }
@@ -599,6 +600,7 @@ export default class BrowserTable extends React.Component {
       <div
         className={styles.browser}
         id="browser-table"
+        ref={this.browserRef}
         style={{
           right: rightValue,
           overflowX: 'hidden',
