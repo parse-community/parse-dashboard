@@ -169,8 +169,15 @@ describe('FormulaEvaluator', () => {
         expect(evaluateFormula('invalid syntax !!!', { x: 10 })).toBe(null);
       });
 
-      it('should return null for undefined variables', () => {
-        expect(evaluateFormula('unknownVar * 2', {})).toBe(null);
+      it('should treat undefined variables as 0', () => {
+        // Undefined variables should default to 0 so charts still render
+        // when a referenced field has no value on a row (consistent with the
+        // behavior of the "sum" operator, which already treats missing fields
+        // as 0).
+        expect(evaluateFormula('unknownVar * 2', {})).toBe(0);
+        expect(evaluateFormula('x + unknownVar', { x: 5 })).toBe(5);
+        expect(evaluateFormula('x * y', { x: 10 })).toBe(0);
+        expect(evaluateFormula('a + b + c', { b: 7 })).toBe(7);
       });
 
       it('should return null for NaN results', () => {

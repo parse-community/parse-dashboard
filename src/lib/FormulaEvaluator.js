@@ -140,7 +140,19 @@ export function evaluateFormula(formula, variables) {
   try {
     const processedFormula = preprocessFormula(formula);
     const expr = parser.parse(processedFormula);
-    let result = expr.evaluate(variables);
+
+    // Default any variables referenced by the formula but missing from the
+    // provided variables to 0. This keeps charts rendering when a referenced
+    // field has no value on a row (consistent with the "sum" operator, which
+    // already treats missing fields as 0).
+    const safeVariables = { ...(variables || {}) };
+    for (const varName of expr.variables()) {
+      if (!(varName in safeVariables)) {
+        safeVariables[varName] = 0;
+      }
+    }
+
+    let result = expr.evaluate(safeVariables);
 
     // Convert boolean results to numbers (for comparison operators)
     if (typeof result === 'boolean') {
