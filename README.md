@@ -1799,10 +1799,12 @@ To configure the AI agent for your dashboard, you need to add the `agent` config
 | `agent.models`             | Array  | Yes      | Array of AI model configurations available to the agent.                                                                            |
 | `agent.models[*].name`     | String | Yes      | The display name for the model (e.g., `ChatGPT 4.1`).                                                                               |
 | `agent.models[*].provider` | String | Yes      | The AI provider identifier (e.g., "openai").                                                                                        |
-| `agent.models[*].model`    | String | Yes      | The specific model name from the provider (e.g., `gpt-4.1`).                                                                        |
+| `agent.models[*].model`    | String | Yes      | The specific model name from the provider (e.g., `gpt-4.1`, `gpt-5.5`).                                                             |
 | `agent.models[*].apiKey`   | String | Yes      | The API key for authenticating with the AI provider.                                                                                |
 
 The agent will use the configured models to process natural language commands and perform database operations using the master key from your app configuration.
+
+Both legacy OpenAI models (GPT-4.1 and older, e.g. `gpt-4.1`, `gpt-4o`, `gpt-3.5-turbo`) and newer models (the GPT-5 family and the `o`-reasoning series, e.g. `gpt-5.4`, `gpt-5.5`, `o1`, `o3`) are supported. The dashboard automatically adapts the request parameters to each model's API contract — newer models require `max_completion_tokens` instead of `max_tokens` and only accept the default `temperature` — so no extra configuration is needed when switching between model generations.
 
 ### Providers
 
