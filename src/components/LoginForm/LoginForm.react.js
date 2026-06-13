@@ -11,17 +11,12 @@ import React from 'react';
 import styles from 'components/LoginForm/LoginForm.scss';
 import baseStyles from 'stylesheets/base.scss';
 
-// Class-style component, because we need refs
 export default class LoginForm extends React.Component {
-  constructor() {
-    super();
-    this.formRef = React.createRef();
-  }
   render() {
     return (
       <div className={styles.login} style={{ marginTop: this.props.marginTop || '-220px' }}>
         <Icon width={80} height={80} name="infinity" fill="#093A59" />
-        <form method="post" ref={this.formRef} action={this.props.endpoint} className={styles.form}>
+        <form method="post" action={this.props.endpoint} className={styles.form}>
           <CSRFInput />
           <div className={styles.header}>{this.props.header}</div>
           {this.props.children}
@@ -37,8 +32,12 @@ export default class LoginForm extends React.Component {
               if (this.props.disableSubmit) {
                 return;
               }
+              // The native type="submit" posts the form after this handler runs, so
+              // only perform the pre-submit side effect here. Also calling
+              // this.formRef.current.submit() would post the form a second time. During
+              // MFA the first post authenticates and Passport regenerates the session,
+              // invalidating the CSRF token, so the duplicate post fails CSRF validation.
               this.props.formSubmit();
-              this.formRef.current.submit();
             }}
             className={styles.submit}
             value={this.props.action}
