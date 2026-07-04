@@ -3,10 +3,27 @@ import copy from 'copy-to-clipboard';
 import Icon from 'components/Icon/Icon.react';
 import styles from './AggregationPanel.scss';
 
+// Copy-to-clipboard icon button shown on hover
+const CopyButton = ({ value, showNote }) => {
+  const handleCopy = () => {
+    copy(String(value));
+    if (showNote) {
+      showNote('Value copied to clipboard', false);
+    }
+  };
+
+  return (
+    <span className={styles.copyIcon} onClick={handleCopy}>
+      <Icon name="clone-icon" width={12} height={12} fill="currentColor" />
+    </span>
+  );
+};
+
 // Text Element Component
-export const TextElement = ({ text, style }) => (
-  <div className="text-element" style={style}>
+export const TextElement = ({ text, style, showNote }) => (
+  <div className={`text-element ${styles.textElement}`} style={style}>
     <p>{text}</p>
+    <CopyButton value={text} showNote={showNote} />
   </div>
 );
 
@@ -15,13 +32,6 @@ export const KeyValueElement = ({ item, appName, style, showNote }) => {
   const values = Array.isArray(item.values)
     ? [{ value: item.value, url: item.url, isRelativeUrl: item.isRelativeUrl }, ...item.values]
     : [{ value: item.value, url: item.url, isRelativeUrl: item.isRelativeUrl }];
-
-  const handleCopy = () => {
-    copy(String(item.value));
-    if (showNote) {
-      showNote('Value copied to clipboard', false);
-    }
-  };
 
   const renderValue = ({ value, url, isRelativeUrl }) => {
     if (url) {
@@ -44,15 +54,13 @@ export const KeyValueElement = ({ item, appName, style, showNote }) => {
           {renderValue(val)}
         </React.Fragment>
       ))}
-      <span className={styles.copyIcon} onClick={handleCopy}>
-        <Icon name="clone-icon" width={12} height={12} fill="currentColor" />
-      </span>
+      <CopyButton value={item.value} showNote={showNote} />
     </div>
   );
 };
 
 // Table Element Component
-export const TableElement = ({ columns, rows, style }) => (
+export const TableElement = ({ columns, rows, style, showNote }) => (
   <div className="table-element">
     <table style={style}>
       <thead>
@@ -65,9 +73,17 @@ export const TableElement = ({ columns, rows, style }) => (
       <tbody>
         {rows.map((row, idx) => (
           <tr key={idx}>
-            {columns.map((column, colIdx) => (
-              <td key={colIdx}>{row[column.name]}</td>
-            ))}
+            {columns.map((column, colIdx) => {
+              const value = row[column.name];
+              return (
+                <td key={colIdx} className={styles.tableCell}>
+                  {value}
+                  {value !== undefined && value !== null && value !== '' && (
+                    <CopyButton value={value} showNote={showNote} />
+                  )}
+                </td>
+              );
+            })}
           </tr>
         ))}
       </tbody>
