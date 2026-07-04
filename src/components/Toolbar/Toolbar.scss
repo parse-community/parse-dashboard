@@ -30,10 +30,6 @@ body:global(.expanded) {
     height: 80px;
     right: 135px;
 
-    .nav {
-      display: none;
-    }
-
     .titleText {
       display: none;
     }
@@ -44,17 +40,6 @@ body:global(.expanded) {
   position: absolute;
   left: 14px;
   bottom: 10px;
-}
-
-.nav {
-  display: inline-block;
-}
-
-.iconButton {
-  display: block;
-  padding-top: 10px;
-  padding-right: 10px;
-  cursor: pointer;
 }
 
 .titleText {

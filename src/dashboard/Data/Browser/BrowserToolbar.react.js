@@ -296,8 +296,6 @@ const BrowserToolbar = ({
   return (
     <Toolbar
       className={className}
-      relation={relation}
-      filters={filters}
       section={relation ? `Relation <${relation.targetClassName}>` : 'Class'}
       subsection={subsection}
       details={details.join(' \u2022 ')}
