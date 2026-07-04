@@ -752,8 +752,7 @@ class Browser extends DashboardView {
     const queryString = queryParams.toString();
     const url = queryString ? `browser/${source}?${queryString}` : `browser/${source}`;
 
-    // Push new history entry instead of replacing to enable browser back button
-    this.props.navigate(generatePath(this.context, url));
+    this.props.navigate(generatePath(this.context, url), { replace: true });
   }
 
   redirectToFirstClass(classList, context) {

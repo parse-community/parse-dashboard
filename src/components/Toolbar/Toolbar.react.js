@@ -9,23 +9,11 @@ import PropTypes from 'lib/PropTypes';
 import React from 'react';
 import Icon from 'components/Icon/Icon.react';
 import styles from 'components/Toolbar/Toolbar.scss';
-import { useNavigate, useNavigationType, NavigationType } from 'react-router-dom';
 
 const Toolbar = props => {
-  const action = useNavigationType();
-  const navigate = useNavigate();
-  let backButton;
-  if (props.relation || (props.filters && props.filters.size && action !== NavigationType.Pop)) {
-    backButton = (
-      <a className={styles.iconButton} onClick={() => navigate(-1)}>
-        <Icon width={32} height={32} fill="#ffffff" name="left-outline" />
-      </a>
-    );
-  }
   return (
     <div className={styles.toolbar}>
       <div className={styles.title}>
-        <div className={styles.nav}>{backButton}</div>
         <div className={styles.titleText}>
           <div className={styles.section}>{props.section}</div>
           <div>
@@ -82,7 +70,6 @@ Toolbar.propTypes = {
   section: PropTypes.string,
   subsection: PropTypes.string,
   details: PropTypes.string,
-  relation: PropTypes.object,
 };
 
 export default Toolbar;
