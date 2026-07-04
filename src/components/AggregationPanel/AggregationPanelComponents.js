@@ -6,7 +6,7 @@ import styles from './AggregationPanel.scss';
 // Text Element Component
 export const TextElement = ({ text, style }) => (
   <div className="text-element" style={style}>
-    <p>{text}</p>
+    <p style={{ whiteSpace: 'pre-line' }}>{text}</p>
   </div>
 );
 
