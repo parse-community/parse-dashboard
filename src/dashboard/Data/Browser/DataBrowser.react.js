@@ -2723,7 +2723,7 @@ export default class DataBrowser extends React.Component {
       app,
       ...other
     } = this.props;
-    const { preventSchemaEdits, applicationId } = app;
+    const { preventSchemaEdits, preventDataExport, applicationId } = app;
 
     // Calculate effective panel width based on actual displayed panels
     // When panelCount > 1 but fewer panels are actually displayed, reduce width proportionally
@@ -2975,7 +2975,10 @@ export default class DataBrowser extends React.Component {
           enableDeleteAllRows={
             app.serverInfo.features.schemas.clearAllDataFromClass && !preventSchemaEdits
           }
-          enableExportClass={app.serverInfo.features.schemas.exportClass && !preventSchemaEdits}
+          enableExportClass={
+            app.serverInfo.features.schemas.exportClass && !preventSchemaEdits && !preventDataExport
+          }
+          enableExportData={!preventDataExport}
           enableSecurityDialog={
             app.serverInfo.features.schemas.editClassLevelPermissions &&
             !disableSecurityDialog &&
