@@ -36,18 +36,37 @@ const getPositionToFitVisibleScreen = (ref, offset = 0) => {
     const xRight = prevElBox.right - elBox.left;
     const xLeft = prevElBox.left - elBox.left - elBox.width;
 
-    // Align submenu vertically with the hovered item in the parent menu
-    // offset is the actual pixel position of the hovered item (via offsetTop)
-    // Subtract parent's scrollTop to account for scrolled position
+    // Align the submenu's first item with the hovered item in the parent menu.
+    // offset is the actual pixel position of the hovered item (via getBoundingClientRect);
+    // subtract the parent's scrollTop to account for a scrolled parent menu.
     const adjustedOffset = offset - prevEl.scrollTop;
-    let proposedTop = prevElBox.top + adjustedOffset;
+    const itemTop = prevElBox.top + adjustedOffset;
+    const spaceBelow = lowerLimit - itemTop;
+    const spaceAbove = itemTop - upperLimit;
 
-    // Clamp to screen bounds
-    proposedTop = Math.max(upperLimit, Math.min(proposedTop, lowerLimit - menuHeight));
+    // Decide where the submenu opens so it stays adjacent to the hovered item
+    // instead of jumping to the top of the screen when it doesn't fit below.
+    let top;
+    let maxHeight = null;
+    if (menuHeight <= spaceBelow) {
+      // Fits below: open downward with the first item aligned to the hovered item.
+      top = itemTop;
+    } else if (spaceBelow >= spaceAbove) {
+      // Not enough room below, but more room below than above: keep the first
+      // item aligned to the cursor and let the submenu scroll.
+      top = itemTop;
+      maxHeight = spaceBelow;
+    } else {
+      // More room above: open upward, anchored to the hovered item, so the
+      // submenu stays next to the cursor. Scroll if it is taller than the space.
+      maxHeight = Math.min(menuHeight, spaceAbove);
+      top = itemTop - maxHeight;
+    }
 
     return {
       x: showOnRight ? xRight : xLeft,
-      y: proposedTop - elBox.top,
+      y: top - elBox.top,
+      maxHeight,
     };
   }
 
@@ -105,7 +124,7 @@ const MenuSection = ({ level, items, path, setPath, hide, hoveredItemOffset }) =
   const style = position
     ? {
       transform: `translate(${position.x}px, ${position.y}px)`,
-      maxHeight: '80vh',
+      maxHeight: position.maxHeight != null ? `${position.maxHeight}px` : '80vh',
       overflowY: 'auto',
       opacity: 1,
       position: 'absolute',
