@@ -955,7 +955,8 @@ export default class PermissionsDialog extends React.Component {
     ]);
     return generatePath(
       this.context,
-      `browser/${className}?filters=${encodeURIComponent(filters)}`
+      `browser/${className}?filters=${encodeURIComponent(filters)}`,
+      true
     );
   }
 
