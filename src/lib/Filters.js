@@ -64,6 +64,12 @@ export const Constraints = {
     composable: true,
     comparable: true,
   },
+  contains: {
+    name: 'contains substring',
+    field: 'String',
+    composable: true,
+    comparable: true,
+  },
   before: {
     name: 'is before',
     field: 'Date',
@@ -185,7 +191,18 @@ export const FieldConstraints = {
   Pointer: ['exists', 'dne', 'eq', 'neq', 'starts', 'containedIn', 'unique'],
   Boolean: ['exists', 'dne', 'eq', 'neq', 'containedIn', 'unique'],
   Number: ['exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'containedIn', 'unique'],
-  String: ['exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'matches', 'containedIn', 'unique'],
+  String: [
+    'exists',
+    'dne',
+    'eq',
+    'neq',
+    'starts',
+    'ends',
+    'matches',
+    'contains',
+    'containedIn',
+    'unique',
+  ],
   Date: [
     'exists',
     'dne',

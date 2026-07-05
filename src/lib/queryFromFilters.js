@@ -232,6 +232,9 @@ export function addConstraintFromValues(query, field, constraint, compareTo, mod
     case 'matches':
       query.matches(field, String(compareTo), modifiers);
       break;
+    case 'contains':
+      query.contains(field, String(compareTo));
+      break;
     case 'keyExists':
       query.exists(field + '.' + compareTo);
       break;
