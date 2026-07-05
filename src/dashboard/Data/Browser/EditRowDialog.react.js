@@ -354,6 +354,9 @@ export default class EditRowDialog extends React.Component {
                   value={file ? 'Change file' : 'Select file'}
                   onClick={() => this.openFileEditor(name)}
                 />
+                {file && (
+                  <Pill value="Delete file" onClick={() => this.handleChange(undefined, name)} />
+                )}
                 {this.state.showFileEditor === name && (
                   <FileEditor
                     value={file}
