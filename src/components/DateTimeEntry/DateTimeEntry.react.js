@@ -6,6 +6,7 @@
  * the root directory of this source tree.
  */
 import DateTimePicker from 'components/DateTimePicker/DateTimePicker.react';
+import { dateInputString, parseDateInput } from 'lib/DateUtils';
 import Popover from 'components/Popover/Popover.react';
 import Position from 'lib/Position';
 import React from 'react';
@@ -17,7 +18,7 @@ export default class DateTimeEntry extends React.Component {
     this.state = {
       open: false,
       position: null,
-      value: props.value.toISOString ? props.value.toISOString() : props.value,
+      value: props.value.toISOString ? dateInputString(props.value, props.local) : props.value,
     };
 
     this.rootRef = React.createRef();
@@ -26,7 +27,7 @@ export default class DateTimeEntry extends React.Component {
 
   componentWillReceiveProps(props) {
     this.setState({
-      value: props.value.toISOString ? props.value.toISOString() : props.value,
+      value: props.value.toISOString ? dateInputString(props.value, props.local) : props.value,
     });
   }
 
@@ -64,25 +65,12 @@ export default class DateTimeEntry extends React.Component {
   }
 
   commitDate() {
-    if (this.state.value === this.props.value.toISOString()) {
+    if (this.state.value === dateInputString(this.props.value, this.props.local)) {
       return;
     }
-    const date = new Date(this.state.value);
-    if (isNaN(date.getTime())) {
-      this.setState({ value: this.props.value.toISOString() });
-    } else if (!this.state.value.toLowerCase().endsWith('z')) {
-      const utc = new Date(
-        Date.UTC(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate(),
-          date.getHours(),
-          date.getMinutes(),
-          date.getSeconds(),
-          date.getMilliseconds()
-        )
-      );
-      this.props.onChange(utc);
+    const date = parseDateInput(this.state.value, this.props.local);
+    if (date === null) {
+      this.setState({ value: dateInputString(this.props.value, this.props.local) });
     } else {
       this.props.onChange(date);
     }
@@ -104,6 +92,7 @@ export default class DateTimeEntry extends React.Component {
         >
           <DateTimePicker
             value={this.props.value}
+            local={this.props.local}
             width={Math.max(this.rootRef.current.clientWidth, 240)}
             onChange={this.props.onChange}
             close={() => this.setState({ open: false })}

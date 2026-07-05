@@ -42,7 +42,7 @@ const GRAPH_PANEL_WIDTH = 'graphPanelWidth';
 const AGGREGATION_PANEL_AUTO_SCROLL = 'aggregationPanelAutoScroll';
 const AGGREGATION_PANEL_AUTO_SCROLL_REQUIRE_HOVER = 'aggregationPanelAutoScrollRequireHover';
 
-function formatValueForCopy(value, type) {
+function formatValueForCopy(value, type, useLocalTime) {
   if (value === undefined) {
     return '';
   }
@@ -62,7 +62,7 @@ function formatValueForCopy(value, type) {
         value = new Date(value);
       }
       if (value instanceof Date && !isNaN(value)) {
-        return dateStringUTC(value);
+        return dateStringUTC(value, useLocalTime);
       }
       break;
     case 'File':
@@ -968,7 +968,7 @@ export default class DataBrowser extends React.Component {
             if (typeof value === 'number' && !isNaN(value)) {
               rowData.push(String(value));
             } else {
-              rowData.push(formatValueForCopy(value, type));
+              rowData.push(formatValueForCopy(value, type, this.context.useLocalTime));
             }
           }
 

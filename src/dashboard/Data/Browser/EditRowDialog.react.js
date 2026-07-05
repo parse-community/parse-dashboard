@@ -1,6 +1,7 @@
 import React from 'react';
 import Parse from 'parse';
 import { dateStringUTC } from 'lib/DateUtils';
+import { CurrentApp } from 'context/currentApp';
 import Modal from 'components/Modal/Modal.react';
 import Field from 'components/Field/Field.react';
 import Label from 'components/Label/Label.react';
@@ -17,6 +18,8 @@ import encode from 'parse/lib/browser/encode';
 import validateNumeric from 'lib/validateNumeric';
 
 export default class EditRowDialog extends React.Component {
+  static contextType = CurrentApp;
+
   constructor(props) {
     super(props);
 
@@ -326,6 +329,7 @@ export default class EditRowDialog extends React.Component {
           inputComponent = (
             <DateTimeInput
               disabled={isDisabled}
+              local={this.context.useLocalTime}
               value={selectedObject[name]}
               onChange={newValue => this.handleChange(newValue, name)}
             />
@@ -485,12 +489,14 @@ export default class EditRowDialog extends React.Component {
           <div style={{ paddingTop: '5px', fontSize: '12px' }}>
             {selectedObject.createdAt && (
               <p>
-                CreatedAt <strong>{dateStringUTC(selectedObject.createdAt)}</strong>
+                CreatedAt{' '}
+                <strong>{dateStringUTC(selectedObject.createdAt, this.context.useLocalTime)}</strong>
               </p>
             )}
             {selectedObject.updatedAt && (
               <p>
-                UpdatedAt <strong>{dateStringUTC(selectedObject.updatedAt)}</strong>
+                UpdatedAt{' '}
+                <strong>{dateStringUTC(selectedObject.updatedAt, this.context.useLocalTime)}</strong>
               </p>
             )}
           </div>

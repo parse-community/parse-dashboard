@@ -496,6 +496,7 @@ export default class BrowserTable extends React.Component {
                 value={value}
                 readonly={readonly}
                 width={width}
+                useLocalTime={this.context.useLocalTime}
                 onCommit={newValue => {
                   if (newValue !== value) {
                     this.props.updateRow(this.props.current.row, name, newValue);

@@ -33,6 +33,7 @@ module.exports = {
     src = src.replace(/from 'lib/g, 'from \'' + relPrefix + 'lib');
     src = src.replace(/from 'components/g, 'from \'' + relPrefix + 'components');
     src = src.replace(/from 'dashboard/g, 'from \'' + relPrefix + 'dashboard');
+    src = src.replace(/from 'context/g, 'from \'' + relPrefix + 'context');
 
     // Ignore most files within node_modules, but transpile ESM-only packages
     // babel files can be .js, .es, .jsx or .es6
