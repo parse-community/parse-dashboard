@@ -49,6 +49,7 @@ import { ActionTypes as ConfigActionTypes } from 'lib/stores/ConfigStore';
 import { getStore } from 'lib/stores/StoreManager';
 import stringCompare from 'lib/stringCompare';
 import subscribeTo from 'lib/subscribeTo';
+import unsetField from 'lib/unsetField';
 import { withRouter } from 'lib/withRouter';
 import FilterPreferencesManager from 'lib/FilterPreferencesManager';
 import { prefersServerStorage } from 'lib/StoragePreferences';
@@ -1859,14 +1860,14 @@ class Browser extends DashboardView {
       return;
     }
     if (value === undefined) {
-      obj.unset(attr);
+      obj = unsetField(obj, attr, isNewObject || isEditCloneObj);
     } else {
       obj.set(attr, value);
     }
 
     if (isNewObject) {
       this.setState({
-        isNewObject: obj,
+        newObject: obj,
       });
       return;
     }
