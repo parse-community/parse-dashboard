@@ -10,6 +10,50 @@ const Parse = require('parse/node');
 
 let newFeaturesInLatestVersion = [];
 
+const CLIENT_APP_FIELDS = [
+  'appId',
+  'appName',
+  'appNameForURL',
+  'dashboardURL',
+  'created_at',
+  'clientKey',
+  'javascriptKey',
+  'masterKey',
+  'maintenanceKey',
+  'restKey',
+  'windowsKey',
+  'webhookKey',
+  'apiKey',
+  'fileKey',
+  'serverURL',
+  'serverInfo',
+  'production',
+  'iconName',
+  'primaryBackgroundColor',
+  'secondaryBackgroundColor',
+  'supportedPushLocales',
+  'preventSchemaEdits',
+  'preventDataExport',
+  'graphQLServerURL',
+  'columnPreference',
+  'classPreference',
+  'scripts',
+  'enableSecurityChecks',
+  'cloudConfigHistoryLimit',
+  'config',
+  'infoPanel',
+];
+
+function sanitizeAppForClient(app) {
+  const sanitized = {};
+  for (const field of CLIENT_APP_FIELDS) {
+    if (field in app) {
+      sanitized[field] = app[field];
+    }
+  }
+  return sanitized;
+}
+
 /**
  * Gets the new features in the latest version of Parse Dashboard.
  */
@@ -189,7 +233,7 @@ module.exports = function(config, options) {
           response.apps = processedApps.filter((app) => app !== null);
         }
         // They provided correct auth
-        return res.json(response);
+        return res.json({ ...response, apps: response.apps.map(sanitizeAppForClient) });
       }
 
       if (users) {
@@ -209,7 +253,7 @@ module.exports = function(config, options) {
           })
         );
 
-        return res.json(response);
+        return res.json({ ...response, apps: response.apps.map(sanitizeAppForClient) });
       }
       //We shouldn't get here. Fail closed.
       res.send({ success: false, error: 'Something went wrong.' });
