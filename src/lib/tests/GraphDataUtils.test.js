@@ -332,6 +332,55 @@ describe('GraphDataUtils', () => {
         // Should not throw, chart should render with regular values
         expect(result).toHaveProperty('datasets');
       });
+
+      it('should render chart when a referenced field is undefined on some rows', () => {
+        // Reproduces the bug where a formula referencing a field that is
+        // undefined on a row caused the entire chart to be empty. Undefined
+        // fields should be treated as 0 instead.
+        const dataWithMissingField = [
+          { attributes: { month: 'Jan', price: 10 } }, // quantity undefined
+          { attributes: { month: 'Feb', price: 20, quantity: 3 } },
+          { attributes: { month: 'Mar', price: 15 } }, // quantity undefined
+        ];
+
+        const calculatedValues = [{
+          name: 'Total',
+          operator: 'formula',
+          formula: 'price * quantity',
+        }];
+
+        const result = processBarLineData(dataWithMissingField, 'month', [], null, calculatedValues);
+
+        expect(result).toHaveProperty('datasets');
+        expect(result.datasets.length).toBe(1);
+        expect(result.datasets[0].label).toBe('Total');
+        // Jan: 10 * 0 = 0, Feb: 20 * 3 = 60, Mar: 15 * 0 = 0
+        expect(result.datasets[0].data).toContain(60);
+      });
+
+      it('should render chart when the referenced field is undefined on every row', () => {
+        // Even more extreme case: the field exists in the schema but no row
+        // has a value for it. The chart should still render (using 0 for the
+        // missing field) rather than disappearing entirely.
+        const dataWithAllMissing = [
+          { attributes: { month: 'Jan', price: 10 } },
+          { attributes: { month: 'Feb', price: 20 } },
+        ];
+
+        const calculatedValues = [{
+          name: 'Total',
+          operator: 'formula',
+          formula: 'price + quantity',
+        }];
+
+        const result = processBarLineData(dataWithAllMissing, 'month', [], null, calculatedValues);
+
+        expect(result).toHaveProperty('datasets');
+        expect(result.datasets.length).toBe(1);
+        // Jan: 10 + 0 = 10, Feb: 20 + 0 = 20
+        expect(result.datasets[0].data).toContain(10);
+        expect(result.datasets[0].data).toContain(20);
+      });
     });
 
     describe('processPieData with formula', () => {
