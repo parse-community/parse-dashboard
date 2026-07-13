@@ -85,6 +85,9 @@
   "overrides": {
     "madge": {
       "typescript": "$typescript"
+    },
+    "filing-cabinet": {
+      "typescript": "5.9.3"
     }
   },
   "devDependencies": {
