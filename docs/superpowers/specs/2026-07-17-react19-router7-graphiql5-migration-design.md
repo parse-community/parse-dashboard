@@ -29,8 +29,9 @@ checkpoint after each.
 | `graphiql` | 2.0.8 | **5.2.4** |
 | `@graphiql/toolkit` | — | **0.12.1** (new dependency) |
 | `graphql` | 16.12.0 | 16.12.0 (unchanged; satisfies GraphiQL 5 peer) |
+| `graphql-ws` | — | **6.1.0** (new; `@graphiql/toolkit` peer imported by `createGraphiQLFetcher`) |
 | `monaco-editor` | — | 0.52.2 (**transitive only** — do NOT add 0.55.1) |
-| `@babel/plugin-proposal-decorators` (dev) | 7.29.0 | **removed** (after DataBrowserHeader rewrite) |
+| `@babel/plugin-proposal-decorators` (dev) | 7.29.0 | 7.29.0 (**kept** — see Implementation notes) |
 
 Toolchain (webpack 5.106, Babel 7, Jest 30 + jsdom, Node `>=20.19`) does not block the work.
 
@@ -45,10 +46,13 @@ app code, not dependency internals). All three are confirmed in-repo:
    → replace with `@microlink/react-json-view` (drop-in fork, same `<ReactJson>` API).
 2. **`react-dnd@10` decorators** — `@DragSource`/`@DropTarget` in
    [`DataBrowserHeader.react.js`](../../../src/components/DataBrowserHeader/DataBrowserHeader.react.js)
-   (the **only** file using decorators). Predates React 18/19 and cannot be
-   version-bumped without a hooks rewrite. → rewrite to `useDrag`/`useDrop`, bump
-   `react-dnd` 10→16 (matching the already-installed html5-backend@16), then drop
-   the now-unused `@babel/plugin-proposal-decorators`.
+   (the only file using the `react-dnd` **class-decorator** API). Predates React
+   18/19 and cannot be version-bumped without a hooks rewrite. → rewrite
+   `DataBrowserHeader` to `useDrag`/`useDrop`, update `ColumnConfigurationItem` to
+   the v16 hooks API, and bump `react-dnd` 10→16 (matching the already-installed
+   html5-backend@16). **The Babel decorators plugin is kept** — `@withRouter` /
+   `@subscribeTo` are used as class decorators across ~25 files (see Implementation
+   notes).
 3. **`react-rnd` / `react-resizable`** — call the **removed** `findDOMNode` and will
    **throw** (not warn) under React 19 unless a `nodeRef` is threaded.
    [`CanvasElement.react.js`](../../../src/dashboard/Data/CustomDashboard/CanvasElement.react.js)
@@ -199,6 +203,44 @@ five Dependabot PRs.
 
 ## 7. Deliverable
 
-Single branch `chore/react19-router7-graphiql5`; four commits (one per checkpoint);
-one PR that supersedes/closes #3336, #3341, #3369, #3372, #3377. Review checkpoint
-after each commit before proceeding.
+Single branch `chore/react19-router7-graphiql5`; five commits (four checkpoints,
+react-router split into a flags commit + a consolidation commit); one PR that
+supersedes/closes #3336, #3341, #3369, #3372, #3377. Review checkpoint after each
+before proceeding.
+
+## 8. Implementation notes (what actually shipped vs. this plan)
+
+Discoveries during execution, all surfaced by the live-stack browser QA (none were
+caught by build or unit tests):
+
+- **The Babel decorators plugin was NOT dropped.** The pre-implementation audit's
+  "only `DataBrowserHeader` uses decorators" was wrong: `@withRouter` and
+  `@subscribeTo(...)` are used as **class decorators** across ~25 files. Lint caught
+  it; `@babel/plugin-proposal-decorators` is kept. (react-dnd's `@DragSource`/
+  `@DropTarget` are a separate, unrelated use that the rewrite removed.)
+- **Two React 18 automatic-batching regressions** in the Data Browser (CP1): `setState`
+  is no longer synchronous inside promises, so `Browser.react.js` read stale state
+  right after `setState`. Fixed by using the fetched value directly and by making
+  `StoreManager.dispatch` resolve with the new state.
+- **`findDOMNode` needed no manual `nodeRef` edits** (CP2): bumping `react-draggable`
+  4.5→4.7 and `react-resizable` 3.1.3→4.0.2 is sufficient — those versions thread a
+  `nodeRef` internally and `react-draggable@4.7` guards the removed API. `CanvasElement`
+  / `DataBrowser` were not modified (better than Risk #2 anticipated).
+- **graphiql@2 crashed the whole app on boot under React 19** (CP2) by reading the
+  removed `ReactCurrentOwner` internal at module load. Fixed by lazy-loading
+  `GraphQLConsole` (`React.lazy` + `Suspense`), which also permanently code-splits the
+  Monaco/GraphiQL chunk. Consequence: the GraphQL console is intentionally broken
+  between CP2 and CP4, isolated behind the lazy boundary.
+- **webpack `resolve.modules`** needed a relative `'node_modules'` walk-up entry (CP2):
+  React 19 peer conflicts make npm nest some deps (`@graphiql/react`, `react-side-effect`)
+  that the absolute-only module paths couldn't resolve.
+- **The 5 `react-test-renderer` tests needed `act()` wrapping** (CP2): React 19 renders
+  concurrently, so `create()` must run inside `act()` for `toJSON()`/`getInstance()`.
+- **react-router install needed `--legacy-peer-deps` at CP3** (graphiql@2 blocks React 19
+  peers); normalized to a plain lockfile once graphiql 5 landed at CP4.
+- **`graphql-ws@6.1.0` added at CP4** — a `@graphiql/toolkit` peer that
+  `createGraphiQLFetcher` statically imports.
+- **`output.publicPath: 'auto'` (CP4)** — Risk #1 materialized: Monaco workers 404'd on a
+  doubled relative `bundles/bundles/…` path; `'auto'` fixed it and is app-wide safe.
+- **`enableIncrementalDelivery:false` was NOT needed** (Risk #4): parse-server accepted
+  the fetcher's multi-value `Accept`; introspection returns 200 with data.

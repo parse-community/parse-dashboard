@@ -4,6 +4,8 @@
 
 **Goal:** Migrate parse-dashboard from React 16 → 19, react-router 6 → 7, and GraphiQL 2 → 5 on one branch as four ordered, independently-buildable commits, each green (build + lint + Jest + browser smoke) before the next.
 
+> **Implemented.** For what actually shipped vs. this plan (the decorators plugin was kept, plus batching / lazy-graphiql / webpack-resolve / `act()` / `publicPath: auto` / `graphql-ws` discoveries), see **§8 Implementation notes** in the design spec: [`2026-07-17-react19-router7-graphiql5-migration-design.md`](../specs/2026-07-17-react19-router7-graphiql5-migration-design.md).
+
 **Architecture:** Four sequential checkpoints (Tasks 1–4), each a single commit, preceded by a one-time local verification stack (Task 0) and closed by a wrap-up + PR (Task 5). Because Jest `roots` is `['src/lib']` and the risky paths (entry points, drag/drop, draggables, GraphiQL/Monaco, splat routing) have **no** unit coverage, each task's real gate is: `npm run build` succeeds, `npm run lint` clean, `npm test` green (the 5 `react-test-renderer` tests), and a **browser smoke** of the specific behavior against the local Parse Server stack.
 
 **Tech Stack:** React 19, react-dom/client `createRoot`, react-router 7, GraphiQL 5 (`@graphiql/react` + Monaco web workers via `graphiql/setup-workers/webpack`), `@graphiql/toolkit` `createGraphiQLFetcher`, react-dnd 16 hooks, webpack 5.106, Babel 7 (classic JSX runtime), Jest 30 + jsdom, Node ≥ 20.19.
@@ -128,7 +130,7 @@ Expected: build succeeds; Jest suite passes (baseline green before any change).
 
 - [ ] **Step 1: Bump React + third-party deps in package.json**
 
-In `package.json` `dependencies`: `"react": "18.3.1"`, `"react-dom": "18.3.1"`, `"react-dnd": "16.0.1"`; remove `"react-json-view": "1.21.3"`, add `"@microlink/react-json-view": "1.31.22"`. In `devDependencies`: `"react-test-renderer": "18.3.1"`; remove `"@babel/plugin-proposal-decorators": "7.29.0"`.
+In `package.json` `dependencies`: `"react": "18.3.1"`, `"react-dom": "18.3.1"`, `"react-dnd": "16.0.1"`; remove `"react-json-view": "1.21.3"`, add `"@microlink/react-json-view": "1.31.22"`. In `devDependencies`: `"react-test-renderer": "18.3.1"`. *(Keep `@babel/plugin-proposal-decorators` — see the corrected Step 8.)*
 
 Run: `npm install`
 Expected: installs without `ERESOLVE` peer errors (the react-json-view React-17 cap is gone).
@@ -321,15 +323,13 @@ export default ({ name, handleColumnDragDrop, index, onChangeVisible, visible })
 };
 ```
 
-- [ ] **Step 8: Drop the legacy decorators Babel plugin**
+- [ ] **Step 8: Keep the decorators Babel plugin** *(corrected during implementation)*
 
-In `babel.config.js` remove the line `['@babel/plugin-proposal-decorators', { legacy: true }],` so `plugins` is:
-
-```js
-plugins: [['@babel/transform-runtime', { corejs: 3 }]],
-```
-
-(DataBrowserHeader was the only `@decorator` user — confirmed by grep.)
+Do **not** drop `@babel/plugin-proposal-decorators`. The original grep was too narrow:
+`@withRouter` and `@subscribeTo(...)` are used as class decorators across ~25 files, so
+the plugin is still required. (react-dnd's `@DragSource`/`@DropTarget` were a separate use
+that the Step 6 rewrite removed, but they are not the only decorators.) Leave
+`babel.config.js` and the devDependency unchanged.
 
 - [ ] **Step 9: Lint + build**
 
