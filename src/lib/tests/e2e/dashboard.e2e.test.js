@@ -54,7 +54,7 @@ describe('dashboard e2e', () => {
 describe('Config options', () => {
   it('should start with port option', async () => {
     const result = await startParseDashboardAndGetOutput(['--port', '4041']);
-    expect(result).toContain('The dashboard is now available at http://0.0.0.0:4041/');
+    expect(result).toContain('The dashboard is now available at http://localhost:4041/');
   });
 
   it('should reject to start if config and other options are combined', async () => {
