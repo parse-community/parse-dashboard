@@ -344,7 +344,17 @@ export default class Dashboard extends React.Component {
     );
 
     return (
-      <BrowserRouter basename={window.PARSE_DASHBOARD_PATH || '/'}>
+      <BrowserRouter
+        basename={window.PARSE_DASHBOARD_PATH || '/'}
+        future={{
+          v7_relativeSplatPath: true,
+          v7_startTransition: true,
+          v7_fetcherPersist: true,
+          v7_normalizeFormMethod: true,
+          v7_partialHydration: true,
+          v7_skipActionErrorRevalidation: true,
+        }}
+      >
         <Helmet>
           <title>Parse Dashboard</title>
         </Helmet>
