@@ -24,7 +24,15 @@ module.exports = {
     assetModuleFilename: 'img/[hash][ext]',
   },
   resolve: {
-    modules: [__dirname, path.join(__dirname, '../src'), path.join(__dirname, '../node_modules')],
+    modules: [
+      __dirname,
+      path.join(__dirname, '../src'),
+      path.join(__dirname, '../node_modules'),
+      // Relative entry enables node-style walk-up so webpack can resolve deps
+      // that npm nests (e.g. graphiql's @graphiql/react, react-helmet's
+      // react-side-effect) instead of hoisting under React 19 peer ranges.
+      'node_modules',
+    ],
     fullySpecified: false,
     alias: {
       'react/jsx-runtime': require.resolve('react/jsx-runtime'),

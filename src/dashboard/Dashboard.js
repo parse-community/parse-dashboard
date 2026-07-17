@@ -19,7 +19,9 @@ import Config from './Data/Config/Config.react';
 import Explorer from './Analytics/Explorer/Explorer.react';
 import FourOhFour from 'components/FourOhFour/FourOhFour.react';
 import GeneralSettings from './Settings/GeneralSettings.react';
-import GraphQLConsole from './Data/ApiConsole/GraphQLConsole.react';
+// Lazily loaded so GraphiQL/Monaco is code-split out of the boot bundle and its
+// module body is not evaluated until the GraphQL console route is visited.
+const GraphQLConsole = React.lazy(() => import('./Data/ApiConsole/GraphQLConsole.react'));
 import HostingSettings from './Settings/HostingSettings.react';
 import Icon from 'components/Icon/Icon.react';
 import JobEdit from 'dashboard/Data/Jobs/JobEdit.react';
@@ -276,7 +278,14 @@ export default class Dashboard extends React.Component {
     const ApiConsoleRoute = (
       <Route element={<ApiConsole />}>
         <Route path="rest" element={<RestConsole />} />
-        <Route path="graphql" element={<GraphQLConsole />} />
+        <Route
+          path="graphql"
+          element={
+            <React.Suspense fallback={null}>
+              <GraphQLConsole />
+            </React.Suspense>
+          }
+        />
         <Route path="js_console" element={<Playground />} />
         <Route index element={<Navigate replace to="rest" />} />
       </Route>

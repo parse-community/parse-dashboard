@@ -2,7 +2,17 @@ jest.dontMock('../../components/BrowserRow/BrowserRow.react');
 jest.mock('idb-keyval');
 
 import React from 'react';
-import renderer from 'react-test-renderer';
+import renderer, { act } from 'react-test-renderer';
+
+// React 19's react-test-renderer renders concurrently, so create() must run
+// inside act() for toJSON()/getInstance() to reflect the flushed render.
+function renderComponent(element) {
+  let component;
+  act(() => {
+    component = renderer.create(element);
+  });
+  return component;
+}
 const BrowserRow = require('../../components/BrowserRow/BrowserRow.react').default;
 
 const defaultProps = {
@@ -57,30 +67,26 @@ const defaultProps = {
 describe('BrowserRow', () => {
   describe('Row highlight', () => {
     it('should not apply highlight styles when isHighlighted is false', () => {
-      const component = renderer
-        .create(<BrowserRow {...defaultProps} isHighlighted={false} />)
+      const component = renderComponent(<BrowserRow {...defaultProps} isHighlighted={false} />)
         .toJSON();
       // Row div should not have highlight background
       expect(component.props.style.background).toBeUndefined();
     });
 
     it('should not apply highlight styles when isHighlighted is undefined', () => {
-      const component = renderer
-        .create(<BrowserRow {...defaultProps} />)
+      const component = renderComponent(<BrowserRow {...defaultProps} />)
         .toJSON();
       expect(component.props.style.background).toBeUndefined();
     });
 
     it('should apply subtle blue tint to row div when isHighlighted is true', () => {
-      const component = renderer
-        .create(<BrowserRow {...defaultProps} isHighlighted={true} />)
+      const component = renderComponent(<BrowserRow {...defaultProps} isHighlighted={true} />)
         .toJSON();
       expect(component.props.style.background).toBe('#eef4fb');
     });
 
     it('should apply stronger blue to checkbox cell when isHighlighted is true', () => {
-      const component = renderer
-        .create(<BrowserRow {...defaultProps} isHighlighted={true} />)
+      const component = renderComponent(<BrowserRow {...defaultProps} isHighlighted={true} />)
         .toJSON();
       // First child is the checkbox span
       const checkboxCell = component.children[0];
@@ -88,8 +94,7 @@ describe('BrowserRow', () => {
     });
 
     it('should apply stronger blue to row number cell when isHighlighted is true', () => {
-      const component = renderer
-        .create(<BrowserRow {...defaultProps} isHighlighted={true} showRowNumber={true} />)
+      const component = renderComponent(<BrowserRow {...defaultProps} isHighlighted={true} showRowNumber={true} />)
         .toJSON();
       // Second child is the row number span (when showRowNumber is true)
       const rowNumberCell = component.children[1];
@@ -97,8 +102,7 @@ describe('BrowserRow', () => {
     });
 
     it('should use default background on checkbox cell when not highlighted', () => {
-      const component = renderer
-        .create(<BrowserRow {...defaultProps} row={1} isHighlighted={false} />)
+      const component = renderComponent(<BrowserRow {...defaultProps} row={1} isHighlighted={false} />)
         .toJSON();
       const checkboxCell = component.children[0];
       expect(checkboxCell.props.style.background).toBe('#ffffff');
