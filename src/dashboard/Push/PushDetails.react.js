@@ -29,7 +29,7 @@ import tableStyles from 'components/Table/Table.scss';
 import Toggle from 'components/Toggle/Toggle.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import { Directions } from 'lib/Constants';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { tableInfoBuilder } from 'lib/PushUtils';
 import generatePath from 'lib/generatePath';
 import { withRouter } from 'lib/withRouter';

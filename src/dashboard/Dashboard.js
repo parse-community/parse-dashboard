@@ -52,7 +52,7 @@ import { AsyncStatus } from 'lib/Constants';
 import baseStyles from 'stylesheets/base.scss';
 import { get } from 'lib/AJAX';
 import { setBasePath } from 'lib/AJAX';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 import { Helmet } from 'react-helmet';
 import Playground from './Data/Playground/Playground.react';
 import DashboardSettings from './Settings/DashboardSettings/DashboardSettings.react';
@@ -344,17 +344,7 @@ export default class Dashboard extends React.Component {
     );
 
     return (
-      <BrowserRouter
-        basename={window.PARSE_DASHBOARD_PATH || '/'}
-        future={{
-          v7_relativeSplatPath: true,
-          v7_startTransition: true,
-          v7_fetcherPersist: true,
-          v7_normalizeFormMethod: true,
-          v7_partialHydration: true,
-          v7_skipActionErrorRevalidation: true,
-        }}
-      >
+      <BrowserRouter basename={window.PARSE_DASHBOARD_PATH || '/'}>
         <Helmet>
           <title>Parse Dashboard</title>
         </Helmet>

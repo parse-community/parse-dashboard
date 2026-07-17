@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useContext, useCallback, useMemo } from 'react';
 import ReactJson from '@microlink/react-json-view';
 import Parse from 'parse';
-import { useBeforeUnload } from 'react-router-dom';
+import { useBeforeUnload } from 'react-router';
 
 import CodeEditor from 'components/CodeEditor/CodeEditor.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';

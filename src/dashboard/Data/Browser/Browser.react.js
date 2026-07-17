@@ -56,7 +56,7 @@ import { isFormResponse, executeScriptCallback } from 'lib/ScriptUtils';
 import Parse from 'parse';
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { useBeforeUnload } from 'react-router-dom';
+import { useBeforeUnload } from 'react-router';
 import BrowserFooter from './BrowserFooter.react';
 
 const SELECTED_ROWS_MESSAGE = 'There are selected rows. Are you sure you want to leave this page?';

@@ -7,19 +7,10 @@
  */
 import PIG from 'parse-interface-guide/PIG.react';
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router';
 
 const routes = (
-  <BrowserRouter
-    future={{
-      v7_relativeSplatPath: true,
-      v7_startTransition: true,
-      v7_fetcherPersist: true,
-      v7_normalizeFormMethod: true,
-      v7_partialHydration: true,
-      v7_skipActionErrorRevalidation: true,
-    }}
-  >
+  <BrowserRouter>
     <Routes>
       <Route path="*" element={<PIG />} />
     </Routes>
