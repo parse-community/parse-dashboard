@@ -49,6 +49,46 @@ describe('dashboard e2e', () => {
     await browser.close();
     server.close();
   }, 20_000);
+
+  it('mounts the login entry into #login_mount when users are configured', async () => {
+    const mount = '/dashboard';
+    // The login page is only served when users are configured (see Parse-Dashboard/app.js).
+    const settingsWithUsers = {
+      ...dashboardSettings,
+      cookieSessionSecret: 'e2e-login-test-secret',
+      users: [{ user: 'admin', pass: 'admin' }],
+    };
+    const app = express();
+    app.use(mount, ParseDashboard(settingsWithUsers));
+    const server = await new Promise(resolve => {
+      const s = app.listen(5052, () => resolve(s));
+    });
+    const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+    // try/finally so a regression (empty mount) fails cleanly instead of leaking
+    // the browser/server and hanging the run.
+    try {
+      const page = await browser.newPage();
+      await page.goto(`http://localhost:5052${mount}/login`);
+      await page.waitForSelector('#login_mount');
+      // React must actually render into the mount node. This guards the login entry
+      // point against the React 19 removal of ReactDOM.render (it uses createRoot);
+      // a regression there leaves #login_mount empty (blank page) rather than failing the build.
+      await page.waitForFunction(
+        () => {
+          const el = document.getElementById('login_mount');
+          return !!el && el.childElementCount > 0;
+        },
+        { timeout: 10_000 }
+      );
+      const childCount = await page.evaluate(
+        () => document.getElementById('login_mount').childElementCount
+      );
+      expect(childCount).toBeGreaterThan(0);
+    } finally {
+      await browser.close();
+      server.close();
+    }
+  }, 20_000);
 });
 
 describe('Config options', () => {
