@@ -20,7 +20,11 @@ module.exports = {
   context: path.join(__dirname, '../src'),
   output: {
     filename: '[name].bundle.js',
-    publicPath: 'bundles/',
+    // 'auto' derives the public path from the executing script's URL at runtime.
+    // Required so Monaco's dynamically-emitted *.worker.js chunks (GraphiQL 5)
+    // resolve correctly instead of doubling the relative 'bundles/' segment; it
+    // also fixes lazy-chunk loading from deep SPA routes.
+    publicPath: 'auto',
     assetModuleFilename: 'img/[hash][ext]',
   },
   resolve: {
@@ -83,6 +87,12 @@ module.exports = {
       },
       {
         test: /\.jpg$/,
+        type: 'asset/resource',
+      },
+      {
+        // Monaco (via GraphiQL 5) ships a codicon icon font; without a font
+        // asset rule css-loader fails to parse its url(codicon.ttf) reference.
+        test: /\.(ttf|woff2?)$/,
         type: 'asset/resource',
       },
       {

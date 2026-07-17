@@ -15,7 +15,9 @@ import Dashboard from './Dashboard';
 import registerServiceWorker from '../registerServiceWorker';
 
 require('stylesheets/fonts.scss');
-require('graphiql/graphiql.min.css');
+// GraphiQL 5 uses Monaco; register its web workers once before the app mounts.
+import 'graphiql/setup-workers/webpack';
+import 'graphiql/style.css';
 installDevTools(Immutable);
 
 const path = window.PARSE_DASHBOARD_PATH || '/';
