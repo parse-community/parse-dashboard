@@ -332,7 +332,7 @@ class Browser extends DashboardView {
       this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
     }
 
-    this.props.schema.dispatch(ActionTypes.FETCH).then(() => this.handleFetchedSchema());
+    this.props.schema.dispatch(ActionTypes.FETCH).then(data => this.handleFetchedSchema(data));
     if (!this.props.params.className && this.props.schema.data.get('classes')) {
       this.redirectToFirstClass(this.props.schema.data.get('classes'));
     } else if (this.props.params.className) {
@@ -346,7 +346,9 @@ class Browser extends DashboardView {
     window.addEventListener('mouseup', this.onMouseUpRowCheckBox);
     get('/parse-dashboard-config.json').then(data => {
       this.setState({ configData: data });
-      this.classAndCloudFuntionMap(this.state.configData);
+      // Use the fetched `data` directly rather than this.state.configData: under
+      // React 18 automatic batching the setState above has not applied yet here.
+      this.classAndCloudFuntionMap(data);
     });
 
     // Fetch Cloud Config array params for context menu
@@ -428,7 +430,7 @@ class Browser extends DashboardView {
         this.setState({ counts: {} });
         Parse.Object._clearAllState();
 
-        nextProps.schema.dispatch(ActionTypes.FETCH).then(() => this.handleFetchedSchema());
+        nextProps.schema.dispatch(ActionTypes.FETCH).then(data => this.handleFetchedSchema(data));
       }
       this.prefetchData(nextProps, nextContext);
     }
@@ -1182,12 +1184,17 @@ class Browser extends DashboardView {
     });
   }
 
-  async handleFetchedSchema() {
-    if (this.state.computingClassCounts === false) {
+  async handleFetchedSchema(schemaData) {
+    // Prefer the schema state resolved from the FETCH/SET_CLP dispatch: under
+    // React 18 automatic batching, this.props.schema.data (a subscribeTo
+    // snapshot) may not reflect the freshly-loaded classes yet.
+    const data = schemaData || this.props.schema.data;
+    const classes = data.get('classes');
+    if (this.state.computingClassCounts === false && classes) {
       this.setState({ computingClassCounts: true });
 
       const promises = [];
-      for (const parseClass of this.props.schema.data.get('classes')) {
+      for (const parseClass of classes) {
         const [className] = parseClass;
         const promise = this.context.getClassCount(className).then(count => {
           this.setState(prevState => ({
@@ -1203,7 +1210,7 @@ class Browser extends DashboardView {
       await Promise.all(promises);
 
       this.setState({
-        clp: this.props.schema.data.get('CLPs').toJS(),
+        clp: data.get('CLPs').toJS(),
         computingClassCounts: false,
       });
     }
@@ -1840,7 +1847,7 @@ class Browser extends DashboardView {
       className: this.props.params.className,
       clp,
     });
-    p.then(() => this.handleFetchedSchema());
+    p.then(data => this.handleFetchedSchema(data));
     return p;
   }
 
