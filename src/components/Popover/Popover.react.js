@@ -62,7 +62,14 @@ export default class Popover extends React.Component {
       this._popoverLayer.setAttribute('data-popover-type', this.props['data-popover-type']);
     }
 
-    document.body.addEventListener('click', this._checkExternalClick);
+    // Register the external-click listener on the next tick. Under React's
+    // root-level event delegation (React 17+/createRoot), the click that opens
+    // this popover is still bubbling to document.body when this component mounts,
+    // so registering synchronously would let that same click trigger
+    // onExternalClick and close the popover immediately (menus never open).
+    this._externalClickTimer = setTimeout(() => {
+      document.body.addEventListener('click', this._checkExternalClick);
+    }, 0);
   }
 
   setPosition(position) {
@@ -72,6 +79,7 @@ export default class Popover extends React.Component {
   }
 
   componentWillUnmount() {
+    clearTimeout(this._externalClickTimer);
     document.body.removeChild(this._popoverWrapper);
     document.body.removeEventListener('click', this._checkExternalClick);
   }
