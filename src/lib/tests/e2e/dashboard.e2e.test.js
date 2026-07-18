@@ -100,6 +100,11 @@ describe('dashboard e2e', () => {
         }
       } finally {
         await new Promise((resolve, reject) => {
+          // Force-close lingering connections first so server.close() can't hang
+          // waiting on a socket left open by a failed browser teardown.
+          if (server.closeAllConnections) {
+            server.closeAllConnections();
+          }
           server.close(err => (err ? reject(err) : resolve()));
         });
       }

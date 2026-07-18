@@ -332,7 +332,10 @@ class Browser extends DashboardView {
       this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
     }
 
-    this.props.schema.dispatch(ActionTypes.FETCH).then(data => this.handleFetchedSchema(data));
+    this.props.schema
+      .dispatch(ActionTypes.FETCH)
+      .then(data => this.handleFetchedSchema(data))
+      .catch(error => console.error(error));
     if (!this.props.params.className && this.props.schema.data.get('classes')) {
       this.redirectToFirstClass(this.props.schema.data.get('classes'));
     } else if (this.props.params.className) {
@@ -430,7 +433,10 @@ class Browser extends DashboardView {
         this.setState({ counts: {} });
         Parse.Object._clearAllState();
 
-        nextProps.schema.dispatch(ActionTypes.FETCH).then(data => this.handleFetchedSchema(data));
+        nextProps.schema
+          .dispatch(ActionTypes.FETCH)
+          .then(data => this.handleFetchedSchema(data))
+          .catch(error => console.error(error));
       }
       this.prefetchData(nextProps, nextContext);
     }
@@ -1857,12 +1863,18 @@ class Browser extends DashboardView {
   }
 
   handleCLPChange(clp) {
-    const p = this.props.schema.dispatch(ActionTypes.SET_CLP, {
-      className: this.props.params.className,
-      clp,
-    });
-    p.then(data => this.handleFetchedSchema(data));
-    return p;
+    // Return the chained promise (rather than a discarded side-effect chain) so
+    // the caller's .then/.catch covers both the dispatch and handleFetchedSchema,
+    // and a dispatch rejection can't leak as an unhandled rejection.
+    return this.props.schema
+      .dispatch(ActionTypes.SET_CLP, {
+        className: this.props.params.className,
+        clp,
+      })
+      .then(data => {
+        this.handleFetchedSchema(data);
+        return data;
+      });
   }
 
   updateRow(row, attr, value) {
