@@ -1,3 +1,10 @@
+# [9.3.0-alpha.1](https://github.com/parse-community/parse-dashboard/compare/9.2.1-alpha.1...9.3.0-alpha.1) (2026-07-18)
+
+
+### Features
+
+* React 19 + react-router 7 + GraphiQL 5 coordinated upgrade ([#3409](https://github.com/parse-community/parse-dashboard/issues/3409)) ([c3e16c2](https://github.com/parse-community/parse-dashboard/commit/c3e16c27d5c98e1981d1d7b06b33d3d9e355b183))
+
 ## [9.2.1-alpha.1](https://github.com/parse-community/parse-dashboard/compare/9.2.0...9.2.1-alpha.1) (2026-07-17)
 
 
