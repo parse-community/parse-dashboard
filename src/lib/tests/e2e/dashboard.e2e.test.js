@@ -60,15 +60,19 @@ describe('dashboard e2e', () => {
     };
     const app = express();
     app.use(mount, ParseDashboard(settingsWithUsers));
-    const server = await new Promise(resolve => {
-      const s = app.listen(5052, () => resolve(s));
+    // Listen on an ephemeral port and reject on error so a busy/leaked port
+    // fails fast instead of hanging until the test timeout.
+    const server = await new Promise((resolve, reject) => {
+      const s = app.listen(0, () => resolve(s)).on('error', reject);
     });
-    const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-    // try/finally so a regression (empty mount) fails cleanly instead of leaking
-    // the browser/server and hanging the run.
+    const port = server.address().port;
+    // try/finally (with puppeteer launched inside) so a regression (empty mount)
+    // or a launch failure fails cleanly instead of leaking the browser/server.
+    let browser;
     try {
+      browser = await puppeteer.launch({ args: ['--no-sandbox'] });
       const page = await browser.newPage();
-      await page.goto(`http://localhost:5052${mount}/login`);
+      await page.goto(`http://localhost:${port}${mount}/login`);
       await page.waitForSelector('#login_mount');
       // React must actually render into the mount node. This guards the login entry
       // point against the React 19 removal of ReactDOM.render (it uses createRoot);
@@ -85,7 +89,9 @@ describe('dashboard e2e', () => {
       );
       expect(childCount).toBeGreaterThan(0);
     } finally {
-      await browser.close();
+      if (browser) {
+        await browser.close();
+      }
       server.close();
     }
   }, 20_000);
