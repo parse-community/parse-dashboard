@@ -1,3 +1,10 @@
+## [9.2.1-alpha.1](https://github.com/parse-community/parse-dashboard/compare/9.2.0...9.2.1-alpha.1) (2026-07-17)
+
+
+### Bug Fixes
+
+* Advertise localhost instead of 0.0.0.0 in the dashboard startup message ([#3410](https://github.com/parse-community/parse-dashboard/issues/3410)) ([33ce7b8](https://github.com/parse-community/parse-dashboard/commit/33ce7b8d283855f8398f6111d8f557081d11d018))
+
 # [9.2.0-alpha.1](https://github.com/parse-community/parse-dashboard/compare/9.1.2-alpha.1...9.2.0-alpha.1) (2026-07-04)
 
 
