@@ -281,7 +281,13 @@ export default class Dashboard extends React.Component {
         <Route
           path="graphql"
           element={
-            <React.Suspense fallback={null}>
+            <React.Suspense
+              fallback={
+                <div className={baseStyles.center}>
+                  <Loader />
+                </div>
+              }
+            >
               <GraphQLConsole />
             </React.Suspense>
           }

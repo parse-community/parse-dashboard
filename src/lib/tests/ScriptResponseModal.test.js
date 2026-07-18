@@ -24,19 +24,9 @@ jest.mock('../../components/Popover/Popover.react', () => {
   };
 });
 
-import React from 'react';
-import renderer, { act } from 'react-test-renderer';
+import React, { act } from 'react';
+import { renderComponent } from './renderWithAct';
 const ScriptResponseModal = require('../../dashboard/Data/Browser/ScriptResponseModal.react').default;
-
-// React 19's react-test-renderer renders concurrently, so create() must run
-// inside act() for getInstance()/toJSON() to reflect the flushed render.
-function renderComponent(element) {
-  let component;
-  act(() => {
-    component = renderer.create(element);
-  });
-  return component;
-}
 
 const defaultProps = {
   objectIds: ['obj1'],

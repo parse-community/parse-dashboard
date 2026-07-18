@@ -39,6 +39,7 @@ const ColumnConfigurationItem = ({ name, handleColumnDragDrop, index, onChangeVi
       className={styles.columnConfigItem}
       role="button"
       tabIndex={0}
+      aria-pressed={visible}
       style={{
         opacity: isDragging ? 0.5 : 1,
         cursor: isDragging ? 'grabbing' : null,

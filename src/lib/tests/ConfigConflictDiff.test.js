@@ -1,17 +1,7 @@
 jest.dontMock('../../dashboard/Data/Config/ConfigConflictDiff.react');
 
 import React from 'react';
-import renderer, { act } from 'react-test-renderer';
-
-// React 19's react-test-renderer renders concurrently, so create() must run
-// inside act() for toJSON()/getInstance() to reflect the flushed render.
-function renderComponent(element) {
-  let component;
-  act(() => {
-    component = renderer.create(element);
-  });
-  return component;
-}
+import { renderComponent } from './renderWithAct';
 const ConfigConflictDiff = require('../../dashboard/Data/Config/ConfigConflictDiff.react').default;
 
 // Mock the diff library

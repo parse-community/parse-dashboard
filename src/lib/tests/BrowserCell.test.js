@@ -9,17 +9,7 @@ jest.dontMock('../../components/BrowserCell/BrowserCell.react');
 jest.mock('idb-keyval');
 
 import React from 'react';
-import renderer, { act } from 'react-test-renderer';
-
-// React 19's react-test-renderer renders concurrently, so create() must run
-// inside act() for toJSON()/getInstance() to reflect the flushed render.
-function renderComponent(element) {
-  let component;
-  act(() => {
-    component = renderer.create(element);
-  });
-  return component;
-}
+import { renderComponent } from './renderWithAct';
 const BrowserCell = require('../../components/BrowserCell/BrowserCell.react').default;
 
 describe('BrowserCell', () => {
