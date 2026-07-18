@@ -93,13 +93,48 @@ export default class Popover extends React.Component {
   }
 
   _checkExternalClick(e) {
-    // If the click target was detached from the DOM during this same click, it
-    // was an element inside the app that a React re-render replaced (e.g. an
-    // icon that swaps on click), not a genuine click outside the popover. Its
-    // ancestor chain is broken, so hasAncestor() below could not find the
-    // popover and would wrongly close it. Under React 19 discrete-event updates
-    // flush synchronously, so this detachment happens before this listener runs.
+    // A click whose target detached from the DOM during this same click — React
+    // 19 flushes discrete updates synchronously, so an element that swaps/removes
+    // itself on click (e.g. an icon that toggles) is already gone by the time
+    // this document-level listener runs — breaks the hasAncestor() walk below:
+    // its ancestor chain no longer reaches the popover. Decide inside-vs-outside
+    // from composedPath() instead, which preserves the event's dispatch-time path
+    // even after the target detaches.
     if (!e.target.isConnected) {
+      // composedPath() is only populated during dispatch; this native listener
+      // runs in the click's bubble phase, so it is valid here. It preserves the
+      // event's dispatch-time ancestors even after the target detaches, so apply
+      // the same inside-vs-outside criteria as the connected branch below (this
+      // popover's wrapper/portal layer, a nested parentContentId, an inner
+      // popover, or a chrome dropdown) against the captured path. Checking only
+      // this popover's own layer would wrongly close it when the detached target
+      // came from a nested popover (e.g. an Autocomplete suggestion), which lives
+      // in its own portal layer.
+      const path = typeof e.composedPath === 'function' ? e.composedPath() : [];
+      if (path.length === 0) {
+        // composedPath unavailable/empty — fall back to the prior "don't close".
+        return;
+      }
+      const { contentId } = this.props;
+      const wrapper = contentId ? document.getElementById(contentId) : this._popoverLayer;
+      const clickedInside = path.some(
+        node =>
+          node === wrapper ||
+          node === this._popoverLayer ||
+          (node instanceof Element &&
+            ((contentId && node.dataset.parentContentId === contentId) ||
+              node.getAttribute('data-popover-type') === 'inner' ||
+              node.classList.contains('chromeDropdown')))
+      );
+      if (clickedInside) {
+        return;
+      }
+      // A genuine outside click whose target merely happened to detach: close.
+      // Returning here also avoids the parentNode/closest reads below, which
+      // would throw on a fully detached node.
+      if (this.props.onExternalClick) {
+        this.props.onExternalClick(e);
+      }
       return;
     }
     const { contentId } = this.props;
