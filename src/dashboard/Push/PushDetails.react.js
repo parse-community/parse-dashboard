@@ -460,7 +460,7 @@ class PushDetails extends DashboardView {
       isFlowView = true;
 
       const headline = statistics.confidence_interval
-        ? 'Group {statistics.winner} is the winner!'
+        ? `Group ${statistics.winner} is the winner!`
         : 'Not enough data to automatically determine the winner';
       const subline = [];
       const launchGroupFragment = 'These devices are outside test groups A & B.';
@@ -485,11 +485,13 @@ class PushDetails extends DashboardView {
       }
 
       if (pushDetails.launch_info && pushDetails.launch_info.recipient_count) {
-        <div key="sublime_2">
-          Your Launch Group is <strong>{pushDetails.launch_info.percent}%</strong> (approximately{' '}
-          <strong>{prettyNumber(pushDetails.launch_info.recipient_count)}</strong>) of the devices
-          in this campaign. {launchGroupFragment}
-        </div>;
+        subline.push(
+          <div key="sublime_2">
+            Your Launch Group is <strong>{pushDetails.launch_info.percent}%</strong> (approximately{' '}
+            <strong>{prettyNumber(pushDetails.launch_info.recipient_count)}</strong>) of the devices
+            in this campaign. {launchGroupFragment}
+          </div>
+        );
       } else {
         subline.push(
           <div key="sublime_2">
