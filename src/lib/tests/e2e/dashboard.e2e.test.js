@@ -73,10 +73,14 @@ describe('dashboard e2e', () => {
     // or a launch failure fails cleanly instead of leaking the browser/server.
     let browser;
     try {
-      browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+      // Bound every Puppeteer op below the 20s Jest timeout (see the timeout arg
+      // to the test): a hang must reject in time for the finally block to close
+      // the browser and server. If Jest aborts at 20s first, the finally never
+      // runs and the Express server leaks (EADDRINUSE in later runs).
+      browser = await puppeteer.launch({ args: ['--no-sandbox'], timeout: 15_000 });
       const page = await browser.newPage();
-      await page.goto(`http://127.0.0.1:${port}${mount}/login`);
-      await page.waitForSelector('#login_mount');
+      await page.goto(`http://127.0.0.1:${port}${mount}/login`, { timeout: 15_000 });
+      await page.waitForSelector('#login_mount', { timeout: 10_000 });
       // React must actually render into the mount node. This guards the login entry
       // point against the React 19 removal of ReactDOM.render (it uses createRoot);
       // a regression there leaves #login_mount empty (blank page) rather than failing the build.
