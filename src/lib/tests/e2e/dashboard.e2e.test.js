@@ -89,10 +89,15 @@ describe('dashboard e2e', () => {
       );
       expect(childCount).toBeGreaterThan(0);
     } finally {
-      if (browser) {
-        await browser.close();
+      // Nested finally + awaited close so a browser.close() failure cannot skip
+      // server.close() and leak the Express server (which would hang the run).
+      try {
+        if (browser) {
+          await browser.close();
+        }
+      } finally {
+        await new Promise(resolve => server.close(resolve));
       }
-      server.close();
     }
   }, 20_000);
 });
