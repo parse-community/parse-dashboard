@@ -7,9 +7,9 @@
  */
 import { createRoot } from 'react-dom/client';
 
-import Routes from './routes';
+import routes from './routes';
 
 // App entry point
 
 const root = createRoot(document.getElementById('browser_mount'));
-root.render(Routes);
+root.render(routes);
