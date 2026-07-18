@@ -1207,16 +1207,26 @@ class Browser extends DashboardView {
         promises.push(promise);
       }
 
-      await Promise.all(promises);
-
-      this.setState({
+      try {
+        await Promise.all(promises);
+      } catch (error) {
+        // A rejected getClassCount must not abort the reset below: otherwise
+        // computingClassCounts stays latched true and the guard above blocks all
+        // future count/CLP updates (permanent deadlock).
+        console.error('Failed to fetch class counts', error);
+      } finally {
         // Read the latest CLPs after the await: a concurrent SET_CLP during the
         // count fetch is skipped by the computingClassCounts guard above, so using
         // the captured `data` snapshot here would clobber that update. Fall back to
-        // the snapshot only if the live schema data is unavailable.
-        clp: (this.props.schema.data || data).get('CLPs').toJS(),
-        computingClassCounts: false,
-      });
+        // the snapshot only if the live schema data is unavailable. Guard the read
+        // so a missing CLPs can't throw here and re-latch computingClassCounts.
+        const schema = this.props.schema.data || data;
+        const clps = schema && schema.get('CLPs');
+        this.setState({
+          ...(clps ? { clp: clps.toJS() } : {}),
+          computingClassCounts: false,
+        });
+      }
     }
   }
 

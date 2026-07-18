@@ -63,7 +63,10 @@ describe('dashboard e2e', () => {
     // Listen on an ephemeral port and reject on error so a busy/leaked port
     // fails fast instead of hanging until the test timeout.
     const server = await new Promise((resolve, reject) => {
-      const s = app.listen(0, () => resolve(s)).on('error', reject);
+      // Bind explicitly to 127.0.0.1 (matched by the goto below) so the server
+      // and Puppeteer agree on the interface — Node 17+ verbatim DNS can resolve
+      // `localhost` to ::1 while the server binds IPv4, causing ECONNREFUSED.
+      const s = app.listen(0, '127.0.0.1', () => resolve(s)).on('error', reject);
     });
     const port = server.address().port;
     // try/finally (with puppeteer launched inside) so a regression (empty mount)
@@ -72,7 +75,7 @@ describe('dashboard e2e', () => {
     try {
       browser = await puppeteer.launch({ args: ['--no-sandbox'] });
       const page = await browser.newPage();
-      await page.goto(`http://localhost:${port}${mount}/login`);
+      await page.goto(`http://127.0.0.1:${port}${mount}/login`);
       await page.waitForSelector('#login_mount');
       // React must actually render into the mount node. This guards the login entry
       // point against the React 19 removal of ReactDOM.render (it uses createRoot);
