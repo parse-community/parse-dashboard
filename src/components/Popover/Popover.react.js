@@ -80,7 +80,15 @@ export default class Popover extends React.Component {
 
   componentWillUnmount() {
     clearTimeout(this._externalClickTimer);
-    document.body.removeChild(this._popoverWrapper);
+    // Remove via parentNode (not document.body) so this can't throw if the
+    // wrapper was moved/detached, and null the reference so a reused instance
+    // (StrictMode / Activity remount) re-creates and re-appends the wrapper in
+    // componentDidMount instead of skipping it via the `!this._popoverWrapper`
+    // guard and rendering into a detached node.
+    if (this._popoverWrapper && this._popoverWrapper.parentNode) {
+      this._popoverWrapper.parentNode.removeChild(this._popoverWrapper);
+    }
+    this._popoverWrapper = null;
     document.body.removeEventListener('click', this._checkExternalClick);
   }
 
