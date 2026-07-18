@@ -37,12 +37,20 @@ const ColumnConfigurationItem = ({ name, handleColumnDragDrop, index, onChangeVi
     <section
       ref={ref}
       className={styles.columnConfigItem}
+      role="button"
+      tabIndex={0}
       style={{
         opacity: isDragging ? 0.5 : 1,
         cursor: isDragging ? 'grabbing' : null,
         backgroundColor: isOver && canDrop ? '#208aec' : null,
       }}
       onClick={() => onChangeVisible(!visible)}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onChangeVisible(!visible);
+        }
+      }}
     >
       <div className={[styles.icon, styles.visibilityIcon].join(' ')}>
         <Icon
