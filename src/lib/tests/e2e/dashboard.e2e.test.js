@@ -99,7 +99,9 @@ describe('dashboard e2e', () => {
           await browser.close();
         }
       } finally {
-        await new Promise(resolve => server.close(resolve));
+        await new Promise((resolve, reject) => {
+          server.close(err => (err ? reject(err) : resolve()));
+        });
       }
     }
   }, 20_000);
