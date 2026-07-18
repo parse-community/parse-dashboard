@@ -120,7 +120,6 @@ export default class Popover extends React.Component {
       const clickedInside = path.some(
         node =>
           node === wrapper ||
-          node === this._popoverLayer ||
           (node instanceof Element &&
             ((contentId && node.dataset.parentContentId === contentId) ||
               node.getAttribute('data-popover-type') === 'inner' ||
