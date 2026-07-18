@@ -85,6 +85,15 @@ export default class Popover extends React.Component {
   }
 
   _checkExternalClick(e) {
+    // If the click target was detached from the DOM during this same click, it
+    // was an element inside the app that a React re-render replaced (e.g. an
+    // icon that swaps on click), not a genuine click outside the popover. Its
+    // ancestor chain is broken, so hasAncestor() below could not find the
+    // popover and would wrongly close it. Under React 19 discrete-event updates
+    // flush synchronously, so this detachment happens before this listener runs.
+    if (!e.target.isConnected) {
+      return;
+    }
     const { contentId } = this.props;
     const popoverWrapper = contentId ? document.getElementById(contentId) : this._popoverLayer;
     const isChromeDropdown = e.target.parentNode.classList.contains('chromeDropdown');
