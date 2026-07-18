@@ -18,14 +18,12 @@ const Types = {
 function DataBrowserHeader({ name, type, targetClass, order, style, index, moveDataBrowserHeader }) {
   const ref = useRef(null);
 
-  const [{ isOver }, drop] = useDrop(
+  const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
       accept: Types.DATA_BROWSER_HEADER,
-      collect: monitor => ({ isOver: monitor.isOver() }),
+      canDrop: item => !!item && item.index !== index,
+      collect: monitor => ({ isOver: monitor.isOver(), canDrop: monitor.canDrop() }),
       drop: item => {
-        if (!item || item.index === index) {
-          return;
-        }
         moveDataBrowserHeader(item.index, index);
       },
     }),
@@ -47,7 +45,7 @@ function DataBrowserHeader({ name, type, targetClass, order, style, index, moveD
   if (order) {
     classes.push(styles[order]);
   }
-  if (isOver && !isDragging) {
+  if (isOver && canDrop) {
     classes.push(styles.over);
   }
   if (isDragging) {
