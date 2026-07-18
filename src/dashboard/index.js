@@ -13,11 +13,11 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import Dashboard from './Dashboard';
 import registerServiceWorker from '../registerServiceWorker';
-
-require('stylesheets/fonts.scss');
 // GraphiQL 5 uses Monaco; register its web workers once before the app mounts.
 import 'graphiql/setup-workers/webpack';
 import 'graphiql/style.css';
+
+require('stylesheets/fonts.scss');
 installDevTools(Immutable);
 
 const path = window.PARSE_DASHBOARD_PATH || '/';
