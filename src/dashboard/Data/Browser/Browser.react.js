@@ -1210,7 +1210,11 @@ class Browser extends DashboardView {
       await Promise.all(promises);
 
       this.setState({
-        clp: data.get('CLPs').toJS(),
+        // Read the latest CLPs after the await: a concurrent SET_CLP during the
+        // count fetch is skipped by the computingClassCounts guard above, so using
+        // the captured `data` snapshot here would clobber that update. Fall back to
+        // the snapshot only if the live schema data is unavailable.
+        clp: (this.props.schema.data || data).get('CLPs').toJS(),
         computingClassCounts: false,
       });
     }
