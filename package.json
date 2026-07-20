@@ -120,7 +120,7 @@
     "http-server": "14.1.1",
     "husky": "9.1.7",
     "jest": "30.0.4",
-    "jest-environment-jsdom": "30.0.5",
+    "jest-environment-jsdom": "30.4.1",
     "madge": "8.0.0",
     "marked": "17.0.5",
     "mongodb-runner": "6.7.3",
