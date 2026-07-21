@@ -13,6 +13,7 @@ import AddArrayEntryDialog from 'dashboard/Data/Config/AddArrayEntryDialog.react
 import RemoveArrayEntryDialog from 'dashboard/Data/Config/RemoveArrayEntryDialog.react';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Icon from 'components/Icon/Icon.react';
+import decodeConfigValue from 'lib/decodeConfigValue';
 import { isDate } from 'lib/DateUtils';
 import Parse from 'parse';
 import React from 'react';
@@ -365,7 +366,7 @@ class Config extends TableView {
 
       // Get latest param values
       const fetchedParams = this.props.config.data.get('params');
-      const fetchedValue = fetchedParams.get(this.state.modalParam);
+      const fetchedValue = decodeConfigValue(fetchedParams.get(this.state.modalParam));
       const fetchedMasterKeyOnly =
         this.props.config.data.get('masterKeyOnly')?.get(this.state.modalParam) || false;
 
@@ -482,15 +483,9 @@ class Config extends TableView {
         data = [];
         params.forEach((value, param) => {
           const masterKeyOnly = masterKeyOnlyParams.get(param) || false;
-          const type = typeof value;
-          if (type === 'object' && value.__type == 'File') {
-            value = Parse.File.fromJSON(value);
-          } else if (type === 'object' && value.__type == 'GeoPoint') {
-            value = new Parse.GeoPoint(value);
-          }
           data.push({
             param: param,
-            value: value,
+            value: decodeConfigValue(value),
             masterKeyOnly: masterKeyOnly,
           });
         });
