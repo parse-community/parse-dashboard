@@ -135,7 +135,7 @@
     "style-loader": "3.3.1",
     "typescript": "6.0.3",
     "webpack": "5.106.2",
-    "webpack-cli": "7.0.2",
+    "webpack-cli": "7.2.1",
     "ws": "8.21.0",
     "yaml": "2.8.3"
   },
