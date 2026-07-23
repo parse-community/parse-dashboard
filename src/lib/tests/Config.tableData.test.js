@@ -5,57 +5,50 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-jest.mock('../subscribeTo', () => () => Component => Component);
-jest.mock('context/currentApp', () => ({ CurrentApp: {} }), { virtual: true });
-jest.mock('../../dashboard/TableView.react', () => {
-  return class TableView {};
-});
-jest.mock('../../dashboard/Data/Config/ConfigDialog.react', () => () => null);
-jest.mock('../../dashboard/Data/Config/DeleteParameterDialog.react', () => () => null);
-jest.mock('../../dashboard/Data/Config/AddArrayEntryDialog.react', () => () => null);
-jest.mock('../../dashboard/Data/Config/RemoveArrayEntryDialog.react', () => () => null);
-jest.mock('../../dashboard/Data/Browser/Notification.react', () => () => null);
-jest.mock('../../components/Sidebar/SidebarAction', () => {
-  return class SidebarAction {
-    constructor() {}
-  };
-});
-jest.mock('../../components/EmptyState/EmptyState.react', () => () => null);
-jest.mock('../../components/Button/Button.react', () => () => null);
-jest.mock('../../components/Icon/Icon.react', () => () => null);
-jest.mock('../../components/Table/TableHeader.react', () => () => null);
-jest.mock('../../components/Toolbar/Toolbar.react', () => () => null);
-jest.mock('../ServerConfigStorage', () => {
-  return class ServerConfigStorage {};
-});
-jest.mock('../StoragePreferences', () => ({
-  prefersServerStorage: () => false,
-}));
-jest.dontMock('../../dashboard/Data/Config/Config.react');
+jest.dontMock('../ConfigTableData');
 
 const { Map } = require('immutable');
-const Config = require('../../dashboard/Data/Config/Config.react').default;
+const Parse = require('parse');
+const buildConfigTableData = require('../ConfigTableData').default;
 
-describe('Config.tableData', () => {
-  it('does not throw when a param value is null', () => {
-    const instance = Object.create(Config.prototype);
-    instance.props = {
-      config: {
-        data: Map({
-          params: Map({ nullParam: null, other: 'ok' }),
-          masterKeyOnly: Map(),
-        }),
-      },
-    };
+describe('buildConfigTableData', () => {
+  it('keeps null param values without throwing', () => {
+    const params = Map({ nullParam: null, other: 'ok' });
+    const masterKeyOnly = Map();
 
-    let data;
-    expect(() => {
-      data = instance.tableData();
-    }).not.toThrow();
-
-    expect(data).toEqual([
+    expect(() => buildConfigTableData(params, masterKeyOnly)).not.toThrow();
+    expect(buildConfigTableData(params, masterKeyOnly)).toEqual([
       { param: 'nullParam', value: null, masterKeyOnly: false },
       { param: 'other', value: 'ok', masterKeyOnly: false },
     ]);
+  });
+
+  it('converts serialized File and GeoPoint values', () => {
+    const params = Map({
+      avatar: {
+        __type: 'File',
+        name: 'photo.png',
+        url: 'https://example.com/photo.png',
+      },
+      location: {
+        __type: 'GeoPoint',
+        latitude: 40.0,
+        longitude: -30.0,
+      },
+    });
+    const masterKeyOnly = Map({ avatar: true });
+
+    const data = buildConfigTableData(params, masterKeyOnly);
+
+    expect(data).toHaveLength(2);
+    expect(data[0].param).toBe('avatar');
+    expect(data[0].masterKeyOnly).toBe(true);
+    expect(data[0].value).toBeInstanceOf(Parse.File);
+    expect(data[0].value.name()).toBe('photo.png');
+    expect(data[1].param).toBe('location');
+    expect(data[1].masterKeyOnly).toBe(false);
+    expect(data[1].value).toBeInstanceOf(Parse.GeoPoint);
+    expect(data[1].value.latitude).toBe(40.0);
+    expect(data[1].value.longitude).toBe(-30.0);
   });
 });

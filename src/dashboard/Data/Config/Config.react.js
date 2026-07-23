@@ -28,6 +28,7 @@ import equal from 'fast-deep-equal';
 import Notification from 'dashboard/Data/Browser/Notification.react';
 import ServerConfigStorage from 'lib/ServerConfigStorage';
 import { prefersServerStorage } from 'lib/StoragePreferences';
+import buildConfigTableData from 'lib/ConfigTableData';
 
 @subscribeTo('Config', 'config')
 class Config extends TableView {
@@ -479,24 +480,7 @@ class Config extends TableView {
       const params = this.props.config.data.get('params');
       const masterKeyOnlyParams = this.props.config.data.get('masterKeyOnly') || {};
       if (params) {
-        data = [];
-        params.forEach((value, param) => {
-          const masterKeyOnly = masterKeyOnlyParams.get(param) || false;
-          const type = typeof value;
-          if (type === 'object' && value !== null && value.__type == 'File') {
-            value = Parse.File.fromJSON(value);
-          } else if (type === 'object' && value !== null && value.__type == 'GeoPoint') {
-            value = new Parse.GeoPoint(value);
-          }
-          data.push({
-            param: param,
-            value: value,
-            masterKeyOnly: masterKeyOnly,
-          });
-        });
-        data.sort((object1, object2) => {
-          return object1.param.localeCompare(object2.param);
-        });
+        data = buildConfigTableData(params, masterKeyOnlyParams);
       }
     }
     return data;
