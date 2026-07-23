@@ -1,3 +1,10 @@
+# [9.3.0-alpha.2](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.1...9.3.0-alpha.2) (2026-07-23)
+
+
+### Bug Fixes
+
+* Prevent Config table crash when a parameter value is null ([#3424](https://github.com/parse-community/parse-dashboard/issues/3424)) ([7150acf](https://github.com/parse-community/parse-dashboard/commit/7150acfb43a7ca60345e746d4cb9f4d38cb540aa))
+
 # [9.3.0-alpha.1](https://github.com/parse-community/parse-dashboard/compare/9.2.1-alpha.1...9.3.0-alpha.1) (2026-07-18)
 
 
