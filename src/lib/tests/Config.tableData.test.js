@@ -23,6 +23,17 @@ describe('buildConfigTableData', () => {
     ]);
   });
 
+  it('tolerates missing masterKeyOnly metadata', () => {
+    const params = Map({ nullParam: null, other: 'ok' });
+
+    expect(() => buildConfigTableData(params, {})).not.toThrow();
+    expect(() => buildConfigTableData(params, undefined)).not.toThrow();
+    expect(buildConfigTableData(params, {})).toEqual([
+      { param: 'nullParam', value: null, masterKeyOnly: false },
+      { param: 'other', value: 'ok', masterKeyOnly: false },
+    ]);
+  });
+
   it('converts serialized File and GeoPoint values', () => {
     const params = Map({
       avatar: {

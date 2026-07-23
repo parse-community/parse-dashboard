@@ -10,7 +10,7 @@ import Parse from 'parse';
 export default function buildConfigTableData(params, masterKeyOnlyParams) {
   const data = [];
   params.forEach((value, param) => {
-    const masterKeyOnly = masterKeyOnlyParams.get(param) || false;
+    const masterKeyOnly = masterKeyOnlyParams?.get?.(param) || false;
     const type = typeof value;
     if (type === 'object' && value !== null && value.__type == 'File') {
       value = Parse.File.fromJSON(value);

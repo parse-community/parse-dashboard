@@ -29,6 +29,7 @@ import Notification from 'dashboard/Data/Browser/Notification.react';
 import ServerConfigStorage from 'lib/ServerConfigStorage';
 import { prefersServerStorage } from 'lib/StoragePreferences';
 import buildConfigTableData from 'lib/ConfigTableData';
+import { Map } from 'immutable';
 
 @subscribeTo('Config', 'config')
 class Config extends TableView {
@@ -478,7 +479,7 @@ class Config extends TableView {
     let data = undefined;
     if (this.props.config.data) {
       const params = this.props.config.data.get('params');
-      const masterKeyOnlyParams = this.props.config.data.get('masterKeyOnly') || {};
+      const masterKeyOnlyParams = this.props.config.data.get('masterKeyOnly') || Map();
       if (params) {
         data = buildConfigTableData(params, masterKeyOnlyParams);
       }
