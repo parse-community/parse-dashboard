@@ -1,3 +1,10 @@
+# [9.3.0-alpha.3](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.2...9.3.0-alpha.3) (2026-07-25)
+
+
+### Bug Fixes
+
+* Add Cancel and Add buttons to the add-row modal ([#1995](https://github.com/parse-community/parse-dashboard/issues/1995)) ([#3383](https://github.com/parse-community/parse-dashboard/issues/3383)) ([2d1b739](https://github.com/parse-community/parse-dashboard/commit/2d1b739dad3b39a5c42dfa56afa96b2b76ba26b2))
+
 # [9.3.0-alpha.2](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.1...9.3.0-alpha.2) (2026-07-23)
 
 
