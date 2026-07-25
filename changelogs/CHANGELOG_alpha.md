@@ -1,3 +1,10 @@
+# [9.3.0-alpha.4](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.3...9.3.0-alpha.4) (2026-07-25)
+
+
+### Bug Fixes
+
+* Info panel data not loaded when opened over an existing selection ([#3384](https://github.com/parse-community/parse-dashboard/issues/3384)) ([4879959](https://github.com/parse-community/parse-dashboard/commit/4879959f08286cb2e55515027f8b40e90ab392c1))
+
 # [9.3.0-alpha.3](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.2...9.3.0-alpha.3) (2026-07-25)
 
 
