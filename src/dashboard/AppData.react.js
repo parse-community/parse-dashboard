@@ -9,7 +9,7 @@ import React from 'react';
 import AppSelector from 'dashboard/AppSelector.react';
 import AppsManager from 'lib/AppsManager';
 import { CurrentApp } from 'context/currentApp';
-import { Outlet, useNavigate, useParams } from 'react-router-dom';
+import { Outlet, useNavigate, useParams } from 'react-router';
 
 function AppData() {
   const navigate = useNavigate();
