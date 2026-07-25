@@ -777,6 +777,15 @@ export default class DataBrowser extends React.Component {
       );
     }
 
+    if (newVisibility && this.state.selectedObjectId) {
+      this.setShowAggregatedData(true);
+      this.handleCallCloudFunction(
+        this.state.selectedObjectId,
+        this.props.className,
+        this.props.app.applicationId
+      );
+    }
+
     if (!newVisibility && this.state.selectedObjectId) {
       if (this.props.errorAggregatedData != {}) {
         this.props.setErrorAggregatedData({});
