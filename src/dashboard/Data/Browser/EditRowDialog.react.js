@@ -224,8 +224,25 @@ export default class EditRowDialog extends React.Component {
   }
 
   render() {
-    const { selectedObject, className, columns, onClose, schema, useMasterKey } = this.props;
+    const {
+      selectedObject,
+      className,
+      columns,
+      onClose,
+      schema,
+      useMasterKey,
+      onSaveNewRow,
+      onAbortAddRow,
+    } = this.props;
     const { currentObject, openObjectPickers, expandedTextAreas } = this.state;
+    const isNewObject = !selectedObject.id;
+
+    const handleCancel = () => {
+      if (isNewObject) {
+        onAbortAddRow();
+      }
+      onClose();
+    };
 
     const fields = columns.map(column => {
       const { name, type, targetClass } = column;
@@ -495,10 +512,13 @@ export default class EditRowDialog extends React.Component {
             )}
           </div>
         }
-        onCancel={onClose}
+        onCancel={handleCancel}
+        cancelText={isNewObject ? 'Cancel' : 'Close'}
+        showContinue={isNewObject}
+        continueText="Add"
+        onContinue={onSaveNewRow}
         onConfirm={this.openAcl}
         confirmText="Edit ACL"
-        cancelText="Close"
       >
         <div className={[styles.objectPickerContent]}>{fields}</div>
       </Modal>

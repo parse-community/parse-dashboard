@@ -1010,7 +1010,7 @@ class Browser extends DashboardView {
         const msg = `${objectSaved.className} with id '${objectSaved.id}' created`;
         this.showNote(msg, false);
 
-        const state = { data: this.state.data };
+        const state = { data: this.state.data, showEditRowDialog: false };
         const relation = this.state.relation;
         if (relation) {
           const parent = relation.parent;
@@ -3419,6 +3419,8 @@ class Browser extends DashboardView {
           setRelation={this.setRelation}
           handleShowAcl={this.handleShowAcl}
           onClose={this.closeEditRowDialog}
+          onSaveNewRow={this.saveNewRow}
+          onAbortAddRow={this.abortAddRow}
           updateRow={this.updateRow}
           confirmAttachSelectedRows={this.confirmAttachSelectedRows}
           schema={this.props.schema}
