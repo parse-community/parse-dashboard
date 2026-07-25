@@ -6,7 +6,8 @@
  * the root directory of this source tree.
  */
 import React, { Component } from 'react';
-import GraphiQL from 'graphiql';
+import { GraphiQL } from 'graphiql';
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import EmptyState from 'components/EmptyState/EmptyState.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import styles from 'dashboard/Data/ApiConsole/ApiConsole.scss';
@@ -14,6 +15,19 @@ import { CurrentApp } from 'context/currentApp';
 
 export default class GraphQLConsole extends Component {
   static contextType = CurrentApp;
+
+  // Build (and memoize) the fetcher so re-renders don't recreate it. The static
+  // parseHeaders are injected on every request by createGraphiQLFetcher; Accept
+  // and Content-Type: application/json are set automatically.
+  getFetcher(graphQLServerURL, parseHeaders) {
+    const key = `${graphQLServerURL}:${JSON.stringify(parseHeaders)}`;
+    if (this._fetcherKey !== key) {
+      this._fetcherKey = key;
+      this._fetcher = createGraphiQLFetcher({ url: graphQLServerURL, headers: parseHeaders });
+    }
+    return this._fetcher;
+  }
+
   render() {
     const { applicationId, clientKey, graphQLServerURL, masterKey } = this.context;
     let content;
@@ -39,20 +53,8 @@ export default class GraphQLConsole extends Component {
       }
       content = (
         <GraphiQL
-          headers={JSON.stringify(parseHeaders)}
-          headerEditorEnabled={true}
-          fetcher={async (graphQLParams, { headers }) => {
-            const data = await fetch(graphQLServerURL, {
-              method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                ...headers,
-              },
-              body: JSON.stringify(graphQLParams),
-            });
-            return data.json().catch(() => data.text());
-          }}
+          fetcher={this.getFetcher(graphQLServerURL, parseHeaders)}
+          initialHeaders={JSON.stringify(parseHeaders, null, 2)}
         />
       );
     }
