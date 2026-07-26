@@ -72,7 +72,9 @@ export default class PushAudienceDialog extends React.Component {
         stateSettings.platforms = deviceType.$in || [];
       }
       if (audienceInfo.filters) {
-        stateSettings.filters = audienceInfo.filters;
+        stateSettings.filters = audienceInfo.filters.map(filter =>
+          filter.get('class') ? filter : filter.set('class', '_Installation')
+        );
       }
       if (audienceInfo.name) {
         stateSettings.audienceName = audienceInfo.name;
