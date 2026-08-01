@@ -1,3 +1,38 @@
+# [9.3.0-alpha.4](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.3...9.3.0-alpha.4) (2026-07-25)
+
+
+### Bug Fixes
+
+* Info panel data not loaded when opened over an existing selection ([#3384](https://github.com/parse-community/parse-dashboard/issues/3384)) ([4879959](https://github.com/parse-community/parse-dashboard/commit/4879959f08286cb2e55515027f8b40e90ab392c1))
+
+# [9.3.0-alpha.3](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.2...9.3.0-alpha.3) (2026-07-25)
+
+
+### Bug Fixes
+
+* Add Cancel and Add buttons to the add-row modal ([#1995](https://github.com/parse-community/parse-dashboard/issues/1995)) ([#3383](https://github.com/parse-community/parse-dashboard/issues/3383)) ([2d1b739](https://github.com/parse-community/parse-dashboard/commit/2d1b739dad3b39a5c42dfa56afa96b2b76ba26b2))
+
+# [9.3.0-alpha.2](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.1...9.3.0-alpha.2) (2026-07-23)
+
+
+### Bug Fixes
+
+* Prevent Config table crash when a parameter value is null ([#3424](https://github.com/parse-community/parse-dashboard/issues/3424)) ([7150acf](https://github.com/parse-community/parse-dashboard/commit/7150acfb43a7ca60345e746d4cb9f4d38cb540aa))
+
+# [9.3.0-alpha.1](https://github.com/parse-community/parse-dashboard/compare/9.2.1-alpha.1...9.3.0-alpha.1) (2026-07-18)
+
+
+### Features
+
+* React 19 + react-router 7 + GraphiQL 5 coordinated upgrade ([#3409](https://github.com/parse-community/parse-dashboard/issues/3409)) ([c3e16c2](https://github.com/parse-community/parse-dashboard/commit/c3e16c27d5c98e1981d1d7b06b33d3d9e355b183))
+
+## [9.2.1-alpha.1](https://github.com/parse-community/parse-dashboard/compare/9.2.0...9.2.1-alpha.1) (2026-07-17)
+
+
+### Bug Fixes
+
+* Advertise localhost instead of 0.0.0.0 in the dashboard startup message ([#3410](https://github.com/parse-community/parse-dashboard/issues/3410)) ([33ce7b8](https://github.com/parse-community/parse-dashboard/commit/33ce7b8d283855f8398f6111d8f557081d11d018))
+
 # [9.2.0-alpha.1](https://github.com/parse-community/parse-dashboard/compare/9.1.2-alpha.1...9.2.0-alpha.1) (2026-07-04)
 
 

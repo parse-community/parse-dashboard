@@ -8,7 +8,7 @@
 import React from 'react';
 import CategoryList from 'components/CategoryList/CategoryList.react';
 import DashboardView from 'dashboard/DashboardView.react';
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router';
 import { withRouter } from 'lib/withRouter';
 
 @withRouter

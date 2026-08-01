@@ -7,7 +7,7 @@
  */
 import React from 'react';
 import { CurrentApp } from 'context/currentApp';
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router';
 
 export default class JobsData extends React.Component {
   static contextType = CurrentApp;
