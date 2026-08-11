@@ -1,3 +1,10 @@
+# [9.3.0-alpha.5](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.4...9.3.0-alpha.5) (2026-08-11)
+
+
+### Bug Fixes
+
+* Remote access restrictions not enforced when running behind a reverse proxy ([#3436](https://github.com/parse-community/parse-dashboard/issues/3436)) ([60cb379](https://github.com/parse-community/parse-dashboard/commit/60cb3791bd95325ee04d5e354c034d54817c89ac))
+
 # [9.3.0-alpha.4](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.3...9.3.0-alpha.4) (2026-07-25)
 
 
