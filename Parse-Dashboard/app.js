@@ -103,10 +103,14 @@ module.exports = function(config, options) {
      * needs encrypting, never to grant access.
      */
     function isLoopbackPeer(req) {
+      // The whole of 127.0.0.0/8 is loopback, not just 127.0.0.1. The address is
+      // absent on a socket that has already been destroyed.
       const address = req.socket.remoteAddress;
-      return address === '127.0.0.1' ||
-        address === '::ffff:127.0.0.1' ||
-        address === '::1';
+      return typeof address === 'string' && (
+        address.startsWith('127.') ||
+        address.startsWith('::ffff:127.') ||
+        address === '::1'
+      );
     }
 
     /**

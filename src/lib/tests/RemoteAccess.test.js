@@ -84,10 +84,20 @@ function noUserConfig(overrides = {}) {
  * Start the dashboard mounted in a parent app, as the CLI and the express
  * middleware integration both do.
  */
-function startDashboard(config, options = {}) {
+function startDashboard(config, options = {}, peerAddress) {
   return new Promise((resolve) => {
     const parseDashboard = require('../../../Parse-Dashboard/app.js');
     const parentApp = express();
+    if (peerAddress !== undefined) {
+      parentApp.use((req, _res, next) => {
+        Object.defineProperty(req.connection, 'remoteAddress', {
+          value: peerAddress.value,
+          writable: true,
+          configurable: true,
+        });
+        next();
+      });
+    }
     parentApp.use(
       '/',
       parseDashboard(config, { cookieSessionSecret: SESSION_SECRET, ...options })
@@ -251,6 +261,34 @@ describe('Config endpoint locality — configured deployments behind a proxy', (
     expect(res.raw).not.toContain(MASTER_KEY);
     expect(res.raw).not.toContain('can only be remotely accessed via HTTPS');
     expect(res.status).toBe(401);
+  });
+});
+
+describe('Config endpoint locality — loopback addresses beyond 127.0.0.1', () => {
+  const servers = [];
+
+  afterAll(() => Promise.all(servers.map(({ server }) => stopDashboard(server))));
+
+  async function get(peerValue) {
+    const started = await startDashboard(noUserConfig(), {}, { value: peerValue });
+    servers.push(started);
+    return makeRequest(started.port, { path: '/parse-dashboard-config.json' });
+  }
+
+  it('treats any 127.0.0.0/8 address as originating on this host', async () => {
+    const res = await get('127.0.0.2');
+    expect(res.body.apps[0].masterKey).toBe(MASTER_KEY);
+  });
+
+  it('treats an IPv4-mapped 127.0.0.0/8 address as originating on this host', async () => {
+    const res = await get('::ffff:127.0.0.2');
+    expect(res.body.apps[0].masterKey).toBe(MASTER_KEY);
+  });
+
+  it('does not fail when the peer address is unavailable', async () => {
+    const res = await get(undefined);
+    expect(res.status).toBe(200);
+    expect(res.raw).not.toContain(MASTER_KEY);
   });
 });
 
