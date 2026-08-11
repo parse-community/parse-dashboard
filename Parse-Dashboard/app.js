@@ -87,13 +87,31 @@ module.exports = function(config, options) {
       cookieSessionStore: options.cookieSessionStore
     });
 
+    // Headers set by reverse proxies to describe the original client. Their
+    // presence means the request was relayed and did not originate on this host.
+    const forwardingHeaders = ['x-forwarded-for', 'x-forwarded-host', 'x-real-ip', 'forwarded'];
+
     /**
      * Checks whether a request is from localhost.
+     *
+     * The socket peer address alone cannot answer this: a reverse proxy running
+     * on the same host as the dashboard connects over loopback, so every request
+     * it relays would look local no matter where the client actually is. The
+     * peer address is therefore only trusted when nothing indicates a proxy.
      */
     function isLocalRequest(req) {
-      return req.connection.remoteAddress === '127.0.0.1' ||
-        req.connection.remoteAddress === '::ffff:127.0.0.1' ||
-        req.connection.remoteAddress === '::1';
+      // A configured proxy relays every request, so no request is local.
+      if (config.trustProxy) {
+        return false;
+      }
+      // Forwarding headers are never sent by a client on this host.
+      if (forwardingHeaders.some(header => req.headers[header] !== undefined)) {
+        return false;
+      }
+      const address = req.socket.remoteAddress;
+      return address === '127.0.0.1' ||
+        address === '::ffff:127.0.0.1' ||
+        address === '::1';
     }
 
     /**
