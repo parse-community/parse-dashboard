@@ -218,6 +218,42 @@ describe('Config endpoint locality — genuine localhost requests', () => {
   });
 });
 
+describe('Config endpoint locality — configured deployments behind a proxy', () => {
+  let server;
+  let port;
+
+  const withUsers = {
+    apps: [
+      {
+        serverURL: 'http://localhost:1337/parse',
+        appId: 'testAppId',
+        masterKey: MASTER_KEY,
+        appName: 'TestApp',
+      },
+    ],
+    users: [{ user: 'admin', pass: 'admin' }],
+  };
+
+  beforeAll(async () => {
+    ({ server, port } = await startDashboard(withUsers));
+  });
+
+  afterAll(() => stopDashboard(server));
+
+  // The HTTPS requirement is keyed on the connection, not on the client, so a
+  // proxy terminating TLS on this host keeps working without `trustProxy`.
+  it('does not impose the HTTPS requirement on a proxy terminating TLS on this host', async () => {
+    const res = await makeRequest(port, {
+      path: '/parse-dashboard-config.json',
+      headers: { 'X-Forwarded-For': '203.0.113.7', 'X-Forwarded-Proto': 'https' },
+    });
+
+    expect(res.raw).not.toContain(MASTER_KEY);
+    expect(res.raw).not.toContain('can only be remotely accessed via HTTPS');
+    expect(res.status).toBe(401);
+  });
+});
+
 describe('Agent endpoint locality — requests forwarded by a same-host proxy', () => {
   let server;
   let port;

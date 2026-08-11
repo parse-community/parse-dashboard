@@ -95,12 +95,26 @@ module.exports = function(config, options) {
     const forwardingHeaders = ['x-real-ip', 'forwarded'];
 
     /**
-     * Checks whether a request is from localhost.
+     * Checks whether the connection was opened from this host.
      *
-     * The socket peer address alone cannot answer this: a reverse proxy running
-     * on the same host as the dashboard connects over loopback, so every request
-     * it relays would look local no matter where the client actually is. The
-     * peer address is therefore only trusted when nothing indicates a proxy.
+     * This describes the connection, not the client: a reverse proxy running on
+     * the same host also connects over loopback, so a true result does not mean
+     * the client is local. Use it only to decide whether the connection itself
+     * needs encrypting, never to grant access.
+     */
+    function isLoopbackPeer(req) {
+      const address = req.socket.remoteAddress;
+      return address === '127.0.0.1' ||
+        address === '::ffff:127.0.0.1' ||
+        address === '::1';
+    }
+
+    /**
+     * Checks whether a request originated on this host.
+     *
+     * Stricter than `isLoopbackPeer`, because a same-host reverse proxy would
+     * otherwise make every request it relays look local. A request counts as
+     * local only when nothing indicates it was relayed.
      */
     function isLocalRequest(req) {
       // A configured proxy relays every request, so no request is local.
@@ -114,10 +128,7 @@ module.exports = function(config, options) {
       if (isForwarded) {
         return false;
       }
-      const address = req.socket.remoteAddress;
-      return address === '127.0.0.1' ||
-        address === '::ffff:127.0.0.1' ||
-        address === '::1';
+      return isLoopbackPeer(req);
     }
 
     /**
@@ -126,11 +137,15 @@ module.exports = function(config, options) {
      * - Requires users to be configured for remote access (unless dev mode is enabled)
      */
     function enforceRemoteAccessRestrictions(req, res, next) {
-      if (!options.dev && !isLocalRequest(req)) {
-        if (!req.secure && !options.allowInsecureHTTP) {
+      if (!options.dev) {
+        // Keyed on the connection: a loopback connection cannot be observed off
+        // this host, so it needs no encryption of its own.
+        if (!isLoopbackPeer(req) && !req.secure && !options.allowInsecureHTTP) {
           return res.status(403).json({ error: 'Parse Dashboard can only be remotely accessed via HTTPS' });
         }
-        if (!users) {
+        // Keyed on the client: granting access requires knowing where the
+        // request came from, which a relayed request cannot establish.
+        if (!isLocalRequest(req) && !users) {
           return res.status(401).json({ error: 'Configure a user to access Parse Dashboard remotely' });
         }
       }
@@ -159,13 +174,13 @@ module.exports = function(config, options) {
         agent: config.agent,
       };
 
-      if (!options.dev && !isLocalRequest(req)) {
-        if (!req.secure && !options.allowInsecureHTTP) {
+      if (!options.dev) {
+        if (!isLoopbackPeer(req) && !req.secure && !options.allowInsecureHTTP) {
           //Disallow HTTP requests except on localhost, to prevent the master key from being transmitted in cleartext
           return res.send({ success: false, error: 'Parse Dashboard can only be remotely accessed via HTTPS' });
         }
 
-        if (!users) {
+        if (!isLocalRequest(req) && !users) {
           //Accessing the dashboard over the internet can only be done with username and password
           return res.send({ success: false, error: 'Configure a user to access Parse Dashboard remotely' });
         }
