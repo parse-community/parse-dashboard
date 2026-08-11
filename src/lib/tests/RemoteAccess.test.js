@@ -141,6 +141,26 @@ describe('Config endpoint locality — requests forwarded by a same-host proxy',
     expect(res.body.error).toBe('Configure a user to access Parse Dashboard remotely');
   });
 
+  it('does not return the master key for a request carrying only X-Forwarded-Proto', async () => {
+    const res = await makeRequest(port, {
+      path: '/parse-dashboard-config.json',
+      headers: { 'X-Forwarded-Proto': 'https' },
+    });
+
+    expect(res.raw).not.toContain(MASTER_KEY);
+    expect(res.body.error).toBe('Configure a user to access Parse Dashboard remotely');
+  });
+
+  it('does not return the master key for a request carrying only X-Forwarded-Port', async () => {
+    const res = await makeRequest(port, {
+      path: '/parse-dashboard-config.json',
+      headers: { 'X-Forwarded-Port': '443' },
+    });
+
+    expect(res.raw).not.toContain(MASTER_KEY);
+    expect(res.body.error).toBe('Configure a user to access Parse Dashboard remotely');
+  });
+
   it('does not return the master key for a request carrying a Forwarded header', async () => {
     const res = await makeRequest(port, {
       path: '/parse-dashboard-config.json',

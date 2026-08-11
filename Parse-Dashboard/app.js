@@ -89,7 +89,10 @@ module.exports = function(config, options) {
 
     // Headers set by reverse proxies to describe the original client. Their
     // presence means the request was relayed and did not originate on this host.
-    const forwardingHeaders = ['x-forwarded-for', 'x-forwarded-host', 'x-real-ip', 'forwarded'];
+    // The `x-forwarded-` prefix is matched as a whole because proxies vary in
+    // which of them they set, and any single one is enough to reveal a relay.
+    const forwardingHeaderPrefix = 'x-forwarded-';
+    const forwardingHeaders = ['x-real-ip', 'forwarded'];
 
     /**
      * Checks whether a request is from localhost.
@@ -105,7 +108,10 @@ module.exports = function(config, options) {
         return false;
       }
       // Forwarding headers are never sent by a client on this host.
-      if (forwardingHeaders.some(header => req.headers[header] !== undefined)) {
+      const isForwarded = Object.keys(req.headers).some(header =>
+        header.startsWith(forwardingHeaderPrefix) || forwardingHeaders.includes(header)
+      );
+      if (isForwarded) {
         return false;
       }
       const address = req.socket.remoteAddress;
