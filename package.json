@@ -57,7 +57,7 @@
     "graphiql": "5.2.4",
     "graphql": "16.12.0",
     "graphql-ws": "6.1.0",
-    "immutable": "5.1.5",
+    "immutable": "5.1.9",
     "immutable-devtools": "0.1.5",
     "inquirer": "13.2.2",
     "js-beautify": "1.15.4",
