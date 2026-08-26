@@ -81,7 +81,7 @@
     "react-popper-tooltip": "4.4.2",
     "react-resizable": "4.0.2",
     "react-rnd": "10.5.3",
-    "react-router": "7.18.1",
+    "react-router": "7.18.2",
     "regenerator-runtime": "0.14.1"
   },
   "overrides": {
