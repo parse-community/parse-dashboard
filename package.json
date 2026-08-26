@@ -42,7 +42,7 @@
     "@graphiql/toolkit": "0.12.1",
     "@microlink/react-json-view": "1.31.22",
     "bcryptjs": "3.0.3",
-    "body-parser": "2.2.2",
+    "body-parser": "2.3.0",
     "chart.js": "4.5.1",
     "commander": "13.1.0",
     "connect-flash": "0.1.1",
