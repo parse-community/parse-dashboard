@@ -44,4 +44,26 @@ describe('BrowserCell', () => {
       expect(component.props.className).toContain('required');
     });
   });
+
+  describe('Date value in a non-Date column (issue #1927)', () => {
+    it('should render a Date value as a string instead of crashing', () => {
+      let component;
+      expect(() => {
+        component = renderer
+          .create(<BrowserCell type="String" value={new Date('2001-01-01T00:00:00Z')} row={0} />)
+          .toJSON();
+      }).not.toThrow();
+      expect(typeof component.children[0]).toBe('string');
+    });
+
+    it('should render a Date-typed column given a date string without crashing', () => {
+      let component;
+      expect(() => {
+        component = renderer
+          .create(<BrowserCell type="Date" value="2001-01-01" row={0} />)
+          .toJSON();
+      }).not.toThrow();
+      expect(typeof component.children[0]).toBe('string');
+    });
+  });
 });
