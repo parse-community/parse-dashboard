@@ -98,4 +98,29 @@ describe('BrowserRow', () => {
       expect(checkboxCell.props.style.background).toBe('#ffffff');
     });
   });
+
+  describe('Unique filter', () => {
+    beforeAll(() => {
+      global.localStorage = {
+        getItem: () => null,
+        setItem: () => {},
+        removeItem: () => {},
+      };
+    });
+
+    it('does not crash rendering a unique _User pointer value', () => {
+      const rawUserPointer = { __type: 'Pointer', className: '_User', objectId: 'user1' };
+      expect(() =>
+        renderer.create(
+          <BrowserRow
+            {...defaultProps}
+            isUnique={true}
+            obj={rawUserPointer}
+            columns={{ owner: { type: 'Pointer', targetClass: '_User' } }}
+            order={[{ name: 'owner', width: 150, visible: true }]}
+          />
+        )
+      ).not.toThrow();
+    });
+  });
 });
