@@ -59,6 +59,7 @@ export default class AppleCerts extends React.Component {
           certs={this.state.certs}
           error={this.state.error}
           uploadPending={this.state.uploadPending}
+          useLocalTime={this.context.useLocalTime}
           onUpload={this.handleUpload.bind(this)}
           onDelete={this.handleDelete.bind(this)}
         />
