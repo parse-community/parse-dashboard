@@ -56,7 +56,7 @@ import { isFormResponse, executeScriptCallback } from 'lib/ScriptUtils';
 import Parse from 'parse';
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { useBeforeUnload } from 'react-router-dom';
+import { useBeforeUnload } from 'react-router';
 import BrowserFooter from './BrowserFooter.react';
 
 const SELECTED_ROWS_MESSAGE = 'There are selected rows. Are you sure you want to leave this page?';
@@ -332,7 +332,10 @@ class Browser extends DashboardView {
       this.action = new SidebarAction('Create a class', this.showCreateClass.bind(this));
     }
 
-    this.props.schema.dispatch(ActionTypes.FETCH).then(() => this.handleFetchedSchema());
+    this.props.schema
+      .dispatch(ActionTypes.FETCH)
+      .then(data => this.handleFetchedSchema(data))
+      .catch(error => console.error(error));
     if (!this.props.params.className && this.props.schema.data.get('classes')) {
       this.redirectToFirstClass(this.props.schema.data.get('classes'));
     } else if (this.props.params.className) {
@@ -346,7 +349,9 @@ class Browser extends DashboardView {
     window.addEventListener('mouseup', this.onMouseUpRowCheckBox);
     get('/parse-dashboard-config.json').then(data => {
       this.setState({ configData: data });
-      this.classAndCloudFuntionMap(this.state.configData);
+      // Use the fetched `data` directly rather than this.state.configData: under
+      // React 18 automatic batching the setState above has not applied yet here.
+      this.classAndCloudFuntionMap(data);
     });
 
     // Fetch Cloud Config array params for context menu
@@ -428,7 +433,10 @@ class Browser extends DashboardView {
         this.setState({ counts: {} });
         Parse.Object._clearAllState();
 
-        nextProps.schema.dispatch(ActionTypes.FETCH).then(() => this.handleFetchedSchema());
+        nextProps.schema
+          .dispatch(ActionTypes.FETCH)
+          .then(data => this.handleFetchedSchema(data))
+          .catch(error => console.error(error));
       }
       this.prefetchData(nextProps, nextContext);
     }
@@ -1002,7 +1010,7 @@ class Browser extends DashboardView {
         const msg = `${objectSaved.className} with id '${objectSaved.id}' created`;
         this.showNote(msg, false);
 
-        const state = { data: this.state.data };
+        const state = { data: this.state.data, showEditRowDialog: false };
         const relation = this.state.relation;
         if (relation) {
           const parent = relation.parent;
@@ -1182,12 +1190,17 @@ class Browser extends DashboardView {
     });
   }
 
-  async handleFetchedSchema() {
-    if (this.state.computingClassCounts === false) {
+  async handleFetchedSchema(schemaData) {
+    // Prefer the schema state resolved from the FETCH/SET_CLP dispatch: under
+    // React 18 automatic batching, this.props.schema.data (a subscribeTo
+    // snapshot) may not reflect the freshly-loaded classes yet.
+    const data = schemaData || this.props.schema.data;
+    const classes = data.get('classes');
+    if (this.state.computingClassCounts === false && classes) {
       this.setState({ computingClassCounts: true });
 
       const promises = [];
-      for (const parseClass of this.props.schema.data.get('classes')) {
+      for (const parseClass of classes) {
         const [className] = parseClass;
         const promise = this.context.getClassCount(className).then(count => {
           this.setState(prevState => ({
@@ -1200,12 +1213,26 @@ class Browser extends DashboardView {
         promises.push(promise);
       }
 
-      await Promise.all(promises);
-
-      this.setState({
-        clp: this.props.schema.data.get('CLPs').toJS(),
-        computingClassCounts: false,
-      });
+      try {
+        await Promise.all(promises);
+      } catch (error) {
+        // A rejected getClassCount must not abort the reset below: otherwise
+        // computingClassCounts stays latched true and the guard above blocks all
+        // future count/CLP updates (permanent deadlock).
+        console.error('Failed to fetch class counts', error);
+      } finally {
+        // Read the latest CLPs after the await: a concurrent SET_CLP during the
+        // count fetch is skipped by the computingClassCounts guard above, so using
+        // the captured `data` snapshot here would clobber that update. Fall back to
+        // the snapshot only if the live schema data is unavailable. Guard the read
+        // so a missing CLPs can't throw here and re-latch computingClassCounts.
+        const schema = this.props.schema.data || data;
+        const clps = schema && schema.get('CLPs');
+        this.setState({
+          ...(clps ? { clp: clps.toJS() } : {}),
+          computingClassCounts: false,
+        });
+      }
     }
   }
 
@@ -1836,12 +1863,18 @@ class Browser extends DashboardView {
   }
 
   handleCLPChange(clp) {
-    const p = this.props.schema.dispatch(ActionTypes.SET_CLP, {
-      className: this.props.params.className,
-      clp,
-    });
-    p.then(() => this.handleFetchedSchema());
-    return p;
+    // Return the chained promise (rather than a discarded side-effect chain) so
+    // the caller's .then/.catch covers both the dispatch and handleFetchedSchema,
+    // and a dispatch rejection can't leak as an unhandled rejection.
+    return this.props.schema
+      .dispatch(ActionTypes.SET_CLP, {
+        className: this.props.params.className,
+        clp,
+      })
+      .then(data => {
+        this.handleFetchedSchema(data);
+        return data;
+      });
   }
 
   updateRow(row, attr, value) {
@@ -3386,6 +3419,8 @@ class Browser extends DashboardView {
           setRelation={this.setRelation}
           handleShowAcl={this.handleShowAcl}
           onClose={this.closeEditRowDialog}
+          onSaveNewRow={this.saveNewRow}
+          onAbortAddRow={this.abortAddRow}
           updateRow={this.updateRow}
           confirmAttachSelectedRows={this.confirmAttachSelectedRows}
           schema={this.props.schema}

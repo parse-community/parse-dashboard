@@ -47,6 +47,10 @@ export function getStore(name) {
           for (const id in storeData.subscribers) {
             storeData.subscribers[id](result);
           }
+          // Resolve with the new state so callers can react to freshly-loaded
+          // data without reading a subscribeTo snapshot that (under React 18
+          // automatic batching) has not been applied yet.
+          return result;
         });
       } else {
         if (storeData.isGlobal) {
