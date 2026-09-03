@@ -1213,6 +1213,7 @@ You have direct access to the Parse database through function calls, so you can 
           <base href="${mountPath}"/>
           <script>
             PARSE_DASHBOARD_PATH = "${mountPath}";
+            PARSE_DASHBOARD_OTP_AUTO_SUBMIT = ${config.otpAutoSubmit === false ? 'false' : 'true'};
           </script>
           <title>Parse Dashboard</title>
         </head>
