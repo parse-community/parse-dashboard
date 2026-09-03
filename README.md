@@ -189,6 +189,7 @@ This section provides a comprehensive reference for all Parse Dashboard configur
 | `iconsFolder` | String | No | - | - | - | `"icons"` | Folder for app icons (relative or absolute path) | - |
 | `agent` | Object | No | - | - | `PARSE_DASHBOARD_AGENT` (JSON) | `{...}` | AI agent configuration | [AI Agent Configuration](#ai-agent) |
 | `enableResourceCache` | Boolean | No | `false` | - | - | `true` | Enable browser caching of dashboard resources | - |
+| `otpAutoSubmit` | Boolean | No | `true` | - | - | `false` | Automatically submit the login form once a complete one-time password has been entered | [Multi-Factor Authentication](#multi-factor-authentication-one-time-password) |
 
 
 ##### App Options
@@ -778,6 +779,16 @@ If you create a new user by running `parse-dashboard --createUser`, you will be 
 ```
 
  Parse Dashboard follows the industry standard and supports the common OTP algorithm `SHA-1` by default, to be compatible with most authenticator apps. If you have specific security requirements regarding TOTP characteristics (algorithm, digit length, time period) you can customize them by using the guided configuration mentioned above.
+
+By default, the login form is submitted automatically as soon as a one-time password of the expected length has been entered, so the user does not have to click the login button. If you prefer the user to review the entered one-time password and submit the form manually, set the `otpAutoSubmit` option to `false`:
+
+```json
+{
+  "apps": [{"...": "..."}],
+  "otpAutoSubmit": false,
+  "users": [{"...": "..."}]
+}
+```
 
 ### Running Multiple Dashboard Replicas
 
