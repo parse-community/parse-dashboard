@@ -1,3 +1,10 @@
+# [9.3.0-alpha.6](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.5...9.3.0-alpha.6) (2026-09-24)
+
+
+### Bug Fixes
+
+* Bump brace-expansion from 1.1.13 to 1.1.21 ([#3454](https://github.com/parse-community/parse-dashboard/issues/3454)) ([937fe17](https://github.com/parse-community/parse-dashboard/commit/937fe17044173066ba222a6c19cc8e27bbb43f08))
+
 # [9.3.0-alpha.5](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.4...9.3.0-alpha.5) (2026-08-11)
 
 
