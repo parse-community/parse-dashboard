@@ -1,3 +1,10 @@
+# [9.3.0-alpha.7](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.6...9.3.0-alpha.7) (2026-09-24)
+
+
+### Bug Fixes
+
+* Bump immutable from 5.1.5 to 5.1.9 ([#3457](https://github.com/parse-community/parse-dashboard/issues/3457)) ([5097c04](https://github.com/parse-community/parse-dashboard/commit/5097c04ea4756ba5ce592c28eb9e4ff1c4e33545))
+
 # [9.3.0-alpha.6](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.5...9.3.0-alpha.6) (2026-09-24)
 
 
