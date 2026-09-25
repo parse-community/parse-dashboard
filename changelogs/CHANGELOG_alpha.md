@@ -1,3 +1,10 @@
+# [9.3.0-alpha.11](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.10...9.3.0-alpha.11) (2026-09-25)
+
+
+### Bug Fixes
+
+* Bump parse from 8.5.0 to 8.6.2 ([#3468](https://github.com/parse-community/parse-dashboard/issues/3468)) ([8a4c12b](https://github.com/parse-community/parse-dashboard/commit/8a4c12b0fc709a59372e839b36643310a64376c8))
+
 # [9.3.0-alpha.10](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.9...9.3.0-alpha.10) (2026-09-25)
 
 
