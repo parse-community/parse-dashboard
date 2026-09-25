@@ -71,7 +71,7 @@ export default class BrowserCell extends Component {
       );
       let value = this.props.value;
       let dataValue = this.props.value.id || this.props.value.objectId;
-      if (defaultPointerKey !== 'objectId') {
+      if (defaultPointerKey !== 'objectId' && typeof this.props.value.get === 'function') {
         dataValue = this.props.value.get(defaultPointerKey);
         if (dataValue && typeof dataValue === 'object') {
           if (dataValue instanceof Date) {
