@@ -1,3 +1,10 @@
+# [9.3.0-alpha.10](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.9...9.3.0-alpha.10) (2026-09-25)
+
+
+### Bug Fixes
+
+* Bump glob from 10.4.5 to 10.5.0 and minimatch from 9.0.1 to 9.0.9 ([#3467](https://github.com/parse-community/parse-dashboard/issues/3467)) ([f31ada5](https://github.com/parse-community/parse-dashboard/commit/f31ada5ab64349efbf0f3760cd45b4678ccf09a1))
+
 # [9.3.0-alpha.9](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.8...9.3.0-alpha.9) (2026-09-25)
 
 
