@@ -585,12 +585,22 @@ export default class ParseApp {
     });
   }
 
-  runJob(job) {
+  async runJob(job) {
+    let description = 'Executing from job schedule web console.';
+    try {
+      const response = await fetch(window.PARSE_DASHBOARD_PATH || '/');
+      const dashboardUser = response.headers.get('username');
+      if (dashboardUser) {
+        description = `Executing from job schedule web console by ${dashboardUser}.`;
+      }
+    } catch {
+      // If the dashboard user cannot be determined, fall back to the default description.
+    }
     return Parse._request(
       'POST',
       'jobs',
       {
-        description: 'Executing from job schedule web console.',
+        description,
         input: JSON.parse(job.params || '{}'),
         jobName: job.jobName,
         when: 0,
