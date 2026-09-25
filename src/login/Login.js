@@ -42,6 +42,10 @@ export default class Login extends React.Component {
     this.inputRefPass = React.createRef();
     this.inputRefMfa = React.createRef();
     this.otpLength = otpLength;
+    // Auto-submitting the login form once the full one-time password has been
+    // entered is enabled by default and can be turned off via the
+    // `otpAutoSubmit` dashboard option.
+    this.otpAutoSubmit = window.PARSE_DASHBOARD_OTP_AUTO_SUBMIT !== false;
   }
 
   componentDidMount() {
@@ -65,7 +69,7 @@ export default class Login extends React.Component {
     const { path } = this.props;
     const updateField = (field, e) => {
       this.setState({ [field]: e.target.value });
-      if (field === 'otp' && e.target.value.length >= this.otpLength) {
+      if (this.otpAutoSubmit && field === 'otp' && e.target.value.length >= this.otpLength) {
         const input = document.querySelectorAll('input');
         for (const field of input) {
           if (field.type === 'submit') {
