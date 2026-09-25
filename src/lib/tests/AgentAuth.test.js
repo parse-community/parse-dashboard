@@ -184,6 +184,12 @@ describe('Agent endpoint security', () => {
           model: 'gpt-4',
           apiKey: 'fake-api-key-for-testing',
         },
+        {
+          name: 'orcarouter-test-model',
+          provider: 'orcarouter',
+          model: 'orcarouter/auto',
+          apiKey: 'fake-api-key-for-testing',
+        },
       ],
     },
   };
@@ -276,6 +282,21 @@ describe('Agent endpoint security', () => {
       headers: { 'X-CSRF-Token': CSRF_TOKEN },
     });
     // 500 expected: auth passes, reaches OpenAI call which fails with fake API key
+    expect(res.status).not.toBe(401);
+    expect(res.status).not.toBe(403);
+  });
+
+  it('accepts an orcarouter provider model as a supported provider', async () => {
+    const res = await makeRequest(port, {
+      method: 'POST',
+      path: '/apps/TestApp/agent',
+      body: agentBody({ modelName: 'orcarouter-test-model' }),
+      cookie: adminCookie,
+      headers: { 'X-CSRF-Token': CSRF_TOKEN },
+    });
+    // 400 would mean the provider was rejected as unsupported. A 500 means auth passed
+    // and the request was routed to the OrcaRouter endpoint (failing on the fake API key).
+    expect(res.status).not.toBe(400);
     expect(res.status).not.toBe(401);
     expect(res.status).not.toBe(403);
   });

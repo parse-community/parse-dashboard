@@ -1789,6 +1789,12 @@ To configure the AI agent for your dashboard, you need to add the `agent` config
         "model": "gpt-4.1",
         "apiKey": "YOUR_OPENAI_API_KEY"
       },
+      {
+        "name": "OrcaRouter (auto)",
+        "provider": "orcarouter",
+        "model": "orcarouter/auto",
+        "apiKey": "YOUR_ORCAROUTER_API_KEY"
+      },
     ]
   }
 }
@@ -1799,7 +1805,7 @@ To configure the AI agent for your dashboard, you need to add the `agent` config
 | `agent`                    | Object | Yes      | The AI agent configuration object.  When using the environment variable, provide the complete agent configuration as a JSON string. |
 | `agent.models`             | Array  | Yes      | Array of AI model configurations available to the agent.                                                                            |
 | `agent.models[*].name`     | String | Yes      | The display name for the model (e.g., `ChatGPT 4.1`).                                                                               |
-| `agent.models[*].provider` | String | Yes      | The AI provider identifier (e.g., "openai").                                                                                        |
+| `agent.models[*].provider` | String | Yes      | The AI provider identifier (e.g., "openai" or "orcarouter").                                                                       |
 | `agent.models[*].model`    | String | Yes      | The specific model name from the provider (e.g., `gpt-4.1`).                                                                        |
 | `agent.models[*].apiKey`   | String | Yes      | The API key for authenticating with the AI provider.                                                                                |
 
@@ -1808,7 +1814,7 @@ The agent will use the configured models to process natural language commands an
 ### Providers
 
 > [!Note]
-> Currently, only OpenAI models are supported. Support for additional providers may be added in future releases.
+> The following AI providers are supported. Additional providers may be added in future releases.
 
 #### OpenAI
 
@@ -1838,6 +1844,39 @@ To get an OpenAI API key for use with the AI agent:
 6. **Set up billing**: Make sure you have a valid payment method added to your OpenAI account, as API usage incurs charges.
 
 7. **Configure the dashboard**: Add the API key to your Parse Dashboard configuration as shown in the example above.
+
+> [!Important]
+> Keep your API key secure and never commit it to version control. Consider using environment variables or secure configuration management for production deployments.
+
+#### OrcaRouter
+
+[OrcaRouter](https://www.orcarouter.ai) is a gateway that provides access to a wide range of frontier models through a single OpenAI-compatible API. It also runs gateway-level, zero-trust security for AI agents on the same endpoint — screening every prompt/response and governing every tool call on a default-deny basis, with no application code changes.
+
+To use OrcaRouter with the AI agent:
+
+1. **Create an account**: Sign up at [orcarouter.ai](https://www.orcarouter.ai) and add credits.
+
+2. **Generate an API key**: Create an API key in the OrcaRouter dashboard. Keys are prefixed with `sk-orca-`.
+
+3. **Configure the dashboard**: Add an `orcarouter` model to your Parse Dashboard configuration:
+
+```json
+{
+  "agent": {
+    "models": [
+      {
+        "name": "OrcaRouter (auto)",
+        "provider": "orcarouter",
+        "model": "orcarouter/auto",
+        "apiKey": "YOUR_ORCAROUTER_API_KEY"
+      }
+    ]
+  }
+}
+```
+
+   - `provider` must be `orcarouter`.
+   - `model` can be any model routed by OrcaRouter, e.g. `orcarouter/auto` (automatic routing), `deepseek/deepseek-v4-pro`, or `anthropic/claude-haiku-4.5`.
 
 > [!Important]
 > Keep your API key secure and never commit it to version control. Consider using environment variables or secure configuration management for production deployments.
