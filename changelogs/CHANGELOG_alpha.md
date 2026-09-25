@@ -1,3 +1,10 @@
+# [9.3.0-alpha.9](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.8...9.3.0-alpha.9) (2026-09-25)
+
+
+### Bug Fixes
+
+* Bump body-parser from 2.2.2 to 2.3.0 ([#3465](https://github.com/parse-community/parse-dashboard/issues/3465)) ([662899b](https://github.com/parse-community/parse-dashboard/commit/662899bac924e7875981768a549ff80f0596500b))
+
 # [9.3.0-alpha.8](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.7...9.3.0-alpha.8) (2026-09-24)
 
 
