@@ -554,13 +554,7 @@ const BrowserToolbar = ({
           text={
             <span>
               {isGraphPanelVisible && (
-                <Icon
-                  name="check"
-                  width={12}
-                  height={12}
-                  fill="#ffffffff"
-                  className="menuCheck"
-                />
+                <Icon name="check" width={12} height={12} fill="#ffffffff" className="menuCheck" />
               )}
               Show Graph Panel
             </span>
@@ -649,13 +643,7 @@ const BrowserToolbar = ({
           text={
             <span>
               {reloadDataTableAfterScript && (
-                <Icon
-                  name="check"
-                  width={12}
-                  height={12}
-                  fill="#ffffffff"
-                  className="menuCheck"
-                />
+                <Icon name="check" width={12} height={12} fill="#ffffffff" className="menuCheck" />
               )}
               Reload all rows after run
             </span>

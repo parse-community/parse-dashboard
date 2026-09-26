@@ -148,11 +148,7 @@ const FooterStats = ({ data }) => {
 
   return (
     <>
-      <button
-        ref={buttonRef}
-        className={styles.stats}
-        onClick={toggle}
-      >
+      <button ref={buttonRef} className={styles.stats} onClick={toggle}>
         {`${selected.label}: ${formatNumber(selected.getValue(data), selected.isCount)}`}
       </button>
       {open ? renderPopover() : null}

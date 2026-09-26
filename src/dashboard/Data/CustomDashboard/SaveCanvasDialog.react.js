@@ -32,7 +32,7 @@ const SaveCanvasDialog = ({ currentName, currentGroup, existingGroups = [], onCl
     onSave(trimmedName, group || null);
   };
 
-  const handleGroupChange = (value) => {
+  const handleGroupChange = value => {
     if (value === '__new__') {
       setIsCreatingNewGroup(true);
       setGroupSelection('');
@@ -59,13 +59,7 @@ const SaveCanvasDialog = ({ currentName, currentGroup, existingGroups = [], onCl
     >
       <Field
         label={<Label text="Canvas Name" description="Enter a name for this canvas" />}
-        input={
-          <TextInput
-            value={name}
-            onChange={setName}
-            placeholder="My Canvas"
-          />
-        }
+        input={<TextInput value={name} onChange={setName} placeholder="My Canvas" />}
       />
       <Field
         label={<Label text="Group" description="Optionally organize this canvas into a group" />}
@@ -77,7 +71,9 @@ const SaveCanvasDialog = ({ currentName, currentGroup, existingGroups = [], onCl
           >
             <Option value="">No group</Option>
             {sortedGroups.map(group => (
-              <Option key={group} value={group}>{group}</Option>
+              <Option key={group} value={group}>
+                {group}
+              </Option>
             ))}
             <Option value="__new__">+ Create new group...</Option>
           </Dropdown>
@@ -86,13 +82,7 @@ const SaveCanvasDialog = ({ currentName, currentGroup, existingGroups = [], onCl
       {isCreatingNewGroup && (
         <Field
           label={<Label text="New Group Name" description="Enter a name for the new group" />}
-          input={
-            <TextInput
-              value={newGroup}
-              onChange={setNewGroup}
-              placeholder="My Group"
-            />
-          }
+          input={<TextInput value={newGroup} onChange={setNewGroup} placeholder="My Group" />}
         />
       )}
     </Modal>

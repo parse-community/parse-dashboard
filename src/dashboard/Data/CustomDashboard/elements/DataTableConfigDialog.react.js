@@ -69,7 +69,7 @@ const DataTableConfigDialog = ({
     }
   }, [className, availableColumns, initialConfig?.className, initialConfig?.columns]);
 
-  const handleClassChange = (newClass) => {
+  const handleClassChange = newClass => {
     setClassName(newClass);
     setFilterId('');
     setSortField('');
@@ -121,13 +121,7 @@ const DataTableConfigDialog = ({
         <>
           <Field
             label={<Label text="Title (Optional)" description="Display title for the table" />}
-            input={
-              <TextInput
-                value={title}
-                onChange={setTitle}
-                placeholder="Enter a title..."
-              />
-            }
+            input={<TextInput value={title} onChange={setTitle} placeholder="Enter a title..." />}
           />
           <Field
             label={<Label text="Class" description="Select the class to display" />}
@@ -138,7 +132,9 @@ const DataTableConfigDialog = ({
                 placeHolder="Select a class..."
               >
                 {sortedClasses.map(c => (
-                  <Option key={c} value={c}>{c}</Option>
+                  <Option key={c} value={c}>
+                    {c}
+                  </Option>
                 ))}
               </Dropdown>
             }
@@ -147,11 +143,7 @@ const DataTableConfigDialog = ({
             <Field
               label={<Label text="Filter (Optional)" description="Apply a saved filter" />}
               input={
-                <Dropdown
-                  value={filterId}
-                  onChange={setFilterId}
-                  placeHolder="No filter"
-                >
+                <Dropdown value={filterId} onChange={setFilterId} placeHolder="No filter">
                   <Option value="">No filter (show all)</Option>
                   {filtersForClass.map(f => (
                     <Option key={f.id} value={f.id}>
@@ -170,7 +162,9 @@ const DataTableConfigDialog = ({
                   value={selectedColumns}
                   onChange={setSelectedColumns}
                   placeHolder="Select fields..."
-                  formatSelection={(selection) => `${selection.length} field${selection.length !== 1 ? 's' : ''} selected`}
+                  formatSelection={selection =>
+                    `${selection.length} field${selection.length !== 1 ? 's' : ''} selected`
+                  }
                 >
                   {availableColumns.map(col => (
                     <MultiSelectOption key={col} value={col}>
@@ -185,14 +179,12 @@ const DataTableConfigDialog = ({
             <Field
               label={<Label text="Sort By (Optional)" description="Sort rows by a field" />}
               input={
-                <Dropdown
-                  value={sortField}
-                  onChange={setSortField}
-                  placeHolder="No sorting"
-                >
+                <Dropdown value={sortField} onChange={setSortField} placeHolder="No sorting">
                   <Option value="">No sorting</Option>
                   {availableColumns.map(col => (
-                    <Option key={col} value={col}>{col}</Option>
+                    <Option key={col} value={col}>
+                      {col}
+                    </Option>
                   ))}
                 </Dropdown>
               }
@@ -202,10 +194,7 @@ const DataTableConfigDialog = ({
             <Field
               label={<Label text="Sort Order" description="Ascending or descending order" />}
               input={
-                <Dropdown
-                  value={sortOrder}
-                  onChange={setSortOrder}
-                >
+                <Dropdown value={sortOrder} onChange={setSortOrder}>
                   <Option value="ascending">Ascending</Option>
                   <Option value="descending">Descending</Option>
                 </Dropdown>
@@ -215,13 +204,7 @@ const DataTableConfigDialog = ({
           {className && (
             <Field
               label={<Label text="Row Limit" description="Maximum number of rows to display" />}
-              input={
-                <TextInput
-                  value={limit}
-                  onChange={setLimit}
-                  placeholder="100"
-                />
-              }
+              input={<TextInput value={limit} onChange={setLimit} placeholder="100" />}
             />
           )}
         </>

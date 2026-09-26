@@ -48,7 +48,12 @@ export default class ScriptResponseModal extends React.Component {
       return (
         <Field
           key={key}
-          label={<Label text={element.label || element.name || 'Select'} description={element.description} />}
+          label={
+            <Label
+              text={element.label || element.name || 'Select'}
+              description={element.description}
+            />
+          }
           input={
             <Dropdown
               fixed={true}
@@ -74,7 +79,12 @@ export default class ScriptResponseModal extends React.Component {
       return (
         <Field
           key={key}
-          label={<Label text={element.label || element.name || 'Checkbox'} description={element.description} />}
+          label={
+            <Label
+              text={element.label || element.name || 'Checkbox'}
+              description={element.description}
+            />
+          }
           input={
             <Checkbox
               label=""
@@ -94,30 +104,35 @@ export default class ScriptResponseModal extends React.Component {
       const hasCustomLabels = element.labelTrue || element.labelFalse;
       const toggleProps = hasCustomLabels
         ? {
-          type: Toggle.Types.TWO_WAY,
-          optionLeft: element.labelFalse || 'No',
-          optionRight: element.labelTrue || 'Yes',
-          value: this.state.formData[key]
-            ? (element.labelTrue || 'Yes')
-            : (element.labelFalse || 'No'),
-          onChange: value =>
-            this.setState(prev => ({
-              formData: { ...prev.formData, [key]: value === (element.labelTrue || 'Yes') },
-            })),
-        }
+            type: Toggle.Types.TWO_WAY,
+            optionLeft: element.labelFalse || 'No',
+            optionRight: element.labelTrue || 'Yes',
+            value: this.state.formData[key]
+              ? element.labelTrue || 'Yes'
+              : element.labelFalse || 'No',
+            onChange: value =>
+              this.setState(prev => ({
+                formData: { ...prev.formData, [key]: value === (element.labelTrue || 'Yes') },
+              })),
+          }
         : {
-          type: Toggle.Types.YES_NO,
-          value: this.state.formData[key],
-          onChange: value =>
-            this.setState(prev => ({
-              formData: { ...prev.formData, [key]: value },
-            })),
-        };
+            type: Toggle.Types.YES_NO,
+            value: this.state.formData[key],
+            onChange: value =>
+              this.setState(prev => ({
+                formData: { ...prev.formData, [key]: value },
+              })),
+          };
 
       return (
         <Field
           key={key}
-          label={<Label text={element.label || element.name || 'Toggle'} description={element.description} />}
+          label={
+            <Label
+              text={element.label || element.name || 'Toggle'}
+              description={element.description}
+            />
+          }
           input={<Toggle {...toggleProps} />}
         />
       );
@@ -127,7 +142,12 @@ export default class ScriptResponseModal extends React.Component {
       return (
         <Field
           key={key}
-          label={<Label text={element.label || element.name || 'Text'} description={element.description} />}
+          label={
+            <Label
+              text={element.label || element.name || 'Text'}
+              description={element.description}
+            />
+          }
           input={
             <TextInput
               placeholder={element.placeholder || ''}
@@ -148,9 +168,10 @@ export default class ScriptResponseModal extends React.Component {
 
   render() {
     const { form, objectIds, onCancel } = this.props;
-    const subtitle = objectIds.length === 1
-      ? `Running on object ${objectIds[0]}`
-      : `Running on ${objectIds.length} objects`;
+    const subtitle =
+      objectIds.length === 1
+        ? `Running on object ${objectIds[0]}`
+        : `Running on ${objectIds.length} objects`;
 
     return (
       <Modal

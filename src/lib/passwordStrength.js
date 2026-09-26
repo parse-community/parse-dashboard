@@ -27,7 +27,7 @@ export default function passwordStrength(password) {
     num: false,
     sym: false,
   };
-  for (let i = password.length; i--;) {
+  for (let i = password.length; i--; ) {
     const c = password.charCodeAt(i);
     if (c > 47 && c < 58) {
       seen.num = true;

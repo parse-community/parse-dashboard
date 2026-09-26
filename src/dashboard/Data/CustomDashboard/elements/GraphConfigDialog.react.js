@@ -36,7 +36,9 @@ const GraphConfigDialog = ({
   const [limit, setLimit] = useState(initialConfig?.limit?.toString() || '1000');
   const [showLegend, setShowLegend] = useState(initialConfig?.showLegend ?? true);
   const [showAxisLabels, setShowAxisLabels] = useState(initialConfig?.showAxisLabels ?? true);
-  const [strokeWidthOverride, setStrokeWidthOverride] = useState(initialConfig?.strokeWidthOverride || '');
+  const [strokeWidthOverride, setStrokeWidthOverride] = useState(
+    initialConfig?.strokeWidthOverride || ''
+  );
 
   const classesWithGraphs = useMemo(() => {
     return classes
@@ -74,12 +76,13 @@ const GraphConfigDialog = ({
     if (selectedGraph.chartType === 'line') {
       return true;
     }
-    const hasMixedLine = (selectedGraph.series || []).some(s => s.chartType === 'line') ||
+    const hasMixedLine =
+      (selectedGraph.series || []).some(s => s.chartType === 'line') ||
       (selectedGraph.calculatedValues || []).some(c => c.chartType === 'line');
     return hasMixedLine;
   }, [selectedGraph]);
 
-  const handleClassChange = (newClass) => {
+  const handleClassChange = newClass => {
     setClassName(newClass);
     setGraphId('');
     setFilterId('');
@@ -150,7 +153,9 @@ const GraphConfigDialog = ({
                 placeHolder="Select a class..."
               >
                 {classesWithGraphs.map(c => (
-                  <Option key={c} value={c}>{c}</Option>
+                  <Option key={c} value={c}>
+                    {c}
+                  </Option>
                 ))}
               </Dropdown>
             }
@@ -159,11 +164,7 @@ const GraphConfigDialog = ({
             <Field
               label={<Label text="Graph" description="Select a saved graph" />}
               input={
-                <Dropdown
-                  value={graphId}
-                  onChange={setGraphId}
-                  placeHolder="Select a graph..."
-                >
+                <Dropdown value={graphId} onChange={setGraphId} placeHolder="Select a graph...">
                   {graphsForClass.map(g => (
                     <Option key={g.id} value={g.id}>
                       {g.title || `${g.chartType} graph`}
@@ -177,11 +178,7 @@ const GraphConfigDialog = ({
             <Field
               label={<Label text="Filter (Optional)" description="Apply a saved filter" />}
               input={
-                <Dropdown
-                  value={filterId}
-                  onChange={setFilterId}
-                  placeHolder="No filter"
-                >
+                <Dropdown value={filterId} onChange={setFilterId} placeHolder="No filter">
                   <Option value="">No filter</Option>
                   {filtersForClass.map(f => (
                     <Option key={f.id} value={f.id}>
@@ -194,14 +191,10 @@ const GraphConfigDialog = ({
           )}
           {className && (
             <Field
-              label={<Label text="Record Limit" description="Maximum number of records to display" />}
-              input={
-                <TextInput
-                  value={limit}
-                  onChange={setLimit}
-                  placeholder="1000"
-                />
+              label={
+                <Label text="Record Limit" description="Maximum number of records to display" />
               }
+              input={<TextInput value={limit} onChange={setLimit} placeholder="1000" />}
             />
           )}
           {className && graphId && (
@@ -209,11 +202,7 @@ const GraphConfigDialog = ({
               <Field
                 label={<Label text="Show Legend" description="Display the graph legend" />}
                 input={
-                  <Toggle
-                    value={showLegend}
-                    onChange={setShowLegend}
-                    type={Toggle.Types.YES_NO}
-                  />
+                  <Toggle value={showLegend} onChange={setShowLegend} type={Toggle.Types.YES_NO} />
                 }
               />
               <Field
@@ -228,7 +217,12 @@ const GraphConfigDialog = ({
               />
               {isLineChart && (
                 <Field
-                  label={<Label text="Line Stroke Width (Optional)" description="Override stroke width for all lines" />}
+                  label={
+                    <Label
+                      text="Line Stroke Width (Optional)"
+                      description="Override stroke width for all lines"
+                    />
+                  }
                   input={
                     <Dropdown
                       value={strokeWidthOverride}

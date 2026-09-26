@@ -130,8 +130,12 @@ const LocalizedMessageField = ({
           >
             {localeOptions && localeOptions.length > 0
               ? localeOptions.map(option => {
-                return <Option key={option} value={option}>{option}</Option>;
-              })
+                  return (
+                    <Option key={option} value={option}>
+                      {option}
+                    </Option>
+                  );
+                })
               : null}
           </Dropdown>
         }
@@ -750,7 +754,8 @@ class PushNew extends DashboardView {
               <a
                 href="https://github.com/parse-community/parse-dashboard#configuring-localized-push-notifications"
                 style={{ color: '#169CEE' }}
-                target="_blank" rel="noreferrer"
+                target="_blank"
+                rel="noreferrer"
               >
                 Please follow this guide to setup the push locales feature
               </a>
@@ -865,7 +870,7 @@ class PushNew extends DashboardView {
 
     const timeFieldsDescription = hasScheduledPushSupport
       ? 'We can send the campaign immediately, or any time in the next 2 weeks.'
-      : 'If your push hasn\'t been send by this time, it won\'t get sent.';
+      : "If your push hasn't been send by this time, it won't get sent.";
 
     const deliveryTimeFields = hasScheduledPushSupport ? (
       <Fieldset legend={timeFieldsLegend} description={timeFieldsDescription}>

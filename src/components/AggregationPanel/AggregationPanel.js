@@ -132,7 +132,9 @@ const AggregationPanel = ({
 
   const renderSegmentContent = (segment, index) => (
     <div key={index} className={styles.segmentContainer} style={segment.style}>
-      <h2 className={styles.heading} style={segment.titleStyle}>{segment.title}</h2>
+      <h2 className={styles.heading} style={segment.titleStyle}>
+        {segment.title}
+      </h2>
       <div className={styles.segmentItems}>
         {segment.items.map((item, idx) => {
           switch (item.type) {
@@ -149,7 +151,14 @@ const AggregationPanel = ({
                 />
               );
             case 'table':
-              return <TableElement key={idx} columns={item.columns} rows={item.rows} style={item.style} />;
+              return (
+                <TableElement
+                  key={idx}
+                  columns={item.columns}
+                  rows={item.rows}
+                  style={item.style}
+                />
+              );
             case 'image':
               return <ImageElement key={`${idx}-${item.url}`} url={item.url} style={item.style} />;
             case 'video':
@@ -219,10 +228,7 @@ const AggregationPanel = ({
                 {showReloadButton && (
                   <div className={styles.reloadControls}>
                     <span className={styles.elapsedTimer}>{elapsedSeconds}s</span>
-                    <button
-                      onClick={handleReload}
-                      className={styles.reloadButton}
-                    >
+                    <button onClick={handleReload} className={styles.reloadButton}>
                       <Icon name="refresh-solid" width={20} height={20} fill="#169cee" />
                     </button>
                   </div>
@@ -240,7 +246,7 @@ const AggregationPanel = ({
     );
   }
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = e => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
       const selection = window.getSelection();
       if (selection && selection.toString().length > 0) {
@@ -253,21 +259,14 @@ const AggregationPanel = ({
   };
 
   return (
-    <div
-      onKeyDown={handleKeyDown}
-      onContextMenu={onContextMenu}
-      tabIndex={0}
-    >
+    <div onKeyDown={handleKeyDown} onContextMenu={onContextMenu} tabIndex={0}>
       {isLoadingInfoPanel ? (
         <div className={styles.center}>
           <LoaderDots />
           {showReloadButton && onReload && (
             <div className={styles.reloadControls}>
               <span className={styles.elapsedTimer}>{elapsedSeconds}s</span>
-              <button
-                onClick={handleReload}
-                className={styles.reloadButton}
-              >
+              <button onClick={handleReload} className={styles.reloadButton}>
                 <Icon name="refresh-outline" width={20} height={20} fill="#169cee" />
               </button>
             </div>

@@ -218,55 +218,57 @@ export function buildBatchRequests(rows, className, options) {
     knownColumns,
   } = options || {};
 
-  const allowed = (unknownColumns === 'ignore' && knownColumns) ? new Set(knownColumns) : null;
+  const allowed = unknownColumns === 'ignore' && knownColumns ? new Set(knownColumns) : null;
 
-  return rows.map(row => {
-    // Clone the row to avoid mutating the original
-    let body = { ...row };
+  return rows
+    .map(row => {
+      // Clone the row to avoid mutating the original
+      let body = { ...row };
 
-    // Filter unknown columns if requested
-    if (allowed) {
-      const filtered = {};
-      for (const key of Object.keys(body)) {
-        if (allowed.has(key)) {
-          filtered[key] = body[key];
+      // Filter unknown columns if requested
+      if (allowed) {
+        const filtered = {};
+        for (const key of Object.keys(body)) {
+          if (allowed.has(key)) {
+            filtered[key] = body[key];
+          }
+        }
+        body = filtered;
+      }
+
+      // Handle timestamps
+      if (!preserveTimestamps) {
+        delete body.createdAt;
+        delete body.updatedAt;
+      } else {
+        // Ensure createdAt/updatedAt are in { __type: 'Date', iso: '...' } format
+        if (body.createdAt !== undefined) {
+          body.createdAt = ensureDateObject(body.createdAt);
+        }
+        if (body.updatedAt !== undefined) {
+          body.updatedAt = ensureDateObject(body.updatedAt);
         }
       }
-      body = filtered;
-    }
 
-    // Handle timestamps
-    if (!preserveTimestamps) {
-      delete body.createdAt;
-      delete body.updatedAt;
-    } else {
-      // Ensure createdAt/updatedAt are in { __type: 'Date', iso: '...' } format
-      if (body.createdAt !== undefined) {
-        body.createdAt = ensureDateObject(body.createdAt);
+      // Determine method and path based on preserveObjectIds and duplicateHandling
+      if (preserveObjectIds && duplicateHandling === 'overwrite' && body.objectId) {
+        const path = `/classes/${className}/${body.objectId}`;
+        delete body.objectId;
+        if (Object.keys(body).length === 0) {
+          return null;
+        }
+        return { method: 'PUT', path, body };
       }
-      if (body.updatedAt !== undefined) {
-        body.updatedAt = ensureDateObject(body.updatedAt);
-      }
-    }
 
-    // Determine method and path based on preserveObjectIds and duplicateHandling
-    if (preserveObjectIds && duplicateHandling === 'overwrite' && body.objectId) {
-      const path = `/classes/${className}/${body.objectId}`;
-      delete body.objectId;
+      if (!preserveObjectIds) {
+        delete body.objectId;
+      }
       if (Object.keys(body).length === 0) {
         return null;
       }
-      return { method: 'PUT', path, body };
-    }
-
-    if (!preserveObjectIds) {
-      delete body.objectId;
-    }
-    if (Object.keys(body).length === 0) {
-      return null;
-    }
-    return { method: 'POST', path: `/classes/${className}`, body };
-  }).filter(Boolean);
+      return { method: 'POST', path: `/classes/${className}`, body };
+    })
+    .filter(Boolean);
 }
 
 /**

@@ -190,16 +190,16 @@ const getExperimentPartial = (pushDetails, type, isMessageType, style) => {
         {isMessageType
           ? getMessage(pushDetails[`group_${type}`].payload)
           : getSentInfo(
-            pushDetails[`group_${type}`].send_time,
-            pushDetails[`group_${type}`].expiration
-          )}
+              pushDetails[`group_${type}`].send_time,
+              pushDetails[`group_${type}`].expiration
+            )}
       </div>
       <div className={styles.subline}>
         {isMessageType
           ? getSentInfo(
-            pushDetails[`group_${type}`].send_time,
-            pushDetails[`group_${type}`].expiration
-          )
+              pushDetails[`group_${type}`].send_time,
+              pushDetails[`group_${type}`].expiration
+            )
           : null}
       </div>
     </div>

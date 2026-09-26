@@ -27,11 +27,7 @@ const StaticTextElement = ({ config = {} }) => {
     .filter(Boolean)
     .join(' ');
 
-  return (
-    <div className={className}>
-      {text || 'Enter your text...'}
-    </div>
-  );
+  return <div className={className}>{text || 'Enter your text...'}</div>;
 };
 
 export default StaticTextElement;

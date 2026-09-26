@@ -110,7 +110,10 @@ class Views extends TableView {
                 })
                 .catch(error => {
                   if (this._isMounted) {
-                    this.showNote(`Request failed: ${error.message || 'Unknown error occurred'}`, true);
+                    this.showNote(
+                      `Request failed: ${error.message || 'Unknown error occurred'}`,
+                      true
+                    );
                   }
                 });
             } else if (view.query && Array.isArray(view.query)) {
@@ -126,7 +129,10 @@ class Views extends TableView {
                 })
                 .catch(error => {
                   if (this._isMounted) {
-                    this.showNote(`Request failed: ${error.message || 'Unknown error occurred'}`, true);
+                    this.showNote(
+                      `Request failed: ${error.message || 'Unknown error occurred'}`,
+                      true
+                    );
                   }
                 });
             }
@@ -199,7 +205,7 @@ class Views extends TableView {
             return {
               __type: 'Pointer',
               className: val.className,
-              objectId: val.id
+              objectId: val.id,
             };
           }
           if (val && typeof val === 'object' && !Array.isArray(val)) {
@@ -356,14 +362,16 @@ class Views extends TableView {
     return (
       <div>
         <LoaderContainer loading={loading} solid={false}>
-          <div style={{
-            position: 'fixed',
-            top: 96,
-            left: 300,
-            right: 0,
-            bottom: 0,
-            overflow: 'auto'
-          }}>
+          <div
+            style={{
+              position: 'fixed',
+              top: 96,
+              left: 300,
+              right: 0,
+              bottom: 0,
+              overflow: 'auto',
+            }}
+          >
             <div style={{ minWidth: this.state.tableWidth }}>
               <div
                 className={tableStyles.headers}
@@ -442,10 +450,7 @@ class Views extends TableView {
           } else if (type === 'Link') {
             // Sanitize URL
             let url = value.url;
-            if (
-              url.match(/javascript/i) ||
-              url.match(/<script/i)
-            ) {
+            if (url.match(/javascript/i) || url.match(/<script/i)) {
               url = '#';
             } else {
               url = value.isRelativeUrl
@@ -470,24 +475,22 @@ class Views extends TableView {
           } else if (type === 'Image') {
             // Sanitize URL
             let url = value.url;
-            if (
-              !url ||
-              url.match(/javascript/i) ||
-              url.match(/<script/i)
-            ) {
+            if (!url || url.match(/javascript/i) || url.match(/<script/i)) {
               url = '#';
             }
 
             // Parse dimensions, ensuring they are positive numbers
-            const width = value.width && parseInt(value.width, 10) > 0 ? parseInt(value.width, 10) : null;
-            const height = value.height && parseInt(value.height, 10) > 0 ? parseInt(value.height, 10) : null;
+            const width =
+              value.width && parseInt(value.width, 10) > 0 ? parseInt(value.width, 10) : null;
+            const height =
+              value.height && parseInt(value.height, 10) > 0 ? parseInt(value.height, 10) : null;
 
             // Create style object for scale-to-fit behavior
             const imgStyle = {
               maxWidth: width ? `${width}px` : '100%',
               maxHeight: height ? `${height}px` : '100%',
               objectFit: 'contain', // This ensures scale-to-fit behavior maintaining aspect ratio
-              display: 'block'
+              display: 'block',
             };
 
             content = (
@@ -495,7 +498,7 @@ class Views extends TableView {
                 src={url}
                 alt={value.alt || 'Image'}
                 style={imgStyle}
-                onError={(e) => {
+                onError={e => {
                   if (e.target && e.target.style) {
                     e.target.style.display = 'none';
                   }
@@ -505,24 +508,22 @@ class Views extends TableView {
           } else if (type === 'Video') {
             // Sanitize URL
             let url = value.url;
-            if (
-              !url ||
-              url.match(/javascript/i) ||
-              url.match(/<script/i)
-            ) {
+            if (!url || url.match(/javascript/i) || url.match(/<script/i)) {
               url = '#';
             }
 
             // Parse dimensions, ensuring they are positive numbers
-            const width = value.width && parseInt(value.width, 10) > 0 ? parseInt(value.width, 10) : null;
-            const height = value.height && parseInt(value.height, 10) > 0 ? parseInt(value.height, 10) : null;
+            const width =
+              value.width && parseInt(value.width, 10) > 0 ? parseInt(value.width, 10) : null;
+            const height =
+              value.height && parseInt(value.height, 10) > 0 ? parseInt(value.height, 10) : null;
 
             // Create style object for scale-to-fit behavior
             const videoStyle = {
               maxWidth: width ? `${width}px` : '100%',
               maxHeight: height ? `${height}px` : '100%',
               objectFit: 'contain', // This ensures scale-to-fit behavior maintaining aspect ratio
-              display: 'block'
+              display: 'block',
             };
 
             content = (
@@ -530,7 +531,7 @@ class Views extends TableView {
                 src={url}
                 controls
                 style={videoStyle}
-                onError={(e) => {
+                onError={e => {
                   if (e.target && e.target.style) {
                     e.target.style.display = 'none';
                   }
@@ -552,10 +553,7 @@ class Views extends TableView {
           let cellContent = content;
           if (isViewable) {
             cellContent = (
-              <span
-                className={styles.clickableText}
-                onClick={() => this.handleValueClick(value)}
-              >
+              <span className={styles.clickableText} onClick={() => this.handleValueClick(value)}>
                 {content}
               </span>
             );
@@ -616,7 +614,7 @@ class Views extends TableView {
             <button
               type="button"
               className={styles.pointerIcon}
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
                 e.preventDefault();
                 this.handleOpenAllPointers(name);
@@ -626,12 +624,7 @@ class Views extends TableView {
               aria-label={`Filter to show all pointers from ${name} column`}
               title="Filter to show all pointers from this column"
             >
-              <Icon
-                name="right-outline"
-                width={20}
-                height={20}
-                fill="white"
-              />
+              <Icon name="right-outline" width={20} height={20} fill="white" />
             </button>
           )}
           <DragHandle className={styles.handle} onDrag={delta => this.handleResize(i, delta)} />
@@ -644,7 +637,11 @@ class Views extends TableView {
     if (!this.props.params.name) {
       if (this.state.views.length > 0) {
         return (
-          <EmptyState icon="visibility" title="Views" description="Select a view to load the data." />
+          <EmptyState
+            icon="visibility"
+            title="Views"
+            description="Select a view to load the data."
+          />
         );
       }
       return (
@@ -772,14 +769,18 @@ class Views extends TableView {
             // Generate UUID for new view
             const newView = {
               ...view,
-              id: this.viewPreferencesManager.generateViewId()
+              id: this.viewPreferencesManager.generateViewId(),
             };
             this.setState(
               state => ({ showCreate: false, views: [...state.views, newView] }),
               async () => {
                 if (this.viewPreferencesManager) {
                   try {
-                    await this.viewPreferencesManager.saveView(this.context.applicationId, newView, this.state.views);
+                    await this.viewPreferencesManager.saveView(
+                      this.context.applicationId,
+                      newView,
+                      this.state.views
+                    );
                   } catch (error) {
                     console.error('Failed to save views:', error);
                     this.showNote('Failed to save view changes', true);
@@ -817,7 +818,11 @@ class Views extends TableView {
               async () => {
                 if (this.viewPreferencesManager) {
                   try {
-                    await this.viewPreferencesManager.saveView(this.context.applicationId, view, this.state.views);
+                    await this.viewPreferencesManager.saveView(
+                      this.context.applicationId,
+                      view,
+                      this.state.views
+                    );
                   } catch (error) {
                     console.error('Failed to save views:', error);
                     this.showNote('Failed to save view changes', true);
@@ -848,7 +853,11 @@ class Views extends TableView {
               async () => {
                 if (this.viewPreferencesManager) {
                   try {
-                    await this.viewPreferencesManager.deleteView(this.context.applicationId, viewToDelete.id, this.state.views);
+                    await this.viewPreferencesManager.deleteView(
+                      this.context.applicationId,
+                      viewToDelete.id,
+                      this.state.views
+                    );
                   } catch (error) {
                     console.error('Failed to save views:', error);
                     this.showNote('Failed to save view changes', true);
@@ -870,12 +879,14 @@ class Views extends TableView {
         <CloudFunctionInputDialog
           requireTextInput={config.requireTextInput}
           requireFileUpload={config.requireFileUpload}
-          onCancel={() => this.setState({
-            showCloudFunctionInput: false,
-            cloudFunctionInputConfig: null,
-            loading: false,
-          })}
-          onConfirm={(params) => {
+          onCancel={() =>
+            this.setState({
+              showCloudFunctionInput: false,
+              cloudFunctionInputConfig: null,
+              loading: false,
+            })
+          }
+          onConfirm={params => {
             this.setState({
               showCloudFunctionInput: false,
               cloudFunctionInputConfig: null,
@@ -949,7 +960,10 @@ class Views extends TableView {
     // If multiple target classes, show error
     if (pointersByClass.size > 1) {
       const classNames = Array.from(pointersByClass.keys()).join(', ');
-      this.showNote(`Cannot filter pointers from multiple classes: ${classNames}. Please use this feature on columns with pointers to a single class.`, true);
+      this.showNote(
+        `Cannot filter pointers from multiple classes: ${classNames}. Please use this feature on columns with pointers to a single class.`,
+        true
+      );
       return;
     }
 
@@ -958,11 +972,13 @@ class Views extends TableView {
     const uniqueObjectIds = Array.from(pointersByClass.get(targetClassName));
 
     // Navigate to the target class with containedIn filter
-    const filters = JSON.stringify([{
-      field: 'objectId',
-      constraint: 'containedIn',
-      compareTo: uniqueObjectIds
-    }]);
+    const filters = JSON.stringify([
+      {
+        field: 'objectId',
+        constraint: 'containedIn',
+        compareTo: uniqueObjectIds,
+      },
+    ]);
 
     const path = generatePath(
       this.context,
@@ -973,7 +989,10 @@ class Views extends TableView {
     window.open(path, '_blank', 'noopener,noreferrer');
 
     // Show success notification
-    this.showNote(`Applied filter to show ${uniqueObjectIds.length} pointer${uniqueObjectIds.length > 1 ? 's' : ''} from ${targetClassName}`, false);
+    this.showNote(
+      `Applied filter to show ${uniqueObjectIds.length} pointer${uniqueObjectIds.length > 1 ? 's' : ''} from ${targetClassName}`,
+      false
+    );
   }
 
   showNote(message, isError) {

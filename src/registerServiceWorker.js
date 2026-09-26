@@ -1,5 +1,4 @@
 function registerServiceWorker() {
-
   if (!window.PARSE_DASHBOARD_ENABLE_RESOURCE_CACHE) {
     return;
   }

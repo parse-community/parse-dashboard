@@ -65,7 +65,11 @@ function changeConstraint(schema, currentClassName, filters, index, newConstrain
   } else if (newConstraint === 'matches') {
     // For matches constraint, always use empty string, don't reuse previous value
     compareTo = '';
-  } else if (compareType && prevCompareTo && typeof prevCompareTo === typeof Filters.DefaultComparisons[compareType]) {
+  } else if (
+    compareType &&
+    prevCompareTo &&
+    typeof prevCompareTo === typeof Filters.DefaultComparisons[compareType]
+  ) {
     // Only reuse prevCompareTo if types match
     compareTo = prevCompareTo;
   } else {

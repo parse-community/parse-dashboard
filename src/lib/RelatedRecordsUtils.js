@@ -17,7 +17,13 @@
  * @returns {Object|undefined} The menu item object or undefined if no fields found
  */
 export function buildRelatedTextFieldsMenuItem(schema, textValue, onNavigate) {
-  if (!textValue || typeof textValue !== 'string' || textValue.trim() === '' || !schema || !onNavigate) {
+  if (
+    !textValue ||
+    typeof textValue !== 'string' ||
+    textValue.trim() === '' ||
+    !schema ||
+    !onNavigate
+  ) {
     return undefined;
   }
 

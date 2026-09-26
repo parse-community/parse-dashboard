@@ -12,7 +12,7 @@ import ExpandModal from './ExpandModal.react';
 import styles from './ViewElement.scss';
 
 // Check if a URL uses a safe protocol (http: or https:)
-const isSafeUrl = (url) => {
+const isSafeUrl = url => {
   if (!url || typeof url !== 'string') {
     return false;
   }
@@ -25,7 +25,7 @@ const isSafeUrl = (url) => {
 };
 
 // Compute text width using canvas measurement
-const computeTextWidth = (text) => {
+const computeTextWidth = text => {
   let str = text;
   if (str === undefined || str === null) {
     str = '';
@@ -42,7 +42,8 @@ const computeTextWidth = (text) => {
       str = `(${str.latitude}, ${str.longitude})`;
     } else if (str.__type === 'Image' || str.__type === 'Video') {
       // Use specified width if available, otherwise default min width
-      const specifiedWidth = str.width && parseInt(str.width, 10) > 0 ? parseInt(str.width, 10) : null;
+      const specifiedWidth =
+        str.width && parseInt(str.width, 10) > 0 ? parseInt(str.width, 10) : null;
       // Add padding (24px) to account for cell padding
       return specifiedWidth ? specifiedWidth + 24 : 124;
     } else {
@@ -52,7 +53,8 @@ const computeTextWidth = (text) => {
   str = String(str);
 
   if (typeof document !== 'undefined') {
-    const canvas = computeTextWidth._canvas || (computeTextWidth._canvas = document.createElement('canvas'));
+    const canvas =
+      computeTextWidth._canvas || (computeTextWidth._canvas = document.createElement('canvas'));
     const context = canvas.getContext('2d');
     context.font = '12px "Source Code Pro", "Courier New", monospace';
     const width = context.measureText(str).width + 32; // Add padding
@@ -61,7 +63,7 @@ const computeTextWidth = (text) => {
   return Math.max((str.length + 2) * 8, 60);
 };
 
-const formatValue = (value) => {
+const formatValue = value => {
   if (value === null || value === undefined) {
     return '-';
   }
@@ -91,15 +93,7 @@ const formatValue = (value) => {
   return String(value);
 };
 
-const ViewElement = ({
-  config,
-  data,
-  columns,
-  isLoading,
-  error,
-  onRefresh,
-  onPointerClick,
-}) => {
+const ViewElement = ({ config, data, columns, isLoading, error, onRefresh, onPointerClick }) => {
   // All hooks must be called before any early returns (React Rules of Hooks)
   const displayColumns = useMemo(() => {
     return columns || Object.keys(data?.[0] || {}).filter(k => k !== 'ACL');
@@ -178,13 +172,13 @@ const ViewElement = ({
     );
   }
 
-  const handlePointerClick = (value) => {
+  const handlePointerClick = value => {
     if (onPointerClick && value.__type === 'Pointer' && value.className && value.objectId) {
       onPointerClick({ className: value.className, id: value.objectId });
     }
   };
 
-  const renderCellContent = (value) => {
+  const renderCellContent = value => {
     if (value === null || value === undefined) {
       return '-';
     }
@@ -238,20 +232,22 @@ const ViewElement = ({
         if (!url || url.match(/javascript/i) || url.match(/<script/i)) {
           return '-';
         }
-        const width = value.width && parseInt(value.width, 10) > 0 ? parseInt(value.width, 10) : null;
-        const height = value.height && parseInt(value.height, 10) > 0 ? parseInt(value.height, 10) : null;
+        const width =
+          value.width && parseInt(value.width, 10) > 0 ? parseInt(value.width, 10) : null;
+        const height =
+          value.height && parseInt(value.height, 10) > 0 ? parseInt(value.height, 10) : null;
         const imgStyle = {
           maxWidth: width ? `${width}px` : '100%',
           maxHeight: height ? `${height}px` : '100%',
           objectFit: 'contain',
-          display: 'block'
+          display: 'block',
         };
         return (
           <img
             src={url}
             alt={value.alt || 'Image'}
             style={imgStyle}
-            onError={(e) => {
+            onError={e => {
               if (e.target && e.target.style) {
                 e.target.style.display = 'none';
               }
@@ -265,20 +261,22 @@ const ViewElement = ({
         if (!url || url.match(/javascript/i) || url.match(/<script/i)) {
           return '-';
         }
-        const width = value.width && parseInt(value.width, 10) > 0 ? parseInt(value.width, 10) : null;
-        const height = value.height && parseInt(value.height, 10) > 0 ? parseInt(value.height, 10) : null;
+        const width =
+          value.width && parseInt(value.width, 10) > 0 ? parseInt(value.width, 10) : null;
+        const height =
+          value.height && parseInt(value.height, 10) > 0 ? parseInt(value.height, 10) : null;
         const videoStyle = {
           maxWidth: width ? `${width}px` : '100%',
           maxHeight: height ? `${height}px` : '100%',
           objectFit: 'contain',
-          display: 'block'
+          display: 'block',
         };
         return (
           <video
             src={url}
             controls
             style={videoStyle}
-            onError={(e) => {
+            onError={e => {
               if (e.target && e.target.style) {
                 e.target.style.display = 'none';
               }
@@ -351,14 +349,10 @@ const ViewElement = ({
           </button>
         )}
       </div>
-      <div className={styles.tableContainer}>
-        {renderTable()}
-      </div>
+      <div className={styles.tableContainer}>{renderTable()}</div>
       {isExpanded && (
         <ExpandModal title={title} onClose={() => setIsExpanded(false)}>
-          <div className={styles.expandedTableContainer}>
-            {renderTable()}
-          </div>
+          <div className={styles.expandedTableContainer}>{renderTable()}</div>
         </ExpandModal>
       )}
     </div>

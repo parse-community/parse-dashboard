@@ -13,12 +13,7 @@ import Dropdown from 'components/Dropdown/Dropdown.react';
 import Option from 'components/Dropdown/Option.react';
 import TextInput from 'components/TextInput/TextInput.react';
 
-const ViewConfigDialog = ({
-  initialConfig,
-  availableViews,
-  onClose,
-  onSave,
-}) => {
+const ViewConfigDialog = ({ initialConfig, availableViews, onClose, onSave }) => {
   const [title, setTitle] = useState(initialConfig?.title || '');
   const [viewId, setViewId] = useState(initialConfig?.viewId || '');
 
@@ -72,22 +67,12 @@ const ViewConfigDialog = ({
         <>
           <Field
             label={<Label text="Title (Optional)" description="Display title for the view" />}
-            input={
-              <TextInput
-                value={title}
-                onChange={setTitle}
-                placeholder="Enter a title..."
-              />
-            }
+            input={<TextInput value={title} onChange={setTitle} placeholder="Enter a title..." />}
           />
           <Field
             label={<Label text="View" description="Select the view to display" />}
             input={
-              <Dropdown
-                value={viewId}
-                onChange={setViewId}
-                placeHolder="Select a view..."
-              >
+              <Dropdown value={viewId} onChange={setViewId} placeHolder="Select a view...">
                 {sortedViews.map(v => (
                   <Option key={v.id} value={v.id}>
                     {v.name}
@@ -100,16 +85,33 @@ const ViewConfigDialog = ({
           />
           {selectedView && (
             <Field
-              label={<Label text="View Details" description="Information about the selected view" />}
+              label={
+                <Label text="View Details" description="Information about the selected view" />
+              }
               input={
-                <div style={{ padding: '12px', backgroundColor: '#f4f5f7', borderRadius: '4px', fontSize: '12px', color: '#666666' }}>
+                <div
+                  style={{
+                    padding: '12px',
+                    backgroundColor: '#f4f5f7',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    color: '#666666',
+                  }}
+                >
                   {selectedView.cloudFunction ? (
-                    <div>Cloud Function: <strong>{selectedView.cloudFunction}</strong></div>
+                    <div>
+                      Cloud Function: <strong>{selectedView.cloudFunction}</strong>
+                    </div>
                   ) : (
                     <>
-                      <div>Class: <strong>{selectedView.className}</strong></div>
+                      <div>
+                        Class: <strong>{selectedView.className}</strong>
+                      </div>
                       {selectedView.query && (
-                        <div style={{ marginTop: '4px' }}>Aggregation Pipeline: <strong>{selectedView.query.length} stage(s)</strong></div>
+                        <div style={{ marginTop: '4px' }}>
+                          Aggregation Pipeline:{' '}
+                          <strong>{selectedView.query.length} stage(s)</strong>
+                        </div>
                       )}
                     </>
                   )}

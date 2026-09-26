@@ -10,7 +10,7 @@ const UNESCAPE_MAP = {
   '&lt;': '<',
   '&gt;': '>',
   '&#x2F;': '/',
-  '&#x27;': '\'',
+  '&#x27;': "'",
   '&quot;': '"',
 };
 const ESCAPE_MAP = {};

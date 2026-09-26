@@ -180,14 +180,20 @@ export default class FilterPreferencesManager {
                 type: 'filter',
                 className,
                 local: localFilter,
-                server: serverFilter
+                server: serverFilter,
               });
             });
           }
 
           if (overwriteConflicts || conflictingIds.length === 0) {
             // Only migrate if no conflicts or overwriting
-            await this._migrateFiltersToServer(appId, className, filtersWithIds, existingFilterIds, overwriteConflicts);
+            await this._migrateFiltersToServer(
+              appId,
+              className,
+              filtersWithIds,
+              existingFilterIds,
+              overwriteConflicts
+            );
             totalFilterCount += filtersWithIds.length;
           }
         }
@@ -197,7 +203,7 @@ export default class FilterPreferencesManager {
         return {
           success: false,
           filterCount: 0,
-          conflicts: allConflicts
+          conflicts: allConflicts,
         };
       }
 
@@ -280,7 +286,10 @@ export default class FilterPreferencesManager {
           });
 
           // Stringify the filter if it exists and is an array/object
-          if (filterConfig.filter && (Array.isArray(filterConfig.filter) || typeof filterConfig.filter === 'object')) {
+          if (
+            filterConfig.filter &&
+            (Array.isArray(filterConfig.filter) || typeof filterConfig.filter === 'object')
+          ) {
             filterConfig.filter = JSON.stringify(filterConfig.filter);
           }
 
@@ -334,7 +343,7 @@ export default class FilterPreferencesManager {
 
           filters.push({
             id: filterId,
-            ...filterConfig
+            ...filterConfig,
           });
         }
       });
@@ -362,13 +371,16 @@ export default class FilterPreferencesManager {
       );
 
       // Extract filter IDs
-      const existingFilterIds = Object.keys(existingFilterConfigs)
-        .map(key => key.replace('browser.filters.filter.', ''));
+      const existingFilterIds = Object.keys(existingFilterConfigs).map(key =>
+        key.replace('browser.filters.filter.', '')
+      );
 
       // Validate all filters have IDs before proceeding
       filters.forEach((filter, index) => {
         if (!filter.id) {
-          throw new Error(`Filter at index ${index} is missing an ID. All filters must have IDs before saving to server.`);
+          throw new Error(
+            `Filter at index ${index} is missing an ID. All filters must have IDs before saving to server.`
+          );
         }
       });
 
@@ -400,7 +412,10 @@ export default class FilterPreferencesManager {
           });
 
           // Stringify the filter if it exists and is an array/object
-          if (filterConfig.filter && (Array.isArray(filterConfig.filter) || typeof filterConfig.filter === 'object')) {
+          if (
+            filterConfig.filter &&
+            (Array.isArray(filterConfig.filter) || typeof filterConfig.filter === 'object')
+          ) {
             filterConfig.filter = JSON.stringify(filterConfig.filter);
           }
 
@@ -438,15 +453,14 @@ export default class FilterPreferencesManager {
       });
 
       // Stringify the filter if it exists and is an array/object
-      if (filterConfig.filter && (Array.isArray(filterConfig.filter) || typeof filterConfig.filter === 'object')) {
+      if (
+        filterConfig.filter &&
+        (Array.isArray(filterConfig.filter) || typeof filterConfig.filter === 'object')
+      ) {
         filterConfig.filter = JSON.stringify(filterConfig.filter);
       }
 
-      await this.serverStorage.setConfig(
-        `browser.filters.filter.${filterId}`,
-        filterConfig,
-        appId
-      );
+      await this.serverStorage.setConfig(`browser.filters.filter.${filterId}`, filterConfig, appId);
     } catch (error) {
       console.error('Failed to save filter to server:', error);
       throw error;

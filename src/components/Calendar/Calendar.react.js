@@ -100,8 +100,8 @@ export default class Calendar extends React.Component {
         this.props.local
           ? new Date(this.state.currentMonth.getFullYear(), this.state.currentMonth.getMonth(), i)
           : new Date(
-            Date.UTC(this.state.currentMonth.getFullYear(), this.state.currentMonth.getMonth(), i)
-          )
+              Date.UTC(this.state.currentMonth.getFullYear(), this.state.currentMonth.getMonth(), i)
+            )
       );
       labels.push(
         <button type="button" key={'day' + i} className={className} onClick={onChange}>
