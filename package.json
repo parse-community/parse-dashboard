@@ -126,7 +126,7 @@
     "mongodb-runner": "6.7.3",
     "parse-server": "9.10.1",
     "prettier": "3.8.1",
-    "puppeteer": "24.37.2",
+    "puppeteer": "24.43.1",
     "react-test-renderer": "19.2.7",
     "sass": "1.99.0",
     "sass-loader": "16.0.7",
