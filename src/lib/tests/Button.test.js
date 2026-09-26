@@ -34,19 +34,25 @@ describe('Button', () => {
   });
 
   it('can be colored and primary', () => {
-    const component = renderComponent(<Button color="red" primary={true} value="A button" />).toJSON();
+    const component = renderComponent(
+      <Button color="red" primary={true} value="A button" />
+    ).toJSON();
     expect(component.type).toBe('button');
     expect(component.props.className).toBe('button unselectable primary red');
   });
 
   it('can be disabled', () => {
-    const component = renderComponent(<Button color="red" disabled={true} value="A button" />).toJSON();
+    const component = renderComponent(
+      <Button color="red" disabled={true} value="A button" />
+    ).toJSON();
     expect(component.type).toBe('button');
     expect(component.props.className).toBe('button unselectable disabled');
   });
 
   it('special-cases white disabled buttons', () => {
-    const component = renderComponent(<Button color="white" disabled={true} value="A button" />).toJSON();
+    const component = renderComponent(
+      <Button color="white" disabled={true} value="A button" />
+    ).toJSON();
     expect(component.type).toBe('button');
     expect(component.props.className).toBe('button unselectable disabled white');
   });

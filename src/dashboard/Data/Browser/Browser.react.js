@@ -196,7 +196,8 @@ class Browser extends DashboardView {
 
       processedScripts: 0,
 
-      reloadDataTableAfterScript: window.localStorage?.getItem('reloadDataTableAfterScript') === 'true',
+      reloadDataTableAfterScript:
+        window.localStorage?.getItem('reloadDataTableAfterScript') === 'true',
 
       rowCheckboxDragging: false,
       draggedRowSelection: false,
@@ -386,7 +387,7 @@ class Browser extends DashboardView {
     if (classList) {
       const classNames = Object.keys(classList.toObject());
       await Promise.all(
-        classNames.map(async (className) => {
+        classNames.map(async className => {
           try {
             const filters = await this.filterPreferencesManager.getFilters(
               this.context.applicationId,
@@ -505,36 +506,42 @@ class Browser extends DashboardView {
     const promise = Parse.Cloud.run(cloudCodeFunction, params, options);
     promise.cancel = () => requestTask?.abort();
     this.infoPanelQueries[objectId] = promise;
-    promise.then(
-      result => {
-        if (this.infoPanelQueries[objectId] !== promise) {
-          return;
-        }
-        if (result && result.panel && result.panel && result.panel.segments) {
-          this.setState({ AggregationPanelData: result, isLoadingInfoPanel: false, lastFetchedObjectId: objectId });
-        } else {
+    promise
+      .then(
+        result => {
+          if (this.infoPanelQueries[objectId] !== promise) {
+            return;
+          }
+          if (result && result.panel && result.panel && result.panel.segments) {
+            this.setState({
+              AggregationPanelData: result,
+              isLoadingInfoPanel: false,
+              lastFetchedObjectId: objectId,
+            });
+          } else {
+            this.setState({
+              isLoadingInfoPanel: false,
+              errorAggregatedData: 'Improper JSON format',
+            });
+            this.showNote(this.state.errorAggregatedData, true);
+          }
+        },
+        error => {
+          if (this.infoPanelQueries[objectId] !== promise) {
+            return;
+          }
           this.setState({
             isLoadingInfoPanel: false,
-            errorAggregatedData: 'Improper JSON format',
+            errorAggregatedData: error.message,
           });
           this.showNote(this.state.errorAggregatedData, true);
         }
-      },
-      error => {
-        if (this.infoPanelQueries[objectId] !== promise) {
-          return;
+      )
+      .finally(() => {
+        if (this.infoPanelQueries[objectId] === promise) {
+          delete this.infoPanelQueries[objectId];
         }
-        this.setState({
-          isLoadingInfoPanel: false,
-          errorAggregatedData: error.message,
-        });
-        this.showNote(this.state.errorAggregatedData, true);
-      }
-    ).finally(() => {
-      if (this.infoPanelQueries[objectId] === promise) {
-        delete this.infoPanelQueries[objectId];
-      }
-    });
+      });
   }
 
   setAggregationPanelData(data) {
@@ -672,34 +679,34 @@ class Browser extends DashboardView {
     const query = new URLSearchParams(props.location.search);
     if (query.has('filters')) {
       const queryFilters = JSON.parse(query.get('filters'));
-      queryFilters.forEach(
-        filter => {
-          // Convert date strings to Parse Date objects for proper Parse query functionality
-          const processedFilter = { ...filter, class: filter.class || props.params.className };
+      queryFilters.forEach(filter => {
+        // Convert date strings to Parse Date objects for proper Parse query functionality
+        const processedFilter = { ...filter, class: filter.class || props.params.className };
 
-          // Check the schema to see if this field is a Date type
-          const classes = props.schema?.data?.get('classes');
-          const className = processedFilter.class || props.params.className;
-          const fieldName = processedFilter.field;
+        // Check the schema to see if this field is a Date type
+        const classes = props.schema?.data?.get('classes');
+        const className = processedFilter.class || props.params.className;
+        const fieldName = processedFilter.field;
 
-          if (classes && className && fieldName) {
-            const classSchema = classes.get(className);
-            const fieldType = classSchema?.get(fieldName)?.type;
+        if (classes && className && fieldName) {
+          const classSchema = classes.get(className);
+          const fieldType = classSchema?.get(fieldName)?.type;
 
-            // If field type is Date and compareTo is not already a Date object, convert it
-            if (fieldType === 'Date' &&
-                processedFilter.compareTo &&
-                typeof processedFilter.compareTo !== 'object') {
-              processedFilter.compareTo = {
-                __type: 'Date',
-                iso: new Date(processedFilter.compareTo).toISOString()
-              };
-            }
+          // If field type is Date and compareTo is not already a Date object, convert it
+          if (
+            fieldType === 'Date' &&
+            processedFilter.compareTo &&
+            typeof processedFilter.compareTo !== 'object'
+          ) {
+            processedFilter.compareTo = {
+              __type: 'Date',
+              iso: new Date(processedFilter.compareTo).toISOString(),
+            };
           }
-
-          filters = filters.push(Map(processedFilter));
         }
-      );
+
+        filters = filters.push(Map(processedFilter));
+      });
     }
     return filters;
   }
@@ -753,7 +760,8 @@ class Browser extends DashboardView {
     if (skip > 0) {
       queryParams.set('skip', skip.toString());
     }
-    if (limit !== 100) { // Only include limit if it's not the default
+    if (limit !== 100) {
+      // Only include limit if it's not the default
       queryParams.set('limit', limit.toString());
     }
 
@@ -1206,8 +1214,8 @@ class Browser extends DashboardView {
           this.setState(prevState => ({
             counts: {
               ...prevState.counts,
-              [className]: count
-            }
+              [className]: count,
+            },
           }));
         });
         promises.push(promise);
@@ -1480,16 +1488,19 @@ class Browser extends DashboardView {
     this.excludeFields(query, source);
 
     const { useMasterKey } = this.state;
-    query.find({ useMasterKey }).then(nextPage => {
-      if (className === this.props.params.className) {
-        this.setState(state => ({
-          data: state.data.concat(nextPage),
-        }));
-      }
-    }).catch(error => {
-      const msg = typeof error === 'string' ? error : error.message;
-      this.showNote(msg, true);
-    });
+    query
+      .find({ useMasterKey })
+      .then(nextPage => {
+        if (className === this.props.params.className) {
+          this.setState(state => ({
+            data: state.data.concat(nextPage),
+          }));
+        }
+      })
+      .catch(error => {
+        const msg = typeof error === 'string' ? error : error.message;
+        this.showNote(msg, true);
+      });
     this.setState({ lastMax: this.state.lastMax + this.state.limit });
   }
 
@@ -1562,10 +1573,7 @@ class Browser extends DashboardView {
     // Use server-loaded filters from state if available, otherwise fallback to local storage
     const existingFilters = this.state.classFilters[className] || [];
 
-    const preferences = ClassPreferences.getPreferences(
-      this.context.applicationId,
-      className
-    );
+    const preferences = ClassPreferences.getPreferences(this.context.applicationId, className);
 
     // Initialize preferences.filters from state if needed
     if (!preferences.filters) {
@@ -1583,8 +1591,8 @@ class Browser extends DashboardView {
     if (filterId && filterId.startsWith('legacy:')) {
       // Handle legacy filter update by converting to modern filter
       const legacyFilterName = filterId.substring(7); // Remove 'legacy:' prefix
-      const existingLegacyFilterIndex = preferences.filters.findIndex(filter =>
-        !filter.id && filter.name === legacyFilterName
+      const existingLegacyFilterIndex = preferences.filters.findIndex(
+        filter => !filter.id && filter.name === legacyFilterName
       );
 
       if (existingLegacyFilterIndex !== -1) {
@@ -1625,8 +1633,8 @@ class Browser extends DashboardView {
     } else {
       // Check if this is updating an existing filter by name and content match
       // (legacy filters get auto-assigned UUIDs when read, so we match by content)
-      const existingFilterIndex = preferences.filters.findIndex(filter =>
-        filter.name === name && filter.filter === _filters
+      const existingFilterIndex = preferences.filters.findIndex(
+        filter => filter.name === name && filter.filter === _filters
       );
 
       if (existingFilterIndex !== -1) {
@@ -1693,8 +1701,8 @@ class Browser extends DashboardView {
       this.setState(prevState => ({
         classFilters: {
           ...prevState.classFilters,
-          [className]: filters || []
-        }
+          [className]: filters || [],
+        },
       }));
     } catch (error) {
       console.error(`Failed to reload filters for class ${className}:`, error);
@@ -2244,7 +2252,9 @@ class Browser extends DashboardView {
       formData,
       this.showNote,
       this.state.reloadDataTableAfterScript ? this.refresh : null,
-      this.state.reloadDataTableAfterScript ? null : (ids) => this.dataBrowserRef.current?.handleRefreshObjects(ids)
+      this.state.reloadDataTableAfterScript
+        ? null
+        : ids => this.dataBrowserRef.current?.handleRefreshObjects(ids)
     );
   }
 
@@ -2293,14 +2303,12 @@ class Browser extends DashboardView {
       if (remainingObjects.length === 0) {
         const objectIds = objects.map(obj => obj.id);
         if (this.state.reloadDataTableAfterScript) {
-          this.setState(
-            { selection: {}, showExecuteScriptRowsDialog: false },
-            () => this.refresh()
+          this.setState({ selection: {}, showExecuteScriptRowsDialog: false }, () =>
+            this.refresh()
           );
         } else {
-          this.setState(
-            { selection: {}, showExecuteScriptRowsDialog: false },
-            () => this.dataBrowserRef.current?.handleRefreshObjects(objectIds)
+          this.setState({ selection: {}, showExecuteScriptRowsDialog: false }, () =>
+            this.dataBrowserRef.current?.handleRefreshObjects(objectIds)
           );
         }
         return;
@@ -2368,14 +2376,10 @@ class Browser extends DashboardView {
       }
       const objectIds = objects.map(obj => obj.id);
       if (this.state.reloadDataTableAfterScript) {
-        this.setState(
-          { selection: {}, showExecuteScriptRowsDialog: false },
-          () => this.refresh()
-        );
+        this.setState({ selection: {}, showExecuteScriptRowsDialog: false }, () => this.refresh());
       } else {
-        this.setState(
-          { selection: {}, showExecuteScriptRowsDialog: false },
-          () => this.dataBrowserRef.current?.handleRefreshObjects(objectIds)
+        this.setState({ selection: {}, showExecuteScriptRowsDialog: false }, () =>
+          this.dataBrowserRef.current?.handleRefreshObjects(objectIds)
         );
       }
     } catch (e) {
@@ -2527,9 +2531,7 @@ class Browser extends DashboardView {
 
       // Check for duplicates if needed
       if (importOptions.preserveObjectIds && importOptions.duplicateHandling !== 'overwrite') {
-        const objectIds = parseResult.rows
-          .map(r => r.objectId)
-          .filter(Boolean);
+        const objectIds = parseResult.rows.map(r => r.objectId).filter(Boolean);
 
         if (objectIds.length > 0) {
           const existing = await checkDuplicates(objectIds, className);
@@ -2582,7 +2584,7 @@ class Browser extends DashboardView {
         masterKey: this.context.masterKey,
         maintenanceKey: importOptions.preserveTimestamps ? this.context.maintenanceKey : undefined,
         continueOnError: importOptions.continueOnError,
-        onProgress: (progress) => {
+        onProgress: progress => {
           if (this.importDialogRef) {
             this.importDialogRef.setProgress(progress);
           }
@@ -2823,9 +2825,11 @@ class Browser extends DashboardView {
       let filters = this.state.classFilters[row.name];
 
       // Fallback to local storage ONLY if not using server storage and filters not loaded yet
-      if (filters === undefined &&
-          (!this.filterPreferencesManager?.isServerConfigEnabled() ||
-           !prefersServerStorage(this.context.applicationId))) {
+      if (
+        filters === undefined &&
+        (!this.filterPreferencesManager?.isServerConfigEnabled() ||
+          !prefersServerStorage(this.context.applicationId))
+      ) {
         const prefs = ClassPreferences.getPreferences(this.context.applicationId, row.name);
         filters = prefs?.filters || [];
       } else if (filters === undefined) {
@@ -2836,7 +2840,7 @@ class Browser extends DashboardView {
       const sortedFilters = filters.sort((a, b) => a.name.localeCompare(b.name));
       allCategories.push({
         ...row,
-        filters: sortedFilters
+        filters: sortedFilters,
       });
     }
 
@@ -3444,7 +3448,9 @@ class Browser extends DashboardView {
     } else if (this.state.showImportDialog) {
       extras = (
         <ImportDataDialog
-          ref={(ref) => { this.importDialogRef = ref; }}
+          ref={ref => {
+            this.importDialogRef = ref;
+          }}
           className={className}
           maintenanceKey={this.context.maintenanceKey}
           onCancel={this.cancelImportDialog}

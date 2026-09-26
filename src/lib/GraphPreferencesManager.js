@@ -158,14 +158,14 @@ export default class GraphPreferencesManager {
             id,
             type: 'graph',
             local: localGraph,
-            server: serverGraph
+            server: serverGraph,
           };
         });
 
         return {
           success: false,
           graphCount: 0,
-          conflicts
+          conflicts,
         };
       }
 
@@ -303,7 +303,7 @@ export default class GraphPreferencesManager {
 
           graphs.push({
             id: graphId,
-            ...config
+            ...config,
           });
         }
       });
@@ -337,11 +337,7 @@ export default class GraphPreferencesManager {
         }
       });
 
-      await this.serverStorage.setConfig(
-        `browser.graphs.graph.${graphId}`,
-        graphConfig,
-        appId
-      );
+      await this.serverStorage.setConfig(`browser.graphs.graph.${graphId}`, graphConfig, appId);
     } catch (error) {
       console.error('Failed to save graph to server:', error);
       throw error;

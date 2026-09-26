@@ -55,12 +55,7 @@ export default class RunJobDialog extends React.Component {
         onConfirm={this.handleConfirm}
       >
         <Field
-          label={
-            <Label
-              text="Parameters"
-              description="Optional JSON object to pass to the job"
-            />
-          }
+          label={<Label text="Parameters" description="Optional JSON object to pass to the job" />}
           input={
             <div style={{ width: '100%' }}>
               <TextInput

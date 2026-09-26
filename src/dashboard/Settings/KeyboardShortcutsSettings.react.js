@@ -15,7 +15,11 @@ import TextInput from 'components/TextInput/TextInput.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import Notification from 'dashboard/Data/Browser/Notification.react';
 import styles from 'dashboard/Settings/Settings.scss';
-import KeyboardShortcutsManager, { DEFAULT_SHORTCUTS, isValidShortcut, createShortcut } from 'lib/KeyboardShortcutsPreferences';
+import KeyboardShortcutsManager, {
+  DEFAULT_SHORTCUTS,
+  isValidShortcut,
+  createShortcut,
+} from 'lib/KeyboardShortcutsPreferences';
 
 export default class KeyboardShortcutsSettings extends DashboardView {
   constructor() {
@@ -90,10 +94,18 @@ export default class KeyboardShortcutsSettings extends DashboardView {
 
     // Create shortcut objects from the key strings
     const shortcuts = {
-      dataBrowserReloadData: this.state.dataBrowserReloadData ? createShortcut(this.state.dataBrowserReloadData) : null,
-      dataBrowserToggleInfoPanels: this.state.dataBrowserToggleInfoPanels ? createShortcut(this.state.dataBrowserToggleInfoPanels) : null,
-      dataBrowserRunScriptOnSelectedRows: this.state.dataBrowserRunScriptOnSelectedRows ? createShortcut(this.state.dataBrowserRunScriptOnSelectedRows) : null,
-      dataBrowserScrollInfoPanelsToTop: this.state.dataBrowserScrollInfoPanelsToTop ? createShortcut(this.state.dataBrowserScrollInfoPanelsToTop) : null,
+      dataBrowserReloadData: this.state.dataBrowserReloadData
+        ? createShortcut(this.state.dataBrowserReloadData)
+        : null,
+      dataBrowserToggleInfoPanels: this.state.dataBrowserToggleInfoPanels
+        ? createShortcut(this.state.dataBrowserToggleInfoPanels)
+        : null,
+      dataBrowserRunScriptOnSelectedRows: this.state.dataBrowserRunScriptOnSelectedRows
+        ? createShortcut(this.state.dataBrowserRunScriptOnSelectedRows)
+        : null,
+      dataBrowserScrollInfoPanelsToTop: this.state.dataBrowserScrollInfoPanelsToTop
+        ? createShortcut(this.state.dataBrowserScrollInfoPanelsToTop)
+        : null,
     };
 
     // Validate shortcuts (only if they are set)
@@ -102,17 +114,29 @@ export default class KeyboardShortcutsSettings extends DashboardView {
       return;
     }
 
-    if (shortcuts.dataBrowserToggleInfoPanels && !isValidShortcut(shortcuts.dataBrowserToggleInfoPanels)) {
+    if (
+      shortcuts.dataBrowserToggleInfoPanels &&
+      !isValidShortcut(shortcuts.dataBrowserToggleInfoPanels)
+    ) {
       this.showNote('Invalid key for "Toggle Panels". Please enter a valid key.', true);
       return;
     }
 
-    if (shortcuts.dataBrowserRunScriptOnSelectedRows && !isValidShortcut(shortcuts.dataBrowserRunScriptOnSelectedRows)) {
-      this.showNote('Invalid key for "Run Script on Selected Rows". Please enter a valid key.', true);
+    if (
+      shortcuts.dataBrowserRunScriptOnSelectedRows &&
+      !isValidShortcut(shortcuts.dataBrowserRunScriptOnSelectedRows)
+    ) {
+      this.showNote(
+        'Invalid key for "Run Script on Selected Rows". Please enter a valid key.',
+        true
+      );
       return;
     }
 
-    if (shortcuts.dataBrowserScrollInfoPanelsToTop && !isValidShortcut(shortcuts.dataBrowserScrollInfoPanelsToTop)) {
+    if (
+      shortcuts.dataBrowserScrollInfoPanelsToTop &&
+      !isValidShortcut(shortcuts.dataBrowserScrollInfoPanelsToTop)
+    ) {
       this.showNote('Invalid key for "Scroll Info Panels to Top". Please enter a valid key.', true);
       return;
     }
@@ -171,34 +195,32 @@ export default class KeyboardShortcutsSettings extends DashboardView {
 
   renderContent() {
     // Show error if server config is not enabled
-    const serverConfigError = !this.state.loading && this.manager && !this.manager.isServerConfigEnabled()
-      ? 'Server configuration is not enabled for this app. Please add a \'config\' section to your app configuration to use keyboard shortcuts.'
-      : null;
+    const serverConfigError =
+      !this.state.loading && this.manager && !this.manager.isServerConfigEnabled()
+        ? "Server configuration is not enabled for this app. Please add a 'config' section to your app configuration to use keyboard shortcuts."
+        : null;
 
     // Show either server config error or user message
     const message = this.state.message;
     const notificationMessage = serverConfigError || (message && message.text);
-    const isError = serverConfigError ? true : (message && message.isError);
+    const isError = serverConfigError ? true : message && message.isError;
 
     return (
       <div>
         <Toolbar section="Settings" subsection="Keyboard Shortcuts" />
         <Notification note={notificationMessage} isErrorNote={isError} />
         <div className={styles.settings_page}>
-          <Fieldset
-            legend="Data Browser"
-            description="Leave empty to disable a shortcut."
-          >
+          <Fieldset legend="Data Browser" description="Leave empty to disable a shortcut.">
             <Field
               labelWidth={62}
-              label={<Label
-                text="Reload Data"
-                description={'Reloads the data browser table data.'}
-              />
+              label={
+                <Label text="Reload Data" description={'Reloads the data browser table data.'} />
               }
               input={
                 <TextInput
-                  placeholder={this.state.loading ? 'Loading...' : DEFAULT_SHORTCUTS.dataBrowserReloadData.key}
+                  placeholder={
+                    this.state.loading ? 'Loading...' : DEFAULT_SHORTCUTS.dataBrowserReloadData.key
+                  }
                   value={this.state.dataBrowserReloadData}
                   disabled={this.state.loading}
                   onChange={this.handleFieldChange.bind(this, 'dataBrowserReloadData')}
@@ -210,14 +232,15 @@ export default class KeyboardShortcutsSettings extends DashboardView {
             <Field
               labelWidth={62}
               label={
-                <Label
-                  text="Toggle Info Panels"
-                  description={'Shows/hides the info panels.'}
-                />
+                <Label text="Toggle Info Panels" description={'Shows/hides the info panels.'} />
               }
               input={
                 <TextInput
-                  placeholder={this.state.loading ? 'Loading...' : DEFAULT_SHORTCUTS.dataBrowserToggleInfoPanels.key}
+                  placeholder={
+                    this.state.loading
+                      ? 'Loading...'
+                      : DEFAULT_SHORTCUTS.dataBrowserToggleInfoPanels.key
+                  }
                   value={this.state.dataBrowserToggleInfoPanels}
                   disabled={this.state.loading}
                   onChange={this.handleFieldChange.bind(this, 'dataBrowserToggleInfoPanels')}
@@ -236,7 +259,11 @@ export default class KeyboardShortcutsSettings extends DashboardView {
               }
               input={
                 <TextInput
-                  placeholder={this.state.loading ? 'Loading...' : DEFAULT_SHORTCUTS.dataBrowserRunScriptOnSelectedRows.key}
+                  placeholder={
+                    this.state.loading
+                      ? 'Loading...'
+                      : DEFAULT_SHORTCUTS.dataBrowserRunScriptOnSelectedRows.key
+                  }
                   value={this.state.dataBrowserRunScriptOnSelectedRows}
                   disabled={this.state.loading}
                   onChange={this.handleFieldChange.bind(this, 'dataBrowserRunScriptOnSelectedRows')}
@@ -255,7 +282,11 @@ export default class KeyboardShortcutsSettings extends DashboardView {
               }
               input={
                 <TextInput
-                  placeholder={this.state.loading ? 'Loading...' : DEFAULT_SHORTCUTS.dataBrowserScrollInfoPanelsToTop.key}
+                  placeholder={
+                    this.state.loading
+                      ? 'Loading...'
+                      : DEFAULT_SHORTCUTS.dataBrowserScrollInfoPanelsToTop.key
+                  }
                   value={this.state.dataBrowserScrollInfoPanelsToTop}
                   disabled={this.state.loading}
                   onChange={this.handleFieldChange.bind(this, 'dataBrowserScrollInfoPanelsToTop')}

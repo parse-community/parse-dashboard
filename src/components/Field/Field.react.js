@@ -22,10 +22,7 @@ const Field = ({ label, input, labelWidth = 50, labelPadding, height, className 
     });
   }
   return (
-    <div
-      className={classes.join(' ')}
-      style={{ '--modal-label-ratio': labelWidth / 100 }}
-    >
+    <div className={classes.join(' ')} style={{ '--modal-label-ratio': labelWidth / 100 }}>
       <div
         className={styles.left}
         style={{

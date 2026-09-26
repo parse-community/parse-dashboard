@@ -322,10 +322,15 @@ export default class BrowserCell extends Component {
     relatedObjectsContextMenuOption && contextMenuOptions.push(relatedObjectsContextMenuOption);
 
     const relatedTextFieldsContextMenuOption = this.getRelatedTextFieldsContextMenuOption();
-    !relatedObjectsContextMenuOption && relatedTextFieldsContextMenuOption && contextMenuOptions.push(relatedTextFieldsContextMenuOption);
+    !relatedObjectsContextMenuOption &&
+      relatedTextFieldsContextMenuOption &&
+      contextMenuOptions.push(relatedTextFieldsContextMenuOption);
 
     const relatedNumberFieldsContextMenuOption = this.getRelatedNumberFieldsContextMenuOption();
-    !relatedObjectsContextMenuOption && !relatedTextFieldsContextMenuOption && relatedNumberFieldsContextMenuOption && contextMenuOptions.push(relatedNumberFieldsContextMenuOption);
+    !relatedObjectsContextMenuOption &&
+      !relatedTextFieldsContextMenuOption &&
+      relatedNumberFieldsContextMenuOption &&
+      contextMenuOptions.push(relatedNumberFieldsContextMenuOption);
 
     // Group 2: Filter
     const addFilterContextMenuOption = this.getAddFilterContextMenuOption(constraints);
@@ -424,8 +429,8 @@ export default class BrowserCell extends Component {
             copyableValue.length < 30
               ? copyableValue
               : `${copyableValue.substr(0, 20)}...${copyableValue.substr(
-                copyableValue.length - 7
-              )}`;
+                  copyableValue.length - 7
+                )}`;
           const text = `${this.props.field} ${definition.name}${
             definition.comparable ? ' ' + value : ''
           }`;
@@ -602,7 +607,12 @@ export default class BrowserCell extends Component {
     const cellValue = this.copyableValue !== undefined ? String(this.copyableValue) : '';
 
     // Don't show for empty or special values
-    if (!cellValue || cellValue === '(undefined)' || cellValue === '(null)' || cellValue === '(hidden)') {
+    if (
+      !cellValue ||
+      cellValue === '(undefined)' ||
+      cellValue === '(null)' ||
+      cellValue === '(hidden)'
+    ) {
       return;
     }
 
@@ -631,9 +641,9 @@ export default class BrowserCell extends Component {
           compareTo = value.__type
             ? value
             : {
-              __type: 'Date',
-              iso: value,
-            };
+                __type: 'Date',
+                iso: value,
+              };
           break;
 
         default:

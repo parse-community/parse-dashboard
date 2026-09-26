@@ -126,8 +126,7 @@ export default class RemoveArrayEntryDialog extends React.Component {
     // Extract available key paths if array contains objects
     const keyPaths = containsObjects ? this.extractKeyPaths(arrayValue) : [];
 
-    const confirmDisabled =
-      value === '' || (useKeyFilter && !selectedKeyPath);
+    const confirmDisabled = value === '' || (useKeyFilter && !selectedKeyPath);
 
     return (
       <Modal
@@ -165,10 +164,7 @@ export default class RemoveArrayEntryDialog extends React.Component {
         {useKeyFilter && keyPaths.length > 0 && (
           <Field
             label={
-              <Label
-                text="Key path"
-                description="Select the key path to filter objects by."
-              />
+              <Label text="Key path" description="Select the key path to filter objects by." />
             }
             input={
               <Dropdown

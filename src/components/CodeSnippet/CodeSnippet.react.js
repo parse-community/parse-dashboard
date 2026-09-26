@@ -53,9 +53,9 @@ CodeSnippet.propTypes = {
   ),
   language: PropTypes.string.describe('The programming language of the snippet.'),
   fullPage: PropTypes.bool.describe(
-    'Pass false if this component doesn\'t need to fill the whole page.'
+    "Pass false if this component doesn't need to fill the whole page."
   ),
   lineNumbers: PropTypes.bool.describe(
-    'Pass false if this component doesn\'t need to print line numbers.'
+    "Pass false if this component doesn't need to print line numbers."
   ),
 };

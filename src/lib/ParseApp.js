@@ -88,9 +88,9 @@ export default class ParseApp {
 
     if (!supportedPushLocales) {
       console.warn(
-        'Missing push locales for \'' +
+        "Missing push locales for '" +
           appName +
-          '\', see this link for details on setting localizations up. https://github.com/parse-community/parse-dashboard#configuring-localized-push-notifications'
+          "', see this link for details on setting localizations up. https://github.com/parse-community/parse-dashboard#configuring-localized-push-notifications"
       );
     }
 
@@ -373,7 +373,6 @@ export default class ParseApp {
     data.append('new_hosting_certificate[key_data]', file);
     return AJAX.put(path, data);
   }
-
 
   cleanUpFiles() {
     const path = '/apps/' + this.slug + '/cleanup_files';

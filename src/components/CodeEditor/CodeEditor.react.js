@@ -64,7 +64,7 @@ export default class CodeEditor extends React.Component {
         enableSnippets={false}
         tabSize={2}
         style={{
-          backgroundColor: '#202020'
+          backgroundColor: '#202020',
         }}
         setOptions={{
           useWorker: false, // Disable web workers to prevent MIME type errors

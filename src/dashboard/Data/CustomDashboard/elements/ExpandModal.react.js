@@ -17,13 +17,16 @@ const ExpandModal = ({ title, children, onClose }) => {
     return el;
   });
 
-  const handleKeyDown = useCallback((e) => {
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      e.stopPropagation();
-      onClose();
-    }
-  }, [onClose]);
+  const handleKeyDown = useCallback(
+    e => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        onClose();
+      }
+    },
+    [onClose]
+  );
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -41,14 +44,14 @@ const ExpandModal = ({ title, children, onClose }) => {
     };
   }, [container, handleKeyDown]);
 
-  const handleBackdropClick = (e) => {
+  const handleBackdropClick = e => {
     if (e.target === e.currentTarget) {
       e.stopPropagation();
       onClose();
     }
   };
 
-  const handleContentClick = (e) => {
+  const handleContentClick = e => {
     e.stopPropagation();
   };
 
@@ -61,9 +64,7 @@ const ExpandModal = ({ title, children, onClose }) => {
             <Icon name="x-outline" width={16} height={16} fill="#64748b" />
           </button>
         </div>
-        <div className={styles.modalBody}>
-          {children}
-        </div>
+        <div className={styles.modalBody}>{children}</div>
       </div>
     </div>,
     container

@@ -136,24 +136,24 @@ export default class MultiSelect extends React.Component {
     } else {
       content = this.props.chips
         ? selection.map((child, index) => {
-          let item;
-          if (Array.isArray(this.props.value)) {
-            item = this.props.value[index];
-          }
-          return (
-            <Chip
-              value={item}
-              key={'chip-' + index}
-              onClose={removed => {
-                if (removed) {
-                  this.select(removed);
-                }
-              }}
-            >
-              {child}
-            </Chip>
-          );
-        })
+            let item;
+            if (Array.isArray(this.props.value)) {
+              item = this.props.value[index];
+            }
+            return (
+              <Chip
+                value={item}
+                key={'chip-' + index}
+                onClose={removed => {
+                  if (removed) {
+                    this.select(removed);
+                  }
+                }}
+              >
+                {child}
+              </Chip>
+            );
+          })
         : this.props.formatSelection
           ? this.props.formatSelection(selection)
           : stringList(selection, this.props.endDelineator);
@@ -186,6 +186,8 @@ MultiSelect.propTypes = {
   endDelineator: PropTypes.string.describe('End delineator to separate last selected option.'),
   dense: PropTypes.bool.describe('Mini variant - less height'),
   chips: PropTypes.bool.describe('Display chip for every selected item'),
-  formatSelection: PropTypes.func.describe('Custom function to format the display text. Receives array of selected labels.'),
+  formatSelection: PropTypes.func.describe(
+    'Custom function to format the display text. Receives array of selected labels.'
+  ),
   disabled: PropTypes.bool.describe('When true, prevents the dropdown from opening.'),
 };

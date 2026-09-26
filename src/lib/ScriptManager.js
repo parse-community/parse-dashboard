@@ -47,8 +47,8 @@ export default class ScriptManager {
     if (legacyScript && legacyScript.length > 0) {
       // Check if a script with the same code already exists to prevent duplicates
       const legacyScriptData = legacyScript[0];
-      const existingScript = (localScripts || []).find(script =>
-        script.code === legacyScriptData.code && script.name === 'Legacy Script'
+      const existingScript = (localScripts || []).find(
+        script => script.code === legacyScriptData.code && script.name === 'Legacy Script'
       );
 
       if (!existingScript) {
@@ -113,9 +113,7 @@ export default class ScriptManager {
   async openScript(appId, scriptId, order) {
     const allScripts = await this.getScripts(appId);
     const updatedScripts = allScripts.map(script =>
-      script.id === scriptId
-        ? { ...script, order }
-        : script
+      script.id === scriptId ? { ...script, order } : script
     );
     await this.saveScripts(appId, updatedScripts);
   }
@@ -129,9 +127,7 @@ export default class ScriptManager {
   async closeScript(appId, scriptId) {
     const allScripts = await this.getScripts(appId);
     const updatedScripts = allScripts.map(script =>
-      script.id === scriptId
-        ? { ...script, order: undefined }
-        : script
+      script.id === scriptId ? { ...script, order: undefined } : script
     );
     await this.saveScripts(appId, updatedScripts);
   }
@@ -209,7 +205,10 @@ export default class ScriptManager {
 
     try {
       // Get existing scripts from server to detect conflicts
-      const existingScriptConfigs = await this.serverStorage.getConfigsByPrefix('console.js.script.', appId);
+      const existingScriptConfigs = await this.serverStorage.getConfigsByPrefix(
+        'console.js.script.',
+        appId
+      );
       const existingScriptIds = Object.keys(existingScriptConfigs).map(key =>
         key.replace('console.js.script.', '')
       );
@@ -228,14 +227,14 @@ export default class ScriptManager {
             id,
             type: 'script',
             local: localScript,
-            server: serverScript
+            server: serverScript,
           };
         });
 
         return {
           success: false,
           scriptCount: 0,
-          conflicts
+          conflicts,
         };
       }
 
@@ -305,7 +304,10 @@ export default class ScriptManager {
   async _migrateScriptsToServer(appId, localScripts, overwriteConflicts) {
     try {
       // Get existing scripts from server
-      const existingScriptConfigs = await this.serverStorage.getConfigsByPrefix('console.js.script.', appId);
+      const existingScriptConfigs = await this.serverStorage.getConfigsByPrefix(
+        'console.js.script.',
+        appId
+      );
       const existingScriptIds = Object.keys(existingScriptConfigs).map(key =>
         key.replace('console.js.script.', '')
       );
@@ -350,7 +352,10 @@ export default class ScriptManager {
    */
   async _getScriptsFromServer(appId) {
     try {
-      const scriptConfigs = await this.serverStorage.getConfigsByPrefix('console.js.script.', appId);
+      const scriptConfigs = await this.serverStorage.getConfigsByPrefix(
+        'console.js.script.',
+        appId
+      );
       const scripts = [];
 
       Object.entries(scriptConfigs).forEach(([key, config]) => {
@@ -360,7 +365,7 @@ export default class ScriptManager {
 
           scripts.push({
             id: scriptId, // Keep as string (UUID) instead of parsing as integer
-            ...config
+            ...config,
           });
         }
       });
@@ -379,7 +384,10 @@ export default class ScriptManager {
   async _saveScriptsToServer(appId, scripts) {
     try {
       // First, get existing scripts from server to know which ones to delete
-      const existingScriptConfigs = await this.serverStorage.getConfigsByPrefix('console.js.script.', appId);
+      const existingScriptConfigs = await this.serverStorage.getConfigsByPrefix(
+        'console.js.script.',
+        appId
+      );
       const existingScriptIds = Object.keys(existingScriptConfigs).map(key =>
         key.replace('console.js.script.', '')
       );
@@ -389,9 +397,7 @@ export default class ScriptManager {
       const scriptsToDelete = existingScriptIds.filter(id => !newScriptIds.includes(id));
 
       await Promise.all(
-        scriptsToDelete.map(id =>
-          this.serverStorage.deleteConfig(`console.js.script.${id}`, appId)
-        )
+        scriptsToDelete.map(id => this.serverStorage.deleteConfig(`console.js.script.${id}`, appId))
       );
 
       // Save or update current scripts
@@ -453,7 +459,7 @@ export default class ScriptManager {
           name: 'Legacy Script',
           code: legacyCode,
           saved: true, // Mark as saved since this is a one-time migration
-          lastModified: Date.now()
+          lastModified: Date.now(),
         };
 
         // Clean up the old storage key immediately after reading

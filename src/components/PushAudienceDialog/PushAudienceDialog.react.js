@@ -307,7 +307,7 @@ export default class PushAudienceDialog extends React.Component {
         <FormNote
           show={Boolean(
             (this.props.errorMessage && this.props.errorMessage.length > 0) ||
-              (this.state.errorMessage && this.state.errorMessage.length > 0)
+            (this.state.errorMessage && this.state.errorMessage.length > 0)
           )}
           color="red"
         >

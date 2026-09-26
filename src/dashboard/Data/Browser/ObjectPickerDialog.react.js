@@ -184,16 +184,19 @@ export default class ObjectPickerDialog extends React.Component {
     query.limit(this.props.limit);
 
     const { useMasterKey } = this.props;
-    query.find({ useMasterKey: useMasterKey }).then(nextPage => {
-      if (className === this.props.className) {
-        this.setState(state => ({
-          data: state.data.concat(nextPage),
-        }));
-      }
-    }).catch(error => {
-      const msg = typeof error === 'string' ? error : error.message;
-      this.props.showNote(msg, true);
-    });
+    query
+      .find({ useMasterKey: useMasterKey })
+      .then(nextPage => {
+        if (className === this.props.className) {
+          this.setState(state => ({
+            data: state.data.concat(nextPage),
+          }));
+        }
+      })
+      .catch(error => {
+        const msg = typeof error === 'string' ? error : error.message;
+        this.props.showNote(msg, true);
+      });
     this.setState({ lastMax: this.state.lastMax + this.props.limit });
   }
 
