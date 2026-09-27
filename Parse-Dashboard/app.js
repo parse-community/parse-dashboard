@@ -5,6 +5,7 @@ const path = require('path');
 const Authentication = require('./Authentication.js');
 const fs = require('fs');
 const ConfigKeyCache = require('./configKeyCache.js');
+const { buildModelParams } = require('./openAIModelParams.js');
 const currentVersionFeatures = require('../package.json').parseDashboardFeatures;
 const Parse = require('parse/node');
 
@@ -1027,8 +1028,9 @@ You have direct access to the Parse database through function calls, so you can 
       const requestBody = {
         model: model,
         messages: messages,
-        temperature: 0.7,
-        max_tokens: 2000,
+        // Token-limit / temperature params depend on the model generation so
+        // both legacy (GPT-4.1 and older) and next-gen (GPT-5+/o-series) work.
+        ...buildModelParams(model),
         tools: databaseTools,
         tool_choice: 'auto',
         stream: false
@@ -1117,8 +1119,7 @@ You have direct access to the Parse database through function calls, so you can 
         const followUpRequestBody = {
           model: model,
           messages: followUpMessages,
-          temperature: 0.7,
-          max_tokens: 2000,
+          ...buildModelParams(model),
           tools: databaseTools,
           tool_choice: 'auto',
           stream: false
