@@ -1,3 +1,45 @@
+# [9.3.0-alpha.11](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.10...9.3.0-alpha.11) (2026-09-25)
+
+
+### Bug Fixes
+
+* Bump parse from 8.5.0 to 8.6.2 ([#3468](https://github.com/parse-community/parse-dashboard/issues/3468)) ([8a4c12b](https://github.com/parse-community/parse-dashboard/commit/8a4c12b0fc709a59372e839b36643310a64376c8))
+
+# [9.3.0-alpha.10](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.9...9.3.0-alpha.10) (2026-09-25)
+
+
+### Bug Fixes
+
+* Bump glob from 10.4.5 to 10.5.0 and minimatch from 9.0.1 to 9.0.9 ([#3467](https://github.com/parse-community/parse-dashboard/issues/3467)) ([f31ada5](https://github.com/parse-community/parse-dashboard/commit/f31ada5ab64349efbf0f3760cd45b4678ccf09a1))
+
+# [9.3.0-alpha.9](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.8...9.3.0-alpha.9) (2026-09-25)
+
+
+### Bug Fixes
+
+* Bump body-parser from 2.2.2 to 2.3.0 ([#3465](https://github.com/parse-community/parse-dashboard/issues/3465)) ([662899b](https://github.com/parse-community/parse-dashboard/commit/662899bac924e7875981768a549ff80f0596500b))
+
+# [9.3.0-alpha.8](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.7...9.3.0-alpha.8) (2026-09-24)
+
+
+### Bug Fixes
+
+* Bump qs from 6.15.3 to 6.16.0 ([#3458](https://github.com/parse-community/parse-dashboard/issues/3458)) ([04f5acb](https://github.com/parse-community/parse-dashboard/commit/04f5acb83a8e5c532364a51b7b0da0566d48073f))
+
+# [9.3.0-alpha.7](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.6...9.3.0-alpha.7) (2026-09-24)
+
+
+### Bug Fixes
+
+* Bump immutable from 5.1.5 to 5.1.9 ([#3457](https://github.com/parse-community/parse-dashboard/issues/3457)) ([5097c04](https://github.com/parse-community/parse-dashboard/commit/5097c04ea4756ba5ce592c28eb9e4ff1c4e33545))
+
+# [9.3.0-alpha.6](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.5...9.3.0-alpha.6) (2026-09-24)
+
+
+### Bug Fixes
+
+* Bump brace-expansion from 1.1.13 to 1.1.21 ([#3454](https://github.com/parse-community/parse-dashboard/issues/3454)) ([937fe17](https://github.com/parse-community/parse-dashboard/commit/937fe17044173066ba222a6c19cc8e27bbb43f08))
+
 # [9.3.0-alpha.5](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.4...9.3.0-alpha.5) (2026-08-11)
 
 

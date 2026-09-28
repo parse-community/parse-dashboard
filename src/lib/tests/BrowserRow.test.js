@@ -1,5 +1,4 @@
 jest.dontMock('../../components/BrowserRow/BrowserRow.react');
-jest.mock('idb-keyval');
 
 import React from 'react';
 import { renderComponent } from './renderWithAct';

@@ -6,7 +6,6 @@
  * the root directory of this source tree.
  */
 jest.dontMock('../../components/BrowserCell/BrowserCell.react');
-jest.mock('idb-keyval');
 
 import React from 'react';
 import { renderComponent } from './renderWithAct';

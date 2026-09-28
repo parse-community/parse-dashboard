@@ -1,6 +1,6 @@
 {
   "name": "parse-dashboard",
-  "version": "9.3.0-alpha.5",
+  "version": "9.3.0-alpha.11",
   "repository": {
     "type": "git",
     "url": "https://github.com/parse-community/parse-dashboard"
@@ -42,7 +42,7 @@
     "@graphiql/toolkit": "0.12.1",
     "@microlink/react-json-view": "1.31.22",
     "bcryptjs": "3.0.3",
-    "body-parser": "2.2.2",
+    "body-parser": "2.3.0",
     "chart.js": "4.5.1",
     "commander": "13.1.0",
     "connect-flash": "0.1.1",
@@ -57,14 +57,14 @@
     "graphiql": "5.2.4",
     "graphql": "16.12.0",
     "graphql-ws": "6.1.0",
-    "immutable": "5.1.5",
+    "immutable": "5.1.9",
     "immutable-devtools": "0.1.5",
     "inquirer": "13.2.2",
     "js-beautify": "1.15.4",
     "node-fetch": "3.3.2",
-    "otpauth": "9.5.0",
+    "otpauth": "9.5.2",
     "package-json": "7.0.0",
-    "parse": "8.5.0",
+    "parse": "8.6.2",
     "passport": "0.7.0",
     "passport-local": "1.0.0",
     "prismjs": "1.30.0",
@@ -90,6 +90,9 @@
     },
     "filing-cabinet": {
       "typescript": "5.9.3"
+    },
+    "@saithodev/semantic-release-backmerge": {
+      "npm": "11.20.0"
     }
   },
   "devDependencies": {
@@ -111,7 +114,7 @@
     "@types/jest": "30.0.0",
     "all-node-versions": "13.0.1",
     "babel-loader": "10.1.1",
-    "css-loader": "7.1.4",
+    "css-loader": "7.1.5",
     "eslint": "9.39.2",
     "eslint-plugin-jest": "29.15.1",
     "eslint-plugin-react": "7.37.5",
@@ -124,9 +127,9 @@
     "madge": "8.0.0",
     "marked": "17.0.5",
     "mongodb-runner": "6.7.3",
-    "parse-server": "9.10.0",
+    "parse-server": "9.10.1",
     "prettier": "3.8.1",
-    "puppeteer": "24.37.2",
+    "puppeteer": "24.43.1",
     "react-test-renderer": "19.2.7",
     "sass": "1.99.0",
     "sass-loader": "16.0.7",
