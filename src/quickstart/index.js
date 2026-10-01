@@ -7,10 +7,11 @@
  */
 import Quickstart from 'quickstart/Quickstart.react';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 require('stylesheets/fonts.scss');
 
 // App entry point
 
-ReactDOM.render(<Quickstart />, document.getElementById('quickstart_mount'));
+const root = createRoot(document.getElementById('quickstart_mount'));
+root.render(<Quickstart />);

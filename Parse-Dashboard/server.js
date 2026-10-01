@@ -191,11 +191,18 @@ module.exports = (options) => {
   // Mount parseDashboard with authentication
   app.use(mountPath, parseDashboard(config.data, dashboardOptions));
 
+  // 0.0.0.0 (IPv4) and :: (IPv6) are bind-all addresses: they are not directly
+  // navigable and browsers do not treat them as a secure context, which breaks
+  // Web APIs the dashboard relies on (e.g. crypto.randomUUID used by the Parse
+  // SDK). Advertise localhost instead so the printed URL actually works.
+  const displayHost = address =>
+    address === '0.0.0.0' || address === '::' ? 'localhost' : address;
+
   let server;
   if(!configSSLKey || !configSSLCert){
     // Start the server.
     server = app.listen(port, host, function () {
-      console.log(`The dashboard is now available at http://${server.address().address}:${server.address().port}${mountPath}`);
+      console.log(`The dashboard is now available at http://${displayHost(server.address().address)}:${server.address().port}${mountPath}`);
 
       // Initialize browser control WebSocket if enabled
       if (browserControlSetup) {
@@ -211,7 +218,7 @@ module.exports = (options) => {
       key: privateKey,
       cert: certificate
     }, app).listen(port, host, function () {
-      console.log(`The dashboard is now available at https://${server.address().address}:${server.address().port}${mountPath}`);
+      console.log(`The dashboard is now available at https://${displayHost(server.address().address)}:${server.address().port}${mountPath}`);
 
       // Initialize browser control WebSocket if enabled
       if (browserControlSetup) {

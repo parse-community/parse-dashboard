@@ -8,7 +8,7 @@
 import AppBadge from 'components/AppBadge/AppBadge.react';
 import AppName from 'components/Sidebar/AppName.react';
 import html from 'lib/htmlString';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import React from 'react';
 import styles from 'components/Sidebar/Sidebar.scss';
 import baseStyles from 'stylesheets/base.scss';

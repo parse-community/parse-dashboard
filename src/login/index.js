@@ -7,11 +7,12 @@
  */
 import Login from './Login';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 require('stylesheets/fonts.scss');
 
 // App entry point
 
 const path = window.PARSE_DASHBOARD_PATH || '/';
-ReactDOM.render(<Login path={path} />, document.getElementById('login_mount'));
+const root = createRoot(document.getElementById('login_mount'));
+root.render(<Login path={path} />);

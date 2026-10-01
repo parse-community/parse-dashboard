@@ -24,8 +24,8 @@ jest.mock('../../components/Popover/Popover.react', () => {
   };
 });
 
-import React from 'react';
-import renderer from 'react-test-renderer';
+import React, { act } from 'react';
+import { renderComponent } from './renderWithAct';
 const ScriptResponseModal = require('../../dashboard/Data/Browser/ScriptResponseModal.react').default;
 
 const defaultProps = {
@@ -40,7 +40,7 @@ describe('ScriptResponseModal', () => {
       const form = {
         elements: [{ element: 'checkbox', name: 'confirmed', label: 'Confirm' }],
       };
-      const component = renderer.create(<ScriptResponseModal form={form} {...defaultProps} />);
+      const component = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />);
       const instance = component.getInstance();
       expect(instance.state.formData.confirmed).toBe(false);
     });
@@ -49,7 +49,7 @@ describe('ScriptResponseModal', () => {
       const form = {
         elements: [{ element: 'checkbox', name: 'confirmed', label: 'Confirm', default: true }],
       };
-      const component = renderer.create(<ScriptResponseModal form={form} {...defaultProps} />);
+      const component = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />);
       const instance = component.getInstance();
       expect(instance.state.formData.confirmed).toBe(true);
     });
@@ -63,7 +63,7 @@ describe('ScriptResponseModal', () => {
           description: 'Please confirm',
         }],
       };
-      const tree = renderer.create(<ScriptResponseModal form={form} {...defaultProps} />).toJSON();
+      const tree = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />).toJSON();
       expect(JSON.stringify(tree)).toContain('Please confirm');
     });
   });
@@ -73,7 +73,7 @@ describe('ScriptResponseModal', () => {
       const form = {
         elements: [{ element: 'toggle', name: 'enabled', label: 'Enable' }],
       };
-      const component = renderer.create(<ScriptResponseModal form={form} {...defaultProps} />);
+      const component = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />);
       const instance = component.getInstance();
       expect(instance.state.formData.enabled).toBe(false);
     });
@@ -82,7 +82,7 @@ describe('ScriptResponseModal', () => {
       const form = {
         elements: [{ element: 'toggle', name: 'enabled', label: 'Enable', default: true }],
       };
-      const component = renderer.create(<ScriptResponseModal form={form} {...defaultProps} />);
+      const component = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />);
       const instance = component.getInstance();
       expect(instance.state.formData.enabled).toBe(true);
     });
@@ -96,7 +96,7 @@ describe('ScriptResponseModal', () => {
           description: 'Toggle this feature',
         }],
       };
-      const tree = renderer.create(<ScriptResponseModal form={form} {...defaultProps} />).toJSON();
+      const tree = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />).toJSON();
       expect(JSON.stringify(tree)).toContain('Toggle this feature');
     });
 
@@ -110,7 +110,7 @@ describe('ScriptResponseModal', () => {
           labelFalse: 'Disabled',
         }],
       };
-      const tree = renderer.create(<ScriptResponseModal form={form} {...defaultProps} />).toJSON();
+      const tree = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />).toJSON();
       const json = JSON.stringify(tree);
       expect(json).toContain('Enabled');
       expect(json).toContain('Disabled');
@@ -122,7 +122,7 @@ describe('ScriptResponseModal', () => {
       const form = {
         elements: [{ element: 'textInput', name: 'reason', label: 'Reason' }],
       };
-      const component = renderer.create(<ScriptResponseModal form={form} {...defaultProps} />);
+      const component = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />);
       const instance = component.getInstance();
       expect(instance.state.formData.reason).toBe('');
     });
@@ -131,7 +131,7 @@ describe('ScriptResponseModal', () => {
       const form = {
         elements: [{ element: 'textInput', name: 'reason', label: 'Reason', default: 'N/A' }],
       };
-      const component = renderer.create(<ScriptResponseModal form={form} {...defaultProps} />);
+      const component = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />);
       const instance = component.getInstance();
       expect(instance.state.formData.reason).toBe('N/A');
     });
@@ -145,7 +145,7 @@ describe('ScriptResponseModal', () => {
           placeholder: 'Enter reason...',
         }],
       };
-      const tree = renderer.create(<ScriptResponseModal form={form} {...defaultProps} />).toJSON();
+      const tree = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />).toJSON();
       expect(JSON.stringify(tree)).toContain('Enter reason...');
     });
 
@@ -158,7 +158,7 @@ describe('ScriptResponseModal', () => {
           description: 'Provide a reason',
         }],
       };
-      const tree = renderer.create(<ScriptResponseModal form={form} {...defaultProps} />).toJSON();
+      const tree = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />).toJSON();
       expect(JSON.stringify(tree)).toContain('Provide a reason');
     });
   });
@@ -173,7 +173,7 @@ describe('ScriptResponseModal', () => {
           items: [{ title: 'Admin', value: 'admin' }, { title: 'User', value: 'user' }],
         }],
       };
-      const component = renderer.create(<ScriptResponseModal form={form} {...defaultProps} />);
+      const component = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />);
       const instance = component.getInstance();
       expect(instance.state.formData.role).toBe('admin');
     });
@@ -189,7 +189,7 @@ describe('ScriptResponseModal', () => {
           { element: 'textInput', name: 'reason', default: 'test' },
         ],
       };
-      const component = renderer.create(<ScriptResponseModal form={form} {...defaultProps} />);
+      const component = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />);
       const instance = component.getInstance();
       expect(instance.state.formData).toEqual({
         role: 'admin',
@@ -209,11 +209,13 @@ describe('ScriptResponseModal', () => {
           { element: 'textInput', name: 'reason', default: 'hello' },
         ],
       };
-      const component = renderer.create(
+      const component = renderComponent(
         <ScriptResponseModal form={form} objectIds={['obj1']} onCancel={jest.fn()} onConfirm={onConfirm} />
       );
       const instance = component.getInstance();
-      instance.handleConfirm();
+      act(() => {
+        instance.handleConfirm();
+      });
       expect(onConfirm).toHaveBeenCalledWith({ confirmed: true, reason: 'hello' });
     });
   });

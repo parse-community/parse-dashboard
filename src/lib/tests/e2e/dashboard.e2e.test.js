@@ -49,12 +49,77 @@ describe('dashboard e2e', () => {
     await browser.close();
     server.close();
   }, 20_000);
+
+  it('mounts the login entry into #login_mount when users are configured', async () => {
+    const mount = '/dashboard';
+    // The login page is only served when users are configured (see Parse-Dashboard/app.js).
+    const settingsWithUsers = {
+      ...dashboardSettings,
+      cookieSessionSecret: 'e2e-login-test-secret',
+      users: [{ user: 'admin', pass: 'admin' }],
+    };
+    const app = express();
+    app.use(mount, ParseDashboard(settingsWithUsers));
+    // Listen on an ephemeral port and reject on error so a busy/leaked port
+    // fails fast instead of hanging until the test timeout.
+    const server = await new Promise((resolve, reject) => {
+      // Bind explicitly to 127.0.0.1 (matched by the goto below) so the server
+      // and Puppeteer agree on the interface — Node 17+ verbatim DNS can resolve
+      // `localhost` to ::1 while the server binds IPv4, causing ECONNREFUSED.
+      const s = app.listen(0, '127.0.0.1', () => resolve(s)).on('error', reject);
+    });
+    const port = server.address().port;
+    // try/finally (with puppeteer launched inside) so a regression (empty mount)
+    // or a launch failure fails cleanly instead of leaking the browser/server.
+    let browser;
+    try {
+      // Bound every Puppeteer op below the 20s Jest timeout (see the timeout arg
+      // to the test): a hang must reject in time for the finally block to close
+      // the browser and server. If Jest aborts at 20s first, the finally never
+      // runs and the Express server leaks (EADDRINUSE in later runs).
+      browser = await puppeteer.launch({ args: ['--no-sandbox'], timeout: 15_000 });
+      const page = await browser.newPage();
+      await page.goto(`http://127.0.0.1:${port}${mount}/login`, { timeout: 15_000 });
+      await page.waitForSelector('#login_mount', { timeout: 10_000 });
+      // React must actually render into the mount node. This guards the login entry
+      // point against the React 19 removal of ReactDOM.render (it uses createRoot);
+      // a regression there leaves #login_mount empty (blank page) rather than failing the build.
+      await page.waitForFunction(
+        () => {
+          const el = document.getElementById('login_mount');
+          return !!el && el.childElementCount > 0;
+        },
+        { timeout: 10_000 }
+      );
+      const childCount = await page.evaluate(
+        () => document.getElementById('login_mount').childElementCount
+      );
+      expect(childCount).toBeGreaterThan(0);
+    } finally {
+      // Nested finally + awaited close so a browser.close() failure cannot skip
+      // server.close() and leak the Express server (which would hang the run).
+      try {
+        if (browser) {
+          await browser.close();
+        }
+      } finally {
+        await new Promise((resolve, reject) => {
+          // Force-close lingering connections first so server.close() can't hang
+          // waiting on a socket left open by a failed browser teardown.
+          if (server.closeAllConnections) {
+            server.closeAllConnections();
+          }
+          server.close(err => (err ? reject(err) : resolve()));
+        });
+      }
+    }
+  }, 20_000);
 });
 
 describe('Config options', () => {
   it('should start with port option', async () => {
     const result = await startParseDashboardAndGetOutput(['--port', '4041']);
-    expect(result).toContain('The dashboard is now available at http://0.0.0.0:4041/');
+    expect(result).toContain('The dashboard is now available at http://localhost:4041/');
   });
 
   it('should reject to start if config and other options are combined', async () => {

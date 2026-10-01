@@ -7,7 +7,7 @@
  */
 import PIG from 'parse-interface-guide/PIG.react';
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router';
 
 const routes = (
   <BrowserRouter>

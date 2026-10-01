@@ -6,7 +6,6 @@
  * the root directory of this source tree.
  */
 jest.dontMock('../getFileName');
-jest.mock('idb-keyval');
 
 const getFileName = require('../getFileName').default;
 const Parse = require('parse');
