@@ -260,6 +260,9 @@ export function availableFilters(schema, currentFilters, blacklist) {
 
 export function findRelatedClasses(referClass, allClasses, blacklist, currentFilters) {
   const relatedClasses = {};
+  if (!allClasses) {
+    return relatedClasses;
+  }
   if (allClasses[referClass]) {
     const availableForRefer = availableFilters(allClasses[referClass], currentFilters, blacklist);
     if (Object.keys(availableForRefer).length > 0) {
