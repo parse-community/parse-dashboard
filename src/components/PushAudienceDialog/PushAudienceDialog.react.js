@@ -72,7 +72,9 @@ export default class PushAudienceDialog extends React.Component {
         stateSettings.platforms = deviceType.$in || [];
       }
       if (audienceInfo.filters) {
-        stateSettings.filters = audienceInfo.filters;
+        stateSettings.filters = audienceInfo.filters.map(filter =>
+          filter.get('class') ? filter : filter.set('class', '_Installation')
+        );
       }
       if (audienceInfo.name) {
         stateSettings.audienceName = audienceInfo.name;
@@ -103,7 +105,9 @@ export default class PushAudienceDialog extends React.Component {
     const field = Object.keys(available)[0];
     this.setState(
       ({ filters }) => ({
-        filters: filters.push(new Map({ field: field, constraint: available[field][0] })),
+        filters: filters.push(
+          new Map({ class: '_Installation', field: field, constraint: available[field][0] })
+        ),
       }),
       this.fetchAudienceSize.bind(this)
     );
@@ -284,7 +288,9 @@ export default class PushAudienceDialog extends React.Component {
         />
         <div className={styles.filter}>
           <Filter
-            schema={this.props.schema}
+            className="_Installation"
+            schema={{ _Installation: this.props.schema }}
+            allClasses={{ _Installation: this.props.schema }}
             filters={this.state.filters}
             onChange={filters => {
               this.setState({ filters }, this.fetchAudienceSize.bind(this));
