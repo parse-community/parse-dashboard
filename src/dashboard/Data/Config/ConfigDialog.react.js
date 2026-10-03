@@ -588,7 +588,7 @@ export default class ConfigDialog extends React.Component {
               <Dropdown value={String(this.state.selectedIndex)} onChange={index => handleIndexChange(Number(index))}>
                 {configHistory.map((value, i) => (
                   <Option key={i} value={String(i)}>
-                    {dateStringUTC(new Date(value.time))}
+                    {dateStringUTC(new Date(value.time), this.context.useLocalTime)}
                   </Option>
                 ))}
               </Dropdown>

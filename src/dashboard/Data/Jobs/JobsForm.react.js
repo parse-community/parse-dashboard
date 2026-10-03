@@ -220,6 +220,7 @@ export default class JobsForm extends DashboardView {
               input={
                 <DateTimeInput
                   disabled={!!this.props.initialFields.job}
+                  local={this.context.useLocalTime}
                   value={fields.runAt}
                   onChange={setField.bind(null, 'runAt')}
                 />
@@ -284,7 +285,11 @@ export default class JobsForm extends DashboardView {
           if (fields.immediate) {
             pieces.push(<strong>immediately</strong>, '.');
           } else {
-            pieces.push('on ', <strong>{dateStringUTC(fields.runAt)}</strong>, '.');
+            pieces.push(
+              'on ',
+              <strong>{dateStringUTC(fields.runAt, this.context.useLocalTime)}</strong>,
+              '.'
+            );
           }
           if (fields.repeat) {
             pieces.push(' It will repeat ');

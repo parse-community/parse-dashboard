@@ -180,7 +180,8 @@ function compareValue(
   setFocus,
   currentConstraint,
   modifiers,
-  onChangeModifiers
+  onChangeModifiers,
+  useLocalTime
 ) {
   if (currentConstraint === 'containedIn') {
     return (
@@ -279,6 +280,7 @@ function compareValue(
       return (
         <DateTimeEntry
           fixed={true}
+          local={useLocalTime}
           className={styles.date}
           value={Parse._decode('date', value)}
           onChange={value => onChangeCompareTo(Parse._encode(value))}
@@ -309,6 +311,7 @@ const FilterRow = ({
   active,
   parentContentId,
   editMode,
+  useLocalTime,
 }) => {
   const setFocus = useCallback(input => {
     if (input !== null && editMode) {
@@ -421,7 +424,8 @@ const FilterRow = ({
         setFocus,
         currentConstraint,
         modifiers,
-        onChangeModifiers
+        onChangeModifiers,
+        useLocalTime
       )}
       <button type="button" className={styles.remove} onClick={onDeleteRow}>
         <Icon name="minus-solid" width={14} height={14} fill="rgba(0,0,0,0.4)" />

@@ -6,6 +6,7 @@
  * the root directory of this source tree.
  */
 import DateTimePicker from 'components/DateTimePicker/DateTimePicker.react';
+import { dateInputString, parseDateInput } from 'lib/DateUtils';
 import hasAncestor from 'lib/hasAncestor';
 import React from 'react';
 import styles from 'components/DateTimeEditor/DateTimeEditor.scss';
@@ -18,7 +19,7 @@ export default class DateTimeEditor extends React.Component {
       open: false,
       position: null,
       value: props.value,
-      text: props.value.toISOString(),
+      text: dateInputString(props.value, props.local),
     };
 
     this.checkExternalClick = this.checkExternalClick.bind(this);
@@ -71,34 +72,17 @@ export default class DateTimeEditor extends React.Component {
   }
 
   commitDate() {
-    if (this.state.text === this.props.value.toISOString()) {
+    if (this.state.text === dateInputString(this.props.value, this.props.local)) {
       return;
     }
-    const date = new Date(this.state.text);
-    if (isNaN(date.getTime())) {
+    const date = parseDateInput(this.state.text, this.props.local);
+    if (date === null) {
       this.setState({
         value: this.props.value,
-        text: this.props.value.toISOString(),
+        text: dateInputString(this.props.value, this.props.local),
       });
     } else {
-      if (this.state.text.endsWith('Z') || this.state.text.endsWith('UTC')) {
-        // Timezone is explicit; the parsed Date is already correct.
-        this.setState({ value: date });
-      } else {
-        // No timezone indicator; treat input as local time.
-        const utc = new Date(
-          Date.UTC(
-            date.getFullYear(),
-            date.getMonth(),
-            date.getDate(),
-            date.getHours(),
-            date.getMinutes(),
-            date.getSeconds(),
-            date.getMilliseconds()
-          )
-        );
-        this.setState({ value: utc });
-      }
+      this.setState({ value: date });
     }
   }
 
@@ -109,8 +93,11 @@ export default class DateTimeEditor extends React.Component {
         <div style={{ position: 'absolute', top: 30, left: 0 }}>
           <DateTimePicker
             value={this.state.value}
+            local={this.props.local}
             width={240}
-            onChange={value => this.setState({ value: value, text: value.toISOString() })}
+            onChange={value =>
+              this.setState({ value: value, text: dateInputString(value, this.props.local) })
+            }
             close={() =>
               this.setState({ open: false }, () => this.props.onCommit(this.state.value))
             }

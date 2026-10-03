@@ -824,6 +824,7 @@ export default class BrowserFilter extends React.Component {
                     active={this.props.filters.size > 0}
                     editMode={this.state.editMode}
                     parentContentId={POPOVER_CONTENT_ID}
+                    useLocalTime={this.context.useLocalTime}
                   />
                 )}
               />
