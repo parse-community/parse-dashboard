@@ -185,12 +185,44 @@ const Sidebar = ({
     >
       <SidebarHeader isCollapsed={!appsMenuOpen && collapsed} dashboardUser={dashboardUser} />
       {sidebarContent}
-      {dashboardUser && (
+      {((!collapsed && currentApp?.serverURL) || dashboardUser) && (
         <div className={styles.footer}>
-          <a href={`${mountPath}logout`} className={styles.more}>
-            <Icon height={16} width={16} name="logout" />
-            Logout
-          </a>
+          {!collapsed && currentApp?.serverURL && (
+            <div className={styles.serverInfo}>
+              <div className={styles.serverInfoRow} title={currentApp.serverURL}>
+                Server URL: <span className={styles.serverInfoValue}>{currentApp.serverURL}</span>
+              </div>
+              {currentApp.serverInfo?.error ? (
+                <div
+                  className={styles.serverInfoRow}
+                  title={currentApp.serverInfo.error.toString()}
+                >
+                  Server not reachable:{' '}
+                  <span className={styles.serverInfoValue}>
+                    {currentApp.serverInfo.error.toString()}
+                  </span>
+                </div>
+              ) : (
+                <div className={styles.serverInfoRow}>
+                  Server version:{' '}
+                  <span className={styles.serverInfoValue}>
+                    {currentApp.serverInfo?.parseServerVersion || 'unknown'}
+                  </span>
+                </div>
+              )}
+              {!currentApp.serverInfo?.error && currentApp.serverInfo?.versionWarning && (
+                <div className={styles.versionWarning} title={currentApp.serverInfo.versionWarning}>
+                  ⚠️ {currentApp.serverInfo.versionWarning}
+                </div>
+              )}
+            </div>
+          )}
+          {dashboardUser && (
+            <a href={`${mountPath}logout`} className={styles.more}>
+              <Icon height={16} width={16} name="logout" />
+              Logout
+            </a>
+          )}
         </div>
       )}
     </div>

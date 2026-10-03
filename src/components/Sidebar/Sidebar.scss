@@ -10,7 +10,7 @@
 $headerHeight: 48px;
 $menuSectionHeight: 24px;
 $sidebarMenuItemHeight: 48px;
-$footerHeight: 36px;
+$footerHeight: 84px;
 
 .sidebar {
   position: fixed;
@@ -41,7 +41,7 @@ $footerHeight: 36px;
   overflow-y: auto;
   top: $headerHeight;
   right: 0;
-  bottom: 36px;
+  bottom: $footerHeight;
   left: 0;
 }
 
@@ -58,6 +58,8 @@ $footerHeight: 36px;
   bottom: 0;
   left: 0;
   right: 0;
+  min-height: $footerHeight;
+  box-sizing: border-box;
 
   a {
     color: white;
@@ -76,6 +78,28 @@ $footerHeight: 36px;
       border: none;
     }
   }
+}
+
+.serverInfo {
+  @include DosisFont;
+  text-align: left;
+  padding: 0 14px 8px;
+  font-size: 11px;
+  line-height: 16px;
+  color: #788c97;
+}
+
+.serverInfoRow {
+  @include ellipsis();
+}
+
+.serverInfoValue {
+  color: white;
+}
+
+.versionWarning {
+  @include ellipsis();
+  color: #ff9800;
 }
 
 .header {
