@@ -137,7 +137,9 @@ const AggregationPanel = ({
         {segment.items.map((item, idx) => {
           switch (item.type) {
             case 'text':
-              return <TextElement key={idx} text={item.text} style={item.style} />;
+              return (
+                <TextElement key={idx} text={item.text} style={item.style} showNote={showNote} />
+              );
             case 'keyValue':
               return (
                 <KeyValueElement
@@ -149,7 +151,15 @@ const AggregationPanel = ({
                 />
               );
             case 'table':
-              return <TableElement key={idx} columns={item.columns} rows={item.rows} style={item.style} />;
+              return (
+                <TableElement
+                  key={idx}
+                  columns={item.columns}
+                  rows={item.rows}
+                  style={item.style}
+                  showNote={showNote}
+                />
+              );
             case 'image':
               return <ImageElement key={`${idx}-${item.url}`} url={item.url} style={item.style} />;
             case 'video':
