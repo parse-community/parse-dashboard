@@ -1,6 +1,7 @@
 import React from 'react';
 import copy from 'copy-to-clipboard';
 import Icon from 'components/Icon/Icon.react';
+import generatePath from 'lib/generatePath';
 import styles from './AggregationPanel.scss';
 
 // Text Element Component
@@ -26,7 +27,11 @@ export const KeyValueElement = ({ item, appName, style, showNote }) => {
   const renderValue = ({ value, url, isRelativeUrl }) => {
     if (url) {
       return (
-        <a href={isRelativeUrl ? `apps/${appName}/${url}` : url} target="_blank" rel="noreferrer">
+        <a
+          href={isRelativeUrl ? generatePath({ slug: appName }, url, true) : url}
+          target="_blank"
+          rel="noreferrer"
+        >
           {value}
         </a>
       );
