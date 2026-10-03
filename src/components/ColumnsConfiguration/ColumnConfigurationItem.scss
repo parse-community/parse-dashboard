@@ -13,13 +13,14 @@
 
 .visibilityIcon {
   cursor: pointer;
-  width: 30px;
 }
 
 .columnConfigItemName {
   text-overflow: ellipsis;
   overflow: hidden;
   line-height: 24px;
+  margin-left: 15px;
+  margin-right: 15px;
 }
 
 .columnIcon {
