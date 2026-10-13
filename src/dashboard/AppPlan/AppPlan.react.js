@@ -171,7 +171,7 @@ class AppPlan extends DashboardView {
       appPlanName: 'Free Plan',
       appPlanError: null,
       selectedPlan: prices[1],
-      billingCycle: 1, // 0 --> monthly || 1 --> yearly
+      billingCycle: 0, // 0 --> monthly || 1 --> yearly
       isLoadingPaddle: false,
       paddleError: null,
       paddle: null,

@@ -55,14 +55,6 @@ const GATE_OFFERS = {
 
 const detailText = detail => [detail.number, detail.text].filter(Boolean).join(' ');
 
-const priceSummary = (plan, cycle) => {
-  if (cycle === Cycle.YEARLY) {
-    const yearly = Number(plan.pricePerYear) * 12;
-    return { perMonth: plan.pricePerYear, note: `Billed $${yearly}/year · save ${plan.savePercent}`, today: yearly };
-  }
-  return { perMonth: plan.pricePerMonth, note: 'Billed monthly · cancel anytime', today: Number(plan.pricePerMonth) };
-};
-
 const getOwnerEmail = async context => {
   if (context.custom && context.custom.isOwner) {
     return AccountManager.currentUser().email;
@@ -78,8 +70,8 @@ export const UpgradeCheckoutModal = ({ gate, onClose }) => {
   const plan = prices.find(p => p.name === offer.plan);
 
   const [dark] = useState(prefersDark);
-  // Yearly first, like the pricing page; monthly stays one click away.
-  const [cycle, setCycle] = useState(Cycle.YEARLY);
+  // Monthly only: a paywall sells the plan at its monthly price. Yearly stays on Plan Usage.
+  const cycle = Cycle.MONTHLY;
   const [paddle, setPaddle] = useState(null);
   const [ownerEmail, setOwnerEmail] = useState(null);
   const [frame, setFrame] = useState(null);
@@ -125,21 +117,6 @@ export const UpgradeCheckoutModal = ({ gate, onClose }) => {
     });
   }, [paddle, ownerEmail, frame]);
 
-  const changeCycle = next => {
-    if (next === cycle || completed) {
-      return;
-    }
-    setCycle(next);
-    funnel.current = { ...funnel.current, cycle: next };
-    amplitudeLogEvent(UpgradeEvent.CHECKOUT_CYCLE_CHANGED, funnel.current);
-    if (opened.current) {
-      paddle.Checkout.updateCheckout({
-        items: [{ priceId: paddlePriceId(plan, next), quantity: 1 }],
-        customData: { appId: context.applicationId, planId: paddlePlanId(plan, next) },
-      });
-    }
-  };
-
   const close = () => {
     if (completed) {
       // Reload so the paywall that brought the user here reflects the new plan.
@@ -153,8 +130,6 @@ export const UpgradeCheckoutModal = ({ gate, onClose }) => {
     onClose();
   };
 
-  const price = priceSummary(plan, cycle);
-
   return (
     <Popover fadeIn={true} fixed={true} position={ORIGIN} modal={true} color="rgba(17,13,17,0.8)">
       <div className={[styles.checkout, dark ? styles.dark : styles.light].join(' ')}>
@@ -166,21 +141,10 @@ export const UpgradeCheckoutModal = ({ gate, onClose }) => {
           <div className={styles.headline}>{offer.headline}</div>
           {offer.subline ? <div className={styles.subline}>{offer.subline}</div> : null}
           <div className={styles.price}>
-            <span className={styles.priceValue}>${price.perMonth}</span>
+            <span className={styles.priceValue}>${plan.pricePerMonth}</span>
             <span className={styles.priceUnit}>/month</span>
           </div>
-          <div className={styles.priceNote}>{price.note}</div>
-
-          <div className={styles.cycles}>
-            <label className={styles.cycle}>
-              <input type="radio" checked={cycle === Cycle.YEARLY} onChange={() => changeCycle(Cycle.YEARLY)} disabled={completed} />
-              Yearly · ${plan.pricePerYear}/month <span className={styles.save}>Save {plan.savePercent}</span>
-            </label>
-            <label className={styles.cycle}>
-              <input type="radio" checked={cycle === Cycle.MONTHLY} onChange={() => changeCycle(Cycle.MONTHLY)} disabled={completed} />
-              Monthly · ${plan.pricePerMonth}/month
-            </label>
-          </div>
+          <div className={styles.priceNote}>Billed monthly · cancel anytime</div>
 
           <div className={styles.benefits}>
             {plan.details.map((detail, idx) => (
@@ -193,7 +157,7 @@ export const UpgradeCheckoutModal = ({ gate, onClose }) => {
 
           <div className={styles.total}>
             <span>Total today</span>
-            <span>${price.today} + tax</span>
+            <span>${plan.pricePerMonth} + tax</span>
           </div>
 
           {completed ? (

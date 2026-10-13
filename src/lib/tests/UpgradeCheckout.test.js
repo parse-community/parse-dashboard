@@ -82,18 +82,18 @@ describe('UpgradeCheckoutModal', () => {
     process.env.SENTRY_ENV = prevEnv;
   });
 
-  it('opens the MVP yearly checkout right away for a custom domain paywall', async () => {
+  it('opens the MVP monthly checkout right away for a custom domain paywall', async () => {
     const tree = await mount(<UpgradeCheckoutModal gate="custom_domain" onClose={() => {}} />);
 
     expect(paddle.Checkout.open).toHaveBeenCalledTimes(1);
     const options = paddle.Checkout.open.mock.calls[0][0];
-    expect(options.items).toEqual([{ priceId: 'pri_mvp_y', quantity: 1 }]);
-    expect(options.customData).toEqual({ appId: 'app-1', planId: 'mvp-y' });
+    expect(options.items).toEqual([{ priceId: 'pri_mvp_m', quantity: 1 }]);
+    expect(options.customData).toEqual({ appId: 'app-1', planId: 'mvp-m' });
     expect(options.customer).toEqual({ email: 'owner@example.com' });
     expect(options.settings.frameTarget).toBe('upgrade-checkout-frame');
 
     expect(loggedEvents('baas_checkout_opened')).toEqual([
-      { app_id: 'app-1', plan: 'MVP', cycle: 'yearly', source: 'gate', gate: 'custom_domain' },
+      { app_id: 'app-1', plan: 'MVP', cycle: 'monthly', source: 'gate', gate: 'custom_domain' },
     ]);
     const text = textOf(tree);
     expect(text).toContain('Put your API and pages on your own domain');
@@ -101,24 +101,13 @@ describe('UpgradeCheckoutModal', () => {
     expect(text).toContain('Web hosting & custom domain');
   });
 
-  it('starts on yearly and switches the open checkout to monthly without reopening it', async () => {
+  it('sells the monthly price only, with no yearly option', async () => {
     const tree = await mount(<UpgradeCheckoutModal gate="custom_domain" onClose={() => {}} />);
-    // $15/month billed yearly is $180 today.
-    expect(textOf(tree)).toContain('180');
-    const radios = tree.root.findAll(node => node.type === 'input' && node.props.type === 'radio');
+    const text = textOf(tree);
 
-    // Yearly is listed first, monthly second.
-    renderer.act(() => radios[1].props.onChange());
-
-    expect(paddle.Checkout.open).toHaveBeenCalledTimes(1);
-    expect(paddle.Checkout.updateCheckout).toHaveBeenCalledWith({
-      items: [{ priceId: 'pri_mvp_m', quantity: 1 }],
-      customData: { appId: 'app-1', planId: 'mvp-m' },
-    });
-    expect(loggedEvents('baas_checkout_cycle_changed')).toEqual([
-      { app_id: 'app-1', plan: 'MVP', cycle: 'monthly', source: 'gate', gate: 'custom_domain' },
-    ]);
-    expect(textOf(tree)).toContain('Billed monthly');
+    expect(text).toContain('Billed monthly');
+    expect(text).not.toMatch(/yearly|\/year|180/i);
+    expect(tree.root.findAll(node => node.type === 'input' && node.props.type === 'radio')).toHaveLength(0);
   });
 
   it('logs the abandonment and closes when the user leaves without paying', async () => {
@@ -128,7 +117,7 @@ describe('UpgradeCheckoutModal', () => {
     renderer.act(() => tree.root.findByProps({ 'aria-label': 'Close' }).props.onClick());
 
     expect(loggedEvents('baas_checkout_closed')).toEqual([
-      { app_id: 'app-1', plan: 'MVP', cycle: 'yearly', source: 'gate', gate: 'email_templates' },
+      { app_id: 'app-1', plan: 'MVP', cycle: 'monthly', source: 'gate', gate: 'email_templates' },
     ]);
     expect(paddle.Checkout.close).toHaveBeenCalled();
     expect(onClose).toHaveBeenCalled();
@@ -170,13 +159,13 @@ describe('UpgradeCheckoutModal', () => {
 
   it('sells web hosting on MVP from the Overview', async () => {
     const tree = await mount(<UpgradeCheckoutModal gate="overview_web_hosting" onClose={() => {}} />);
-    expect(paddle.Checkout.open.mock.calls[0][0].items[0].priceId).toBe('pri_mvp_y');
+    expect(paddle.Checkout.open.mock.calls[0][0].items[0].priceId).toBe('pri_mvp_m');
     expect(textOf(tree)).toContain('Host your pages and use your own domain');
   });
 
   it('sells HTTPS on Pay As You Go and tells the buyer support turns it on', async () => {
     const tree = await mount(<UpgradeCheckoutModal gate="https" onClose={() => {}} />);
-    expect(paddle.Checkout.open.mock.calls[0][0].items[0].priceId).toBe('pri_payg_y');
+    expect(paddle.Checkout.open.mock.calls[0][0].items[0].priceId).toBe('pri_payg_m');
     expect(textOf(tree)).not.toContain('open a support ticket');
 
     await renderer.act(async () => {
@@ -191,18 +180,18 @@ describe('UpgradeCheckoutModal', () => {
     for (const gate of ['overview_plan_card', 'overview_plan_badge']) {
       paddle.Checkout.open.mockClear();
       const tree = await mount(<UpgradeCheckoutModal gate={gate} onClose={() => {}} />);
-      expect(paddle.Checkout.open.mock.calls[0][0].items[0].priceId).toBe('pri_mvp_y');
+      expect(paddle.Checkout.open.mock.calls[0][0].items[0].priceId).toBe('pri_mvp_m');
       expect(textOf(tree)).toContain('Take this app to production');
     }
   });
 
   it('offers the plan that actually unlocks each compliance badge', async () => {
     await mount(<UpgradeCheckoutModal gate="compliance_soc2" onClose={() => {}} />);
-    expect(paddle.Checkout.open.mock.calls[0][0].items[0].priceId).toBe('pri_payg_y');
+    expect(paddle.Checkout.open.mock.calls[0][0].items[0].priceId).toBe('pri_payg_m');
 
     paddle.Checkout.open.mockClear();
     await mount(<UpgradeCheckoutModal gate="compliance_hipaa" onClose={() => {}} />);
-    expect(paddle.Checkout.open.mock.calls[0][0].items[0].priceId).toBe('pri_ded_y');
+    expect(paddle.Checkout.open.mock.calls[0][0].items[0].priceId).toBe('pri_ded_m');
   });
 });
 

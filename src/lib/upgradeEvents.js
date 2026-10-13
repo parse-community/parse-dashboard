@@ -9,7 +9,6 @@ export const UpgradeEvent = {
   GATE_CLICKED: 'baas_upgrade_gate_clicked',
   CHECKOUT_OPENED: 'baas_checkout_opened',
   CHECKOUT_CLOSED: 'baas_checkout_closed',
-  CHECKOUT_CYCLE_CHANGED: 'baas_checkout_cycle_changed',
 };
 
 // The paid feature that made the user hit the paywall. Also sent as ?gate= to plan-usage

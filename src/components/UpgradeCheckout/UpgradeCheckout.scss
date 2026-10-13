@@ -8,8 +8,6 @@
   --uc-text: #f9f9f9;
   --uc-muted: #9aa5b8;
   --uc-border: rgba(255, 255, 255, 0.1);
-  --uc-option: rgba(255, 255, 255, 0.03);
-  --uc-option-selected: rgba(39, 174, 96, 0.12);
 }
 
 .light {
@@ -18,8 +16,6 @@
   --uc-text: #10203a;
   --uc-muted: #5b6577;
   --uc-border: #e2e6ec;
-  --uc-option: #ffffff;
-  --uc-option-selected: rgba(39, 174, 96, 0.08);
 }
 
 .checkout {
@@ -110,46 +106,6 @@
   margin-top: 0.25rem;
   font-size: 0.875rem;
   color: var(--uc-muted);
-}
-
-.cycles {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 1.5rem;
-}
-
-.cycle {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  padding: 0.75rem 0.875rem;
-  border: 1px solid var(--uc-border);
-  border-radius: 8px;
-  background: var(--uc-option);
-  font-size: 0.9375rem;
-  cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
-
-  input {
-    margin: 0;
-    accent-color: $cta-green;
-  }
-
-  &:has(input:checked) {
-    border-color: $cta-green;
-    background: var(--uc-option-selected);
-  }
-}
-
-.save {
-  margin-left: auto;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: rgba(39, 174, 96, 0.15);
-  color: $cta-green;
-  font-size: 0.75rem;
-  font-weight: 600;
 }
 
 .benefits {
