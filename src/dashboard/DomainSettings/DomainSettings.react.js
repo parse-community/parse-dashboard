@@ -408,7 +408,7 @@ class DomainSettings extends DashboardView {
         <Field
           label={<Label text="Upgrade your plan" dark={true} description="Upgrade your plan to enable web hosting for your pages and use your own domain." />}
           input={<div style={{ width: '100%', padding: '0 1rem', textAlign: 'right' }}>
-            <UpgradeGateButton gate={UpgradeGate.WEB_HOSTING} />
+            <UpgradeGateButton gate={UpgradeGate.WEB_HOSTING} logView />
           </div>}
           theme={Field.Theme.BLUE}
         />
@@ -427,7 +427,7 @@ class DomainSettings extends DashboardView {
                   disabled={!this.state.canChangeSubdomain && this.state.currentSubdomain.trim().length === 0}
                 />
               ) : (
-                <UpgradeGateButton gate={UpgradeGate.WEB_HOSTING} />
+                <UpgradeGateButton gate={UpgradeGate.WEB_HOSTING} logView />
               )}           
             </div>
           }
@@ -558,7 +558,7 @@ class DomainSettings extends DashboardView {
                   />
                 </>
               ) : (
-                <UpgradeGateButton gate={UpgradeGate.CUSTOM_DOMAIN} />
+                <UpgradeGateButton gate={UpgradeGate.CUSTOM_DOMAIN} logView />
               )}
               
             </div>}

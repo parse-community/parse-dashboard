@@ -202,11 +202,16 @@ describe('UpgradeGateButton', () => {
     initPaddle.mockImplementation(() => Promise.resolve(fakePaddle()));
   });
 
-  it('logs the paywall view, then the click, and opens the checkout in place', async () => {
+  it('logs the view only for paywalls reached by trying the feature', async () => {
+    await mount(<UpgradeGateButton gate="email_templates" logView />);
+    expect(loggedEvents('baas_upgrade_gate_viewed')).toEqual([{ gate: 'email_templates', app_id: 'app-1' }]);
+  });
+
+  it('a button always on screen logs only the click, and opens the checkout in place', async () => {
     const tree = await mount(
       <UpgradeGateButton gate="mongodb_8" renderTrigger={open => <a id="trigger" href="#" onClick={open}>Upgrade database</a>} />
     );
-    expect(loggedEvents('baas_upgrade_gate_viewed')).toEqual([{ gate: 'mongodb_8', app_id: 'app-1' }]);
+    expect(loggedEvents('baas_upgrade_gate_viewed')).toEqual([]);
     expect(initPaddle).not.toHaveBeenCalled();
 
     const preventDefault = jest.fn();

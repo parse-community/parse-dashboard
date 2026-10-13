@@ -463,7 +463,7 @@ class CustomParseOptions extends DashboardView {
                 }
                 input={
                   <div style={{ width: '100%', padding: '0 1rem', textAlign: 'right' }}>
-                    <UpgradeGateButton gate={UpgradeGate.PARSE_OPTIONS} />
+                    <UpgradeGateButton gate={UpgradeGate.PARSE_OPTIONS} logView />
                   </div>
                 }
                 theme={Field.Theme.BLUE}

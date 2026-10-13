@@ -389,7 +389,7 @@ export default class Collaborators extends React.Component {
           <div style={{ width: '100%', padding: '0 1rem' }}>
             {maxCollaborators === 0 || maxCollaborators === null  || maxCollaborators === false ? (
               <div style={{ textAlign: 'right' }}>
-                <UpgradeGateButton gate={UpgradeGate.COLLABORATORS} />
+                <UpgradeGateButton gate={UpgradeGate.COLLABORATORS} logView />
               </div>
             ) : maxCollaborators !== true && maxCollaborators !== null && collaboratorUsage >= maxCollaborators ? (
               <a

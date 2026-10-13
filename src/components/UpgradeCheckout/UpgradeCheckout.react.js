@@ -190,9 +190,12 @@ export const UpgradeCheckoutModal = ({ gate, onClose }) => {
   );
 };
 
-// Paywall entry point: logs the gate view, and on click opens the direct checkout.
+// Paywall entry point: on click, logs the gate click and opens the direct checkout.
 // `renderTrigger(open)` lets anchors and custom buttons keep their look.
-export const UpgradeGateButton = ({ gate, renderTrigger, value = 'Upgrade Plan' }) => {
+// `logView` also logs the gate view when the paywall shows. Only for paywalls the user reaches by
+// trying to use the feature (opening its page); buttons that are always on screen, like the
+// Overview ones, count only the click.
+export const UpgradeGateButton = ({ gate, renderTrigger, value = 'Upgrade Plan', logView = false }) => {
   const context = useContext(CurrentApp);
   const [open, setOpen] = useState(false);
   const openCheckout = event => {
@@ -205,7 +208,7 @@ export const UpgradeGateButton = ({ gate, renderTrigger, value = 'Upgrade Plan' 
 
   return (
     <>
-      <UpgradeGateView gate={gate} appId={context.applicationId} />
+      {logView ? <UpgradeGateView gate={gate} appId={context.applicationId} /> : null}
       {renderTrigger ? renderTrigger(openCheckout) : <Button value={value} primary={true} onClick={openCheckout} trackClick={false} />}
       {open ? <UpgradeCheckoutModal gate={gate} onClose={() => setOpen(false)} /> : null}
     </>

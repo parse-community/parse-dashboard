@@ -471,7 +471,7 @@ class EmailVerification extends DashboardView {
                     }
                     input={
                       <div style={{ width: '100%', padding: '0 1rem', textAlign: 'right' }}>
-                        <UpgradeGateButton gate={UpgradeGate.EMAIL_TEMPLATES} />
+                        <UpgradeGateButton gate={UpgradeGate.EMAIL_TEMPLATES} logView />
                       </div>
                     }
                     theme={Field.Theme.BLUE}
