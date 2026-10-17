@@ -40,7 +40,7 @@
     "@babel/runtime": "7.29.2",
     "@babel/runtime-corejs3": "7.29.2",
     "@graphiql/toolkit": "0.12.1",
-    "@microlink/react-json-view": "1.31.22",
+    "@microlink/react-json-view": "1.31.40",
     "bcryptjs": "3.0.3",
     "body-parser": "2.3.0",
     "chart.js": "4.5.1",
