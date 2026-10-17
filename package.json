@@ -44,7 +44,7 @@
     "bcryptjs": "3.0.3",
     "body-parser": "2.3.0",
     "chart.js": "4.5.1",
-    "commander": "13.1.0",
+    "commander": "15.0.0",
     "connect-flash": "0.1.1",
     "copy-to-clipboard": "3.3.3",
     "core-js": "3.49.0",
