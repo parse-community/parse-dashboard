@@ -76,7 +76,7 @@
     "react-dnd": "16.0.1",
     "react-dnd-html5-backend": "16.0.1",
     "react-dom": "19.2.7",
-    "react-draggable": "4.7.0",
+    "react-draggable": "4.7.2",
     "react-helmet": "6.1.0",
     "react-popper-tooltip": "4.4.2",
     "react-resizable": "4.0.2",
