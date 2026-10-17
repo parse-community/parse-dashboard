@@ -92,7 +92,7 @@
       "typescript": "5.9.3"
     },
     "@saithodev/semantic-release-backmerge": {
-      "npm": "11.20.0"
+      "npm": "11.21.1"
     }
   },
   "devDependencies": {
