@@ -1,3 +1,10 @@
+# [9.3.0-alpha.12](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.11...9.3.0-alpha.12) (2026-10-17)
+
+
+### Bug Fixes
+
+* Bump proxy-addr from 2.0.7 to 2.0.8 ([#3490](https://github.com/parse-community/parse-dashboard/issues/3490)) ([e017c62](https://github.com/parse-community/parse-dashboard/commit/e017c62ee572ece241a1911f0df70f19e843aeb2))
+
 # [9.3.0-alpha.11](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.10...9.3.0-alpha.11) (2026-09-25)
 
 
