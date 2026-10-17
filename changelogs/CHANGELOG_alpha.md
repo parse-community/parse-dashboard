@@ -1,3 +1,10 @@
+# [9.3.0-alpha.13](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.12...9.3.0-alpha.13) (2026-10-17)
+
+
+### Bug Fixes
+
+* Bump markdown-it from 14.3.0 to 14.3.3 ([#3494](https://github.com/parse-community/parse-dashboard/issues/3494)) ([12d7cc0](https://github.com/parse-community/parse-dashboard/commit/12d7cc035353795de8745c1fb252cac30b14c465))
+
 # [9.3.0-alpha.12](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.11...9.3.0-alpha.12) (2026-10-17)
 
 
