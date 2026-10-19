@@ -63,7 +63,11 @@ function serializeForDiff(value, type, isUserValue = false) {
         return JSON.stringify({ name: json.name, url: json.url }, null, 2);
       }
       if (value && (value._name !== undefined || value.name !== undefined)) {
-        return JSON.stringify({ name: value._name || value.name, url: value._url || value.url }, null, 2);
+        return JSON.stringify(
+          { name: value._name || value.name, url: value._url || value.url },
+          null,
+          2
+        );
       }
       return JSON.stringify(value, null, 2);
     }
@@ -81,10 +85,18 @@ function serializeForDiff(value, type, isUserValue = false) {
 function renderCharHighlightedContent(charDiffs, side) {
   return charDiffs.map((part, i) => {
     if (part.added && side === 'added') {
-      return <span key={i} className={styles.charAdded}>{part.value}</span>;
+      return (
+        <span key={i} className={styles.charAdded}>
+          {part.value}
+        </span>
+      );
     }
     if (part.removed && side === 'removed') {
-      return <span key={i} className={styles.charRemoved}>{part.value}</span>;
+      return (
+        <span key={i} className={styles.charRemoved}>
+          {part.value}
+        </span>
+      );
     }
     if (!part.added && !part.removed) {
       return <span key={i}>{part.value}</span>;
@@ -180,7 +192,10 @@ const ConfigConflictDiff = ({ serverValue, userValue, type }) => {
     }
   }
 
-  if (rows.length === 0 || (rows.length === 1 && rows[0].type === 'context' && rows[0].content === '')) {
+  if (
+    rows.length === 0 ||
+    (rows.length === 1 && rows[0].type === 'context' && rows[0].content === '')
+  ) {
     return <div className={styles.emptyDiff}>Values are identical — no differences found.</div>;
   }
 
@@ -188,14 +203,14 @@ const ConfigConflictDiff = ({ serverValue, userValue, type }) => {
   // we need to map charDiffs to individual lines. Since diffChars
   // operates on the full block text, for single-line values we can
   // highlight directly. For multi-line, we show line-level coloring only.
-  const renderContent = (row) => {
+  const renderContent = row => {
     if (row.charDiffs && row.singleLineDiff) {
       return renderCharHighlightedContent(row.charDiffs, row.charSide);
     }
     return row.content;
   };
 
-  const lineStyle = (row) => {
+  const lineStyle = row => {
     if (row.type === 'removed') {
       return styles.lineRemoved;
     }

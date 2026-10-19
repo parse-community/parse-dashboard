@@ -296,38 +296,38 @@ export default class AddColumnDialog extends React.Component {
           semver.valid(this.props.parseServerVersion) &&
           semver.gte(this.props.parseServerVersion, '3.7.0') &&
           this.state.type !== 'Relation' ? (
-              <>
-                <Field
-                  label={
-                    <Label
-                      text="What is the default value?"
-                      description="If no value is specified for this column, it will be filled with its default value."
-                    />
-                  }
-                  input={this.renderDefaultValueInput()}
-                  className={styles.addColumnToggleWrapper}
-                />
-                <Field
-                  label={
-                    <Label
-                      text="Is it a required field?"
-                      description={
-                        'When true this field must be filled when a new object is created.'
-                      }
-                    />
-                  }
-                  input={
-                    <Toggle
-                      value={this.state.required}
-                      type={Toggle.Types.YES_NO}
-                      onChange={required => this.setState({ required })}
-                      additionalStyles={{ margin: '0px' }}
-                    />
-                  }
-                  className={styles.addColumnToggleWrapper}
-                />
-              </>
-            ) : null
+            <>
+              <Field
+                label={
+                  <Label
+                    text="What is the default value?"
+                    description="If no value is specified for this column, it will be filled with its default value."
+                  />
+                }
+                input={this.renderDefaultValueInput()}
+                className={styles.addColumnToggleWrapper}
+              />
+              <Field
+                label={
+                  <Label
+                    text="Is it a required field?"
+                    description={
+                      'When true this field must be filled when a new object is created.'
+                    }
+                  />
+                }
+                input={
+                  <Toggle
+                    value={this.state.required}
+                    type={Toggle.Types.YES_NO}
+                    onChange={required => this.setState({ required })}
+                    additionalStyles={{ margin: '0px' }}
+                  />
+                }
+                className={styles.addColumnToggleWrapper}
+              />
+            </>
+          ) : null
         }
       </Modal>
     );

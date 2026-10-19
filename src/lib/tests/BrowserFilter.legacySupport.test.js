@@ -25,12 +25,12 @@ describe('BrowserFilter - Legacy Filter Normalization', () => {
     it('should normalize filters by removing class property that matches current className', () => {
       const filtersWithClass = [
         { field: 'fieldA', constraint: 'eq', compareTo: 'valueA', class: 'MyClass' },
-        { field: 'fieldB', constraint: 'eq', compareTo: 'valueB', class: 'MyClass' }
+        { field: 'fieldB', constraint: 'eq', compareTo: 'valueB', class: 'MyClass' },
       ];
 
       const filtersWithoutClass = [
         { field: 'fieldA', constraint: 'eq', compareTo: 'valueA' },
-        { field: 'fieldB', constraint: 'eq', compareTo: 'valueB' }
+        { field: 'fieldB', constraint: 'eq', compareTo: 'valueB' },
       ];
 
       const normalizedWithClass = normalizeFilters(filtersWithClass, 'MyClass');
@@ -42,7 +42,7 @@ describe('BrowserFilter - Legacy Filter Normalization', () => {
 
     it('should not remove class property that differs from current className', () => {
       const filtersWithDifferentClass = [
-        { field: 'name', constraint: 'eq', compareTo: 'test', class: '_User' }
+        { field: 'name', constraint: 'eq', compareTo: 'test', class: '_User' },
       ];
 
       const normalized = normalizeFilters(filtersWithDifferentClass, 'MyClass');
@@ -54,7 +54,7 @@ describe('BrowserFilter - Legacy Filter Normalization', () => {
     it('should handle filters without class property', () => {
       const filtersWithoutClass = [
         { field: 'fieldA', constraint: 'eq', compareTo: 'valueA' },
-        { field: 'fieldB', constraint: 'eq', compareTo: 'valueB' }
+        { field: 'fieldB', constraint: 'eq', compareTo: 'valueB' },
       ];
 
       const normalized = normalizeFilters(filtersWithoutClass, 'MyClass');
@@ -68,16 +68,16 @@ describe('BrowserFilter - Legacy Filter Normalization', () => {
           field: 'createdAt',
           constraint: 'after',
           compareTo: { __type: 'Date', iso: '2023-11-18T00:00:00.000Z' },
-          class: 'MyClass'
-        }
+          class: 'MyClass',
+        },
       ];
 
       const expectedNormalized = [
         {
           field: 'createdAt',
           constraint: 'after',
-          compareTo: { __type: 'Date', iso: '2023-11-18T00:00:00.000Z' }
-        }
+          compareTo: { __type: 'Date', iso: '2023-11-18T00:00:00.000Z' },
+        },
       ];
 
       const normalized = normalizeFilters(filtersWithDates, 'MyClass');
@@ -93,8 +93,8 @@ describe('BrowserFilter - Legacy Filter Normalization', () => {
         {
           field: 'createdAt',
           constraint: 'after',
-          compareTo: { __type: 'Date', iso: '2023-11-18T00:00:00.000Z' }
-        }
+          compareTo: { __type: 'Date', iso: '2023-11-18T00:00:00.000Z' },
+        },
       ];
 
       // This is what extractFiltersFromQuery creates (with class property added)
@@ -105,8 +105,8 @@ describe('BrowserFilter - Legacy Filter Normalization', () => {
           field: 'createdAt',
           constraint: 'after',
           compareTo: { __type: 'Date', iso: '2023-11-18T00:00:00.000Z' },
-          class: 'MyClass'
-        }
+          class: 'MyClass',
+        },
       ];
 
       // Without normalization, these don't match
@@ -123,12 +123,12 @@ describe('BrowserFilter - Legacy Filter Normalization', () => {
     it('should handle the working filter', () => {
       // This is the filter from the working URL (already has class property)
       const workingFilter = [
-        { class: 'MyClass', field: 'fieldA', constraint: 'eq', compareTo: 'valueA' }
+        { class: 'MyClass', field: 'fieldA', constraint: 'eq', compareTo: 'valueA' },
       ];
 
       // When processed, it should remain the same since it already has the correct class
       const processedWorkingFilter = [
-        { class: 'MyClass', field: 'fieldA', constraint: 'eq', compareTo: 'valueA' }
+        { class: 'MyClass', field: 'fieldA', constraint: 'eq', compareTo: 'valueA' },
       ];
 
       // With normalization, both should normalize to the same thing
@@ -138,9 +138,7 @@ describe('BrowserFilter - Legacy Filter Normalization', () => {
       expect(JSON.stringify(normalizedWorking)).toBe(JSON.stringify(normalizedProcessed));
 
       // Both should normalize to the version without class property
-      const expectedNormalized = [
-        { field: 'fieldA', constraint: 'eq', compareTo: 'valueA' }
-      ];
+      const expectedNormalized = [{ field: 'fieldA', constraint: 'eq', compareTo: 'valueA' }];
 
       expect(JSON.stringify(normalizedWorking)).toBe(JSON.stringify(expectedNormalized));
     });

@@ -52,7 +52,7 @@ const StaticTextConfigDialog = ({ initialConfig, onClose, onSave }) => {
         input={
           <TextInput
             value={config.text}
-            onChange={(value) => updateConfig('text', value)}
+            onChange={value => updateConfig('text', value)}
             placeholder="Enter your text..."
             multiline={true}
             height={100}
@@ -62,10 +62,7 @@ const StaticTextConfigDialog = ({ initialConfig, onClose, onSave }) => {
       <Field
         label={<Label text="Text Size" description="Choose the size of the text" />}
         input={
-          <Dropdown
-            value={config.textSize}
-            onChange={(value) => updateConfig('textSize', value)}
-          >
+          <Dropdown value={config.textSize} onChange={value => updateConfig('textSize', value)}>
             <Option value="body">Body (14px)</Option>
             <Option value="h3">Heading 3 (18px)</Option>
             <Option value="h2">Heading 2 (24px)</Option>
@@ -79,7 +76,7 @@ const StaticTextConfigDialog = ({ initialConfig, onClose, onSave }) => {
           <Toggle
             value={config.isBold}
             type={Toggle.Types.YES_NO}
-            onChange={(value) => updateConfig('isBold', value)}
+            onChange={value => updateConfig('isBold', value)}
           />
         }
       />
@@ -89,7 +86,7 @@ const StaticTextConfigDialog = ({ initialConfig, onClose, onSave }) => {
           <Toggle
             value={config.isItalic}
             type={Toggle.Types.YES_NO}
-            onChange={(value) => updateConfig('isItalic', value)}
+            onChange={value => updateConfig('isItalic', value)}
           />
         }
       />

@@ -14,32 +14,37 @@ const BrowserCell = require('../../components/BrowserCell/BrowserCell.react').de
 describe('BrowserCell', () => {
   describe('Required fields', () => {
     it('should not highlight 0 value', () => {
-      const component = renderComponent(<BrowserCell value={0} markRequiredField={true} isRequired={true} />)
-        .toJSON();
+      const component = renderComponent(
+        <BrowserCell value={0} markRequiredField={true} isRequired={true} />
+      ).toJSON();
       expect(component.props.className).not.toContain('required');
     });
 
     it('should not highlight false value', () => {
-      const component = renderComponent(<BrowserCell value={false} markRequiredField={true} isRequired={true} />)
-        .toJSON();
+      const component = renderComponent(
+        <BrowserCell value={false} markRequiredField={true} isRequired={true} />
+      ).toJSON();
       expect(component.props.className).not.toContain('required');
     });
 
     it('should not highlight empty string value', () => {
-      const component = renderComponent(<BrowserCell value="" markRequiredField={true} isRequired={true} />)
-        .toJSON();
+      const component = renderComponent(
+        <BrowserCell value="" markRequiredField={true} isRequired={true} />
+      ).toJSON();
       expect(component.props.className).not.toContain('required');
     });
 
     it('should highlight null value', () => {
-      const component = renderComponent(<BrowserCell value={null} markRequiredField={true} isRequired={true} />)
-        .toJSON();
+      const component = renderComponent(
+        <BrowserCell value={null} markRequiredField={true} isRequired={true} />
+      ).toJSON();
       expect(component.props.className).toContain('required');
     });
 
     it('should highlight undefined value', () => {
-      const component = renderComponent(<BrowserCell markRequiredField={true} isRequired={true} />)
-        .toJSON();
+      const component = renderComponent(
+        <BrowserCell markRequiredField={true} isRequired={true} />
+      ).toJSON();
       expect(component.props.className).toContain('required');
     });
   });

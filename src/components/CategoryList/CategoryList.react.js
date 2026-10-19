@@ -190,7 +190,7 @@ export default class CategoryList extends React.Component {
                       this.setState(prevState => ({
                         openClasses: prevState.openClasses.includes(id)
                           ? prevState.openClasses.filter(c => c !== id)
-                          : [...prevState.openClasses, id]
+                          : [...prevState.openClasses, id],
                       }));
                     }
                   }}

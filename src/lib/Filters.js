@@ -186,16 +186,7 @@ export const FieldConstraints = {
   Boolean: ['exists', 'dne', 'eq', 'neq', 'containedIn', 'unique'],
   Number: ['exists', 'dne', 'eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'containedIn', 'unique'],
   String: ['exists', 'dne', 'eq', 'neq', 'starts', 'ends', 'matches', 'containedIn', 'unique'],
-  Date: [
-    'exists',
-    'dne',
-    'before',
-    'onOrBefore',
-    'after',
-    'onOrAfter',
-    'containedIn',
-    'unique',
-  ],
+  Date: ['exists', 'dne', 'before', 'onOrBefore', 'after', 'onOrAfter', 'containedIn', 'unique'],
   Object: [
     'exists',
     'dne',

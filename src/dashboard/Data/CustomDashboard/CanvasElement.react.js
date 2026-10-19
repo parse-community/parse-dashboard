@@ -36,16 +36,10 @@ const CanvasElement = ({
   };
 
   const handleResizeStop = (e, direction, ref, delta, position) => {
-    onSizeChange(
-      element.id,
-      ref.offsetWidth,
-      ref.offsetHeight,
-      position.x,
-      position.y
-    );
+    onSizeChange(element.id, ref.offsetWidth, ref.offsetHeight, position.x, position.y);
   };
 
-  const handleClick = (e) => {
+  const handleClick = e => {
     e.stopPropagation();
     onSelect(element.id);
   };

@@ -36,7 +36,7 @@ export default class RunNowButton extends React.Component {
     this.setState({ showDialog: false });
   };
 
-  handleConfirm = (jobWithParams) => {
+  handleConfirm = jobWithParams => {
     this.setState({ showDialog: false, progress: true });
     this.context.runJob(jobWithParams).then(
       () => {
@@ -68,11 +68,7 @@ export default class RunNowButton extends React.Component {
           {...other}
         />
         {this.state.showDialog && (
-          <RunJobDialog
-            job={job}
-            onCancel={this.handleCancel}
-            onConfirm={this.handleConfirm}
-          />
+          <RunJobDialog job={job} onCancel={this.handleCancel} onConfirm={this.handleConfirm} />
         )}
       </>
     );

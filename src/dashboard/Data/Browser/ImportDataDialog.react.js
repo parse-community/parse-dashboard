@@ -84,7 +84,7 @@ export default class ImportDataDialog extends React.Component {
     }
     this.setState({ importing: true, progress: null, fileError: null });
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = e => {
       const content = e.target.result;
       const fileType = this.getFileExtension();
       this.props.onConfirm({
@@ -152,16 +152,20 @@ export default class ImportDataDialog extends React.Component {
             />
           }
         />
-        {this.state.fileError && (
-          <div className={styles.error}>{this.state.fileError}</div>
-        )}
+        {this.state.fileError && <div className={styles.error}>{this.state.fileError}</div>}
         {this.state.file && (
           <div className={styles.fileInfo}>
-            Format: {this.getFileExtension()} &middot; Size: {this.formatBytes(this.state.file.size)}
+            Format: {this.getFileExtension()} &middot; Size:{' '}
+            {this.formatBytes(this.state.file.size)}
           </div>
         )}
         <Field
-          label={<Label text="Preserve object IDs" description="Use the objectId values from the import file instead of generating new ones." />}
+          label={
+            <Label
+              text="Preserve object IDs"
+              description="Use the objectId values from the import file instead of generating new ones."
+            />
+          }
           input={
             <Toggle
               value={this.state.preserveObjectIds}
@@ -172,11 +176,17 @@ export default class ImportDataDialog extends React.Component {
         />
         {!this.state.preserveObjectIds && (
           <div className={styles.warning}>
-            Pointer and Relation fields that reference objectIds in this file will not resolve correctly if new objectIds are generated.
+            Pointer and Relation fields that reference objectIds in this file will not resolve
+            correctly if new objectIds are generated.
           </div>
         )}
         <Field
-          label={<Label text="Preserve timestamps" description="Use the createdAt and updatedAt values from the import file." />}
+          label={
+            <Label
+              text="Preserve timestamps"
+              description="Use the createdAt and updatedAt values from the import file."
+            />
+          }
           input={
             hasMaintenanceKey ? (
               <Toggle
@@ -186,11 +196,7 @@ export default class ImportDataDialog extends React.Component {
               />
             ) : (
               <div className={styles.disabledToggle}>
-                <Toggle
-                  value={false}
-                  type={Toggle.Types.YES_NO}
-                  onChange={() => {}}
-                />
+                <Toggle value={false} type={Toggle.Types.YES_NO} onChange={() => {}} />
               </div>
             )
           }
@@ -202,7 +208,12 @@ export default class ImportDataDialog extends React.Component {
         )}
         {this.state.preserveObjectIds && (
           <Field
-            label={<Label text="Duplicate handling" description="How to handle rows whose objectId already exists in the class." />}
+            label={
+              <Label
+                text="Duplicate handling"
+                description="How to handle rows whose objectId already exists in the class."
+              />
+            }
             input={
               <Dropdown
                 fixed={true}
@@ -217,7 +228,12 @@ export default class ImportDataDialog extends React.Component {
           />
         )}
         <Field
-          label={<Label text="Unknown columns" description="How to handle columns in the file that do not exist in the class schema." />}
+          label={
+            <Label
+              text="Unknown columns"
+              description="How to handle columns in the file that do not exist in the class schema."
+            />
+          }
           input={
             <Dropdown
               fixed={true}
@@ -231,7 +247,12 @@ export default class ImportDataDialog extends React.Component {
           }
         />
         <Field
-          label={<Label text="Continue on errors" description="If enabled, rows that fail to import will be skipped and the import will continue." />}
+          label={
+            <Label
+              text="Continue on errors"
+              description="If enabled, rows that fail to import will be skipped and the import will continue."
+            />
+          }
           input={
             <Toggle
               value={this.state.continueOnError}
@@ -246,9 +267,8 @@ export default class ImportDataDialog extends React.Component {
 
   renderProgress() {
     const { progress } = this.state;
-    const percent = progress && progress.total > 0
-      ? Math.round((progress.completed / progress.total) * 100)
-      : 0;
+    const percent =
+      progress && progress.total > 0 ? Math.round((progress.completed / progress.total) * 100) : 0;
 
     return (
       <div className={styles.row}>
@@ -263,10 +283,7 @@ export default class ImportDataDialog extends React.Component {
           }
         />
         <div className={styles.progressBarContainer}>
-          <div
-            className={styles.progressBar}
-            style={{ width: `${percent}%` }}
-          />
+          <div className={styles.progressBar} style={{ width: `${percent}%` }} />
         </div>
       </div>
     );
@@ -280,19 +297,9 @@ export default class ImportDataDialog extends React.Component {
 
     return (
       <div className={styles.results}>
-        <div className={styles.resultSuccess}>
-          Imported: {results.imported}
-        </div>
-        {results.skipped > 0 && (
-          <div className={styles.resultSkip}>
-            Skipped: {results.skipped}
-          </div>
-        )}
-        {results.failed > 0 && (
-          <div className={styles.resultFail}>
-            Failed: {results.failed}
-          </div>
-        )}
+        <div className={styles.resultSuccess}>Imported: {results.imported}</div>
+        {results.skipped > 0 && <div className={styles.resultSkip}>Skipped: {results.skipped}</div>}
+        {results.failed > 0 && <div className={styles.resultFail}>Failed: {results.failed}</div>}
         {results.errors && results.errors.length > 0 && (
           <div style={{ marginTop: 12 }}>
             {results.errors.slice(0, 5).map((err, i) => (
@@ -301,9 +308,7 @@ export default class ImportDataDialog extends React.Component {
               </div>
             ))}
             {results.errors.length > 5 && (
-              <div className={styles.error}>
-                ...and {results.errors.length - 5} more error(s)
-              </div>
+              <div className={styles.error}>...and {results.errors.length - 5} more error(s)</div>
             )}
           </div>
         )}

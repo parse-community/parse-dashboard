@@ -92,12 +92,12 @@ export default class Security extends TableView {
   tableData() {
     const data = [];
     if (this.state.data.state) {
-      data.push({
+      (data.push({
         check: 'Overall status',
         status: this.state.data.state,
         header: true,
       }),
-      data.push({ i: -1 });
+        data.push({ i: -1 }));
     }
     for (let i = 0; i < this.state.data?.groups?.length; i++) {
       const group = this.state.data.groups[i];

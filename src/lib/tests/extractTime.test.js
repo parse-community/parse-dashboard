@@ -2,7 +2,7 @@ jest.dontMock('../extractTime');
 const { extractExpiration, extractPushTime } = require('../extractTime');
 
 describe('extractPushTime', () => {
-  describe('in user\'s timezone', () => {
+  describe("in user's timezone", () => {
     it('should return without a timezone component', () => {
       const push_time = extractPushTime({
         experiment_name: '',
@@ -86,7 +86,7 @@ describe('extractPushTime', () => {
 
 describe('extractExpiration', () => {
   describe('With expiration interval', () => {
-    describe('In user\'s local timezone', () => {
+    describe("In user's local timezone", () => {
       describe('In hours', () => {
         const changes = {
           experiment_name: '',
@@ -242,7 +242,7 @@ describe('extractExpiration', () => {
   });
 
   describe('With expiration date', () => {
-    describe('In user\'s local timezone', () => {
+    describe("In user's local timezone", () => {
       const changes = {
         experiment_name: '',
         exp_size_in_percent: 50,

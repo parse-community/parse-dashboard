@@ -26,14 +26,7 @@ import {
   ScatterController,
   RadarController,
 } from 'chart.js';
-import {
-  Bar,
-  Line,
-  Pie,
-  Doughnut,
-  Scatter,
-  Radar,
-} from 'react-chartjs-2';
+import { Bar, Line, Pie, Doughnut, Scatter, Radar } from 'react-chartjs-2';
 import styles from './GraphPanel.scss';
 import Icon from 'components/Icon/Icon.react';
 import {
@@ -127,7 +120,7 @@ const GraphPanel = ({
 
   // Handle click outside to close dropdown
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = event => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowGraphDropdown(false);
       }
@@ -180,13 +173,19 @@ const GraphPanel = ({
         case 'bar':
         case 'line':
         case 'radar':
-          result = processBarLineData(limitedData, xColumn, series || [], groupByColumn, calculatedValues);
+          result = processBarLineData(
+            limitedData,
+            xColumn,
+            series || [],
+            groupByColumn,
+            calculatedValues
+          );
           break;
       }
 
       // Helper to compute the effective chart type for a dataset
       // dataset.type overrides the global chart type
-      const getEffectiveType = (dataset) => {
+      const getEffectiveType = dataset => {
         return dataset.type || chartType;
       };
 
@@ -247,12 +246,17 @@ const GraphPanel = ({
       return { processedData: result, validationError: null };
     } catch (err) {
       console.error('Error processing graph data:', err);
-      return { processedData: null, validationError: err instanceof Error ? err.message : String(err) };
+      return {
+        processedData: null,
+        validationError: err instanceof Error ? err.message : String(err),
+      };
     }
   }, [data, graphConfig, columns]);
 
   const chartOptions = useMemo(() => {
-    if (!graphConfig) {return {};}
+    if (!graphConfig) {
+      return {};
+    }
 
     const {
       chartType,
@@ -353,7 +357,7 @@ const GraphPanel = ({
 
         // Add custom tick callback for date axes
         if (dateAxisInfo?.isDateAxis && dateAxisInfo.rawXValues) {
-          xAxisTicks.callback = function(value) {
+          xAxisTicks.callback = function (value) {
             // Use 'value' (data index) not 'index' (rendered tick position)
             // This ensures correct lookup when Chart.js auto-skips ticks
             const timestamp = dateAxisInfo.rawXValues[value];
@@ -509,7 +513,8 @@ const GraphPanel = ({
                 Create Graph
               </button>
               <p className={styles.previewNotice}>
-                Graph is a preview feature. Future versions may introduce breaking changes without announcement.
+                Graph is a preview feature. Future versions may introduce breaking changes without
+                announcement.
               </p>
             </>
           )}
@@ -583,7 +588,7 @@ const GraphPanel = ({
   const hasActiveGraph = !!graphConfig;
   const showDropdown = hasActiveGraph && availableGraphs && availableGraphs.length > 0;
 
-  const handleGraphSelect = (graph) => {
+  const handleGraphSelect = graph => {
     if (onGraphSelect) {
       onGraphSelect(graph);
     }
@@ -615,25 +620,18 @@ const GraphPanel = ({
                 </button>
                 {showGraphDropdown && (
                   <div className={styles.dropdownMenu}>
-                    {availableGraphs.map((graph) => (
+                    {availableGraphs.map(graph => (
                       <button
                         key={graph.id}
                         className={`${styles.dropdownItem} ${graph.id === graphConfig?.id ? styles.dropdownItemActive : ''}`}
                         onClick={() => handleGraphSelect(graph)}
                       >
-                        <span className={styles.dropdownItemTitle}>
-                          {graph.title || 'Graph'}
-                        </span>
-                        <span className={styles.dropdownItemType}>
-                          {graph.chartType}
-                        </span>
+                        <span className={styles.dropdownItemTitle}>{graph.title || 'Graph'}</span>
+                        <span className={styles.dropdownItemType}>{graph.chartType}</span>
                       </button>
                     ))}
                     <div className={styles.dropdownSeparator} />
-                    <button
-                      className={styles.dropdownItem}
-                      onClick={handleNewGraph}
-                    >
+                    <button className={styles.dropdownItem} onClick={handleNewGraph}>
                       <Icon name="plus" width={12} height={12} />
                       <span>Create Graph</span>
                     </button>
@@ -685,9 +683,7 @@ const GraphPanel = ({
             <p>Loading graph data...</p>
           </div>
         ) : (
-          <div className={styles.chart}>
-            {renderChart()}
-          </div>
+          <div className={styles.chart}>{renderChart()}</div>
         )}
       </div>
 
@@ -695,9 +691,9 @@ const GraphPanel = ({
         <div className={styles.configInfo}>
           <small>
             Data points: {data?.length || 0}
-            {graphConfig.maxDataPoints && data?.length > graphConfig.maxDataPoints &&
-              ` (showing first ${graphConfig.maxDataPoints})`
-            }
+            {graphConfig.maxDataPoints &&
+              data?.length > graphConfig.maxDataPoints &&
+              ` (showing first ${graphConfig.maxDataPoints})`}
           </small>
         </div>
       )}

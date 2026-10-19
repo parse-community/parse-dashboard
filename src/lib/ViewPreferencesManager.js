@@ -142,14 +142,14 @@ export default class ViewPreferencesManager {
             id,
             type: 'view',
             local: localView,
-            server: serverView
+            server: serverView,
           };
         });
 
         return {
           success: false,
           viewCount: 0,
-          conflicts
+          conflicts,
         };
       }
 
@@ -234,17 +234,16 @@ export default class ViewPreferencesManager {
           });
 
           // Stringify the query if it exists and is an array/object
-          if (viewConfig.query && (Array.isArray(viewConfig.query) || typeof viewConfig.query === 'object')) {
+          if (
+            viewConfig.query &&
+            (Array.isArray(viewConfig.query) || typeof viewConfig.query === 'object')
+          ) {
             viewConfig.query = JSON.stringify(viewConfig.query);
           }
 
           // Only save if we're overwriting conflicts or if this view doesn't exist on server
           if (overwriteConflicts || !existingViewIds.includes(viewId)) {
-            return this.serverStorage.setConfig(
-              `views.view.${viewId}`,
-              viewConfig,
-              appId
-            );
+            return this.serverStorage.setConfig(`views.view.${viewId}`, viewConfig, appId);
           }
           return Promise.resolve(); // Skip conflicting views when not overwriting
         })
@@ -287,7 +286,7 @@ export default class ViewPreferencesManager {
 
           views.push({
             id: viewId,
-            ...viewConfig
+            ...viewConfig,
           });
         }
       });
@@ -316,9 +315,7 @@ export default class ViewPreferencesManager {
       const viewsToDelete = existingViewIds.filter(id => !newViewIds.includes(id));
 
       await Promise.all(
-        viewsToDelete.map(id =>
-          this.serverStorage.deleteConfig(`views.view.${id}`, appId)
-        )
+        viewsToDelete.map(id => this.serverStorage.deleteConfig(`views.view.${id}`, appId))
       );
 
       // Save or update current views
@@ -336,15 +333,14 @@ export default class ViewPreferencesManager {
           });
 
           // Stringify the query if it exists and is an array/object
-          if (viewConfig.query && (Array.isArray(viewConfig.query) || typeof viewConfig.query === 'object')) {
+          if (
+            viewConfig.query &&
+            (Array.isArray(viewConfig.query) || typeof viewConfig.query === 'object')
+          ) {
             viewConfig.query = JSON.stringify(viewConfig.query);
           }
 
-          return this.serverStorage.setConfig(
-            `views.view.${viewId}`,
-            viewConfig,
-            appId
-          );
+          return this.serverStorage.setConfig(`views.view.${viewId}`, viewConfig, appId);
         })
       );
     } catch (error) {
@@ -371,15 +367,14 @@ export default class ViewPreferencesManager {
       });
 
       // Stringify the query if it exists and is an array/object
-      if (viewConfig.query && (Array.isArray(viewConfig.query) || typeof viewConfig.query === 'object')) {
+      if (
+        viewConfig.query &&
+        (Array.isArray(viewConfig.query) || typeof viewConfig.query === 'object')
+      ) {
         viewConfig.query = JSON.stringify(viewConfig.query);
       }
 
-      await this.serverStorage.setConfig(
-        `views.view.${viewId}`,
-        viewConfig,
-        appId
-      );
+      await this.serverStorage.setConfig(`views.view.${viewId}`, viewConfig, appId);
     } catch (error) {
       console.error('Failed to save view to server:', error);
       throw error;

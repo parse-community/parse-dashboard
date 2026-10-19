@@ -128,7 +128,11 @@ export default class SecureFieldsDialog extends React.Component {
           advanced={true}
           confirmText="Save"
           details={
-            <a target="_blank" href="http://docs.parseplatform.org/ios/guide/#security" rel="noreferrer">
+            <a
+              target="_blank"
+              href="http://docs.parseplatform.org/ios/guide/#security"
+              rel="noreferrer"
+            >
               Learn more about CLPs and app security
             </a>
           }

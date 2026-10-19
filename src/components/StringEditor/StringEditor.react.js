@@ -64,7 +64,8 @@ export default class StringEditor extends React.Component {
   }
 
   handleContextMenu(e) {
-    const { setContextMenu, arrayConfigParams, onAddToArrayConfig, getRelatedRecordsMenuItem } = this.props;
+    const { setContextMenu, arrayConfigParams, onAddToArrayConfig, getRelatedRecordsMenuItem } =
+      this.props;
 
     // Only show custom context menu when Alt key is held
     if (!e.altKey) {

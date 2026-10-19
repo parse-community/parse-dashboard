@@ -124,7 +124,10 @@ export default class CanvasPreferencesManager {
 
     try {
       // Get existing canvases from server to detect conflicts
-      const existingCanvasConfigs = await this.serverStorage.getConfigsByPrefix('canvases.canvas.', appId);
+      const existingCanvasConfigs = await this.serverStorage.getConfigsByPrefix(
+        'canvases.canvas.',
+        appId
+      );
       const existingCanvasIds = Object.keys(existingCanvasConfigs).map(key =>
         key.replace('canvases.canvas.', '')
       );
@@ -143,14 +146,14 @@ export default class CanvasPreferencesManager {
             id,
             type: 'canvas',
             local: localCanvas,
-            server: serverCanvas
+            server: serverCanvas,
           };
         });
 
         return {
           success: false,
           canvasCount: 0,
-          conflicts
+          conflicts,
         };
       }
 
@@ -215,7 +218,10 @@ export default class CanvasPreferencesManager {
   async _migrateCanvasesToServer(appId, localCanvases, overwriteConflicts) {
     try {
       // Get existing canvases from server
-      const existingCanvasConfigs = await this.serverStorage.getConfigsByPrefix('canvases.canvas.', appId);
+      const existingCanvasConfigs = await this.serverStorage.getConfigsByPrefix(
+        'canvases.canvas.',
+        appId
+      );
       const existingCanvasIds = Object.keys(existingCanvasConfigs).map(key =>
         key.replace('canvases.canvas.', '')
       );
@@ -241,11 +247,7 @@ export default class CanvasPreferencesManager {
 
           // Only save if we're overwriting conflicts or if this canvas doesn't exist on server
           if (overwriteConflicts || !existingCanvasIds.includes(canvasId)) {
-            return this.serverStorage.setConfig(
-              `canvases.canvas.${canvasId}`,
-              canvasConfig,
-              appId
-            );
+            return this.serverStorage.setConfig(`canvases.canvas.${canvasId}`, canvasConfig, appId);
           }
           return Promise.resolve(); // Skip conflicting canvases when not overwriting
         })
@@ -285,7 +287,7 @@ export default class CanvasPreferencesManager {
 
           canvases.push({
             id: canvasId,
-            ...canvasConfig
+            ...canvasConfig,
           });
         }
       });
@@ -319,11 +321,7 @@ export default class CanvasPreferencesManager {
         canvasConfig.elements = JSON.stringify(canvasConfig.elements);
       }
 
-      await this.serverStorage.setConfig(
-        `canvases.canvas.${canvasId}`,
-        canvasConfig,
-        appId
-      );
+      await this.serverStorage.setConfig(`canvases.canvas.${canvasId}`, canvasConfig, appId);
     } catch (error) {
       console.error('Failed to save canvas to server:', error);
       throw error;

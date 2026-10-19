@@ -170,9 +170,9 @@ export default class EditRowDialog extends React.Component {
         const pointerId = newValue[0];
         newValue = pointerId
           ? Parse.Object.fromJSON({
-            className: targetClass,
-            objectId: pointerId,
-          })
+              className: targetClass,
+              objectId: pointerId,
+            })
           : undefined;
         this.toggleObjectPicker(name, false);
       }

@@ -131,7 +131,11 @@ export default class Toggle extends React.Component {
             {labelLeft}
           </span>
         )}
-        <span className={switchClasses.join(' ')} style={switchStyle} onClick={this.toggle.bind(this)}></span>
+        <span
+          className={switchClasses.join(' ')}
+          style={switchStyle}
+          onClick={this.toggle.bind(this)}
+        ></span>
         {labelRight && (
           <span className={styles.label} onClick={this.toRight.bind(this)}>
             {labelRight}

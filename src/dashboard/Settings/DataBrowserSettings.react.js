@@ -39,11 +39,13 @@ export default class DataBrowserSettings extends DashboardView {
 
   async loadSettings() {
     try {
-      const value = await this.serverStorage.getConfig(
-        CONFIG_KEY,
-        this.context.applicationId
-      );
-      if (value !== null && value !== undefined && typeof value === 'object' && typeof value.reverseAutoScrollSpeedFactor === 'number') {
+      const value = await this.serverStorage.getConfig(CONFIG_KEY, this.context.applicationId);
+      if (
+        value !== null &&
+        value !== undefined &&
+        typeof value === 'object' &&
+        typeof value.reverseAutoScrollSpeedFactor === 'number'
+      ) {
         this.setState({ reverseAutoScrollSpeedFactor: String(value.reverseAutoScrollSpeedFactor) });
       }
     } catch {
@@ -62,10 +64,7 @@ export default class DataBrowserSettings extends DashboardView {
 
     if (value === '') {
       try {
-        await this.serverStorage.deleteConfig(
-          CONFIG_KEY,
-          this.context.applicationId
-        );
+        await this.serverStorage.deleteConfig(CONFIG_KEY, this.context.applicationId);
         this.showNote('Reverse auto-scroll speed factor reset to default.');
       } catch {
         this.showNote('Failed to reset setting.', true);
@@ -81,10 +80,7 @@ export default class DataBrowserSettings extends DashboardView {
 
     try {
       if (parsed === DEFAULT_VALUE) {
-        await this.serverStorage.deleteConfig(
-          CONFIG_KEY,
-          this.context.applicationId
-        );
+        await this.serverStorage.deleteConfig(CONFIG_KEY, this.context.applicationId);
       } else {
         await this.serverStorage.setConfig(
           CONFIG_KEY,
@@ -116,16 +112,17 @@ export default class DataBrowserSettings extends DashboardView {
   renderContent() {
     const message = this.state.message;
     const serverConfigEnabled = this.serverStorage && this.serverStorage.isServerConfigEnabled();
-    const notAvailableMessage = !this.state.loading && !serverConfigEnabled
-      ? 'Server configuration is not enabled for this app. Please add a \'config\' section to your app configuration.'
-      : null;
+    const notAvailableMessage =
+      !this.state.loading && !serverConfigEnabled
+        ? "Server configuration is not enabled for this app. Please add a 'config' section to your app configuration."
+        : null;
 
     return (
       <div>
         <Toolbar section="Settings" subsection="Data Browser" />
         <Notification
           note={notAvailableMessage || (message && message.text)}
-          isErrorNote={notAvailableMessage ? true : (message && message.isError)}
+          isErrorNote={notAvailableMessage ? true : message && message.isError}
         />
         <div className={styles.settings_page}>
           <Fieldset legend="Info Panels">

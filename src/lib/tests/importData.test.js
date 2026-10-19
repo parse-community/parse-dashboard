@@ -144,7 +144,10 @@ describe('parseImportCSV', () => {
 
   it('skips Relation type columns (cannot be set via batch import)', () => {
     const csv = 'name,friends\nAlice,rel456';
-    const schema = { name: { type: 'String' }, friends: { type: 'Relation', targetClass: '_User' } };
+    const schema = {
+      name: { type: 'String' },
+      friends: { type: 'Relation', targetClass: '_User' },
+    };
     const result = parseImportCSV(csv, schema);
     expect(result.error).toBeNull();
     expect(result.rows[0].name).toBe('Alice');
@@ -176,7 +179,11 @@ describe('parseImportCSV', () => {
   });
 
   it('parses File from JSON string', () => {
-    const fileStr = JSON.stringify({ __type: 'File', name: 'pic.jpg', url: 'http://example.com/pic.jpg' });
+    const fileStr = JSON.stringify({
+      __type: 'File',
+      name: 'pic.jpg',
+      url: 'http://example.com/pic.jpg',
+    });
     const csv = `avatar\n"${fileStr.replace(/"/g, '""')}"`;
     const schema = { avatar: { type: 'File' } };
     const result = parseImportCSV(csv, schema);
@@ -207,12 +214,15 @@ describe('parseImportCSV', () => {
   });
 
   it('parses ACL from JSON string', () => {
-    const aclStr = JSON.stringify({ '*': { read: true }, 'user123': { read: true, write: true } });
+    const aclStr = JSON.stringify({ '*': { read: true }, user123: { read: true, write: true } });
     const csv = `ACL\n"${aclStr.replace(/"/g, '""')}"`;
     const schema = { ACL: { type: 'ACL' } };
     const result = parseImportCSV(csv, schema);
     expect(result.error).toBeNull();
-    expect(result.rows[0].ACL).toEqual({ '*': { read: true }, 'user123': { read: true, write: true } });
+    expect(result.rows[0].ACL).toEqual({
+      '*': { read: true },
+      user123: { read: true, write: true },
+    });
   });
 
   it('omits empty cells (undefined)', () => {
@@ -324,7 +334,10 @@ describe('parseImportCSV', () => {
 
   it('skips Relation values without leaking undefined into row', () => {
     const csv = 'name,friends\nAlice,rel123';
-    const schema = { name: { type: 'String' }, friends: { type: 'Relation', targetClass: '_User' } };
+    const schema = {
+      name: { type: 'String' },
+      friends: { type: 'Relation', targetClass: '_User' },
+    };
     const result = parseImportCSV(csv, schema);
     expect(result.error).toBeNull();
     expect(result.rows[0]).toEqual({ name: 'Alice' });
@@ -337,8 +350,20 @@ describe('parseImportCSV', () => {
 // ──────────────────────────────────────────────
 describe('buildBatchRequests', () => {
   const baseRows = [
-    { objectId: 'id1', name: 'Alice', score: 100, createdAt: '2024-01-01T00:00:00.000Z', updatedAt: '2024-01-02T00:00:00.000Z' },
-    { objectId: 'id2', name: 'Bob', score: 200, createdAt: '2024-02-01T00:00:00.000Z', updatedAt: '2024-02-02T00:00:00.000Z' },
+    {
+      objectId: 'id1',
+      name: 'Alice',
+      score: 100,
+      createdAt: '2024-01-01T00:00:00.000Z',
+      updatedAt: '2024-01-02T00:00:00.000Z',
+    },
+    {
+      objectId: 'id2',
+      name: 'Bob',
+      score: 200,
+      createdAt: '2024-02-01T00:00:00.000Z',
+      updatedAt: '2024-02-02T00:00:00.000Z',
+    },
   ];
 
   it('creates POST requests stripping objectId when preserveObjectIds=false', () => {
@@ -442,9 +467,7 @@ describe('buildBatchRequests', () => {
   });
 
   it('keeps unknown columns when unknownColumns is not ignore', () => {
-    const rows = [
-      { objectId: 'id1', name: 'Alice', unknownField: 'foo' },
-    ];
+    const rows = [{ objectId: 'id1', name: 'Alice', unknownField: 'foo' }];
     const requests = buildBatchRequests(rows, 'GameScore', {
       preserveObjectIds: false,
       preserveTimestamps: false,
@@ -491,10 +514,7 @@ describe('buildBatchRequests', () => {
   });
 
   it('skips rows that become empty after unknown column filtering', () => {
-    const rows = [
-      { unknownField: 'value' },
-      { name: 'Bob', unknownField: 'value' },
-    ];
+    const rows = [{ unknownField: 'value' }, { name: 'Bob', unknownField: 'value' }];
     const requests = buildBatchRequests(rows, 'GameScore', {
       preserveObjectIds: false,
       preserveTimestamps: false,
@@ -542,9 +562,18 @@ describe('sendBatchImport', () => {
     });
     // Override for last batch
     global.fetch
-      .mockResolvedValueOnce({ ok: true, json: async () => Array.from({ length: 50 }, () => ({ success: {} })) })
-      .mockResolvedValueOnce({ ok: true, json: async () => Array.from({ length: 50 }, () => ({ success: {} })) })
-      .mockResolvedValueOnce({ ok: true, json: async () => Array.from({ length: 20 }, () => ({ success: {} })) });
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => Array.from({ length: 50 }, () => ({ success: {} })),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => Array.from({ length: 50 }, () => ({ success: {} })),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => Array.from({ length: 20 }, () => ({ success: {} })),
+      });
 
     const result = await sendBatchImport(requests, baseOptions);
     expect(global.fetch).toHaveBeenCalledTimes(3);
@@ -631,7 +660,12 @@ describe('sendBatchImport', () => {
       ok: true,
       json: async () => [
         { success: { objectId: 'new1' } },
-        { error: { code: 137, error: 'A duplicate value for a field with unique values was provided' } },
+        {
+          error: {
+            code: 137,
+            error: 'A duplicate value for a field with unique values was provided',
+          },
+        },
         { success: { objectId: 'new3' } },
       ],
     });
@@ -652,8 +686,14 @@ describe('sendBatchImport', () => {
     }));
 
     global.fetch
-      .mockResolvedValueOnce({ ok: true, json: async () => Array.from({ length: 50 }, () => ({ success: {} })) })
-      .mockResolvedValueOnce({ ok: true, json: async () => Array.from({ length: 25 }, () => ({ success: {} })) });
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => Array.from({ length: 50 }, () => ({ success: {} })),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => Array.from({ length: 25 }, () => ({ success: {} })),
+      });
 
     await sendBatchImport(requests, baseOptions);
 
@@ -765,10 +805,7 @@ describe('checkDuplicates', () => {
   });
 
   it('returns objectIds that already exist', async () => {
-    mockFind.mockResolvedValueOnce([
-      { id: 'id1' },
-      { id: 'id3' },
-    ]);
+    mockFind.mockResolvedValueOnce([{ id: 'id1' }, { id: 'id3' }]);
 
     const result = await checkDuplicates(['id1', 'id2', 'id3'], 'GameScore');
     expect(result).toEqual(['id1', 'id3']);

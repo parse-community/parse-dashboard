@@ -26,8 +26,8 @@ const mockRandomUUID = jest.fn(() => 'test-uuid-123');
 // Mock the entire crypto object at module level
 Object.defineProperty(global, 'crypto', {
   value: {
-    randomUUID: mockRandomUUID
-  }
+    randomUUID: mockRandomUUID,
+  },
 });
 
 jest.dontMock('../ClassPreferences');
@@ -92,8 +92,8 @@ class MockBrowser {
     } else {
       // Check if this is updating an existing filter by name and content match
       // (legacy filters get auto-assigned UUIDs when read, so we match by content)
-      const existingFilterIndex = preferences.filters.findIndex(filter =>
-        filter.name === name && filter.filter === _filters
+      const existingFilterIndex = preferences.filters.findIndex(
+        filter => filter.name === name && filter.filter === _filters
       );
 
       if (existingFilterIndex !== -1) {
@@ -159,16 +159,12 @@ describe('Browser saveFilters - Legacy Filter Conversion', () => {
       filters: [
         {
           name: 'Legacy Filter',
-          filter: JSON.stringify(filterData)
+          filter: JSON.stringify(filterData),
           // Note: no 'id' property - this makes it a legacy filter
-        }
-      ]
+        },
+      ],
     };
-    ClassPreferences.updatePreferences(
-      preferences,
-      'testApp',
-      'TestClass'
-    );
+    ClassPreferences.updatePreferences(preferences, 'testApp', 'TestClass');
 
     // Now call saveFilters to update the same filter
     // Note: With automatic UUID assignment, the legacy filter gets a UUID when read,
@@ -184,7 +180,7 @@ describe('Browser saveFilters - Legacy Filter Conversion', () => {
     expect(updatedPreferences.filters[0]).toEqual({
       name: 'Legacy Filter',
       id: 'test-uuid-123',
-      filter: JSON.stringify(filterData)
+      filter: JSON.stringify(filterData),
     });
   });
 
@@ -197,16 +193,12 @@ describe('Browser saveFilters - Legacy Filter Conversion', () => {
       filters: [
         {
           name: 'My Filter',
-          filter: JSON.stringify(originalFilterData)
+          filter: JSON.stringify(originalFilterData),
           // No 'id' property - legacy filter
-        }
-      ]
+        },
+      ],
     };
-    ClassPreferences.updatePreferences(
-      preferences,
-      'testApp',
-      'TestClass'
-    );
+    ClassPreferences.updatePreferences(preferences, 'testApp', 'TestClass');
 
     // Try to save a filter with same name but different content
     const filters = new MockList(newFilterData);
@@ -222,14 +214,14 @@ describe('Browser saveFilters - Legacy Filter Conversion', () => {
     expect(updatedPreferences.filters[0]).toEqual({
       name: 'My Filter',
       id: 'test-uuid-123',
-      filter: JSON.stringify(originalFilterData)
+      filter: JSON.stringify(originalFilterData),
     });
 
     // New modern filter should be created
     expect(updatedPreferences.filters[1]).toEqual({
       name: 'My Filter',
       id: 'test-uuid-123',
-      filter: JSON.stringify(newFilterData)
+      filter: JSON.stringify(newFilterData),
     });
   });
 
@@ -242,15 +234,11 @@ describe('Browser saveFilters - Legacy Filter Conversion', () => {
         {
           name: 'Modern Filter',
           id: 'existing-id',
-          filter: JSON.stringify(filterData)
-        }
-      ]
+          filter: JSON.stringify(filterData),
+        },
+      ],
     };
-    ClassPreferences.updatePreferences(
-      preferences,
-      'testApp',
-      'TestClass'
-    );
+    ClassPreferences.updatePreferences(preferences, 'testApp', 'TestClass');
 
     // Update the modern filter
     const filters = new MockList(filterData);
@@ -264,7 +252,7 @@ describe('Browser saveFilters - Legacy Filter Conversion', () => {
     expect(updatedPreferences.filters[0]).toEqual({
       name: 'Modern Filter',
       id: 'existing-id',
-      filter: JSON.stringify(filterData)
+      filter: JSON.stringify(filterData),
     });
   });
 
@@ -273,11 +261,7 @@ describe('Browser saveFilters - Legacy Filter Conversion', () => {
 
     // Start with empty preferences
     const preferences = { filters: [] };
-    ClassPreferences.updatePreferences(
-      preferences,
-      'testApp',
-      'TestClass'
-    );
+    ClassPreferences.updatePreferences(preferences, 'testApp', 'TestClass');
 
     // Save a new filter
     const filters = new MockList(filterData);
@@ -291,7 +275,7 @@ describe('Browser saveFilters - Legacy Filter Conversion', () => {
     expect(updatedPreferences.filters[0]).toEqual({
       name: 'New Filter',
       id: 'test-uuid-123',
-      filter: JSON.stringify(filterData)
+      filter: JSON.stringify(filterData),
     });
   });
 });

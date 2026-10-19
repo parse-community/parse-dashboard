@@ -55,7 +55,11 @@ export default class Dropdown extends React.Component {
     }
 
     // Scroll highlighted item into view
-    if (this.state.open && this.state.highlightedIndex !== prevState.highlightedIndex && this.menuRef.current) {
+    if (
+      this.state.open &&
+      this.state.highlightedIndex !== prevState.highlightedIndex &&
+      this.menuRef.current
+    ) {
       const buttons = this.menuRef.current.querySelectorAll('button');
       const highlightedButton = buttons[this.state.highlightedIndex];
       if (highlightedButton) {
@@ -72,7 +76,11 @@ export default class Dropdown extends React.Component {
 
     if (!this.state.open) {
       // Dropdown is closed
-      if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || ((e.key === 'Enter' || e.key === ' ') && !isEnterWithMeta)) {
+      if (
+        e.key === 'ArrowDown' ||
+        e.key === 'ArrowUp' ||
+        ((e.key === 'Enter' || e.key === ' ') && !isEnterWithMeta)
+      ) {
         e.preventDefault();
         e.stopPropagation(); // Prevent event from reaching other handlers
         this.open();
@@ -83,13 +91,13 @@ export default class Dropdown extends React.Component {
         e.preventDefault();
         e.stopPropagation(); // Prevent event from reaching other handlers
         this.setState(state => ({
-          highlightedIndex: Math.min(state.highlightedIndex + 1, options.length - 1)
+          highlightedIndex: Math.min(state.highlightedIndex + 1, options.length - 1),
         }));
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
         e.stopPropagation(); // Prevent event from reaching other handlers
         this.setState(state => ({
-          highlightedIndex: Math.max(state.highlightedIndex - 1, 0)
+          highlightedIndex: Math.max(state.highlightedIndex - 1, 0),
         }));
       } else if ((e.key === 'Enter' || e.key === ' ') && !isEnterWithMeta) {
         e.preventDefault();

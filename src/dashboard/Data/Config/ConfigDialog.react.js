@@ -13,7 +13,14 @@ import GeoPointInput from 'components/GeoPointInput/GeoPointInput.react';
 import Icon from 'components/Icon/Icon.react';
 import Label from 'components/Label/Label.react';
 import Modal from 'components/Modal/Modal.react';
-import NonPrintableHighlighter, { hasNonPrintableChars, getNonPrintableCharsFromJson, hasNonAlphanumericChars, getNonAlphanumericCharsFromJson, getRegexValidation, getRegexValidationFromJson } from 'components/NonPrintableHighlighter/NonPrintableHighlighter.react';
+import NonPrintableHighlighter, {
+  hasNonPrintableChars,
+  getNonPrintableCharsFromJson,
+  hasNonAlphanumericChars,
+  getNonAlphanumericCharsFromJson,
+  getRegexValidation,
+  getRegexValidationFromJson,
+} from 'components/NonPrintableHighlighter/NonPrintableHighlighter.react';
 import Option from 'components/Dropdown/Option.react';
 import Parse from 'parse';
 import React from 'react';
@@ -54,7 +61,12 @@ const EDITORS = {
     <Toggle type={Toggle.Types.TRUE_FALSE} value={!!value} onChange={onChange} />
   ),
   String: (value, onChange, wordWrap, syntaxColors, options = {}) => (
-    <NonPrintableHighlighter value={value} detectNonPrintable={!!options.detectNonPrintable} detectNonAlphanumeric={!!options.detectNonAlphanumeric} detectRegex={!!options.detectRegex}>
+    <NonPrintableHighlighter
+      value={value}
+      detectNonPrintable={!!options.detectNonPrintable}
+      detectNonAlphanumeric={!!options.detectNonAlphanumeric}
+      detectRegex={!!options.detectRegex}
+    >
       <TextInput multiline={true} value={value || ''} onChange={onChange} />
     </NonPrintableHighlighter>
   ),
@@ -63,7 +75,13 @@ const EDITORS = {
   ),
   Date: (value, onChange) => <DateTimeInput fixed={true} value={value} onChange={onChange} />,
   Object: (value, onChange, wordWrap, syntaxColors, options = {}) => (
-    <NonPrintableHighlighter value={value} isJson={true} detectNonPrintable={!!options.detectNonPrintable} detectNonAlphanumeric={!!options.detectNonAlphanumeric} detectRegex={!!options.detectRegex}>
+    <NonPrintableHighlighter
+      value={value}
+      isJson={true}
+      detectNonPrintable={!!options.detectNonPrintable}
+      detectNonAlphanumeric={!!options.detectNonAlphanumeric}
+      detectRegex={!!options.detectRegex}
+    >
       <JsonEditor
         value={value || ''}
         onChange={onChange}
@@ -74,7 +92,13 @@ const EDITORS = {
     </NonPrintableHighlighter>
   ),
   Array: (value, onChange, wordWrap, syntaxColors, options = {}) => (
-    <NonPrintableHighlighter value={value} isJson={true} detectNonPrintable={!!options.detectNonPrintable} detectNonAlphanumeric={!!options.detectNonAlphanumeric} detectRegex={!!options.detectRegex}>
+    <NonPrintableHighlighter
+      value={value}
+      isJson={true}
+      detectNonPrintable={!!options.detectNonPrintable}
+      detectNonAlphanumeric={!!options.detectNonAlphanumeric}
+      detectRegex={!!options.detectRegex}
+    >
       <JsonEditor
         value={value || ''}
         onChange={onChange}
@@ -196,7 +220,11 @@ export default class ConfigDialog extends React.Component {
       detectNonPrintable = this.props.nonPrintableShowOnlyFor.includes(this.props.param);
     }
     let detectNonAlphanumeric = this.props.detectNonAlphanumeric;
-    if (detectNonAlphanumeric && isExistingParam && this.props.nonAlphanumericShowOnlyFor.length > 0) {
+    if (
+      detectNonAlphanumeric &&
+      isExistingParam &&
+      this.props.nonAlphanumericShowOnlyFor.length > 0
+    ) {
       detectNonAlphanumeric = this.props.nonAlphanumericShowOnlyFor.includes(this.props.param);
     }
     let detectRegex = this.props.detectRegex;
@@ -274,7 +302,8 @@ export default class ConfigDialog extends React.Component {
     }
 
     // Compute effective detection flags (respecting show-only-for settings)
-    const { detectNonPrintable, detectNonAlphanumeric, detectRegex } = this.getEffectiveDetectionFlags();
+    const { detectNonPrintable, detectNonAlphanumeric, detectRegex } =
+      this.getEffectiveDetectionFlags();
 
     // Block save if non-printable characters detected for this param
     if (
@@ -436,7 +465,10 @@ export default class ConfigDialog extends React.Component {
     }
 
     // Update parameter value or masterKeyOnly if they have changed (non-conflict)
-    if (!this.props.conflict && (this.props.value !== prevProps.value || this.props.masterKeyOnly !== prevProps.masterKeyOnly)) {
+    if (
+      !this.props.conflict &&
+      (this.props.value !== prevProps.value || this.props.masterKeyOnly !== prevProps.masterKeyOnly)
+    ) {
       let updatedValue = this.props.value;
       let error = null;
 
@@ -525,22 +557,27 @@ export default class ConfigDialog extends React.Component {
             value => this.setState({ value, error: null }),
             this.state.wordWrap,
             this.state.syntaxColors,
-            { detectNonPrintable: effectiveDetectNonPrintable, detectNonAlphanumeric: effectiveDetectNonAlphanumeric, detectRegex: effectiveDetectRegex }
+            {
+              detectNonPrintable: effectiveDetectNonPrintable,
+              detectNonAlphanumeric: effectiveDetectNonAlphanumeric,
+              detectRegex: effectiveDetectRegex,
+            }
           )}
         />
         {this.state.showDiff && this.props.param.length > 0 && (
           <Field
-            label={
-              <Label
-                text="Diff"
-                description="Changes compared to the saved version."
-              />
-            }
+            label={<Label text="Diff" description="Changes compared to the saved version." />}
             input={
               <ConfigConflictDiff
                 serverValue={
-                  (this.state.type === 'Object' || this.state.type === 'Array')
-                    ? (() => { try { return JSON.parse(this.props.value); } catch { return this.props.value; } })()
+                  this.state.type === 'Object' || this.state.type === 'Array'
+                    ? (() => {
+                        try {
+                          return JSON.parse(this.props.value);
+                        } catch {
+                          return this.props.value;
+                        }
+                      })()
                     : this.props.value
                 }
                 userValue={this.state.value}
@@ -557,24 +594,24 @@ export default class ConfigDialog extends React.Component {
           */
           semver.valid(this.props.parseServerVersion) &&
           semver.gte(this.props.parseServerVersion, '3.9.0') ? (
-              <Field
-                label={
-                  <Label
-                    text="Requires master key?"
-                    description="When set to yes the parameter is returned only when requested with the master key. You can change it at any time."
-                  />
-                }
-                input={
-                  <Toggle
-                    type={Toggle.Types.YES_NO}
-                    value={this.state.masterKeyOnly}
-                    onChange={masterKeyOnly => this.setState({ masterKeyOnly })}
-                    additionalStyles={{ margin: '0px' }}
-                  />
-                }
-                className={styles.addColumnToggleWrapper}
-              />
-            ) : null
+            <Field
+              label={
+                <Label
+                  text="Requires master key?"
+                  description="When set to yes the parameter is returned only when requested with the master key. You can change it at any time."
+                />
+              }
+              input={
+                <Toggle
+                  type={Toggle.Types.YES_NO}
+                  value={this.state.masterKeyOnly}
+                  onChange={masterKeyOnly => this.setState({ masterKeyOnly })}
+                  additionalStyles={{ margin: '0px' }}
+                />
+              }
+              className={styles.addColumnToggleWrapper}
+            />
+          ) : null
         }
         {configHistory?.length > 0 && (
           <Field
@@ -585,7 +622,10 @@ export default class ConfigDialog extends React.Component {
               />
             }
             input={
-              <Dropdown value={String(this.state.selectedIndex)} onChange={index => handleIndexChange(Number(index))}>
+              <Dropdown
+                value={String(this.state.selectedIndex)}
+                onChange={index => handleIndexChange(Number(index))}
+              >
                 {configHistory.map((value, i) => (
                   <Option key={i} value={String(i)}>
                     {dateStringUTC(new Date(value.time))}
@@ -605,7 +645,16 @@ export default class ConfigDialog extends React.Component {
     const customFooter = (
       <div>
         {this.props.conflict && (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 28px', borderTop: '1px solid #e1e4e8', background: '#ffeef0' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '10px 28px',
+              borderTop: '1px solid #e1e4e8',
+              background: '#ffeef0',
+            }}
+          >
             <span style={{ color: '#cb2431', fontSize: '13px' }}>
               Server value changed while editing, see diff view - overwrite it?
             </span>
@@ -617,7 +666,14 @@ export default class ConfigDialog extends React.Component {
             />
           </div>
         )}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '17px 28px' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '17px 28px',
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
             {isJsonType && (
               <>
@@ -644,35 +700,87 @@ export default class ConfigDialog extends React.Component {
                     const node = this.optionsRef.current;
                     const pos = Position.inWindow(node);
                     pos.y -= 4; // small gap above button
-                    this.setState({ optionsMenuOpen: !this.state.optionsMenuOpen, optionsMenuPos: pos });
+                    this.setState({
+                      optionsMenuOpen: !this.state.optionsMenuOpen,
+                      optionsMenuPos: pos,
+                    });
                   }}
                 />
                 {this.state.optionsMenuOpen && this.state.optionsMenuPos && (
                   <Popover
                     fixed={true}
                     position={this.state.optionsMenuPos}
-                    onExternalClick={() => { document.activeElement?.blur(); this.setState({ optionsMenuOpen: false }); }}
+                    onExternalClick={() => {
+                      document.activeElement?.blur();
+                      this.setState({ optionsMenuOpen: false });
+                    }}
                   >
-                    <div style={{ background: '#fff', border: '1px solid #e1e4e8', borderRadius: '4px', boxShadow: '0 3px 12px rgba(0,0,0,0.15)', padding: '4px 0', minWidth: '130px', transform: 'translateY(-100%)' }}>
+                    <div
+                      style={{
+                        background: '#fff',
+                        border: '1px solid #e1e4e8',
+                        borderRadius: '4px',
+                        boxShadow: '0 3px 12px rgba(0,0,0,0.15)',
+                        padding: '4px 0',
+                        minWidth: '130px',
+                        transform: 'translateY(-100%)',
+                      }}
+                    >
                       {isJsonType && (
                         <div
-                          onClick={() => { document.activeElement?.blur(); this.setState({ wordWrap: !this.state.wordWrap, optionsMenuOpen: false }); }}
-                          style={{ display: 'flex', alignItems: 'center', padding: '8px 12px', cursor: 'pointer', fontSize: '14px', color: '#333', gap: '8px' }}
-                          onMouseEnter={e => e.currentTarget.style.background = '#f6f8fa'}
-                          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                          onClick={() => {
+                            document.activeElement?.blur();
+                            this.setState({
+                              wordWrap: !this.state.wordWrap,
+                              optionsMenuOpen: false,
+                            });
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            padding: '8px 12px',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            color: '#333',
+                            gap: '8px',
+                          }}
+                          onMouseEnter={e => (e.currentTarget.style.background = '#f6f8fa')}
+                          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                         >
-                          <span style={{ width: '12px', display: 'inline-block' }}>{this.state.wordWrap && <Icon name="check" width={12} height={12} fill="#00db7c" />}</span>
+                          <span style={{ width: '12px', display: 'inline-block' }}>
+                            {this.state.wordWrap && (
+                              <Icon name="check" width={12} height={12} fill="#00db7c" />
+                            )}
+                          </span>
                           <span>Word wrap</span>
                         </div>
                       )}
                       {isDiffableType && isExistingParam && (
                         <div
-                          onClick={() => { document.activeElement?.blur(); this.setState({ showDiff: !this.state.showDiff, optionsMenuOpen: false }); }}
-                          style={{ display: 'flex', alignItems: 'center', padding: '8px 12px', cursor: 'pointer', fontSize: '14px', color: '#333', gap: '8px' }}
-                          onMouseEnter={e => e.currentTarget.style.background = '#f6f8fa'}
-                          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                          onClick={() => {
+                            document.activeElement?.blur();
+                            this.setState({
+                              showDiff: !this.state.showDiff,
+                              optionsMenuOpen: false,
+                            });
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            padding: '8px 12px',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            color: '#333',
+                            gap: '8px',
+                          }}
+                          onMouseEnter={e => (e.currentTarget.style.background = '#f6f8fa')}
+                          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                         >
-                          <span style={{ width: '12px', display: 'inline-block' }}>{this.state.showDiff && <Icon name="check" width={12} height={12} fill="#00db7c" />}</span>
+                          <span style={{ width: '12px', display: 'inline-block' }}>
+                            {this.state.showDiff && (
+                              <Icon name="check" width={12} height={12} fill="#00db7c" />
+                            )}
+                          </span>
                           <span>Diff view</span>
                         </div>
                       )}
@@ -689,7 +797,11 @@ export default class ConfigDialog extends React.Component {
               color="blue"
               value={newParam ? 'Create' : 'Save'}
               onClick={this.submit.bind(this)}
-              disabled={!this.valid() || this.props.loading || (this.props.conflict && !this.state.confirmOverride)}
+              disabled={
+                !this.valid() ||
+                this.props.loading ||
+                (this.props.conflict && !this.state.confirmOverride)
+              }
             />
           </div>
         </div>
@@ -705,13 +817,15 @@ export default class ConfigDialog extends React.Component {
           iconSize={30}
           subtitle={'Dynamically configure parts of your app'}
           customFooter={customFooter}
-          disabled={!this.valid() || this.props.loading || (this.props.conflict && !this.state.confirmOverride)}
+          disabled={
+            !this.valid() ||
+            this.props.loading ||
+            (this.props.conflict && !this.state.confirmOverride)
+          }
           onCancel={this.handleCancel.bind(this)}
           onConfirm={this.submit.bind(this)}
         >
-          <LoaderContainer loading={this.props.loading}>
-            {dialogContent}
-          </LoaderContainer>
+          <LoaderContainer loading={this.props.loading}>{dialogContent}</LoaderContainer>
         </Modal>
         {this.state.showDiscardConfirm && (
           <Modal

@@ -234,7 +234,7 @@ class SlowQueries extends TableView {
     return (
       <EmptyState
         title="Slow Queries"
-        description={'You haven\'t executed any queries.'}
+        description={"You haven't executed any queries."}
         icon="gears"
         cta="Get started with Query"
         action={() => (window.location = 'http://docs.parseplatform.org/rest/guide/#queries')}

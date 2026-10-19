@@ -11,14 +11,7 @@ import Icon from 'components/Icon/Icon.react';
 import ExpandModal from './ExpandModal.react';
 import styles from './GraphElement.scss';
 
-const GraphElement = ({
-  config,
-  data,
-  columns,
-  isLoading,
-  error,
-  onRefresh,
-}) => {
+const GraphElement = ({ config, data, columns, isLoading, error, onRefresh }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   if (!config || !config.graphConfig) {
     return (
@@ -71,14 +64,10 @@ const GraphElement = ({
           </button>
         )}
       </div>
-      <div className={styles.graphContainer}>
-        {renderGraph()}
-      </div>
+      <div className={styles.graphContainer}>{renderGraph()}</div>
       {isExpanded && (
         <ExpandModal title={title} onClose={() => setIsExpanded(false)}>
-          <div className={styles.expandedGraphContainer}>
-            {renderGraph()}
-          </div>
+          <div className={styles.expandedGraphContainer}>{renderGraph()}</div>
         </ExpandModal>
       )}
     </div>

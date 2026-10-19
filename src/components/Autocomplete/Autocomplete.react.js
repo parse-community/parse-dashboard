@@ -47,11 +47,11 @@ export default class Autocomplete extends Component {
     };
 
     this.state = {
-      valueFromSuggestion: props.strict ? props.value ?? props.suggestions[0] : '',
+      valueFromSuggestion: props.strict ? (props.value ?? props.suggestions[0]) : '',
       activeSuggestion: 0,
       filteredSuggestions: [],
       showSuggestions: false,
-      userInput: props.strict ? props.value ?? props.suggestions[0] : '',
+      userInput: props.strict ? (props.value ?? props.suggestions[0]) : '',
       label: props.label,
       position: null,
     };
@@ -95,8 +95,8 @@ export default class Autocomplete extends Component {
     const filteredSuggestions = buildSuggestions
       ? buildSuggestions(userInput)
       : suggestions.filter(
-        suggestion => suggestion.toLowerCase().indexOf(userInput.toLowerCase()) > -1
-      );
+          suggestion => suggestion.toLowerCase().indexOf(userInput.toLowerCase()) > -1
+        );
     return filteredSuggestions;
   }
 

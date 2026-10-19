@@ -6,7 +6,13 @@ import styles from 'components/ColumnsConfiguration/ColumnConfigurationItem.scss
 
 const DND_TYPE = 'ColumnConfigurationItem';
 
-const ColumnConfigurationItem = ({ name, handleColumnDragDrop, index, onChangeVisible, visible }) => {
+const ColumnConfigurationItem = ({
+  name,
+  handleColumnDragDrop,
+  index,
+  onChangeVisible,
+  visible,
+}) => {
   const ref = useRef(null);
 
   const [{ isDragging }, drag] = useDrag(

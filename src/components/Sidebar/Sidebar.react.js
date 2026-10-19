@@ -175,11 +175,11 @@ const Sidebar = ({
       onMouseLeave={
         !collapsed && !fixed
           ? e => {
-            if (!isInsidePopover(e.relatedTarget)) {
-              setAppsMenuOpen(false);
-              setCollapsed(true);
+              if (!isInsidePopover(e.relatedTarget)) {
+                setAppsMenuOpen(false);
+                setCollapsed(true);
+              }
             }
-          }
           : undefined
       }
     >

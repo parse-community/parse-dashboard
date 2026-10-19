@@ -67,10 +67,7 @@ export default class CloudConfigSettings extends DashboardView {
 
   async loadSettings() {
     try {
-      const settings = await this.serverStorage.getConfig(
-        CONFIG_KEY,
-        this.context.applicationId
-      );
+      const settings = await this.serverStorage.getConfig(CONFIG_KEY, this.context.applicationId);
       if (settings) {
         if (settings.historyLimit !== undefined) {
           this.setState({ cloudConfigHistoryLimit: String(settings.historyLimit) });
@@ -114,7 +111,7 @@ export default class CloudConfigSettings extends DashboardView {
       );
       if (formattingSettings && formattingSettings.colors) {
         this.setState({
-          syntaxColors: { ...DEFAULT_SYNTAX_COLORS, ...formattingSettings.colors }
+          syntaxColors: { ...DEFAULT_SYNTAX_COLORS, ...formattingSettings.colors },
         });
       }
     } catch {
@@ -137,7 +134,11 @@ export default class CloudConfigSettings extends DashboardView {
             }
             if (typeof value === 'object' && value !== null) {
               // Exclude Date, GeoPoint, File
-              if (value.__type === 'Date' || value.__type === 'GeoPoint' || value.__type === 'File') {
+              if (
+                value.__type === 'Date' ||
+                value.__type === 'GeoPoint' ||
+                value.__type === 'File'
+              ) {
                 return false;
               }
               return true; // Object or Array
@@ -155,16 +156,9 @@ export default class CloudConfigSettings extends DashboardView {
 
   async saveSettings(updates) {
     try {
-      const current = await this.serverStorage.getConfig(
-        CONFIG_KEY,
-        this.context.applicationId
-      );
+      const current = await this.serverStorage.getConfig(CONFIG_KEY, this.context.applicationId);
       const settings = { ...(current || {}), ...updates };
-      await this.serverStorage.setConfig(
-        CONFIG_KEY,
-        settings,
-        this.context.applicationId
-      );
+      await this.serverStorage.setConfig(CONFIG_KEY, settings, this.context.applicationId);
       return true;
     } catch {
       return false;
@@ -221,10 +215,18 @@ export default class CloudConfigSettings extends DashboardView {
         blockSaveUpdates.nonPrintableBlockSave = filtered.length > 0 ? filtered : undefined;
       }
     }
-    if (await this.saveSettings({ nonPrintableShowOnlyFor: value.length > 0 ? value : undefined, ...blockSaveUpdates })) {
+    if (
+      await this.saveSettings({
+        nonPrintableShowOnlyFor: value.length > 0 ? value : undefined,
+        ...blockSaveUpdates,
+      })
+    ) {
       this.showNote('Non-printable show-only parameters updated.');
     } else {
-      this.setState({ nonPrintableShowOnlyFor: previousShowOnlyFor, nonPrintableBlockSave: previousBlockSave });
+      this.setState({
+        nonPrintableShowOnlyFor: previousShowOnlyFor,
+        nonPrintableBlockSave: previousBlockSave,
+      });
       this.showNote('Failed to save setting.', true);
     }
   }
@@ -242,7 +244,9 @@ export default class CloudConfigSettings extends DashboardView {
   async handleNonAlphanumericBlockSaveChange(value) {
     const previous = this.state.nonAlphanumericBlockSave;
     this.setState({ nonAlphanumericBlockSave: value });
-    if (await this.saveSettings({ nonAlphanumericBlockSave: value.length > 0 ? value : undefined })) {
+    if (
+      await this.saveSettings({ nonAlphanumericBlockSave: value.length > 0 ? value : undefined })
+    ) {
       this.showNote('Non-alphanumeric block-save parameters updated.');
     } else {
       this.setState({ nonAlphanumericBlockSave: previous });
@@ -263,10 +267,18 @@ export default class CloudConfigSettings extends DashboardView {
         blockSaveUpdates.nonAlphanumericBlockSave = filtered.length > 0 ? filtered : undefined;
       }
     }
-    if (await this.saveSettings({ nonAlphanumericShowOnlyFor: value.length > 0 ? value : undefined, ...blockSaveUpdates })) {
+    if (
+      await this.saveSettings({
+        nonAlphanumericShowOnlyFor: value.length > 0 ? value : undefined,
+        ...blockSaveUpdates,
+      })
+    ) {
       this.showNote('Non-alphanumeric show-only parameters updated.');
     } else {
-      this.setState({ nonAlphanumericShowOnlyFor: previousShowOnlyFor, nonAlphanumericBlockSave: previousBlockSave });
+      this.setState({
+        nonAlphanumericShowOnlyFor: previousShowOnlyFor,
+        nonAlphanumericBlockSave: previousBlockSave,
+      });
       this.showNote('Failed to save setting.', true);
     }
   }
@@ -295,7 +307,12 @@ export default class CloudConfigSettings extends DashboardView {
         blockSaveUpdates.regexBlockSave = filtered.length > 0 ? filtered : undefined;
       }
     }
-    if (await this.saveSettings({ regexShowOnlyFor: value.length > 0 ? value : undefined, ...blockSaveUpdates })) {
+    if (
+      await this.saveSettings({
+        regexShowOnlyFor: value.length > 0 ? value : undefined,
+        ...blockSaveUpdates,
+      })
+    ) {
       this.showNote('Regex show-only parameters updated.');
     } else {
       this.setState({ regexShowOnlyFor: previousShowOnlyFor, regexBlockSave: previousBlockSave });
@@ -331,7 +348,7 @@ export default class CloudConfigSettings extends DashboardView {
 
   handleSyntaxColorChange(tokenType, color) {
     this.setState(prevState => ({
-      syntaxColors: { ...prevState.syntaxColors, [tokenType]: color }
+      syntaxColors: { ...prevState.syntaxColors, [tokenType]: color },
     }));
   }
 
@@ -371,10 +388,7 @@ export default class CloudConfigSettings extends DashboardView {
 
         // If no custom colors remain, delete the config entry
         if (Object.keys(colors).length === 0) {
-          await this.serverStorage.deleteConfig(
-            FORMATTING_CONFIG_KEY,
-            this.context.applicationId
-          );
+          await this.serverStorage.deleteConfig(FORMATTING_CONFIG_KEY, this.context.applicationId);
         } else {
           await this.serverStorage.setConfig(
             FORMATTING_CONFIG_KEY,
@@ -400,10 +414,7 @@ export default class CloudConfigSettings extends DashboardView {
       // Wait for any in-flight saves to complete before deleting
       await (this.pendingSyntaxColorSave || Promise.resolve());
 
-      await this.serverStorage.deleteConfig(
-        FORMATTING_CONFIG_KEY,
-        this.context.applicationId
-      );
+      await this.serverStorage.deleteConfig(FORMATTING_CONFIG_KEY, this.context.applicationId);
 
       // Reset the queue so future saves start fresh
       this.pendingSyntaxColorSave = Promise.resolve();
@@ -434,7 +445,15 @@ export default class CloudConfigSettings extends DashboardView {
     return (
       <div style={{ width: '100%', background: '#f6fafb' }}>
         {this.renderParamMultiSelect(value, onChange, placeholder, disabled, allNames)}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '8px', paddingBottom: '8px' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '8px',
+            marginTop: '8px',
+            paddingBottom: '8px',
+          }}
+        >
           <Button
             value="Select all"
             disabled={disabled || value.length === allNames.length}
@@ -473,14 +492,16 @@ export default class CloudConfigSettings extends DashboardView {
   renderContent() {
     const message = this.state.message;
     const serverConfigEnabled = this.serverStorage && this.serverStorage.isServerConfigEnabled();
-    const notAvailableMessage = !this.state.loading && !serverConfigEnabled
-      ? 'Server configuration is not enabled for this app. Please add a \'config\' section to your app configuration.'
-      : null;
+    const notAvailableMessage =
+      !this.state.loading && !serverConfigEnabled
+        ? "Server configuration is not enabled for this app. Please add a 'config' section to your app configuration."
+        : null;
 
     const configFileLimit = this.context.cloudConfigHistoryLimit;
     const isOverriddenByConfigFile = configFileLimit !== undefined && configFileLimit !== null;
 
-    let limitDescription = 'Maximum number of history entries stored per Cloud Config parameter. Leave empty to use the default (100).';
+    let limitDescription =
+      'Maximum number of history entries stored per Cloud Config parameter. Leave empty to use the default (100).';
     if (isOverriddenByConfigFile) {
       limitDescription = `This value is overridden by the dashboard config file (${configFileLimit}). Remove the "cloudConfigHistoryLimit" option from the config file to use this setting.`;
     }
@@ -490,7 +511,7 @@ export default class CloudConfigSettings extends DashboardView {
         <Toolbar section="Settings" subsection="Cloud Config" />
         <Notification
           note={notAvailableMessage || (message && message.text)}
-          isErrorNote={notAvailableMessage ? true : (message && message.isError)}
+          isErrorNote={notAvailableMessage ? true : message && message.isError}
         />
         <div className={styles.settings_page}>
           <Fieldset
@@ -499,16 +520,15 @@ export default class CloudConfigSettings extends DashboardView {
           >
             <Field
               labelWidth={62}
-              label={
-                <Label
-                  text="History Limit"
-                  description={limitDescription}
-                />
-              }
+              label={<Label text="History Limit" description={limitDescription} />}
               input={
                 <TextInput
                   placeholder={this.state.loading ? 'Loading...' : '100'}
-                  value={isOverriddenByConfigFile ? String(configFileLimit) : this.state.cloudConfigHistoryLimit}
+                  value={
+                    isOverriddenByConfigFile
+                      ? String(configFileLimit)
+                      : this.state.cloudConfigHistoryLimit
+                  }
                   disabled={!serverConfigEnabled || this.state.loading || isOverriddenByConfigFile}
                   onChange={this.handleCloudConfigHistoryLimitChange.bind(this)}
                   onBlur={this.saveCloudConfigHistoryLimit.bind(this)}
@@ -569,7 +589,9 @@ export default class CloudConfigSettings extends DashboardView {
                     this.handleNonPrintableBlockSaveChange.bind(this),
                     'No parameter',
                     !serverConfigEnabled || this.state.loading,
-                    this.state.nonPrintableShowOnlyFor.length > 0 ? this.state.nonPrintableShowOnlyFor : undefined
+                    this.state.nonPrintableShowOnlyFor.length > 0
+                      ? this.state.nonPrintableShowOnlyFor
+                      : undefined
                   )}
                 />
               </>
@@ -623,7 +645,9 @@ export default class CloudConfigSettings extends DashboardView {
                     this.handleNonAlphanumericBlockSaveChange.bind(this),
                     'No parameter',
                     !serverConfigEnabled || this.state.loading,
-                    this.state.nonAlphanumericShowOnlyFor.length > 0 ? this.state.nonAlphanumericShowOnlyFor : undefined
+                    this.state.nonAlphanumericShowOnlyFor.length > 0
+                      ? this.state.nonAlphanumericShowOnlyFor
+                      : undefined
                   )}
                 />
               </>
@@ -712,7 +736,7 @@ export default class CloudConfigSettings extends DashboardView {
                       type="color"
                       value={this.state.syntaxColors[tokenType]}
                       disabled={!serverConfigEnabled || this.state.loading}
-                      onChange={(e) => this.handleSyntaxColorChange(tokenType, e.target.value)}
+                      onChange={e => this.handleSyntaxColorChange(tokenType, e.target.value)}
                       onBlur={() => this.saveSyntaxColor(tokenType)}
                       style={{ width: '40px', height: '30px', cursor: 'pointer', border: 'none' }}
                     />
@@ -720,7 +744,7 @@ export default class CloudConfigSettings extends DashboardView {
                       placeholder={DEFAULT_SYNTAX_COLORS[tokenType]}
                       value={this.state.syntaxColors[tokenType]}
                       disabled={!serverConfigEnabled || this.state.loading}
-                      onChange={(value) => this.handleSyntaxColorChange(tokenType, value)}
+                      onChange={value => this.handleSyntaxColorChange(tokenType, value)}
                       onBlur={() => this.saveSyntaxColor(tokenType)}
                       style={{ width: '100px' }}
                     />

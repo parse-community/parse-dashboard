@@ -17,7 +17,7 @@ const STORAGE_PREFERENCE_KEY = 'ParseDashboard:StoragePreferences';
  */
 export const STORAGE_TYPES = {
   LOCAL: 'local',
-  SERVER: 'server'
+  SERVER: 'server',
 };
 
 /**

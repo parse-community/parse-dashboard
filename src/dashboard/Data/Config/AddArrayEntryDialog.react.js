@@ -43,7 +43,6 @@ export default class AddArrayEntryDialog extends React.Component {
     }
   }
 
-
   getValue() {
     try {
       return JSON.parse(this.state.value);
@@ -100,8 +99,7 @@ export default class AddArrayEntryDialog extends React.Component {
   render() {
     const param = this.props.param;
     const confirmDisabled =
-      this.state.value === '' ||
-      (this.state.showMismatchRow && !this.state.mismatchConfirmed);
+      this.state.value === '' || (this.state.showMismatchRow && !this.state.mismatchConfirmed);
 
     const addEntryModal = (
       <Modal
@@ -146,7 +144,8 @@ export default class AddArrayEntryDialog extends React.Component {
                 text="⚠️ Ignore type mismatch"
                 description={
                   <>
-                    Previous item type is <strong>{this.props.lastType}</strong>, new entry type is <strong>{this.state.parsedType}</strong>.
+                    Previous item type is <strong>{this.props.lastType}</strong>, new entry type is{' '}
+                    <strong>{this.state.parsedType}</strong>.
                   </>
                 }
               />

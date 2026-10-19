@@ -53,13 +53,15 @@ class Agent extends DashboardView {
   getStoredPermissions() {
     try {
       const stored = localStorage.getItem('agentPermissions');
-      return stored ? JSON.parse(stored) : {
-        deleteObject: false,
-        deleteClass: false,
-        updateObject: false,
-        createObject: false,
-        createClass: false,
-      };
+      return stored
+        ? JSON.parse(stored)
+        : {
+            deleteObject: false,
+            deleteClass: false,
+            updateObject: false,
+            createObject: false,
+            createClass: false,
+          };
     } catch (error) {
       console.warn('Failed to parse stored permissions, using defaults:', error);
       return {
@@ -76,7 +78,7 @@ class Agent extends DashboardView {
     this.setState(prevState => {
       const newPermissions = {
         ...prevState.permissions,
-        [operation]: enabled
+        [operation]: enabled,
       };
 
       // Save to localStorage immediately
@@ -84,28 +86,36 @@ class Agent extends DashboardView {
 
       return {
         permissions: newPermissions,
-        permissionsKey: prevState.permissionsKey + 1
+        permissionsKey: prevState.permissionsKey + 1,
       };
     });
-  }
+  };
 
   getStoredChatState() {
     try {
       const appSlug = this.context ? this.context.slug : null;
-      if (!appSlug) {return null;}
+      if (!appSlug) {
+        return null;
+      }
 
       const stored = localStorage.getItem(`agentChat_${appSlug}`);
-      if (!stored) {return null;}
+      if (!stored) {
+        return null;
+      }
 
       const parsedState = JSON.parse(stored);
 
       // Validate the structure
-      if (!parsedState || typeof parsedState !== 'object') {return null;}
-      if (!Array.isArray(parsedState.messages)) {return null;}
+      if (!parsedState || typeof parsedState !== 'object') {
+        return null;
+      }
+      if (!Array.isArray(parsedState.messages)) {
+        return null;
+      }
 
       // Check if the data is too old (optional: 24 hours expiry)
       const ONE_DAY = 24 * 60 * 60 * 1000;
-      if (parsedState.timestamp && (Date.now() - parsedState.timestamp > ONE_DAY)) {
+      if (parsedState.timestamp && Date.now() - parsedState.timestamp > ONE_DAY) {
         localStorage.removeItem(`agentChat_${appSlug}`);
         return null;
       }
@@ -120,12 +130,14 @@ class Agent extends DashboardView {
   saveChatState() {
     try {
       const appSlug = this.context ? this.context.slug : null;
-      if (!appSlug) {return;}
+      if (!appSlug) {
+        return;
+      }
 
       const chatState = {
         messages: this.state.messages,
         conversationId: this.state.conversationId,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
       localStorage.setItem(`agentChat_${appSlug}`, JSON.stringify(chatState));
     } catch (error) {
@@ -151,7 +163,7 @@ class Agent extends DashboardView {
       // Convert timestamp strings back to Date objects
       const messagesWithDateTimestamps = savedChatState.messages.map(message => ({
         ...message,
-        timestamp: new Date(message.timestamp)
+        timestamp: new Date(message.timestamp),
       }));
 
       this.setState({
@@ -173,14 +185,18 @@ class Agent extends DashboardView {
     }
 
     // Save chat state when messages change
-    if (prevState.messages.length !== this.state.messages.length ||
-        prevState.conversationId !== this.state.conversationId) {
+    if (
+      prevState.messages.length !== this.state.messages.length ||
+      prevState.conversationId !== this.state.conversationId
+    ) {
       this.saveChatState();
     }
 
     // Auto-scroll to bottom when new messages are added or loading state changes
-    if (prevState.messages.length !== this.state.messages.length ||
-        prevState.isLoading !== this.state.isLoading) {
+    if (
+      prevState.messages.length !== this.state.messages.length ||
+      prevState.isLoading !== this.state.isLoading
+    ) {
       // Use requestAnimationFrame and setTimeout to ensure DOM has updated
       requestAnimationFrame(() => {
         setTimeout(() => this.scrollToBottom(), 50);
@@ -212,7 +228,7 @@ class Agent extends DashboardView {
       // Force smooth scrolling behavior
       element.scrollTo({
         top: element.scrollHeight,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
     }
   }
@@ -239,19 +255,19 @@ class Agent extends DashboardView {
     }
   }
 
-  handleInputChange = (event) => {
+  handleInputChange = event => {
     this.setState({ inputValue: event.target.value });
-  }
+  };
 
-  handleExampleClick = (exampleText) => {
+  handleExampleClick = exampleText => {
     this.setState({ inputValue: exampleText }, () => {
       // Auto-submit the example query
       const event = { preventDefault: () => {} };
       this.handleSubmit(event);
     });
-  }
+  };
 
-  handleSubmit = async (event) => {
+  handleSubmit = async event => {
     event.preventDefault();
     const { inputValue, selectedModel, messages } = this.state;
     const { agentConfig } = this.props;
@@ -288,7 +304,8 @@ class Agent extends DashboardView {
       const warningMessage = {
         id: Date.now() - 1,
         type: 'warning',
-        content: 'The AI agent has full access to your database using the master key. It can read, modify, and delete any data. This feature is highly recommended for development environments only. Always back up important data before using the AI agent. Use the permissions menu to restrict operations.',
+        content:
+          'The AI agent has full access to your database using the master key. It can read, modify, and delete any data. This feature is highly recommended for development environments only. Always back up important data before using the AI agent. Use the permissions menu to restrict operations.',
         timestamp: new Date(),
       };
       messagesToAdd.push(warningMessage);
@@ -340,7 +357,6 @@ class Agent extends DashboardView {
         isLoading: false,
         conversationId: result.conversationId, // Update conversation ID
       }));
-
     } catch (error) {
       console.error('Agent API error:', error);
 
@@ -373,7 +389,7 @@ class Agent extends DashboardView {
         this.chatInputRef.current.focus();
       }
     }, 100);
-  }
+  };
 
   renderToolbar() {
     const { agentConfig } = this.props;
@@ -391,11 +407,7 @@ class Agent extends DashboardView {
     return (
       <Toolbar section="Core" subsection="Agent">
         {models.length > 0 && (
-          <BrowserMenu
-            title="Model"
-            icon="gear-solid"
-            setCurrent={() => {}}
-          >
+          <BrowserMenu title="Model" icon="gear-solid" setCurrent={() => {}}>
             {models.map((model, index) => (
               <MenuItem
                 key={index}
@@ -424,7 +436,7 @@ class Agent extends DashboardView {
           icon="locked-solid"
           setCurrent={() => {}}
         >
-          {permissionOperations.map((operation) => (
+          {permissionOperations.map(operation => (
             <MenuItem
               key={operation.key}
               active={permissions[operation.key]}
@@ -474,28 +486,33 @@ class Agent extends DashboardView {
 
     return (
       <div className={styles.messagesContainer}>
-        {messages.map((message) => (
+        {messages.map(message => (
           <div
             key={message.id}
             className={`${styles.message} ${styles[message.type]} ${message.isError ? styles.error : ''} ${message.type === 'warning' ? styles.warningMessage : ''}`}
           >
             {message.type === 'warning' ? (
               <>
-                <Icon name="warn-outline" width={16} height={16} fill="#856404" className={styles.warningIcon} />
-                <div className={styles.warningContent}>
-                  {message.content}
-                </div>
+                <Icon
+                  name="warn-outline"
+                  width={16}
+                  height={16}
+                  fill="#856404"
+                  className={styles.warningIcon}
+                />
+                <div className={styles.warningContent}>{message.content}</div>
               </>
             ) : (
               <>
                 <div className={styles.messageContent}>
-                  {message.type === 'agent' ? this.formatMessageContent(message.content) : message.content}
+                  {message.type === 'agent'
+                    ? this.formatMessageContent(message.content)
+                    : message.content}
                 </div>
                 <div className={styles.messageTime}>
-                  {message.timestamp instanceof Date ?
-                    message.timestamp.toLocaleTimeString() :
-                    new Date(message.timestamp).toLocaleTimeString()
-                  }
+                  {message.timestamp instanceof Date
+                    ? message.timestamp.toLocaleTimeString()
+                    : new Date(message.timestamp).toLocaleTimeString()}
                 </div>
               </>
             )}
@@ -570,8 +587,8 @@ class Agent extends DashboardView {
                 title="AI Agent"
                 description={
                   hasNoAgentConfig
-                    ? 'No AI agent configuration found. Please add an \'agent\' section to your dashboard configuration file.'
-                    : 'No AI models configured. Please add models to the \'agent.models\' array in your dashboard configuration file.'
+                    ? "No AI agent configuration found. Please add an 'agent' section to your dashboard configuration file."
+                    : "No AI models configured. Please add models to the 'agent.models' array in your dashboard configuration file."
                 }
               />
             ) : (
@@ -592,13 +609,17 @@ class Agent extends DashboardView {
                       </button>
                       <button
                         className={styles.exampleButton}
-                        onClick={() => this.handleExampleClick('What classes do I have in my database?')}
+                        onClick={() =>
+                          this.handleExampleClick('What classes do I have in my database?')
+                        }
                       >
                         &ldquo;What classes do I have in my database?&rdquo;
                       </button>
                       <button
                         className={styles.exampleButton}
-                        onClick={() => this.handleExampleClick('Can you fill a class with test data?')}
+                        onClick={() =>
+                          this.handleExampleClick('Can you fill a class with test data?')
+                        }
                       >
                         &ldquo;Can you fill a class with test data?&rdquo;
                       </button>

@@ -19,7 +19,9 @@ import { evaluateFormula, buildVariables } from './FormulaEvaluator';
  * @returns {*} The value at the path
  */
 export function getNestedValue(obj, path) {
-  if (!path || !obj) {return null;}
+  if (!path || !obj) {
+    return null;
+  }
 
   // Handle Parse object attributes vs raw object
   const data = obj.attributes || obj;
@@ -79,7 +81,7 @@ function simpleHash(str) {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32-bit integer
   }
   return Math.abs(hash);
@@ -100,7 +102,9 @@ export function isValidDate(value) {
  * @returns {Date|null} Converted date or null
  */
 export function normalizeDate(value) {
-  if (!value) {return null;}
+  if (!value) {
+    return null;
+  }
 
   // Handle Parse Date objects
   if (value && value.iso) {
@@ -265,18 +269,22 @@ function calculateValue(item, fields, operator, formula = null, availableFields 
 
     case 'difference':
       // Subtract all subsequent values from the first
-      return values.reduce((acc, val, index) => index === 0 ? val : acc - val, 0);
+      return values.reduce((acc, val, index) => (index === 0 ? val : acc - val), 0);
 
     case 'ratio': {
       // Divide first value by second (or product of all others)
-      if (values.length < 2) {return null;}
+      if (values.length < 2) {
+        return null;
+      }
       const denominator = values.slice(1).reduce((acc, val) => acc * val, 1);
       return denominator !== 0 ? values[0] / denominator : null;
     }
 
     case 'percent': {
       // Calculate percentage: (numerator / denominator) * 100
-      if (values.length < 2) {return null;}
+      if (values.length < 2) {
+        return null;
+      }
       const numerator = values[0];
       const denominator = values[1];
       return denominator !== 0 ? (numerator / denominator) * 100 : null;
@@ -340,15 +348,17 @@ export function processScatterData(data, xColumn, yColumn, maxPoints = 1000) {
   }
 
   return {
-    datasets: [{
-      label: `${xColumn} vs ${yColumn}`,
-      data: points,
-      backgroundColor: 'rgba(54, 162, 235, 0.6)',
-      borderColor: 'rgba(54, 162, 235, 1)',
-      borderWidth: 1,
-      pointRadius: 4,
-      pointHoverRadius: 6,
-    }],
+    datasets: [
+      {
+        label: `${xColumn} vs ${yColumn}`,
+        data: points,
+        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+      },
+    ],
   };
 }
 
@@ -390,7 +400,8 @@ export function processPieData(data, series, groupByColumn, calculatedValues = n
 
   // Convert series to array if needed and extract value columns
   const seriesArray = Array.isArray(series) ? series : [];
-  const hasCalculatedValues = calculatedValues && Array.isArray(calculatedValues) && calculatedValues.length > 0;
+  const hasCalculatedValues =
+    calculatedValues && Array.isArray(calculatedValues) && calculatedValues.length > 0;
 
   // Must have at least one series or calculated value
   if (seriesArray.length === 0 && !hasCalculatedValues) {
@@ -487,9 +498,10 @@ export function processPieData(data, series, groupByColumn, calculatedValues = n
 
       calculatedValues.forEach(calc => {
         // Formula operator doesn't require fields, other operators do
-        const hasRequiredConfig = calc.operator === 'formula'
-          ? (calc.formula && calc.name)
-          : (calc.fields && calc.fields.length > 0 && calc.name);
+        const hasRequiredConfig =
+          calc.operator === 'formula'
+            ? calc.formula && calc.name
+            : calc.fields && calc.fields.length > 0 && calc.name;
 
         if (hasRequiredConfig) {
           // Create an enhanced item that includes previously calculated values
@@ -522,7 +534,13 @@ export function processPieData(data, series, groupByColumn, calculatedValues = n
             }
           });
 
-          const calcValue = calculateValue(enhancedItem, calc.fields, calc.operator, calc.formula, availableFields);
+          const calcValue = calculateValue(
+            enhancedItem,
+            calc.fields,
+            calc.operator,
+            calc.formula,
+            availableFields
+          );
           calculatedValuesForRow[calc.name] = calcValue;
         }
       });
@@ -533,9 +551,10 @@ export function processPieData(data, series, groupByColumn, calculatedValues = n
     // Now process each calculated value with grouping
     calculatedValues.forEach(calc => {
       // Formula operator doesn't require fields, other operators do
-      const hasRequiredConfig = calc.operator === 'formula'
-        ? (calc.formula && calc.name)
-        : (calc.fields && calc.fields.length > 0 && calc.name);
+      const hasRequiredConfig =
+        calc.operator === 'formula'
+          ? calc.formula && calc.name
+          : calc.fields && calc.fields.length > 0 && calc.name;
 
       if (hasRequiredConfig) {
         if (groupByColumn) {
@@ -599,12 +618,14 @@ export function processPieData(data, series, groupByColumn, calculatedValues = n
               const components = percentComponents[groupKey];
               const sumNumerator = components.numerators.reduce((acc, val) => acc + val, 0);
               const sumDenominator = components.denominators.reduce((acc, val) => acc + val, 0);
-              aggregatedData[labelKey] = sumDenominator !== 0 ? (sumNumerator / sumDenominator) * 100 : 0;
+              aggregatedData[labelKey] =
+                sumDenominator !== 0 ? (sumNumerator / sumDenominator) * 100 : 0;
             } else if (calc.operator === 'average' && averageComponents[groupKey]) {
               // For average operator, calculate (sum of all field values) / numFields
               const components = averageComponents[groupKey];
               const sumValues = components.values.reduce((acc, val) => acc + val, 0);
-              aggregatedData[labelKey] = components.numFields > 0 ? sumValues / components.numFields : 0;
+              aggregatedData[labelKey] =
+                components.numFields > 0 ? sumValues / components.numFields : 0;
             } else {
               // For other ratio-based operators (ratio, formula), average the results
               // For other operators, sum the results
@@ -640,7 +661,8 @@ export function processPieData(data, series, groupByColumn, calculatedValues = n
                   sumDenominator += denVal;
                 }
               });
-              aggregatedData[calc.name] = sumDenominator !== 0 ? (sumNumerator / sumDenominator) * 100 : 0;
+              aggregatedData[calc.name] =
+                sumDenominator !== 0 ? (sumNumerator / sumDenominator) * 100 : 0;
             } else if (calc.operator === 'average' && calc.fields && calc.fields.length > 0) {
               // For average operator, calculate (sum of all field values) / numFields
               let sumValues = 0;
@@ -710,12 +732,14 @@ export function processPieData(data, series, groupByColumn, calculatedValues = n
 
   return {
     labels,
-    datasets: [{
-      data: values,
-      backgroundColor: colors,
-      borderColor: colors.map(color => color.replace('0.8', '1')),
-      borderWidth: 1,
-    }],
+    datasets: [
+      {
+        data: values,
+        backgroundColor: colors,
+        borderColor: colors.map(color => color.replace('0.8', '1')),
+        borderWidth: 1,
+      },
+    ],
   };
 }
 
@@ -735,7 +759,8 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
 
   // Convert series to array if needed
   const seriesArray = Array.isArray(series) ? series : [];
-  const hasCalculatedValues = calculatedValues && Array.isArray(calculatedValues) && calculatedValues.length > 0;
+  const hasCalculatedValues =
+    calculatedValues && Array.isArray(calculatedValues) && calculatedValues.length > 0;
 
   // Must have at least one series or calculated value
   if (seriesArray.length === 0 && !hasCalculatedValues) {
@@ -765,7 +790,9 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
   data.forEach(item => {
     const xVal = getNestedValue(item, xColumn);
 
-    if (xVal == null) {return;}
+    if (xVal == null) {
+      return;
+    }
 
     // Check if x-axis value is a date
     const normalizedDate = normalizeDate(xVal);
@@ -807,7 +834,9 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
         }
       });
 
-      if (!hasValue) {return;}
+      if (!hasValue) {
+        return;
+      }
 
       // Handle groupBy column(s) - create composite key if multiple columns
       let groupKeyValue = seriesLabel; // Use series label as default group
@@ -830,9 +859,10 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
     if (calculatedValues && Array.isArray(calculatedValues)) {
       calculatedValues.forEach(calc => {
         // Formula operator doesn't require fields, other operators do
-        const hasRequiredConfig = calc.operator === 'formula'
-          ? (calc.formula && calc.name)
-          : (calc.fields && calc.fields.length > 0 && calc.name);
+        const hasRequiredConfig =
+          calc.operator === 'formula'
+            ? calc.formula && calc.name
+            : calc.fields && calc.fields.length > 0 && calc.name;
 
         if (hasRequiredConfig) {
           // Create an enhanced item that includes previously calculated values
@@ -865,7 +895,13 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
             }
           });
 
-          const calcValue = calculateValue(enhancedItem, calc.fields, calc.operator, calc.formula, availableFields);
+          const calcValue = calculateValue(
+            enhancedItem,
+            calc.fields,
+            calc.operator,
+            calc.formula,
+            availableFields
+          );
 
           // Store this calculated value so it can be referenced by subsequent calculations
           calculatedValuesForRow[calc.name] = calcValue;
@@ -1057,7 +1093,11 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
       if (calcOperator) {
         // Special handling for percent operator: calculate (sum of numerators / sum of denominators) * 100
         // This gives the correct percentage of totals rather than average of individual percentages
-        if (calcOperator === 'percent' && percentComponents[groupKey] && percentComponents[groupKey][xKey]) {
+        if (
+          calcOperator === 'percent' &&
+          percentComponents[groupKey] &&
+          percentComponents[groupKey][xKey]
+        ) {
           const components = percentComponents[groupKey][xKey];
           const sumNumerator = components.numerators.reduce((acc, val) => acc + val, 0);
           const sumDenominator = components.denominators.reduce((acc, val) => acc + val, 0);
@@ -1066,7 +1106,11 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
 
         // Special handling for average operator: calculate (sum of all field values) / numFields
         // This gives the correct average of totals rather than average of individual per-row averages
-        if (calcOperator === 'average' && averageComponents[groupKey] && averageComponents[groupKey][xKey]) {
+        if (
+          calcOperator === 'average' &&
+          averageComponents[groupKey] &&
+          averageComponents[groupKey][xKey]
+        ) {
           const components = averageComponents[groupKey][xKey];
           const sumValues = components.values.reduce((acc, val) => acc + val, 0);
           return components.numFields > 0 ? sumValues / components.numFields : 0;
@@ -1088,7 +1132,8 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
 
     // Get custom styles for this series if available
     // Priority: series color > calculated value color > default
-    const color = seriesColorMap.get(groupKey) || calcValueColorMap.get(groupKey) || defaultColors[index];
+    const color =
+      seriesColorMap.get(groupKey) || calcValueColorMap.get(groupKey) || defaultColors[index];
 
     // Get line style - prefer series style, then calculated value style
     const lineStyle = seriesLineStyleMap.get(groupKey) || calcValueLineStyleMap.get(groupKey);
@@ -1097,7 +1142,8 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
     // Get stroke width - prefer series style, then calculated value style
     const strokeWidth = seriesStrokeWidthMap.get(groupKey) ?? calcValueStrokeWidthMap.get(groupKey);
     // Get chart type - prefer series type, then calculated value type (for mixed bar/line charts)
-    const datasetChartType = seriesChartTypeMap.get(groupKey) || calcValueChartTypeMap.get(groupKey);
+    const datasetChartType =
+      seriesChartTypeMap.get(groupKey) || calcValueChartTypeMap.get(groupKey);
 
     const dataset = {
       label: groupKey,
@@ -1105,7 +1151,10 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
       backgroundColor: color,
       borderColor: color.replace('0.8', '1'),
       borderWidth: 1,
-      yAxisID: (seriesSecondaryYAxisMap.get(groupKey) || calcValueSecondaryYAxisMap.get(groupKey)) ? 'y1' : 'y',
+      yAxisID:
+        seriesSecondaryYAxisMap.get(groupKey) || calcValueSecondaryYAxisMap.get(groupKey)
+          ? 'y1'
+          : 'y',
       type: datasetChartType || undefined,
       lineStyle: lineStyle || undefined,
       barStyle: barStyle || undefined,
@@ -1143,16 +1192,16 @@ export function processBarLineData(data, xColumn, series, groupByColumn, calcula
  */
 export function generateColors(count) {
   const baseColors = [
-    'rgba(255, 99, 132, 0.8)',   // Red
-    'rgba(54, 162, 235, 0.8)',  // Blue
-    'rgba(255, 205, 86, 0.8)',  // Yellow
-    'rgba(75, 192, 192, 0.8)',  // Teal
+    'rgba(255, 99, 132, 0.8)', // Red
+    'rgba(54, 162, 235, 0.8)', // Blue
+    'rgba(255, 205, 86, 0.8)', // Yellow
+    'rgba(75, 192, 192, 0.8)', // Teal
     'rgba(153, 102, 255, 0.8)', // Purple
-    'rgba(255, 159, 64, 0.8)',  // Orange
+    'rgba(255, 159, 64, 0.8)', // Orange
     'rgba(201, 203, 207, 0.8)', // Grey
-    'rgba(255, 87, 51, 0.8)',   // Coral
-    'rgba(51, 255, 87, 0.8)',   // Green
-    'rgba(87, 51, 255, 0.8)',   // Indigo
+    'rgba(255, 87, 51, 0.8)', // Coral
+    'rgba(51, 255, 87, 0.8)', // Green
+    'rgba(87, 51, 255, 0.8)', // Indigo
   ];
 
   if (count <= baseColors.length) {
@@ -1209,11 +1258,15 @@ export function validateGraphConfig(config, columns) {
   }
 
   // Check for series - a series with at least one field
-  const hasSeries = Array.isArray(series) && series.length > 0 && series.some(s => {
-    const fields = s.fields || [];
-    return fields.length > 0;
-  });
-  const hasCalculatedValues = calculatedValues && Array.isArray(calculatedValues) && calculatedValues.length > 0;
+  const hasSeries =
+    Array.isArray(series) &&
+    series.length > 0 &&
+    series.some(s => {
+      const fields = s.fields || [];
+      return fields.length > 0;
+    });
+  const hasCalculatedValues =
+    calculatedValues && Array.isArray(calculatedValues) && calculatedValues.length > 0;
   const hasValuesToDisplay = hasSeries || hasCalculatedValues;
 
   // Check required columns based on chart type
@@ -1230,7 +1283,10 @@ export function validateGraphConfig(config, columns) {
     case 'pie':
     case 'doughnut': {
       if (!hasValuesToDisplay) {
-        return { isValid: false, error: 'Pie charts require at least one series or calculated value' };
+        return {
+          isValid: false,
+          error: 'Pie charts require at least one series or calculated value',
+        };
       }
       // Validate all series fields exist
       if (hasSeries && columns) {
@@ -1250,7 +1306,10 @@ export function validateGraphConfig(config, columns) {
     case 'line':
     case 'radar': {
       if (!xColumn || !hasValuesToDisplay) {
-        return { isValid: false, error: 'Bar/line charts require both X axis and at least one series or calculated value' };
+        return {
+          isValid: false,
+          error: 'Bar/line charts require both X axis and at least one series or calculated value',
+        };
       }
       if (!columns || !isValidColumn(xColumn, columns)) {
         return { isValid: false, error: 'X column does not exist' };

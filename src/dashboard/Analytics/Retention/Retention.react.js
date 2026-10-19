@@ -178,10 +178,10 @@ export default class Retention extends DashboardView {
     if (!this.state.retentions || Object.keys(this.state.retentions).length === 0) {
       chart = (
         <EmptyState
-          title={'You don\'t have any user retention data for this period.'}
+          title={"You don't have any user retention data for this period."}
           icon="analytics-outline"
           description={
-            'Once you start tracking user signups, we\'ll chart your user retention here.'
+            "Once you start tracking user signups, we'll chart your user retention here."
           }
           cta="Get started with Users"
           action={() => (window.location = 'https://parse.com/apps/quickstart')}

@@ -135,7 +135,7 @@ export default class BrowserTable extends React.Component {
       });
     }
     let editor = null;
-    const isRowHighlighted = (rowIndex) =>
+    const isRowHighlighted = rowIndex =>
       (this.props.current && this.props.current.row === rowIndex) ||
       (this.props.selectedCells &&
         this.props.selectedCells.rowStart >= 0 &&

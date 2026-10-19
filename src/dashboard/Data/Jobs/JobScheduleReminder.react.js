@@ -7,7 +7,7 @@ export default class JobScheduleReminder extends React.Component {
       <div className={baseStyles.horizontalCenter}>
         <p>
           {'Be noted that '}
-          <b>{'parse-server doesn\'t run the jobs in the scheduled times'}</b>
+          <b>{"parse-server doesn't run the jobs in the scheduled times"}</b>
           {' by itself.'}
         </p>
         <p>

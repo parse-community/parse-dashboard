@@ -21,12 +21,12 @@ const PushAudiencesOptions = ({ current, onChange, onEditAudience, schema, audie
       const queryOrFilters =
         objectId === PushConstants.NEW_SEGMENT_ID
           ? filters.push(
-            fromJS({
-              field: 'deviceType',
-              constraint: 'containedIn',
-              compareTo: query.deviceType['$in'],
-            })
-          )
+              fromJS({
+                field: 'deviceType',
+                constraint: 'containedIn',
+                compareTo: query.deviceType['$in'],
+              })
+            )
           : query;
       return (
         <PushAudiencesOption

@@ -15,7 +15,15 @@ const Types = {
   DATA_BROWSER_HEADER: 'dataBrowserHeader',
 };
 
-function DataBrowserHeader({ name, type, targetClass, order, style, index, moveDataBrowserHeader }) {
+function DataBrowserHeader({
+  name,
+  type,
+  targetClass,
+  order,
+  style,
+  index,
+  moveDataBrowserHeader,
+}) {
   const ref = useRef(null);
 
   const [{ isOver, canDrop }, drop] = useDrop(

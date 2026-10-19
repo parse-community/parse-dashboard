@@ -24,7 +24,7 @@ const AppsManager = {
 
   findAppBySlugOrName(slugOrName) {
     const apps = this.apps();
-    for (let i = apps.length; i--;) {
+    for (let i = apps.length; i--; ) {
       if (apps[i].slug === slugOrName || apps[i].name === slugOrName) {
         return apps[i];
       }

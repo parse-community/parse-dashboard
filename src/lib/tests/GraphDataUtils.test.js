@@ -32,7 +32,7 @@ describe('GraphDataUtils', () => {
     it('should handle Parse object attributes', () => {
       const obj = {
         attributes: { name: 'John', age: 30 },
-        id: '123'
+        id: '123',
       };
       expect(getNestedValue(obj, 'name')).toBe('John');
       expect(getNestedValue(obj, 'age')).toBe(30);
@@ -250,11 +250,13 @@ describe('GraphDataUtils', () => {
       ];
 
       it('should evaluate formula with field references', () => {
-        const calculatedValues = [{
-          name: 'Total',
-          operator: 'formula',
-          formula: 'price * quantity',
-        }];
+        const calculatedValues = [
+          {
+            name: 'Total',
+            operator: 'formula',
+            formula: 'price * quantity',
+          },
+        ];
 
         const result = processBarLineData(mockData, 'month', [], null, calculatedValues);
 
@@ -267,11 +269,13 @@ describe('GraphDataUtils', () => {
       });
 
       it('should evaluate formula with math functions', () => {
-        const calculatedValues = [{
-          name: 'Rounded',
-          operator: 'formula',
-          formula: 'round(price / quantity, 2)',
-        }];
+        const calculatedValues = [
+          {
+            name: 'Rounded',
+            operator: 'formula',
+            formula: 'round(price / quantity, 2)',
+          },
+        ];
 
         const result = processBarLineData(mockData, 'month', [], null, calculatedValues);
 
@@ -306,11 +310,13 @@ describe('GraphDataUtils', () => {
       });
 
       it('should handle empty formula gracefully', () => {
-        const calculatedValues = [{
-          name: 'Empty',
-          operator: 'formula',
-          formula: '',
-        }];
+        const calculatedValues = [
+          {
+            name: 'Empty',
+            operator: 'formula',
+            formula: '',
+          },
+        ];
 
         const series = [{ fields: ['price'], aggregationType: 'sum' }];
         const result = processBarLineData(mockData, 'month', series, null, calculatedValues);
@@ -320,11 +326,13 @@ describe('GraphDataUtils', () => {
       });
 
       it('should handle invalid formula gracefully', () => {
-        const calculatedValues = [{
-          name: 'Invalid',
-          operator: 'formula',
-          formula: 'invalid syntax @@@',
-        }];
+        const calculatedValues = [
+          {
+            name: 'Invalid',
+            operator: 'formula',
+            formula: 'invalid syntax @@@',
+          },
+        ];
 
         const series = [{ fields: ['price'], aggregationType: 'sum' }];
         const result = processBarLineData(mockData, 'month', series, null, calculatedValues);
@@ -343,13 +351,21 @@ describe('GraphDataUtils', () => {
           { attributes: { month: 'Mar', price: 15 } }, // quantity undefined
         ];
 
-        const calculatedValues = [{
-          name: 'Total',
-          operator: 'formula',
-          formula: 'price * quantity',
-        }];
+        const calculatedValues = [
+          {
+            name: 'Total',
+            operator: 'formula',
+            formula: 'price * quantity',
+          },
+        ];
 
-        const result = processBarLineData(dataWithMissingField, 'month', [], null, calculatedValues);
+        const result = processBarLineData(
+          dataWithMissingField,
+          'month',
+          [],
+          null,
+          calculatedValues
+        );
 
         expect(result).toHaveProperty('datasets');
         expect(result.datasets.length).toBe(1);
@@ -367,11 +383,13 @@ describe('GraphDataUtils', () => {
           { attributes: { month: 'Feb', price: 20 } },
         ];
 
-        const calculatedValues = [{
-          name: 'Total',
-          operator: 'formula',
-          formula: 'price + quantity',
-        }];
+        const calculatedValues = [
+          {
+            name: 'Total',
+            operator: 'formula',
+            formula: 'price + quantity',
+          },
+        ];
 
         const result = processBarLineData(dataWithAllMissing, 'month', [], null, calculatedValues);
 
@@ -390,11 +408,13 @@ describe('GraphDataUtils', () => {
       ];
 
       it('should evaluate formula in pie chart', () => {
-        const calculatedValues = [{
-          name: 'Profit',
-          operator: 'formula',
-          formula: 'revenue - cost',
-        }];
+        const calculatedValues = [
+          {
+            name: 'Profit',
+            operator: 'formula',
+            formula: 'revenue - cost',
+          },
+        ];
 
         const result = processPieData(mockData, [], 'category', calculatedValues);
 
@@ -422,11 +442,13 @@ describe('GraphDataUtils', () => {
           { attributes: { month: 'Feb', numerator: 150, denominator: 30 } },
         ];
 
-        const calculatedValues = [{
-          name: 'ConversionRate',
-          operator: 'percent',
-          fields: ['numerator', 'denominator'],
-        }];
+        const calculatedValues = [
+          {
+            name: 'ConversionRate',
+            operator: 'percent',
+            fields: ['numerator', 'denominator'],
+          },
+        ];
 
         const result = processBarLineData(mockData, 'month', [], null, calculatedValues);
 
@@ -452,11 +474,13 @@ describe('GraphDataUtils', () => {
           { attributes: { month: 'Jan', numerator: 443300, denominator: 54008, revenue: 1000 } },
         ];
 
-        const calculatedValues = [{
-          name: 'Percent',
-          operator: 'percent',
-          fields: ['numerator', 'denominator'],
-        }];
+        const calculatedValues = [
+          {
+            name: 'Percent',
+            operator: 'percent',
+            fields: ['numerator', 'denominator'],
+          },
+        ];
 
         const series = [{ fields: ['revenue'], aggregationType: 'sum' }];
         const result = processBarLineData(mockData, 'month', series, null, calculatedValues);
@@ -519,14 +543,78 @@ describe('GraphDataUtils', () => {
       it('should handle percent with 2 value fields and 2 calculated values (user scenario)', () => {
         // User scenario: line chart with x-axis date, 2 value fields (sum), 2 calculated values
         const mockData = [
-          { attributes: { date: '2024-01-01', numerator: 55412, denominator: 6751, valueA: 100, valueB: 50 } },
-          { attributes: { date: '2024-01-01', numerator: 55412, denominator: 6751, valueA: 200, valueB: 60 } },
-          { attributes: { date: '2024-01-01', numerator: 55413, denominator: 6751, valueA: 150, valueB: 70 } },
-          { attributes: { date: '2024-01-01', numerator: 55413, denominator: 6751, valueA: 120, valueB: 80 } },
-          { attributes: { date: '2024-01-01', numerator: 55413, denominator: 6751, valueA: 180, valueB: 90 } },
-          { attributes: { date: '2024-01-01', numerator: 55413, denominator: 6751, valueA: 160, valueB: 55 } },
-          { attributes: { date: '2024-01-01', numerator: 55412, denominator: 6751, valueA: 140, valueB: 65 } },
-          { attributes: { date: '2024-01-01', numerator: 55412, denominator: 6751, valueA: 130, valueB: 75 } },
+          {
+            attributes: {
+              date: '2024-01-01',
+              numerator: 55412,
+              denominator: 6751,
+              valueA: 100,
+              valueB: 50,
+            },
+          },
+          {
+            attributes: {
+              date: '2024-01-01',
+              numerator: 55412,
+              denominator: 6751,
+              valueA: 200,
+              valueB: 60,
+            },
+          },
+          {
+            attributes: {
+              date: '2024-01-01',
+              numerator: 55413,
+              denominator: 6751,
+              valueA: 150,
+              valueB: 70,
+            },
+          },
+          {
+            attributes: {
+              date: '2024-01-01',
+              numerator: 55413,
+              denominator: 6751,
+              valueA: 120,
+              valueB: 80,
+            },
+          },
+          {
+            attributes: {
+              date: '2024-01-01',
+              numerator: 55413,
+              denominator: 6751,
+              valueA: 180,
+              valueB: 90,
+            },
+          },
+          {
+            attributes: {
+              date: '2024-01-01',
+              numerator: 55413,
+              denominator: 6751,
+              valueA: 160,
+              valueB: 55,
+            },
+          },
+          {
+            attributes: {
+              date: '2024-01-01',
+              numerator: 55412,
+              denominator: 6751,
+              valueA: 140,
+              valueB: 65,
+            },
+          },
+          {
+            attributes: {
+              date: '2024-01-01',
+              numerator: 55412,
+              denominator: 6751,
+              valueA: 130,
+              valueB: 75,
+            },
+          },
         ];
         // Total numerator: 443300, Total denominator: 54008
         // Each row: (55412/6751)*100 = 820.8% or (55413/6751)*100 = 820.8%
@@ -607,9 +695,9 @@ describe('GraphDataUtils', () => {
       it('should calculate average correctly with asymmetric data', () => {
         // Use data where average of per-row averages differs from average of sums
         const mockData = [
-          { date: '2024-01', a: 2, b: 0 },  // per-row avg = 1
-          { date: '2024-01', a: 0, b: 0 },  // per-row avg = 0
-          { date: '2024-01', a: 0, b: 1 },  // per-row avg = 0.5
+          { date: '2024-01', a: 2, b: 0 }, // per-row avg = 1
+          { date: '2024-01', a: 0, b: 0 }, // per-row avg = 0
+          { date: '2024-01', a: 0, b: 1 }, // per-row avg = 0.5
         ];
         // Sum of per-row avgs = 1.5, if summed (wrong aggregation)
         // Sum of a = 2, Sum of b = 1

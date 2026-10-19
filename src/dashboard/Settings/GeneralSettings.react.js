@@ -511,7 +511,8 @@ class GeneralSettings extends DashboardView {
               text="Your database connection string."
               description={
                 <span>
-                  This database must be prepared to handle all of your app&apos;s queries and data. Read{' '}
+                  This database must be prepared to handle all of your app&apos;s queries and data.
+                  Read{' '}
                   <a href={getSiteDomain() + '/docs/server/guide#migrating'}>our migration guide</a>{' '}
                   to learn how to create a database.
                 </span>
@@ -544,7 +545,7 @@ class GeneralSettings extends DashboardView {
     const changeConnectionStringModal = (
       <FormModal
         title="Change Connection String"
-        subtitle={'Immediately switch your connection string for your app\'s database.'}
+        subtitle={"Immediately switch your connection string for your app's database."}
         open={this.state.showChangeConnectionStringModal}
         onSubmit={() => {
           const promise = validateAndSubmitConnectionString(

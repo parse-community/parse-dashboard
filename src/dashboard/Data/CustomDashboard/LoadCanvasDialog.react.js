@@ -30,7 +30,7 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete, onToggleFavorit
     setConfirmDelete(canvasId);
   };
 
-  const handleConfirmDelete = (e) => {
+  const handleConfirmDelete = e => {
     e.stopPropagation();
     if (confirmDelete) {
       onDelete(confirmDelete);
@@ -41,7 +41,7 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete, onToggleFavorit
     }
   };
 
-  const handleCancelDelete = (e) => {
+  const handleCancelDelete = e => {
     e.stopPropagation();
     setConfirmDelete(null);
   };
@@ -53,10 +53,10 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete, onToggleFavorit
     }
   };
 
-  const toggleGroup = (groupName) => {
+  const toggleGroup = groupName => {
     setExpandedGroups(prev => ({
       ...prev,
-      [groupName]: !prev[groupName]
+      [groupName]: !prev[groupName],
     }));
   };
 
@@ -88,17 +88,17 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete, onToggleFavorit
     return {
       groupedCanvases: grouped,
       ungroupedCanvases: ungrouped,
-      groupNames: sortedGroupNames
+      groupNames: sortedGroupNames,
     };
   }, [canvases]);
 
-  const renderCanvasItem = (canvas) => (
+  const renderCanvasItem = canvas => (
     <div
       key={canvas.id}
       className={`${styles.canvasItem} ${selectedId === canvas.id ? styles.selected : ''}`}
       onClick={() => setSelectedId(canvas.id)}
       onDoubleClick={() => onLoad(canvas)}
-      onKeyDown={(e) => {
+      onKeyDown={e => {
         if (e.key === 'Enter') {
           if (selectedId === canvas.id) {
             onLoad(canvas);
@@ -123,18 +123,10 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete, onToggleFavorit
         {confirmDelete === canvas.id ? (
           <div className={styles.confirmDelete}>
             <span>Delete?</span>
-            <button
-              type="button"
-              className={styles.confirmYes}
-              onClick={handleConfirmDelete}
-            >
+            <button type="button" className={styles.confirmYes} onClick={handleConfirmDelete}>
               Yes
             </button>
-            <button
-              type="button"
-              className={styles.confirmNo}
-              onClick={handleCancelDelete}
-            >
+            <button type="button" className={styles.confirmNo} onClick={handleCancelDelete}>
               No
             </button>
           </div>
@@ -143,16 +135,25 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete, onToggleFavorit
             <button
               type="button"
               className={`${styles.favoriteButton} ${canvas.favorite ? styles.favorited : ''}`}
-              onClick={(e) => handleToggleFavorite(e, canvas.id)}
+              onClick={e => handleToggleFavorite(e, canvas.id)}
               title={canvas.favorite ? 'Remove from favorites' : 'Add to favorites'}
-              aria-label={canvas.favorite ? `Remove ${canvas.name || 'Untitled Canvas'} from favorites` : `Add ${canvas.name || 'Untitled Canvas'} to favorites`}
+              aria-label={
+                canvas.favorite
+                  ? `Remove ${canvas.name || 'Untitled Canvas'} from favorites`
+                  : `Add ${canvas.name || 'Untitled Canvas'} to favorites`
+              }
             >
-              <Icon name="star-solid" width={22} height={22} fill={canvas.favorite ? '#f59e0b' : '#94a3b8'} />
+              <Icon
+                name="star-solid"
+                width={22}
+                height={22}
+                fill={canvas.favorite ? '#f59e0b' : '#94a3b8'}
+              />
             </button>
             <button
               type="button"
               className={styles.deleteButton}
-              onClick={(e) => handleDeleteClick(e, canvas.id)}
+              onClick={e => handleDeleteClick(e, canvas.id)}
               title="Delete canvas"
               aria-label={`Delete canvas ${canvas.name || 'Untitled Canvas'}`}
             >
@@ -164,7 +165,7 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete, onToggleFavorit
     </div>
   );
 
-  const renderGroup = (groupName) => {
+  const renderGroup = groupName => {
     const isExpanded = expandedGroups[groupName];
     const groupCanvases = groupedCanvases[groupName];
 
@@ -184,9 +185,7 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete, onToggleFavorit
           <span className={styles.groupCount}>({groupCanvases.length})</span>
         </button>
         {isExpanded && (
-          <div className={styles.groupContent}>
-            {groupCanvases.map(renderCanvasItem)}
-          </div>
+          <div className={styles.groupContent}>{groupCanvases.map(renderCanvasItem)}</div>
         )}
       </div>
     );
@@ -219,9 +218,7 @@ const LoadCanvasDialog = ({ canvases, onClose, onLoad, onDelete, onToggleFavorit
             </div>
           )}
           {ungroupedCanvases.length > 0 && (
-            <div className={styles.ungroupedContent}>
-              {ungroupedCanvases.map(renderCanvasItem)}
-            </div>
+            <div className={styles.ungroupedContent}>{ungroupedCanvases.map(renderCanvasItem)}</div>
           )}
         </div>
       )}

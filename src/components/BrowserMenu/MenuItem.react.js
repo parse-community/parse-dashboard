@@ -8,7 +8,17 @@
 import React from 'react';
 import styles from 'components/BrowserMenu/BrowserMenu.scss';
 
-const MenuItem = ({ text, shortcut, disabled, active, greenActive, onClick, disableMouseDown = false, closeMenu, onItemHover }) => {
+const MenuItem = ({
+  text,
+  shortcut,
+  disabled,
+  active,
+  greenActive,
+  onClick,
+  disableMouseDown = false,
+  closeMenu,
+  onItemHover,
+}) => {
   const classes = [styles.item];
   if (disabled) {
     classes.push(styles.disabled);
@@ -20,7 +30,7 @@ const MenuItem = ({ text, shortcut, disabled, active, greenActive, onClick, disa
     classes.push(styles.greenActive);
   }
 
-  const handleClick = (e) => {
+  const handleClick = e => {
     if (!disabled && onClick) {
       onClick(e);
       // If disableMouseDown is true and we have a closeMenu function, close the menu
@@ -42,7 +52,7 @@ const MenuItem = ({ text, shortcut, disabled, active, greenActive, onClick, disa
         cursor: 'pointer',
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
       }}
     >
       <span>{text}</span>
@@ -52,7 +62,7 @@ const MenuItem = ({ text, shortcut, disabled, active, greenActive, onClick, disa
             opacity: 0.5,
             fontSize: '0.85em',
             marginLeft: '12px',
-            color: 'inherit'
+            color: 'inherit',
           }}
         >
           {shortcut}

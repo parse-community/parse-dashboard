@@ -20,7 +20,8 @@ const ctaButton = (cta, action) => {
         <a
           href={action}
           className={[stylesButton.button, stylesButton.primary].join(' ')}
-          target="_blank" rel="noreferrer"
+          target="_blank"
+          rel="noreferrer"
         >
           {cta}
         </a>
@@ -82,7 +83,9 @@ EmptyState.propTypes = {
     'An href link or a click handler that is forwarded to the secondary CTA button.'
   ),
   customContent: PropTypes.node.describe('Custom content to render below the empty state.'),
-  useFlexLayout: PropTypes.bool.describe('Whether to use flex layout instead of absolute positioning.'),
+  useFlexLayout: PropTypes.bool.describe(
+    'Whether to use flex layout instead of absolute positioning.'
+  ),
 };
 
 export default EmptyState;

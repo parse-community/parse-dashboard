@@ -62,14 +62,14 @@ export default class JsonEditor extends React.Component {
     this.syncScroll();
   };
 
-  handleChange = (e) => {
+  handleChange = e => {
     const { onChange } = this.props;
     if (onChange) {
       onChange(e.target.value);
     }
   };
 
-  handleKeyDown = (e) => {
+  handleKeyDown = e => {
     // Enter key - auto-indent to match current line
     // Skip if Cmd/Ctrl is pressed (let it bubble up for modal confirm)
     if (e.key === 'Enter' && !e.metaKey && !e.ctrlKey) {
@@ -105,10 +105,7 @@ export default class JsonEditor extends React.Component {
       return Prism.highlight(value, Prism.languages.json, 'json');
     } catch {
       // If highlighting fails, return escaped HTML
-      return value
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+      return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
   }
 
@@ -130,7 +127,7 @@ export default class JsonEditor extends React.Component {
     };
 
     // Validate hex color: only accept #RGB or #RRGGBB (case-insensitive)
-    const isValidHexColor = (color) => {
+    const isValidHexColor = color => {
       if (typeof color !== 'string') {
         return false;
       }
@@ -138,7 +135,7 @@ export default class JsonEditor extends React.Component {
     };
 
     // Get sanitized color for a token, falling back to default if invalid
-    const getSafeColor = (token) => {
+    const getSafeColor = token => {
       const color = syntaxColors[token];
       return isValidHexColor(color) ? color : defaults[token];
     };

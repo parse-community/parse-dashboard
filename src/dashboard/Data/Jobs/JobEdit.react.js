@@ -51,9 +51,9 @@ class JobEdit extends React.Component {
 
     const promise = this.props.params.jobId
       ? this.props.jobs.dispatch(ActionTypes.EDIT, {
-        jobId: this.props.params.jobId,
-        updates: schedule,
-      })
+          jobId: this.props.params.jobId,
+          updates: schedule,
+        })
       : this.props.jobs.dispatch(ActionTypes.CREATE, { schedule });
     promise.then(() => {
       this.props.navigate(generatePath(this.context, 'jobs/scheduled'));

@@ -144,22 +144,25 @@ class CustomDashboard extends DashboardView {
   }
 
   loadCanvasById(canvas) {
-    this.setState({
-      elements: canvas.elements || [],
-      elementData: {},
-      selectedElement: null,
-      currentCanvasId: canvas.id,
-      currentCanvasName: canvas.name,
-      currentCanvasGroup: canvas.group || null,
-      hasUnsavedChanges: false,
-    }, () => {
-      // Fetch data for all graph, data table, and view elements
-      canvas.elements?.forEach(element => {
-        if (element.type === 'graph' || element.type === 'dataTable' || element.type === 'view') {
-          this.fetchElementData(element.id);
-        }
-      });
-    });
+    this.setState(
+      {
+        elements: canvas.elements || [],
+        elementData: {},
+        selectedElement: null,
+        currentCanvasId: canvas.id,
+        currentCanvasName: canvas.name,
+        currentCanvasGroup: canvas.group || null,
+        hasUnsavedChanges: false,
+      },
+      () => {
+        // Fetch data for all graph, data table, and view elements
+        canvas.elements?.forEach(element => {
+          if (element.type === 'graph' || element.type === 'dataTable' || element.type === 'view') {
+            this.fetchElementData(element.id);
+          }
+        });
+      }
+    );
   }
 
   navigateToCanvas(canvasId) {
@@ -293,7 +296,7 @@ class CustomDashboard extends DashboardView {
     }
   }
 
-  handleAddElement = (type) => {
+  handleAddElement = type => {
     this.setState({ showAddDialog: false });
     switch (type) {
       case 'staticText':
@@ -311,18 +314,21 @@ class CustomDashboard extends DashboardView {
     }
   };
 
-  handleSaveStaticText = (config) => {
+  handleSaveStaticText = config => {
     const { editingElement, elements } = this.state;
 
     if (editingElement) {
       const updatedElements = elements.map(el =>
         el.id === editingElement.id ? { ...el, config } : el
       );
-      this.setState({
-        elements: updatedElements,
-        showStaticTextDialog: false,
-        editingElement: null,
-      }, this.markUnsavedChanges);
+      this.setState(
+        {
+          elements: updatedElements,
+          showStaticTextDialog: false,
+          editingElement: null,
+        },
+        this.markUnsavedChanges
+      );
     } else {
       const newElement = {
         id: generateId(),
@@ -333,28 +339,34 @@ class CustomDashboard extends DashboardView {
         height: 100,
         config,
       };
-      this.setState({
-        elements: [...elements, newElement],
-        showStaticTextDialog: false,
-      }, this.markUnsavedChanges);
+      this.setState(
+        {
+          elements: [...elements, newElement],
+          showStaticTextDialog: false,
+        },
+        this.markUnsavedChanges
+      );
     }
   };
 
-  handleSaveGraph = (config) => {
+  handleSaveGraph = config => {
     const { editingElement, elements } = this.state;
 
     if (editingElement) {
       const updatedElements = elements.map(el =>
         el.id === editingElement.id ? { ...el, config } : el
       );
-      this.setState({
-        elements: updatedElements,
-        showGraphDialog: false,
-        editingElement: null,
-      }, () => {
-        this.fetchElementData(editingElement.id);
-        this.markUnsavedChanges();
-      });
+      this.setState(
+        {
+          elements: updatedElements,
+          showGraphDialog: false,
+          editingElement: null,
+        },
+        () => {
+          this.fetchElementData(editingElement.id);
+          this.markUnsavedChanges();
+        }
+      );
     } else {
       const newElement = {
         id: generateId(),
@@ -365,31 +377,37 @@ class CustomDashboard extends DashboardView {
         height: 350,
         config,
       };
-      this.setState({
-        elements: [...elements, newElement],
-        showGraphDialog: false,
-      }, () => {
-        this.fetchElementData(newElement.id);
-        this.markUnsavedChanges();
-      });
+      this.setState(
+        {
+          elements: [...elements, newElement],
+          showGraphDialog: false,
+        },
+        () => {
+          this.fetchElementData(newElement.id);
+          this.markUnsavedChanges();
+        }
+      );
     }
   };
 
-  handleSaveDataTable = (config) => {
+  handleSaveDataTable = config => {
     const { editingElement, elements } = this.state;
 
     if (editingElement) {
       const updatedElements = elements.map(el =>
         el.id === editingElement.id ? { ...el, config } : el
       );
-      this.setState({
-        elements: updatedElements,
-        showDataTableDialog: false,
-        editingElement: null,
-      }, () => {
-        this.fetchElementData(editingElement.id);
-        this.markUnsavedChanges();
-      });
+      this.setState(
+        {
+          elements: updatedElements,
+          showDataTableDialog: false,
+          editingElement: null,
+        },
+        () => {
+          this.fetchElementData(editingElement.id);
+          this.markUnsavedChanges();
+        }
+      );
     } else {
       const newElement = {
         id: generateId(),
@@ -400,31 +418,37 @@ class CustomDashboard extends DashboardView {
         height: 300,
         config,
       };
-      this.setState({
-        elements: [...elements, newElement],
-        showDataTableDialog: false,
-      }, () => {
-        this.fetchElementData(newElement.id);
-        this.markUnsavedChanges();
-      });
+      this.setState(
+        {
+          elements: [...elements, newElement],
+          showDataTableDialog: false,
+        },
+        () => {
+          this.fetchElementData(newElement.id);
+          this.markUnsavedChanges();
+        }
+      );
     }
   };
 
-  handleSaveView = (config) => {
+  handleSaveView = config => {
     const { editingElement, elements } = this.state;
 
     if (editingElement) {
       const updatedElements = elements.map(el =>
         el.id === editingElement.id ? { ...el, config } : el
       );
-      this.setState({
-        elements: updatedElements,
-        showViewDialog: false,
-        editingElement: null,
-      }, () => {
-        this.fetchElementData(editingElement.id);
-        this.markUnsavedChanges();
-      });
+      this.setState(
+        {
+          elements: updatedElements,
+          showViewDialog: false,
+          editingElement: null,
+        },
+        () => {
+          this.fetchElementData(editingElement.id);
+          this.markUnsavedChanges();
+        }
+      );
     } else {
       const newElement = {
         id: generateId(),
@@ -435,13 +459,16 @@ class CustomDashboard extends DashboardView {
         height: 300,
         config,
       };
-      this.setState({
-        elements: [...elements, newElement],
-        showViewDialog: false,
-      }, () => {
-        this.fetchElementData(newElement.id);
-        this.markUnsavedChanges();
-      });
+      this.setState(
+        {
+          elements: [...elements, newElement],
+          showViewDialog: false,
+        },
+        () => {
+          this.fetchElementData(newElement.id);
+          this.markUnsavedChanges();
+        }
+      );
     }
   };
 
@@ -484,7 +511,9 @@ class CustomDashboard extends DashboardView {
           data = this.normalizeViewResults(results);
         } else if (viewQuery && Array.isArray(viewQuery) && className) {
           // Aggregation pipeline view
-          const results = await new Parse.Query(className).aggregate(viewQuery, { useMasterKey: true });
+          const results = await new Parse.Query(className).aggregate(viewQuery, {
+            useMasterKey: true,
+          });
           data = this.normalizeViewResults(results);
         } else {
           throw new Error('Invalid view configuration');
@@ -500,9 +529,10 @@ class CustomDashboard extends DashboardView {
             // The 'filter' property contains a JSON string array of filter conditions
             if (savedFilter.filter) {
               try {
-                const conditions = typeof savedFilter.filter === 'string'
-                  ? JSON.parse(savedFilter.filter)
-                  : savedFilter.filter;
+                const conditions =
+                  typeof savedFilter.filter === 'string'
+                    ? JSON.parse(savedFilter.filter)
+                    : savedFilter.filter;
                 if (Array.isArray(conditions)) {
                   conditions.forEach(condition => {
                     addConstraintFromValues(
@@ -582,7 +612,6 @@ class CustomDashboard extends DashboardView {
     }
   }
 
-
   normalizeViewResults(results) {
     // Normalize Parse.Object instances to raw JSON for consistent rendering
     const normalizeValue = val => {
@@ -590,7 +619,7 @@ class CustomDashboard extends DashboardView {
         return {
           __type: 'Pointer',
           className: val.className,
-          objectId: val.id
+          objectId: val.id,
         };
       }
       if (val && typeof val === 'object' && !Array.isArray(val)) {
@@ -615,11 +644,11 @@ class CustomDashboard extends DashboardView {
     });
   }
 
-  handleSelectElement = (id) => {
+  handleSelectElement = id => {
     this.setState({ selectedElement: id });
   };
 
-  handleDeselectElement = (e) => {
+  handleDeselectElement = e => {
     if (e.target === e.currentTarget) {
       this.setState({ selectedElement: null });
     }
@@ -634,11 +663,12 @@ class CustomDashboard extends DashboardView {
     // Snap to grid and ensure position is not negative
     const safeX = Math.max(0, this.snapToGrid(x));
     const safeY = Math.max(0, this.snapToGrid(y));
-    this.setState(state => ({
-      elements: state.elements.map(el =>
-        el.id === id ? { ...el, x: safeX, y: safeY } : el
-      ),
-    }), this.markUnsavedChanges);
+    this.setState(
+      state => ({
+        elements: state.elements.map(el => (el.id === id ? { ...el, x: safeX, y: safeY } : el)),
+      }),
+      this.markUnsavedChanges
+    );
   };
 
   handleSizeChange = (id, width, height, x, y) => {
@@ -647,11 +677,16 @@ class CustomDashboard extends DashboardView {
     const safeY = Math.max(0, this.snapToGrid(y));
     const snappedWidth = this.snapToGrid(width);
     const snappedHeight = this.snapToGrid(height);
-    this.setState(state => ({
-      elements: state.elements.map(el =>
-        el.id === id ? { ...el, width: snappedWidth, height: snappedHeight, x: safeX, y: safeY } : el
-      ),
-    }), this.markUnsavedChanges);
+    this.setState(
+      state => ({
+        elements: state.elements.map(el =>
+          el.id === id
+            ? { ...el, width: snappedWidth, height: snappedHeight, x: safeX, y: safeY }
+            : el
+        ),
+      }),
+      this.markUnsavedChanges
+    );
   };
 
   handleDrag = (id, x, y, width, height) => {
@@ -722,19 +757,22 @@ class CustomDashboard extends DashboardView {
     };
   }
 
-  handleDeleteElement = (id) => {
-    this.setState(state => ({
-      elements: state.elements.filter(el => el.id !== id),
-      selectedElement: state.selectedElement === id ? null : state.selectedElement,
-      elementData: (() => {
-        const newData = { ...state.elementData };
-        delete newData[id];
-        return newData;
-      })(),
-    }), this.markUnsavedChanges);
+  handleDeleteElement = id => {
+    this.setState(
+      state => ({
+        elements: state.elements.filter(el => el.id !== id),
+        selectedElement: state.selectedElement === id ? null : state.selectedElement,
+        elementData: (() => {
+          const newData = { ...state.elementData };
+          delete newData[id];
+          return newData;
+        })(),
+      }),
+      this.markUnsavedChanges
+    );
   };
 
-  handleDuplicateElement = (id) => {
+  handleDuplicateElement = id => {
     const { elements } = this.state;
     const element = elements.find(el => el.id === id);
 
@@ -750,15 +788,18 @@ class CustomDashboard extends DashboardView {
       config: { ...element.config },
     };
 
-    this.setState(state => ({
-      elements: [...state.elements, duplicatedElement],
-      selectedElement: duplicatedElement.id,
-    }), () => {
-      if (element.type === 'graph' || element.type === 'dataTable' || element.type === 'view') {
-        this.fetchElementData(duplicatedElement.id);
+    this.setState(
+      state => ({
+        elements: [...state.elements, duplicatedElement],
+        selectedElement: duplicatedElement.id,
+      }),
+      () => {
+        if (element.type === 'graph' || element.type === 'dataTable' || element.type === 'view') {
+          this.fetchElementData(duplicatedElement.id);
+        }
+        this.markUnsavedChanges();
       }
-      this.markUnsavedChanges();
-    });
+    );
   };
 
   handleEditElement = () => {
@@ -790,7 +831,7 @@ class CustomDashboard extends DashboardView {
     }
   };
 
-  handleRefreshElement = (id) => {
+  handleRefreshElement = id => {
     this.fetchElementData(id);
   };
 
@@ -803,7 +844,7 @@ class CustomDashboard extends DashboardView {
     });
   };
 
-  handleAutoReloadChange = (interval) => {
+  handleAutoReloadChange = interval => {
     const seconds = parseInt(interval, 10) || 0;
     this.setState({ autoReloadInterval: seconds, autoReloadProgress: 0 });
 
@@ -857,9 +898,7 @@ class CustomDashboard extends DashboardView {
       // Update or add to saved canvases
       let updatedCanvases;
       if (currentCanvasId) {
-        updatedCanvases = savedCanvases.map(c =>
-          c.id === currentCanvasId ? canvas : c
-        );
+        updatedCanvases = savedCanvases.map(c => (c.id === currentCanvasId ? canvas : c));
       } else {
         updatedCanvases = [...savedCanvases, canvas];
       }
@@ -873,48 +912,54 @@ class CustomDashboard extends DashboardView {
       // Update URL to include canvas ID
       const isNewCanvas = !currentCanvasId;
 
-      this.setState({
-        showSaveDialog: false,
-        savedCanvases: updatedCanvases,
-        currentCanvasId: canvas.id,
-        currentCanvasName: name,
-        currentCanvasGroup: group,
-        hasUnsavedChanges: false,
-      }, () => {
-        // Navigate to canvas URL if this is a new canvas
-        if (isNewCanvas) {
-          this.navigateToCanvas(canvas.id);
+      this.setState(
+        {
+          showSaveDialog: false,
+          savedCanvases: updatedCanvases,
+          currentCanvasId: canvas.id,
+          currentCanvasName: name,
+          currentCanvasGroup: group,
+          hasUnsavedChanges: false,
+        },
+        () => {
+          // Navigate to canvas URL if this is a new canvas
+          if (isNewCanvas) {
+            this.navigateToCanvas(canvas.id);
+          }
         }
-      });
+      );
     } catch (error) {
       console.error('Failed to save canvas:', error);
     }
   };
 
-  handleLoadCanvas = (canvas) => {
+  handleLoadCanvas = canvas => {
     // Load elements from saved canvas
-    this.setState({
-      elements: canvas.elements || [],
-      elementData: {},
-      selectedElement: null,
-      currentCanvasId: canvas.id,
-      currentCanvasName: canvas.name,
-      currentCanvasGroup: canvas.group || null,
-      hasUnsavedChanges: false,
-    }, () => {
-      // Update URL to include canvas ID
-      this.navigateToCanvas(canvas.id);
+    this.setState(
+      {
+        elements: canvas.elements || [],
+        elementData: {},
+        selectedElement: null,
+        currentCanvasId: canvas.id,
+        currentCanvasName: canvas.name,
+        currentCanvasGroup: canvas.group || null,
+        hasUnsavedChanges: false,
+      },
+      () => {
+        // Update URL to include canvas ID
+        this.navigateToCanvas(canvas.id);
 
-      // Fetch data for all graph, data table, and view elements
-      canvas.elements?.forEach(element => {
-        if (element.type === 'graph' || element.type === 'dataTable' || element.type === 'view') {
-          this.fetchElementData(element.id);
-        }
-      });
-    });
+        // Fetch data for all graph, data table, and view elements
+        canvas.elements?.forEach(element => {
+          if (element.type === 'graph' || element.type === 'dataTable' || element.type === 'view') {
+            this.fetchElementData(element.id);
+          }
+        });
+      }
+    );
   };
 
-  handleDeleteCanvas = async (canvasId) => {
+  handleDeleteCanvas = async canvasId => {
     if (!this.canvasPreferencesManager || !this.context?.applicationId) {
       return;
     }
@@ -932,40 +977,46 @@ class CustomDashboard extends DashboardView {
       // If we deleted the currently loaded canvas, reset the state and URL
       const resetCurrentCanvas = currentCanvasId === canvasId;
 
-      this.setState({
-        savedCanvases: updatedCanvases,
-        ...(resetCurrentCanvas && {
-          elements: [],
-          elementData: {},
-          selectedElement: null,
-          currentCanvasId: null,
-          currentCanvasName: null,
-          currentCanvasGroup: null,
-          hasUnsavedChanges: false,
-        }),
-      }, () => {
-        if (resetCurrentCanvas) {
-          this.navigateToCanvas(null);
+      this.setState(
+        {
+          savedCanvases: updatedCanvases,
+          ...(resetCurrentCanvas && {
+            elements: [],
+            elementData: {},
+            selectedElement: null,
+            currentCanvasId: null,
+            currentCanvasName: null,
+            currentCanvasGroup: null,
+            hasUnsavedChanges: false,
+          }),
+        },
+        () => {
+          if (resetCurrentCanvas) {
+            this.navigateToCanvas(null);
+          }
         }
-      });
+      );
     } catch (error) {
       console.error('Failed to delete canvas:', error);
     }
   };
 
   handleNewCanvas = () => {
-    this.setState({
-      elements: [],
-      elementData: {},
-      selectedElement: null,
-      currentCanvasId: null,
-      currentCanvasName: null,
-      currentCanvasGroup: null,
-      hasUnsavedChanges: false,
-    }, () => {
-      // Clear canvas ID from URL
-      this.navigateToCanvas(null);
-    });
+    this.setState(
+      {
+        elements: [],
+        elementData: {},
+        selectedElement: null,
+        currentCanvasId: null,
+        currentCanvasName: null,
+        currentCanvasGroup: null,
+        hasUnsavedChanges: false,
+      },
+      () => {
+        // Clear canvas ID from URL
+        this.navigateToCanvas(null);
+      }
+    );
   };
 
   markUnsavedChanges = () => {
@@ -1024,7 +1075,7 @@ class CustomDashboard extends DashboardView {
     return false;
   }
 
-  handleKeyDown = (e) => {
+  handleKeyDown = e => {
     if (e.key === 'Delete' || e.key === 'Backspace') {
       if (this.state.selectedElement && !this.isEditableElement(document.activeElement)) {
         e.preventDefault();
@@ -1077,8 +1128,9 @@ class CustomDashboard extends DashboardView {
     const { savedCanvases } = this.state;
 
     // Sort canvases alphabetically
-    const sortedCanvases = [...savedCanvases]
-      .sort((a, b) => stringCompare(a.name || '', b.name || ''));
+    const sortedCanvases = [...savedCanvases].sort((a, b) =>
+      stringCompare(a.name || '', b.name || '')
+    );
 
     // Don't render sidebar if no canvases
     if (sortedCanvases.length === 0) {
@@ -1143,7 +1195,7 @@ class CustomDashboard extends DashboardView {
         linkPrefix={'canvas/'}
         categories={categories}
         params={`filters=${currentCanvasId}&filterId=${currentCanvasId}`}
-        filterClicked={(url) => {
+        filterClicked={url => {
           // Extract canvas ID from the filter URL
           const match = url.match(/filterId=([^&]+)/);
           if (match) {
@@ -1301,30 +1353,13 @@ class CustomDashboard extends DashboardView {
 
     return (
       <Toolbar section="Canvas" subsection={subsection}>
-        <BrowserMenu
-          title="Canvas"
-          icon="canvas-outline"
-          setCurrent={() => {}}
-        >
-          <MenuItem
-            text="New"
-            onClick={this.handleNewCanvas}
-          />
-          <MenuItem
-            text="Save..."
-            onClick={() => this.setState({ showSaveDialog: true })}
-          />
+        <BrowserMenu title="Canvas" icon="canvas-outline" setCurrent={() => {}}>
+          <MenuItem text="New" onClick={this.handleNewCanvas} />
+          <MenuItem text="Save..." onClick={() => this.setState({ showSaveDialog: true })} />
         </BrowserMenu>
         <div className={styles.toolbarSeparator} />
-        <BrowserMenu
-          title="Element"
-          icon="files-outline"
-          setCurrent={() => {}}
-        >
-          <MenuItem
-            text="Add"
-            onClick={() => this.setState({ showAddDialog: true })}
-          />
+        <BrowserMenu title="Element" icon="files-outline" setCurrent={() => {}}>
+          <MenuItem text="Add" onClick={() => this.setState({ showAddDialog: true })} />
           <MenuItem
             text="Duplicate"
             shortcut="⌘D"
@@ -1362,7 +1397,7 @@ class CustomDashboard extends DashboardView {
               <select
                 className={styles.autoReloadSelect}
                 value={autoReloadInterval}
-                onChange={(e) => this.handleAutoReloadChange(e.target.value)}
+                onChange={e => this.handleAutoReloadChange(e.target.value)}
               >
                 <option value="0">Off</option>
                 <option value="5">5s</option>
@@ -1385,10 +1420,7 @@ class CustomDashboard extends DashboardView {
         {hasElements && (
           <>
             <div className={styles.toolbarSeparator} />
-            <a
-              className={styles.toolbarButton}
-              onClick={this.toggleFullscreen}
-            >
+            <a className={styles.toolbarButton} onClick={this.toggleFullscreen}>
               <Icon name="laptop-outline" width={14} height={14} />
               <span>Fullscreen</span>
             </a>
@@ -1418,11 +1450,9 @@ class CustomDashboard extends DashboardView {
     } = this.state;
 
     // Extract unique group names from saved canvases
-    const existingGroups = [...new Set(
-      savedCanvases
-        .map(c => c.group)
-        .filter(g => g != null && g !== '')
-    )];
+    const existingGroups = [
+      ...new Set(savedCanvases.map(c => c.group).filter(g => g != null && g !== '')),
+    ];
 
     return (
       <>

@@ -106,14 +106,16 @@ class Webhooks extends TableView {
                   Learn about{' '}
                   <a
                     target="_blank"
-                    href="http://docs.parseplatform.org/cloudcode/guide#cloud-code-cloud-functions" rel="noreferrer"
+                    href="http://docs.parseplatform.org/cloudcode/guide#cloud-code-cloud-functions"
+                    rel="noreferrer"
                   >
                     functions
                   </a>{' '}
                   and{' '}
                   <a
                     target="_blank"
-                    href="http://docs.parseplatform.org/cloudcode/guide#cloud-code-beforesave-triggers" rel="noreferrer"
+                    href="http://docs.parseplatform.org/cloudcode/guide#cloud-code-beforesave-triggers"
+                    rel="noreferrer"
                   >
                     triggers
                   </a>
@@ -305,26 +307,26 @@ class Webhooks extends TableView {
   renderRow(hook) {
     const showEdit = hook.url
       ? () => {
-        this.setState({
-          hookType: hook.functionName ? 'function' : hook.triggerName,
-          functionName: hook.functionName,
-          triggerClass: hook.className,
-          hookURL: hook.url,
-          showEditWebhookModal: true,
-        });
-      }
+          this.setState({
+            hookType: hook.functionName ? 'function' : hook.triggerName,
+            functionName: hook.functionName,
+            triggerClass: hook.className,
+            hookURL: hook.url,
+            showEditWebhookModal: true,
+          });
+        }
       : null;
 
     const showDelete = hook.url
       ? () => {
-        this.setState({
-          hookType: hook.functionName ? 'function' : hook.triggerName,
-          functionName: hook.functionName,
-          triggerClass: hook.className,
-          hookURL: hook.url,
-          showDeleteWebhookModal: true,
-        });
-      }
+          this.setState({
+            hookType: hook.functionName ? 'function' : hook.triggerName,
+            functionName: hook.functionName,
+            triggerClass: hook.className,
+            hookURL: hook.url,
+            showDeleteWebhookModal: true,
+          });
+        }
       : null;
     const rowStyle = hook.url ? { cursor: 'pointer' } : {};
     let deleteColumnContents = null;
@@ -393,7 +395,8 @@ class Webhooks extends TableView {
             Use webhooks to run Cloud Code or connect Parse to your own server.{' '}
             <a
               href="http://docs.parseplatform.org/cloudcode/guide/#cloud-code-webhooks"
-              target="_blank" rel="noreferrer"
+              target="_blank"
+              rel="noreferrer"
             >
               Learn more
             </a>

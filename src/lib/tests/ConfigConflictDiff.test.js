@@ -30,11 +30,7 @@ jest.mock('diff', () => ({
 describe('ConfigConflictDiff', () => {
   it('renders a diff for changed string values', () => {
     const component = renderComponent(
-      <ConfigConflictDiff
-        serverValue="hello"
-        userValue="world"
-        type="String"
-      />
+      <ConfigConflictDiff serverValue="hello" userValue="world" type="String" />
     );
     const tree = component.toJSON();
     expect(tree).toBeTruthy();
@@ -44,11 +40,7 @@ describe('ConfigConflictDiff', () => {
 
   it('renders a diff for changed object values', () => {
     const component = renderComponent(
-      <ConfigConflictDiff
-        serverValue={{ key: 'old' }}
-        userValue='{"key": "new"}'
-        type="Object"
-      />
+      <ConfigConflictDiff serverValue={{ key: 'old' }} userValue='{"key": "new"}' type="Object" />
     );
     const tree = component.toJSON();
     expect(tree).toBeTruthy();
@@ -56,11 +48,7 @@ describe('ConfigConflictDiff', () => {
 
   it('renders empty state when values are identical', () => {
     const component = renderComponent(
-      <ConfigConflictDiff
-        serverValue=""
-        userValue=""
-        type="String"
-      />
+      <ConfigConflictDiff serverValue="" userValue="" type="String" />
     );
     const tree = component.toJSON();
     expect(tree.type).toBe('div');
@@ -69,11 +57,7 @@ describe('ConfigConflictDiff', () => {
 
   it('renders a diff for boolean values', () => {
     const component = renderComponent(
-      <ConfigConflictDiff
-        serverValue={true}
-        userValue={false}
-        type="Boolean"
-      />
+      <ConfigConflictDiff serverValue={true} userValue={false} type="Boolean" />
     );
     const tree = component.toJSON();
     expect(tree).toBeTruthy();
@@ -81,11 +65,7 @@ describe('ConfigConflictDiff', () => {
 
   it('renders a diff for number values', () => {
     const component = renderComponent(
-      <ConfigConflictDiff
-        serverValue={42}
-        userValue={99}
-        type="Number"
-      />
+      <ConfigConflictDiff serverValue={42} userValue={99} type="Number" />
     );
     const tree = component.toJSON();
     expect(tree).toBeTruthy();
