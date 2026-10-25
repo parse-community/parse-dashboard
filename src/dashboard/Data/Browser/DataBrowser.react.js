@@ -1513,12 +1513,17 @@ export default class DataBrowser extends React.Component {
         order,
         frozenColumnIndex: freezeIndex,
         current: null,
+        // Restored selection must land on a visible column, not the hidden one.
+        lastSelectedCol: Math.max(0, order.findIndex(c => c.visible)),
         editing: false,
         selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
         firstSelectedCell: null,
         selectedData: [],
       },
-      () => this.updatePreferences(order)
+      () => {
+        this.props.onCellSelectionChange?.(0, []);
+        this.updatePreferences(order);
+      }
     );
   }
 
