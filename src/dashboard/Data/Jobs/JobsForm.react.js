@@ -284,7 +284,7 @@ export default class JobsForm extends DashboardView {
           if (fields.immediate) {
             pieces.push(<strong>immediately</strong>, '.');
           } else {
-            pieces.push('on ', <strong>{dateStringUTC(fields.runAt)}</strong>, '.');
+            pieces.push('on ', <strong title={fields.runAt.toLocaleString()}>{dateStringUTC(fields.runAt)}</strong>, '.');
           }
           if (fields.repeat) {
             pieces.push(' It will repeat ');

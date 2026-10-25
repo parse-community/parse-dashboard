@@ -36,7 +36,11 @@ const CertsTable = ({ certs, onDelete, uploadPending }) => {
         {
           key: isExpired ? 'Expired' : 'Expires',
           keyColor: expiresKeyColor,
-          value: dateStringUTC(new Date(c.expiration)),
+          value: (
+            <span title={new Date(c.expiration).toLocaleString()}>
+              {dateStringUTC(new Date(c.expiration))}
+            </span>
+          ),
         },
       ],
     };

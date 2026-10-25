@@ -153,7 +153,8 @@ export default class BrowserCell extends Component {
       } else if (typeof value === 'string') {
         this.props.value = new Date(this.props.value);
       }
-      this.copyableValue = content = dateStringUTC(this.props.value);
+      this.copyableValue = dateStringUTC(this.props.value);
+      content = <span title={this.props.value.toLocaleString()}>{this.copyableValue}</span>;
     } else if (this.props.type === 'Boolean') {
       this.copyableValue = content = this.props.value ? 'True' : 'False';
     } else if (this.props.type === 'Object' || this.props.type === 'Bytes') {
