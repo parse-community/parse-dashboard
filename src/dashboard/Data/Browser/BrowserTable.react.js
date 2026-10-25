@@ -630,6 +630,7 @@ export default class BrowserTable extends React.Component {
           freezeIndex={this.props.freezeIndex}
           freezeColumns={this.props.freezeColumns}
           unfreezeColumns={this.props.unfreezeColumns}
+          hideColumn={this.props.hideColumn}
           updateOrdering={this.props.updateOrdering}
           showRowNumber={this.props.showRowNumber}
           setShowRowNumber={this.props.setShowRowNumber}

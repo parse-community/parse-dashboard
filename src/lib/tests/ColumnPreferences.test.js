@@ -288,4 +288,45 @@ describe('ColumnPreferences', () => {
       },
     ]);
   });
+
+  describe('hideColumn', () => {
+    const order = ['A', 'B', 'C', 'D'].map(name => ({ name, width: 150, visible: true }));
+    const names = result => result.order.map(c => c.name + (c.visible ? '' : '-hidden'));
+
+    it('hides an unfrozen column in place', () => {
+      const result = ColumnPreferences.hideColumn(order, 2, -1);
+      expect(names(result)).toEqual(['A', 'B', 'C-hidden', 'D']);
+      expect(result.freezeIndex).toBe(-1);
+    });
+
+    it('keeps the freeze when hiding a column right of the frozen block', () => {
+      const result = ColumnPreferences.hideColumn(order, 3, 1);
+      expect(names(result)).toEqual(['A', 'B', 'C', 'D-hidden']);
+      expect(result.freezeIndex).toBe(1);
+    });
+
+    it('moves a frozen column behind the frozen block', () => {
+      const result = ColumnPreferences.hideColumn(order, 1, 2);
+      expect(names(result)).toEqual(['A', 'C', 'B-hidden', 'D']);
+      expect(result.freezeIndex).toBe(1);
+    });
+
+    it('shrinks the freeze when hiding the last frozen column', () => {
+      const result = ColumnPreferences.hideColumn(order, 2, 2);
+      expect(names(result)).toEqual(['A', 'B', 'C-hidden', 'D']);
+      expect(result.freezeIndex).toBe(1);
+    });
+
+    it('removes the freeze when hiding the only frozen column', () => {
+      const result = ColumnPreferences.hideColumn(order, 0, 0);
+      expect(names(result)).toEqual(['A-hidden', 'B', 'C', 'D']);
+      expect(result.freezeIndex).toBe(-1);
+    });
+
+    it('does not mutate the input order', () => {
+      ColumnPreferences.hideColumn(order, 1, 2);
+      expect(order.map(c => c.name)).toEqual(['A', 'B', 'C', 'D']);
+      expect(order.every(c => c.visible)).toBe(true);
+    });
+  });
 });
