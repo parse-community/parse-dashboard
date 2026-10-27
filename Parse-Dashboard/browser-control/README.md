@@ -790,7 +790,7 @@ The Browser Control API uses a **two-layer security model** to prevent accidenta
 - `BROWSER_SLOW_MO=100` - Slow down browser operations by N milliseconds
 
 ### MongoDB Auto-Start (when browser-control is enabled)
-MongoDB is automatically started when browser-control mode is enabled using `mongodb-runner`.
+MongoDB is automatically started when browser-control mode is enabled using `@mongodb-js/mongodb-runner`.
 
 - `MONGO_PORT=27017` - MongoDB port (default: 27017)
 - `MONGO_VERSION=8.0.4` - MongoDB version (default: 8.0.4)
