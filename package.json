@@ -129,7 +129,7 @@
     "marked": "17.0.5",
     "parse-server": "9.10.1",
     "prettier": "3.8.1",
-    "puppeteer": "24.43.1",
+    "puppeteer": "25.16.0",
     "react-test-renderer": "19.2.7",
     "sass": "1.99.0",
     "sass-loader": "16.0.7",
