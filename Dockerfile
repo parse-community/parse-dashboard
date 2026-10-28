@@ -36,11 +36,9 @@ RUN cp -R node_modules prod_node_modules
 # Copy src to have webpack config files ready for install
 COPY . /src
 
-# Install remaining dev dependencies
+# Install remaining dev dependencies; this also runs the prepare script, which
+# builds the bundles of the image
 RUN npm ci
-
-# Run all webpack build steps
-RUN npm run prepare && npm run build
 
 ############################################################
 # Release stage
