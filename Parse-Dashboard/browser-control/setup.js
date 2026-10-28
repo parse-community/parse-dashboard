@@ -160,7 +160,7 @@ function setupBrowserControl(app, config) {
   let webpackWatcher = null;
 
   // Auto-start MongoDB and Parse Server
-  const { MongoCluster } = require('mongodb-runner');
+  const { MongoCluster } = require('@mongodb-js/mongodb-runner');
   const mongoPort = parseInt(process.env.MONGO_PORT, 10) || 27017;
   const parseServerPort = parseInt(process.env.PARSE_SERVER_PORT, 10) || 1337;
   const parseServerURL = `http://localhost:${parseServerPort}/parse`;
