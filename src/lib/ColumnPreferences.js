@@ -201,6 +201,18 @@ export function getPointerDefaultKey(appId, className) {
   return pointerKey;
 }
 
+// Hides the column at `index`. A frozen column leaves the frozen block
+// (columns 0..freezeIndex) and moves right behind it, so it shows up unfrozen again.
+export function hideColumn(order, index, freezeIndex) {
+  const newOrder = order.map((column, i) => (i === index ? { ...column, visible: false } : column));
+  if (freezeIndex < 0 || index > freezeIndex) {
+    return { order: newOrder, freezeIndex };
+  }
+  const [column] = newOrder.splice(index, 1);
+  newOrder.splice(freezeIndex, 0, column);
+  return { order: newOrder, freezeIndex: freezeIndex - 1 };
+}
+
 function path(appId, className) {
   return `ParseDashboard:${VERSION}:${appId}:${className}`;
 }

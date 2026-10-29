@@ -103,6 +103,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
         - [Conditional Operator](#conditional-operator)
         - [Math Functions](#math-functions)
     - [Freeze Columns](#freeze-columns)
+    - [Hide Column](#hide-column)
     - [Browse as User](#browse-as-user)
     - [Change Pointer Key](#change-pointer-key)
       - [Limitations](#limitations)
@@ -1713,6 +1714,12 @@ Comparison operators return `1` for true and `0` for false.
 ▶️ *Core > Browser > Freeze column*
 
 Right-click on a table column header to freeze columns from the left up to the clicked column in the data browser. When scrolling horizontally, the frozen columns remain visible while the other columns scroll underneath.
+
+### Hide Column
+
+▶️ *Core > Browser > Hide column*
+
+Right-click on a table column header and select *Hide column* to hide that column in the data browser. The column stays hidden like when hiding it in *Manage Columns*, where it can be shown again. Hiding a frozen column removes it from the frozen columns.
 
 ### Browse as User
 
