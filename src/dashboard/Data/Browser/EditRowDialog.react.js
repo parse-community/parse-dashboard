@@ -502,12 +502,18 @@ export default class EditRowDialog extends React.Component {
           <div style={{ paddingTop: '5px', fontSize: '12px' }}>
             {selectedObject.createdAt && (
               <p>
-                CreatedAt <strong>{dateStringUTC(selectedObject.createdAt)}</strong>
+                CreatedAt{' '}
+                <strong title={selectedObject.createdAt.toLocaleString()}>
+                  {dateStringUTC(selectedObject.createdAt)}
+                </strong>
               </p>
             )}
             {selectedObject.updatedAt && (
               <p>
-                UpdatedAt <strong>{dateStringUTC(selectedObject.updatedAt)}</strong>
+                UpdatedAt{' '}
+                <strong title={selectedObject.updatedAt.toLocaleString()}>
+                  {dateStringUTC(selectedObject.updatedAt)}
+                </strong>
               </p>
             )}
           </div>

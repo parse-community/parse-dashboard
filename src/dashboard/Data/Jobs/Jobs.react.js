@@ -163,8 +163,13 @@ class Jobs extends TableView {
       return (
         <tr key={data.objectId}>
           <td style={{ width: '20%' }}>{data.jobName}</td>
-          <td style={{ width: '20%' }}>{DateUtils.dateStringUTC(new Date(data.createdAt))}</td>
-          <td style={{ width: '20%' }}>
+          <td style={{ width: '20%' }} title={new Date(data.createdAt).toLocaleString()}>
+            {DateUtils.dateStringUTC(new Date(data.createdAt))}
+          </td>
+          <td
+            style={{ width: '20%' }}
+            title={data.finishedAt ? new Date(data.finishedAt.iso).toLocaleString() : undefined}
+          >
             {data.finishedAt ? DateUtils.dateStringUTC(new Date(data.finishedAt.iso)) : ''}
           </td>
           <td style={{ width: '20%' }}>
