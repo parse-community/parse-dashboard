@@ -986,7 +986,7 @@ You can provide a list of locales or languages you want to support for your dash
 
 The official docker image is published on [docker hub](https://hub.docker.com/r/parseplatform/parse-dashboard)
 
-The Docker image runs on the newest Node.js LTS version that the Parse Dashboard major version supports, see [Compatibility](#nodejs). Node.js minor and patch versions are updated regularly. The Node.js major version is updated with every Parse Dashboard major release, or earlier if that Node.js version reaches its end-of-life.
+With every Parse Dashboard major release, the Docker image is updated to the newest Node.js LTS version that the new major version supports, see [Compatibility](#nodejs). Between major releases, it only receives Node.js minor and patch updates, unless its Node.js version reaches its end-of-life.
 
 Run the image with your ``config.json`` mounted as a volume
 
