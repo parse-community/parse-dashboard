@@ -1,3 +1,10 @@
+# [9.3.0-alpha.15](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.14...9.3.0-alpha.15) (2026-11-02)
+
+
+### Bug Fixes
+
+* Security upgrade Docker image from Node.js 20 to 24 ([#3518](https://github.com/parse-community/parse-dashboard/issues/3518)) ([9dc2c30](https://github.com/parse-community/parse-dashboard/commit/9dc2c30ca0deb477a24dc072e9daeff8053b987d))
+
 # [9.3.0-alpha.14](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.13...9.3.0-alpha.14) (2026-10-27)
 
 
