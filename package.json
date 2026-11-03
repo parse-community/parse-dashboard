@@ -128,7 +128,7 @@
     "jest-environment-node": "30.0.4",
     "madge": "8.0.0",
     "marked": "17.0.5",
-    "parse-server": "9.10.1",
+    "parse-server": "9.11.0",
     "prettier": "3.8.1",
     "puppeteer": "25.16.0",
     "react-test-renderer": "19.2.7",
