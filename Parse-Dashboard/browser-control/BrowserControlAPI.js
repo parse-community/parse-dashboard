@@ -195,7 +195,7 @@ function createBrowserControlAPI(getWebpackState) {
       await page.waitForSelector(selector, { timeout });
 
       // Clear existing text first
-      await page.click(selector, { clickCount: 3 });
+      await page.click(selector, { count: 3 });
       await page.keyboard.press('Backspace');
 
       // Type new text

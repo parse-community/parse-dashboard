@@ -125,6 +125,7 @@
     "husky": "9.1.7",
     "jest": "30.0.4",
     "jest-environment-jsdom": "30.4.1",
+    "jest-environment-node": "30.0.4",
     "madge": "8.0.0",
     "marked": "17.0.5",
     "parse-server": "9.10.1",

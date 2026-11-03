@@ -1,3 +1,6 @@
+/**
+ * @jest-environment ./testing/puppeteerEnvironment.js
+ */
 /*
  * Copyright (c) 2016-present, Parse, LLC
  * All rights reserved.
@@ -12,7 +15,7 @@ const express = require('express');
 const path = require('path');
 const spawn = require('child_process').spawn;
 const ParseDashboard = require('../../../../Parse-Dashboard/app');
-const puppeteer = require('puppeteer');
+const puppeteer = globalThis.puppeteer;
 
 const dashboardSettings = {
   apps: [

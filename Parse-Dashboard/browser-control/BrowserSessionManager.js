@@ -210,7 +210,7 @@ class BrowserSessionManager extends EventEmitter {
       }
 
       // Close browser
-      if (session.browser && session.browser.isConnected()) {
+      if (session.browser && session.browser.connected) {
         await session.browser.close();
       }
     } catch (error) {
