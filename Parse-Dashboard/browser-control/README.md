@@ -11,7 +11,7 @@ The Browser Control API is a development-time tool that allows AI agents to inte
 ### Prerequisites
 
 **Requirements:**
-- Node.js 20.19.0 or higher
+- Node.js 22.12.0 or higher
 
 **Note:** MongoDB is automatically started when you run `npm run browser-control` - no manual setup needed!
 

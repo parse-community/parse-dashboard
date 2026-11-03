@@ -120,6 +120,12 @@ jobs:
       - name: Fix usage of insecure GitHub protocol
         run: sudo git config --system url."https://github".insteadOf "git://github"
       - uses: actions/checkout@v4
+      # puppeteer 25 requires Node 22.12+, so skip its browser download and tests on Node 20
+      - name: Skip puppeteer
+        if: startsWith(matrix.NODE_VERSION, '20.')
+        run: |
+          echo "PUPPETEER_SKIP_DOWNLOAD=true" >> "$GITHUB_ENV"
+          rm src/lib/tests/e2e/dashboard.e2e.test.js
       - name: Use Node.js ${{ matrix.NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
