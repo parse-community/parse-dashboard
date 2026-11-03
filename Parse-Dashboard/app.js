@@ -63,6 +63,19 @@ module.exports = function(config, options) {
   options = options || {};
   const app = express();
 
+  // Named AI agent providers and their chat-completions endpoints.
+  // Each provider is a first-class integration with its own base URL.
+  const AGENT_PROVIDERS = {
+    openai: {
+      url: 'https://api.openai.com/v1/chat/completions',
+      label: 'OpenAI',
+    },
+    orcarouter: {
+      url: 'https://api.orcarouter.ai/v1/chat/completions',
+      label: 'OrcaRouter',
+    },
+  };
+
   // Parse JSON and URL-encoded request bodies
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -337,8 +350,8 @@ module.exports = function(config, options) {
           return res.status(400).json({ error: 'Please replace the placeholder API key with your actual API key' });
         }
 
-        // Only support OpenAI for now
-        if (provider.toLowerCase() !== 'openai') {
+        // Only support the named providers registered in AGENT_PROVIDERS
+        if (!AGENT_PROVIDERS[provider.toLowerCase()]) {
           return res.status(400).json({ error: `Provider "${provider}" is not supported yet` });
         }
 
@@ -357,8 +370,8 @@ module.exports = function(config, options) {
         // preventing privilege escalation via self-authorized permissions in the request body
         const effectivePermissions = isReadOnly ? {} : (permissions || {});
 
-        // Make request to OpenAI API with app context and conversation history
-        const response = await makeOpenAIRequest(message, model, apiKey, appContext, conversationHistory, operationLog, effectivePermissions);
+        // Make request to the configured provider with app context and conversation history
+        const response = await makeProviderRequest(message, model, apiKey, provider, appContext, conversationHistory, operationLog, effectivePermissions);
 
         // Update conversation history with user message and AI response
         conversationHistory.push(
@@ -912,12 +925,13 @@ module.exports = function(config, options) {
     }
 
     /**
-     * Make a request to OpenAI API
+     * Make a request to the configured AI provider's chat-completions API
      */
-    async function makeOpenAIRequest(userMessage, model, apiKey, appContext = null, conversationHistory = [], operationLog = [], permissions = {}) {
+    async function makeProviderRequest(userMessage, model, apiKey, provider, appContext = null, conversationHistory = [], operationLog = [], permissions = {}) {
       const fetch = (await import('node-fetch')).default;
 
-      const url = 'https://api.openai.com/v1/chat/completions';
+      const providerConfig = AGENT_PROVIDERS[provider.toLowerCase()];
+      const url = providerConfig ? providerConfig.url : 'https://api.openai.com/v1/chat/completions';
 
       const appInfo = appContext ?
         `\n\nContext: You are currently helping with the Parse Server app "${appContext.appName}" (ID: ${appContext.appId}) at ${appContext.serverURL}.` :
@@ -1044,27 +1058,28 @@ You have direct access to the Parse database through function calls, so you can 
       });
 
       if (!response.ok) {
+        const providerLabel = providerConfig ? providerConfig.label : 'AI provider';
         if (response.status === 401) {
-          throw new Error('Invalid API key. Please check your OpenAI API key configuration.');
+          throw new Error(`Invalid API key. Please check your ${providerLabel} API key configuration.`);
         } else if (response.status === 429) {
           throw new Error('Rate limit exceeded. Please try again in a moment.');
         } else if (response.status === 403) {
           throw new Error('Access forbidden. Please check your API key permissions.');
         } else if (response.status >= 500) {
-          throw new Error('OpenAI service is temporarily unavailable. Please try again later.');
+          throw new Error(`${providerLabel} service is temporarily unavailable. Please try again later.`);
         }
 
         const errorData = await response.json().catch(() => ({}));
         const errorMessage = (errorData && typeof errorData === 'object' && 'error' in errorData && errorData.error && typeof errorData.error === 'object' && 'message' in errorData.error)
           ? errorData.error.message
           : `HTTP ${response.status}: ${response.statusText}`;
-        throw new Error(`OpenAI API error: ${errorMessage}`);
+        throw new Error(`${providerLabel} API error: ${errorMessage}`);
       }
 
       const data = await response.json();
 
       if (!data || typeof data !== 'object' || !('choices' in data) || !Array.isArray(data.choices) || data.choices.length === 0) {
-        throw new Error('No response received from OpenAI API');
+        throw new Error('No response received from the AI provider');
       }
 
       const choice = data.choices[0];
@@ -1140,19 +1155,19 @@ You have direct access to the Parse database through function calls, so you can 
         const followUpData = await followUpResponse.json();
 
         if (!followUpData || typeof followUpData !== 'object' || !('choices' in followUpData) || !Array.isArray(followUpData.choices) || followUpData.choices.length === 0) {
-          throw new Error('No follow-up response received from OpenAI API');
+          throw new Error('No follow-up response received from the AI provider');
         }
 
         const followUpContent = followUpData.choices[0].message.content;
         if (!followUpContent) {
-          console.warn('OpenAI returned null content in follow-up response, using fallback message');
+          console.warn('AI provider returned null content in follow-up response, using fallback message');
         }
         return followUpContent || 'Done.';
       }
 
       const content = responseMessage.content;
       if (!content) {
-        console.warn('OpenAI returned null content in initial response, using fallback message');
+        console.warn('AI provider returned null content in initial response, using fallback message');
       }
       return content || 'Done.';
     }
