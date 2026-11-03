@@ -26,7 +26,8 @@ jest.mock('../../components/Popover/Popover.react', () => {
 
 import React, { act } from 'react';
 import { renderComponent } from './renderWithAct';
-const ScriptResponseModal = require('../../dashboard/Data/Browser/ScriptResponseModal.react').default;
+const ScriptResponseModal =
+  require('../../dashboard/Data/Browser/ScriptResponseModal.react').default;
 
 const defaultProps = {
   objectIds: ['obj1'],
@@ -56,12 +57,14 @@ describe('ScriptResponseModal', () => {
 
     it('renders with description', () => {
       const form = {
-        elements: [{
-          element: 'checkbox',
-          name: 'confirmed',
-          label: 'Confirm',
-          description: 'Please confirm',
-        }],
+        elements: [
+          {
+            element: 'checkbox',
+            name: 'confirmed',
+            label: 'Confirm',
+            description: 'Please confirm',
+          },
+        ],
       };
       const tree = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />).toJSON();
       expect(JSON.stringify(tree)).toContain('Please confirm');
@@ -89,12 +92,14 @@ describe('ScriptResponseModal', () => {
 
     it('renders with description', () => {
       const form = {
-        elements: [{
-          element: 'toggle',
-          name: 'enabled',
-          label: 'Enable',
-          description: 'Toggle this feature',
-        }],
+        elements: [
+          {
+            element: 'toggle',
+            name: 'enabled',
+            label: 'Enable',
+            description: 'Toggle this feature',
+          },
+        ],
       };
       const tree = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />).toJSON();
       expect(JSON.stringify(tree)).toContain('Toggle this feature');
@@ -102,13 +107,15 @@ describe('ScriptResponseModal', () => {
 
     it('renders with custom labels', () => {
       const form = {
-        elements: [{
-          element: 'toggle',
-          name: 'enabled',
-          label: 'Enable',
-          labelTrue: 'Enabled',
-          labelFalse: 'Disabled',
-        }],
+        elements: [
+          {
+            element: 'toggle',
+            name: 'enabled',
+            label: 'Enable',
+            labelTrue: 'Enabled',
+            labelFalse: 'Disabled',
+          },
+        ],
       };
       const tree = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />).toJSON();
       const json = JSON.stringify(tree);
@@ -138,12 +145,14 @@ describe('ScriptResponseModal', () => {
 
     it('renders with placeholder', () => {
       const form = {
-        elements: [{
-          element: 'textInput',
-          name: 'reason',
-          label: 'Reason',
-          placeholder: 'Enter reason...',
-        }],
+        elements: [
+          {
+            element: 'textInput',
+            name: 'reason',
+            label: 'Reason',
+            placeholder: 'Enter reason...',
+          },
+        ],
       };
       const tree = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />).toJSON();
       expect(JSON.stringify(tree)).toContain('Enter reason...');
@@ -151,12 +160,14 @@ describe('ScriptResponseModal', () => {
 
     it('renders with description', () => {
       const form = {
-        elements: [{
-          element: 'textInput',
-          name: 'reason',
-          label: 'Reason',
-          description: 'Provide a reason',
-        }],
+        elements: [
+          {
+            element: 'textInput',
+            name: 'reason',
+            label: 'Reason',
+            description: 'Provide a reason',
+          },
+        ],
       };
       const tree = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />).toJSON();
       expect(JSON.stringify(tree)).toContain('Provide a reason');
@@ -166,12 +177,17 @@ describe('ScriptResponseModal', () => {
   describe('dropDown element (existing)', () => {
     it('initializes with first item value', () => {
       const form = {
-        elements: [{
-          element: 'dropDown',
-          name: 'role',
-          label: 'Role',
-          items: [{ title: 'Admin', value: 'admin' }, { title: 'User', value: 'user' }],
-        }],
+        elements: [
+          {
+            element: 'dropDown',
+            name: 'role',
+            label: 'Role',
+            items: [
+              { title: 'Admin', value: 'admin' },
+              { title: 'User', value: 'user' },
+            ],
+          },
+        ],
       };
       const component = renderComponent(<ScriptResponseModal form={form} {...defaultProps} />);
       const instance = component.getInstance();
@@ -210,7 +226,12 @@ describe('ScriptResponseModal', () => {
         ],
       };
       const component = renderComponent(
-        <ScriptResponseModal form={form} objectIds={['obj1']} onCancel={jest.fn()} onConfirm={onConfirm} />
+        <ScriptResponseModal
+          form={form}
+          objectIds={['obj1']}
+          onCancel={jest.fn()}
+          onConfirm={onConfirm}
+        />
       );
       const instance = component.getInstance();
       act(() => {

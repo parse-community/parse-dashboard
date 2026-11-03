@@ -28,7 +28,7 @@ export const demos = [
     ),
   },
   {
-    name: 'Tooltip doesn\'t break layout',
+    name: "Tooltip doesn't break layout",
     render: () => (
       <div>
         <Tooltip

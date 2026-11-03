@@ -101,10 +101,18 @@ function initialize(app, options) {
           redirect = originalRedirect.charAt(0) === '/' ? originalRedirect.substring(1) : originalRedirect;
         }
       }
-      return passport.authenticate('local', {
-        successRedirect: `${self.mountPath}${redirect}`,
-        failureRedirect: `${self.mountPath}login${originalRedirect ? `?redirect=${originalRedirect}` : ''}`,
-        failureFlash : true
+      const failureRedirect = `${self.mountPath}login${originalRedirect ? `?redirect=${originalRedirect}` : ''}`;
+      return passport.authenticate('local', { failureRedirect, failureFlash: true }, (err, user) => {
+        if (err) { return next(err); }
+        if (!user) { return res.redirect(failureRedirect); }
+        // Regenerate the session to prevent session fixation on successful login
+        req.session.regenerate((err) => {
+          if (err) { return next(err); }
+          req.logIn(user, (err) => {
+            if (err) { return next(err); }
+            res.redirect(`${self.mountPath}${redirect}`);
+          });
+        });
       })(req, res, next)
     },
   );

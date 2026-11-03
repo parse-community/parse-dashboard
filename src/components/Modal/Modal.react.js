@@ -90,7 +90,7 @@ const Modal = ({
       return;
     }
 
-    const handleKeyDown = (e) => {
+    const handleKeyDown = e => {
       // Handle Escape to close modal
       if (e.key === 'Escape') {
         e.stopImmediatePropagation();
@@ -133,8 +133,15 @@ const Modal = ({
     };
 
     // Handle Command+Enter to trigger primary button (runs in bubble phase after component handlers)
-    const handleEnterKey = (e) => {
-      if (e.key === 'Enter' && e.metaKey && !e.defaultPrevented && !disabled && !progress && onConfirm) {
+    const handleEnterKey = e => {
+      if (
+        e.key === 'Enter' &&
+        e.metaKey &&
+        !e.defaultPrevented &&
+        !disabled &&
+        !progress &&
+        onConfirm
+      ) {
         e.preventDefault();
         onConfirm();
       }

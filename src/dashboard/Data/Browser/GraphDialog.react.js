@@ -109,7 +109,7 @@ const PREDEFINED_COLORS = [
 ];
 
 // Validate hex color format: #RRGGBB only
-const isValidHexColor = (color) => {
+const isValidHexColor = color => {
   if (!color) {
     return true;
   }
@@ -124,7 +124,9 @@ export default class GraphDialog extends React.Component {
 
     // Ensure groupByColumn is always an array
     const groupByColumn = initialConfig.groupByColumn
-      ? (Array.isArray(initialConfig.groupByColumn) ? initialConfig.groupByColumn : [initialConfig.groupByColumn])
+      ? Array.isArray(initialConfig.groupByColumn)
+        ? initialConfig.groupByColumn
+        : [initialConfig.groupByColumn]
       : [];
 
     // Series configuration
@@ -150,7 +152,8 @@ export default class GraphDialog extends React.Component {
       yAxisTitleSecondary: initialConfig.yAxisTitleSecondary || '',
       showLegend: initialConfig.showLegend !== undefined ? initialConfig.showLegend : true,
       showGrid: initialConfig.showGrid !== undefined ? initialConfig.showGrid : true,
-      showAxisLabels: initialConfig.showAxisLabels !== undefined ? initialConfig.showAxisLabels : true,
+      showAxisLabels:
+        initialConfig.showAxisLabels !== undefined ? initialConfig.showAxisLabels : true,
       isStacked: initialConfig.isStacked || false,
       maxDataPoints: initialConfig.maxDataPoints || 1000,
       maxDataPointsInput: null,
@@ -161,7 +164,10 @@ export default class GraphDialog extends React.Component {
 
   valid() {
     const { chartType, xColumn, yColumn, series, calculatedValues } = this.state;
-    const hasSeries = Array.isArray(series) && series.length > 0 && series.some(s => s.fields && s.fields.length > 0);
+    const hasSeries =
+      Array.isArray(series) &&
+      series.length > 0 &&
+      series.some(s => s.fields && s.fields.length > 0);
     const hasCalculatedValues = Array.isArray(calculatedValues) && calculatedValues.length > 0;
     const hasValuesToDisplay = hasSeries || hasCalculatedValues;
 
@@ -216,7 +222,8 @@ export default class GraphDialog extends React.Component {
         yColumn: this.state.yColumn || null,
         series: this.state.series.length > 0 ? this.state.series : null,
         groupByColumn: this.state.groupByColumn.length > 0 ? this.state.groupByColumn : null,
-        calculatedValues: this.state.calculatedValues.length > 0 ? this.state.calculatedValues : null,
+        calculatedValues:
+          this.state.calculatedValues.length > 0 ? this.state.calculatedValues : null,
       });
     }
   };
@@ -266,7 +273,9 @@ export default class GraphDialog extends React.Component {
   }
 
   isObjectColumn(col) {
-    return this.props.columns && this.props.columns[col] && this.props.columns[col].type === 'Object';
+    return (
+      this.props.columns && this.props.columns[col] && this.props.columns[col].type === 'Object'
+    );
   }
 
   isObjectDotPath(fieldValue) {
@@ -318,12 +327,21 @@ export default class GraphDialog extends React.Component {
     this.setState({
       series: [
         ...this.state.series,
-        { title: '', fields: [], aggregationType: 'count', chartType: '', color: '', lineStyle: '', barStyle: '', expanded: true }
-      ]
+        {
+          title: '',
+          fields: [],
+          aggregationType: 'count',
+          chartType: '',
+          color: '',
+          lineStyle: '',
+          barStyle: '',
+          expanded: true,
+        },
+      ],
     });
   };
 
-  removeSeries = (index) => {
+  removeSeries = index => {
     const newSeries = [...this.state.series];
     newSeries.splice(index, 1);
     this.setState({ series: newSeries });
@@ -333,16 +351,16 @@ export default class GraphDialog extends React.Component {
     const newSeries = [...this.state.series];
     newSeries[index] = {
       ...newSeries[index],
-      [key]: value
+      [key]: value,
     };
     this.setState({ series: newSeries });
   };
 
-  toggleSeries = (index) => {
+  toggleSeries = index => {
     const newSeries = [...this.state.series];
     newSeries[index] = {
       ...newSeries[index],
-      expanded: !newSeries[index].expanded
+      expanded: !newSeries[index].expanded,
     };
     this.setState({ series: newSeries });
   };
@@ -395,7 +413,9 @@ export default class GraphDialog extends React.Component {
       .filter(c => c.name && c.name.trim() !== '')
       .map(c => c.name);
 
-    const availableVariables = [...new Set([...numericColumns, ...seriesFields, ...previousCalcNames])];
+    const availableVariables = [
+      ...new Set([...numericColumns, ...seriesFields, ...previousCalcNames]),
+    ];
 
     const validation = validateFormula(calc.formula, availableVariables);
     return validation.isValid ? null : validation.error;
@@ -438,12 +458,12 @@ export default class GraphDialog extends React.Component {
     this.setState({
       calculatedValues: [
         ...this.state.calculatedValues,
-        { fields: [], operator: 'sum', name: '', chartType: '', expanded: true }
-      ]
+        { fields: [], operator: 'sum', name: '', chartType: '', expanded: true },
+      ],
     });
   };
 
-  removeCalculatedValue = (index) => {
+  removeCalculatedValue = index => {
     const newCalculatedValues = [...this.state.calculatedValues];
     newCalculatedValues.splice(index, 1);
     this.setState({ calculatedValues: newCalculatedValues });
@@ -453,34 +473,37 @@ export default class GraphDialog extends React.Component {
     const newCalculatedValues = [...this.state.calculatedValues];
     newCalculatedValues[index] = {
       ...newCalculatedValues[index],
-      [field]: value
+      [field]: value,
     };
     this.setState({ calculatedValues: newCalculatedValues });
   };
 
-  toggleCalculatedValue = (index) => {
+  toggleCalculatedValue = index => {
     const newCalculatedValues = [...this.state.calculatedValues];
     newCalculatedValues[index] = {
       ...newCalculatedValues[index],
-      expanded: !newCalculatedValues[index].expanded
+      expanded: !newCalculatedValues[index].expanded,
     };
     this.setState({ calculatedValues: newCalculatedValues });
   };
 
   renderChartTypeSection() {
     return (
-      <Field label={<Label text="Chart Type" />} input={
-        <Dropdown
-          value={this.state.chartType}
-          onChange={chartType => this.setState({ chartType })}
-        >
-          {CHART_TYPES.map(type => (
-            <Option key={type.value} value={type.value}>
-              {type.label}
-            </Option>
-          ))}
-        </Dropdown>
-      } />
+      <Field
+        label={<Label text="Chart Type" />}
+        input={
+          <Dropdown
+            value={this.state.chartType}
+            onChange={chartType => this.setState({ chartType })}
+          >
+            {CHART_TYPES.map(type => (
+              <Option key={type.value} value={type.value}>
+                {type.label}
+              </Option>
+            ))}
+          </Dropdown>
+        }
+      />
     );
   }
 
@@ -488,23 +511,63 @@ export default class GraphDialog extends React.Component {
     const { chartType } = this.state;
     const isExpanded = s.expanded !== false;
     // Display name: title if set, otherwise first field, otherwise "Series N"
-    const displayName = s.title || (s.fields && s.fields.length > 0 ? (s.fields.length === 1 ? s.fields[0] : `${s.fields.length} fields`) : `Series ${index + 1}`);
+    const displayName =
+      s.title ||
+      (s.fields && s.fields.length > 0
+        ? s.fields.length === 1
+          ? s.fields[0]
+          : `${s.fields.length} fields`
+        : `Series ${index + 1}`);
     const numericAndPointerColumns = this.getNumericAndPointerColumns();
     // Use series-specific chart type, or fall back to global chart type
     const effectiveType = s.chartType || chartType;
 
     return (
-      <div key={index} style={{ paddingTop: '10px', paddingLeft: '10px', paddingRight: '10px', paddingBottom: isExpanded ? '0' : '10px', borderTop: '1px solid #e3e3e3', borderLeft: '1px solid #e3e3e3', borderRight: '1px solid #e3e3e3', borderBottom: 'none' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: isExpanded ? '8px' : '0', cursor: 'pointer' }} onClick={() => this.toggleSeries(index)}>
+      <div
+        key={index}
+        style={{
+          paddingTop: '10px',
+          paddingLeft: '10px',
+          paddingRight: '10px',
+          paddingBottom: isExpanded ? '0' : '10px',
+          borderTop: '1px solid #e3e3e3',
+          borderLeft: '1px solid #e3e3e3',
+          borderRight: '1px solid #e3e3e3',
+          borderBottom: 'none',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: isExpanded ? '8px' : '0',
+            cursor: 'pointer',
+          }}
+          onClick={() => this.toggleSeries(index)}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '12px' }}>{isExpanded ? '▼' : '▶'}</span>
             <Label text={displayName} />
           </div>
-          <Button value="Remove" onClick={(e) => { e.stopPropagation(); this.removeSeries(index); }} />
+          <Button
+            value="Remove"
+            onClick={e => {
+              e.stopPropagation();
+              this.removeSeries(index);
+            }}
+          />
         </div>
         {isExpanded && (
           <div style={{ paddingBottom: '8px' }}>
-            <div style={{ borderTop: '1px solid #e3e3e3', borderLeft: '1px solid #e3e3e3', borderRight: '1px solid #e3e3e3', borderBottom: '1px solid #e3e3e3' }}>
+            <div
+              style={{
+                borderTop: '1px solid #e3e3e3',
+                borderLeft: '1px solid #e3e3e3',
+                borderRight: '1px solid #e3e3e3',
+                borderBottom: '1px solid #e3e3e3',
+              }}
+            >
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Label text="Title" description="Optional custom name" />
@@ -512,12 +575,20 @@ export default class GraphDialog extends React.Component {
                 <div>
                   <TextInput
                     value={s.title || ''}
-                    onChange={title => this.updateSeries(index, 'title', title.replace(/[()]/g, ''))}
+                    onChange={title =>
+                      this.updateSeries(index, 'title', title.replace(/[()]/g, ''))
+                    }
                     placeholder="Auto-generated from fields"
                   />
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  borderTop: '1px solid #e3e3e3',
+                }}
+              >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Label text="Fields" />
                 </div>
@@ -527,13 +598,25 @@ export default class GraphDialog extends React.Component {
                     onChange={fields => {
                       const added = fields.find(f => !(s.fields || []).includes(f));
                       if (added && this.isObjectColumn(added)) {
-                        this.setState({ objectPathInput: { field: added, onConfirm: fullPath => this.updateSeries(index, 'fields', [...(s.fields || []), fullPath].sort(stringCompare)) } });
+                        this.setState({
+                          objectPathInput: {
+                            field: added,
+                            onConfirm: fullPath =>
+                              this.updateSeries(
+                                index,
+                                'fields',
+                                [...(s.fields || []), fullPath].sort(stringCompare)
+                              ),
+                          },
+                        });
                         return;
                       }
                       this.updateSeries(index, 'fields', fields);
                     }}
                     placeHolder="Select field(s)"
-                    formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
+                    formatSelection={selection =>
+                      selection.length === 1 ? selection[0] : `${selection.length} fields`
+                    }
                   >
                     {numericAndPointerColumns.map(col => (
                       <MultiSelectOption key={col} value={col}>
@@ -548,14 +631,22 @@ export default class GraphDialog extends React.Component {
                   </MultiSelect>
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  borderTop: '1px solid #e3e3e3',
+                }}
+              >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Label text="Aggregation" />
                 </div>
                 <div>
                   <Dropdown
                     value={s.aggregationType || 'count'}
-                    onChange={aggregationType => this.updateSeries(index, 'aggregationType', aggregationType)}
+                    onChange={aggregationType =>
+                      this.updateSeries(index, 'aggregationType', aggregationType)
+                    }
                   >
                     {AGGREGATION_TYPES.map(type => (
                       <Option key={type.value} value={type.value}>
@@ -566,14 +657,22 @@ export default class GraphDialog extends React.Component {
                 </div>
               </div>
               {(chartType === 'bar' || chartType === 'line') && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    borderTop: '1px solid #e3e3e3',
+                  }}
+                >
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Label text="Chart Type" />
                   </div>
                   <div>
                     <Dropdown
                       value={s.chartType || ''}
-                      onChange={seriesChartType => this.updateSeries(index, 'chartType', seriesChartType)}
+                      onChange={seriesChartType =>
+                        this.updateSeries(index, 'chartType', seriesChartType)
+                      }
                       placeHolder={`Default (${chartType === 'bar' ? 'Bar' : 'Line'})`}
                     >
                       <Option value="">Default ({chartType === 'bar' ? 'Bar' : 'Line'})</Option>
@@ -587,20 +686,42 @@ export default class GraphDialog extends React.Component {
                 </div>
               )}
               {(chartType === 'bar' || chartType === 'line') && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    borderTop: '1px solid #e3e3e3',
+                  }}
+                >
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Label text="Secondary Y Axis" description="Display on right axis" />
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f6fafb', minHeight: '80px' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: '#f6fafb',
+                      minHeight: '80px',
+                    }}
+                  >
                     <Toggle
                       type={Toggle.Types.YES_NO}
                       value={s.useSecondaryYAxis || false}
-                      onChange={useSecondaryYAxis => this.updateSeries(index, 'useSecondaryYAxis', useSecondaryYAxis)}
+                      onChange={useSecondaryYAxis =>
+                        this.updateSeries(index, 'useSecondaryYAxis', useSecondaryYAxis)
+                      }
                     />
                   </div>
                 </div>
               )}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  borderTop: '1px solid #e3e3e3',
+                }}
+              >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Label text="Color" description="Preset or custom HEX" />
                 </div>
@@ -621,31 +742,83 @@ export default class GraphDialog extends React.Component {
                   </div>
                   <div style={{ flex: 1 }}>
                     <Dropdown
-                      value={PREDEFINED_COLORS.find(c => c.value === s.color) ? s.color : (s.color ? (isValidHexColor(s.color) ? 'custom' : 'invalid') : '')}
-                      onChange={color => { if (color !== 'custom' && color !== 'invalid') { this.updateSeries(index, 'color', color); } }}
+                      value={
+                        PREDEFINED_COLORS.find(c => c.value === s.color)
+                          ? s.color
+                          : s.color
+                            ? isValidHexColor(s.color)
+                              ? 'custom'
+                              : 'invalid'
+                            : ''
+                      }
+                      onChange={color => {
+                        if (color !== 'custom' && color !== 'invalid') {
+                          this.updateSeries(index, 'color', color);
+                        }
+                      }}
                       placeHolder="Preset"
                     >
-                      <Option value=""><span style={{ display: 'flex' }}>Auto</span></Option>
-                      {s.color && !PREDEFINED_COLORS.find(c => c.value === s.color) && !isValidHexColor(s.color) && (
-                        <Option value="invalid">
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#c62828' }}>
-                            <span style={{ width: '14px', height: '14px', backgroundColor: '#ffebee', borderRadius: '2px', border: '1px solid #c62828', flexShrink: 0 }} />
-                            Invalid
-                          </span>
-                        </Option>
-                      )}
-                      {s.color && !PREDEFINED_COLORS.find(c => c.value === s.color) && isValidHexColor(s.color) && (
-                        <Option value="custom">
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ width: '14px', height: '14px', backgroundColor: s.color, borderRadius: '2px', border: '1px solid #ccc', flexShrink: 0 }} />
-                            Custom
-                          </span>
-                        </Option>
-                      )}
+                      <Option value="">
+                        <span style={{ display: 'flex' }}>Auto</span>
+                      </Option>
+                      {s.color &&
+                        !PREDEFINED_COLORS.find(c => c.value === s.color) &&
+                        !isValidHexColor(s.color) && (
+                          <Option value="invalid">
+                            <span
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                color: '#c62828',
+                              }}
+                            >
+                              <span
+                                style={{
+                                  width: '14px',
+                                  height: '14px',
+                                  backgroundColor: '#ffebee',
+                                  borderRadius: '2px',
+                                  border: '1px solid #c62828',
+                                  flexShrink: 0,
+                                }}
+                              />
+                              Invalid
+                            </span>
+                          </Option>
+                        )}
+                      {s.color &&
+                        !PREDEFINED_COLORS.find(c => c.value === s.color) &&
+                        isValidHexColor(s.color) && (
+                          <Option value="custom">
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span
+                                style={{
+                                  width: '14px',
+                                  height: '14px',
+                                  backgroundColor: s.color,
+                                  borderRadius: '2px',
+                                  border: '1px solid #ccc',
+                                  flexShrink: 0,
+                                }}
+                              />
+                              Custom
+                            </span>
+                          </Option>
+                        )}
                       {PREDEFINED_COLORS.map(c => (
                         <Option key={c.value} value={c.value}>
                           <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ width: '14px', height: '14px', backgroundColor: c.value, borderRadius: '2px', border: '1px solid #ccc', flexShrink: 0 }} />
+                            <span
+                              style={{
+                                width: '14px',
+                                height: '14px',
+                                backgroundColor: c.value,
+                                borderRadius: '2px',
+                                border: '1px solid #ccc',
+                                flexShrink: 0,
+                              }}
+                            />
                             {c.label}
                           </span>
                         </Option>
@@ -656,7 +829,13 @@ export default class GraphDialog extends React.Component {
               </div>
               {effectiveType === 'line' && (
                 <>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      borderTop: '1px solid #e3e3e3',
+                    }}
+                  >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Label text="Line Style" />
                     </div>
@@ -673,14 +852,22 @@ export default class GraphDialog extends React.Component {
                       </Dropdown>
                     </div>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      borderTop: '1px solid #e3e3e3',
+                    }}
+                  >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Label text="Stroke Width" />
                     </div>
                     <div>
                       <Dropdown
                         value={s.strokeWidth || 2}
-                        onChange={strokeWidth => this.updateSeries(index, 'strokeWidth', strokeWidth)}
+                        onChange={strokeWidth =>
+                          this.updateSeries(index, 'strokeWidth', strokeWidth)
+                        }
                       >
                         {STROKE_WIDTHS.map(sw => (
                           <Option key={sw.value} value={sw.value}>
@@ -693,7 +880,13 @@ export default class GraphDialog extends React.Component {
                 </>
               )}
               {effectiveType === 'bar' && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    borderTop: '1px solid #e3e3e3',
+                  }}
+                >
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Label text="Bar Style" />
                   </div>
@@ -729,17 +922,51 @@ export default class GraphDialog extends React.Component {
     const effectiveType = calc.chartType || chartType;
 
     return (
-      <div key={`calc-${index}`} style={{ paddingTop: '10px', paddingLeft: '10px', paddingRight: '10px', paddingBottom: isExpanded ? '0' : '10px', borderTop: '1px solid #e3e3e3', borderLeft: '1px solid #e3e3e3', borderRight: '1px solid #e3e3e3', borderBottom: 'none' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: isExpanded ? '8px' : '0', cursor: 'pointer' }} onClick={() => this.toggleCalculatedValue(index)}>
+      <div
+        key={`calc-${index}`}
+        style={{
+          paddingTop: '10px',
+          paddingLeft: '10px',
+          paddingRight: '10px',
+          paddingBottom: isExpanded ? '0' : '10px',
+          borderTop: '1px solid #e3e3e3',
+          borderLeft: '1px solid #e3e3e3',
+          borderRight: '1px solid #e3e3e3',
+          borderBottom: 'none',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: isExpanded ? '8px' : '0',
+            cursor: 'pointer',
+          }}
+          onClick={() => this.toggleCalculatedValue(index)}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '12px' }}>{isExpanded ? '▼' : '▶'}</span>
             <Label text={displayName} />
           </div>
-          <Button value="Remove" onClick={(e) => { e.stopPropagation(); this.removeCalculatedValue(index); }} />
+          <Button
+            value="Remove"
+            onClick={e => {
+              e.stopPropagation();
+              this.removeCalculatedValue(index);
+            }}
+          />
         </div>
         {isExpanded && (
           <div style={{ paddingBottom: '8px' }}>
-            <div style={{ borderTop: '1px solid #e3e3e3', borderLeft: '1px solid #e3e3e3', borderRight: '1px solid #e3e3e3', borderBottom: '1px solid #e3e3e3' }}>
+            <div
+              style={{
+                borderTop: '1px solid #e3e3e3',
+                borderLeft: '1px solid #e3e3e3',
+                borderRight: '1px solid #e3e3e3',
+                borderBottom: '1px solid #e3e3e3',
+              }}
+            >
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Label text="Name" />
@@ -747,12 +974,20 @@ export default class GraphDialog extends React.Component {
                 <div>
                   <TextInput
                     value={calc.name}
-                    onChange={name => this.updateCalculatedValue(index, 'name', name.replace(/[()]/g, ''))}
+                    onChange={name =>
+                      this.updateCalculatedValue(index, 'name', name.replace(/[()]/g, ''))
+                    }
                     placeholder="Enter name"
                   />
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  borderTop: '1px solid #e3e3e3',
+                }}
+              >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Label text="Operator" />
                 </div>
@@ -771,7 +1006,13 @@ export default class GraphDialog extends React.Component {
               </div>
               {calc.operator === 'formula' ? (
                 <>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      borderTop: '1px solid #e3e3e3',
+                    }}
+                  >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Label text="Formula" description="e.g., price * quantity" />
                     </div>
@@ -784,17 +1025,28 @@ export default class GraphDialog extends React.Component {
                     </div>
                   </div>
                   {formulaError && (
-                    <div style={{ borderTop: '1px solid #e3e3e3', padding: '12px', background: '#ffebee', color: '#c62828' }}>
+                    <div
+                      style={{
+                        borderTop: '1px solid #e3e3e3',
+                        padding: '12px',
+                        background: '#ffebee',
+                        color: '#c62828',
+                      }}
+                    >
                       <strong>Formula Error</strong>
-                      <p style={{ margin: '4px 0 0 0', fontSize: '12px' }}>
-                        {formulaError}
-                      </p>
+                      <p style={{ margin: '4px 0 0 0', fontSize: '12px' }}>{formulaError}</p>
                     </div>
                   )}
                 </>
               ) : calc.operator === 'percent' ? (
                 <>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      borderTop: '1px solid #e3e3e3',
+                    }}
+                  >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Label text="Numerator" />
                     </div>
@@ -803,10 +1055,22 @@ export default class GraphDialog extends React.Component {
                         value={calc.fields && calc.fields[0] ? calc.fields[0] : ''}
                         onChange={numerator => {
                           if (this.isObjectColumn(numerator)) {
-                            this.setState({ objectPathInput: { field: numerator, onConfirm: fullPath => this.updateCalculatedValue(index, 'fields', [fullPath, calc.fields && calc.fields[1] ? calc.fields[1] : '']) } });
+                            this.setState({
+                              objectPathInput: {
+                                field: numerator,
+                                onConfirm: fullPath =>
+                                  this.updateCalculatedValue(index, 'fields', [
+                                    fullPath,
+                                    calc.fields && calc.fields[1] ? calc.fields[1] : '',
+                                  ]),
+                              },
+                            });
                             return;
                           }
-                          const newFields = [numerator, calc.fields && calc.fields[1] ? calc.fields[1] : ''];
+                          const newFields = [
+                            numerator,
+                            calc.fields && calc.fields[1] ? calc.fields[1] : '',
+                          ];
                           this.updateCalculatedValue(index, 'fields', newFields);
                         }}
                         placeHolder="Select field"
@@ -816,15 +1080,24 @@ export default class GraphDialog extends React.Component {
                             {this.isObjectColumn(col) ? `${col} [object]` : col}
                           </Option>
                         ))}
-                        {calc.fields && calc.fields[0] && this.isObjectDotPath(calc.fields[0]) && !numericAndCalculatedFields.includes(calc.fields[0]) && (
-                          <Option key={calc.fields[0]} value={calc.fields[0]}>
-                            {calc.fields[0]}
-                          </Option>
-                        )}
+                        {calc.fields &&
+                          calc.fields[0] &&
+                          this.isObjectDotPath(calc.fields[0]) &&
+                          !numericAndCalculatedFields.includes(calc.fields[0]) && (
+                            <Option key={calc.fields[0]} value={calc.fields[0]}>
+                              {calc.fields[0]}
+                            </Option>
+                          )}
                       </Dropdown>
                     </div>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      borderTop: '1px solid #e3e3e3',
+                    }}
+                  >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Label text="Denominator" />
                     </div>
@@ -833,10 +1106,22 @@ export default class GraphDialog extends React.Component {
                         value={calc.fields && calc.fields[1] ? calc.fields[1] : ''}
                         onChange={denominator => {
                           if (this.isObjectColumn(denominator)) {
-                            this.setState({ objectPathInput: { field: denominator, onConfirm: fullPath => this.updateCalculatedValue(index, 'fields', [calc.fields && calc.fields[0] ? calc.fields[0] : '', fullPath]) } });
+                            this.setState({
+                              objectPathInput: {
+                                field: denominator,
+                                onConfirm: fullPath =>
+                                  this.updateCalculatedValue(index, 'fields', [
+                                    calc.fields && calc.fields[0] ? calc.fields[0] : '',
+                                    fullPath,
+                                  ]),
+                              },
+                            });
                             return;
                           }
-                          const newFields = [calc.fields && calc.fields[0] ? calc.fields[0] : '', denominator];
+                          const newFields = [
+                            calc.fields && calc.fields[0] ? calc.fields[0] : '',
+                            denominator,
+                          ];
                           this.updateCalculatedValue(index, 'fields', newFields);
                         }}
                         placeHolder="Select field"
@@ -846,17 +1131,26 @@ export default class GraphDialog extends React.Component {
                             {this.isObjectColumn(col) ? `${col} [object]` : col}
                           </Option>
                         ))}
-                        {calc.fields && calc.fields[1] && this.isObjectDotPath(calc.fields[1]) && !numericAndCalculatedFields.includes(calc.fields[1]) && (
-                          <Option key={calc.fields[1]} value={calc.fields[1]}>
-                            {calc.fields[1]}
-                          </Option>
-                        )}
+                        {calc.fields &&
+                          calc.fields[1] &&
+                          this.isObjectDotPath(calc.fields[1]) &&
+                          !numericAndCalculatedFields.includes(calc.fields[1]) && (
+                            <Option key={calc.fields[1]} value={calc.fields[1]}>
+                              {calc.fields[1]}
+                            </Option>
+                          )}
                       </Dropdown>
                     </div>
                   </div>
                 </>
               ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    borderTop: '1px solid #e3e3e3',
+                  }}
+                >
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Label text="Fields" />
                   </div>
@@ -866,37 +1160,59 @@ export default class GraphDialog extends React.Component {
                       onChange={fields => {
                         const added = fields.find(f => !calc.fields.includes(f));
                         if (added && this.isObjectColumn(added)) {
-                          this.setState({ objectPathInput: { field: added, onConfirm: fullPath => this.updateCalculatedValue(index, 'fields', [...calc.fields, fullPath].sort(stringCompare)) } });
+                          this.setState({
+                            objectPathInput: {
+                              field: added,
+                              onConfirm: fullPath =>
+                                this.updateCalculatedValue(
+                                  index,
+                                  'fields',
+                                  [...calc.fields, fullPath].sort(stringCompare)
+                                ),
+                            },
+                          });
                           return;
                         }
                         this.updateCalculatedValue(index, 'fields', fields);
                       }}
                       placeHolder="Select field(s)"
-                      formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
+                      formatSelection={selection =>
+                        selection.length === 1 ? selection[0] : `${selection.length} fields`
+                      }
                     >
                       {numericAndCalculatedFields.map(col => (
                         <MultiSelectOption key={col} value={col}>
                           {this.isObjectColumn(col) ? `${col} [object]` : col}
                         </MultiSelectOption>
                       ))}
-                      {this.getObjectDotPathOptions(calc.fields, numericAndCalculatedFields).map(f => (
-                        <MultiSelectOption key={f} value={f}>
-                          {f}
-                        </MultiSelectOption>
-                      ))}
+                      {this.getObjectDotPathOptions(calc.fields, numericAndCalculatedFields).map(
+                        f => (
+                          <MultiSelectOption key={f} value={f}>
+                            {f}
+                          </MultiSelectOption>
+                        )
+                      )}
                     </MultiSelect>
                   </div>
                 </div>
               )}
               {(chartType === 'bar' || chartType === 'line') && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    borderTop: '1px solid #e3e3e3',
+                  }}
+                >
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Label text="Chart Type" />
                   </div>
                   <div>
                     <Dropdown
                       value={calc.chartType || ''}
-                      onChange={calcChartType => this.updateCalculatedValue(index, 'chartType', calcChartType)}
+                      onChange={calcChartType =>
+                        this.updateCalculatedValue(index, 'chartType', calcChartType)
+                      }
                       placeHolder={`Default (${chartType === 'bar' ? 'Bar' : 'Line'})`}
                     >
                       <Option value="">Default ({chartType === 'bar' ? 'Bar' : 'Line'})</Option>
@@ -910,20 +1226,42 @@ export default class GraphDialog extends React.Component {
                 </div>
               )}
               {(chartType === 'bar' || chartType === 'line') && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    borderTop: '1px solid #e3e3e3',
+                  }}
+                >
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Label text="Secondary Y Axis" description="Display on right axis" />
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f6fafb', minHeight: '80px' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: '#f6fafb',
+                      minHeight: '80px',
+                    }}
+                  >
                     <Toggle
                       type={Toggle.Types.YES_NO}
                       value={calc.useSecondaryYAxis || false}
-                      onChange={useSecondaryYAxis => this.updateCalculatedValue(index, 'useSecondaryYAxis', useSecondaryYAxis)}
+                      onChange={useSecondaryYAxis =>
+                        this.updateCalculatedValue(index, 'useSecondaryYAxis', useSecondaryYAxis)
+                      }
                     />
                   </div>
                 </div>
               )}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  borderTop: '1px solid #e3e3e3',
+                }}
+              >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Label text="Color" description="Preset or custom HEX" />
                 </div>
@@ -944,31 +1282,83 @@ export default class GraphDialog extends React.Component {
                   </div>
                   <div style={{ flex: 1 }}>
                     <Dropdown
-                      value={PREDEFINED_COLORS.find(c => c.value === calc.color) ? calc.color : (calc.color ? (isValidHexColor(calc.color) ? 'custom' : 'invalid') : '')}
-                      onChange={color => { if (color !== 'custom' && color !== 'invalid') { this.updateCalculatedValue(index, 'color', color); } }}
+                      value={
+                        PREDEFINED_COLORS.find(c => c.value === calc.color)
+                          ? calc.color
+                          : calc.color
+                            ? isValidHexColor(calc.color)
+                              ? 'custom'
+                              : 'invalid'
+                            : ''
+                      }
+                      onChange={color => {
+                        if (color !== 'custom' && color !== 'invalid') {
+                          this.updateCalculatedValue(index, 'color', color);
+                        }
+                      }}
                       placeHolder="Preset"
                     >
-                      <Option value=""><span style={{ display: 'flex' }}>Auto</span></Option>
-                      {calc.color && !PREDEFINED_COLORS.find(c => c.value === calc.color) && !isValidHexColor(calc.color) && (
-                        <Option value="invalid">
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#c62828' }}>
-                            <span style={{ width: '14px', height: '14px', backgroundColor: '#ffebee', borderRadius: '2px', border: '1px solid #c62828', flexShrink: 0 }} />
-                            Invalid
-                          </span>
-                        </Option>
-                      )}
-                      {calc.color && !PREDEFINED_COLORS.find(c => c.value === calc.color) && isValidHexColor(calc.color) && (
-                        <Option value="custom">
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ width: '14px', height: '14px', backgroundColor: calc.color, borderRadius: '2px', border: '1px solid #ccc', flexShrink: 0 }} />
-                            Custom
-                          </span>
-                        </Option>
-                      )}
+                      <Option value="">
+                        <span style={{ display: 'flex' }}>Auto</span>
+                      </Option>
+                      {calc.color &&
+                        !PREDEFINED_COLORS.find(c => c.value === calc.color) &&
+                        !isValidHexColor(calc.color) && (
+                          <Option value="invalid">
+                            <span
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                color: '#c62828',
+                              }}
+                            >
+                              <span
+                                style={{
+                                  width: '14px',
+                                  height: '14px',
+                                  backgroundColor: '#ffebee',
+                                  borderRadius: '2px',
+                                  border: '1px solid #c62828',
+                                  flexShrink: 0,
+                                }}
+                              />
+                              Invalid
+                            </span>
+                          </Option>
+                        )}
+                      {calc.color &&
+                        !PREDEFINED_COLORS.find(c => c.value === calc.color) &&
+                        isValidHexColor(calc.color) && (
+                          <Option value="custom">
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span
+                                style={{
+                                  width: '14px',
+                                  height: '14px',
+                                  backgroundColor: calc.color,
+                                  borderRadius: '2px',
+                                  border: '1px solid #ccc',
+                                  flexShrink: 0,
+                                }}
+                              />
+                              Custom
+                            </span>
+                          </Option>
+                        )}
                       {PREDEFINED_COLORS.map(c => (
                         <Option key={c.value} value={c.value}>
                           <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ width: '14px', height: '14px', backgroundColor: c.value, borderRadius: '2px', border: '1px solid #ccc', flexShrink: 0 }} />
+                            <span
+                              style={{
+                                width: '14px',
+                                height: '14px',
+                                backgroundColor: c.value,
+                                borderRadius: '2px',
+                                border: '1px solid #ccc',
+                                flexShrink: 0,
+                              }}
+                            />
                             {c.label}
                           </span>
                         </Option>
@@ -979,14 +1369,22 @@ export default class GraphDialog extends React.Component {
               </div>
               {effectiveType === 'line' && (
                 <>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      borderTop: '1px solid #e3e3e3',
+                    }}
+                  >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Label text="Line Style" />
                     </div>
                     <div>
                       <Dropdown
                         value={calc.lineStyle || 'solid'}
-                        onChange={lineStyle => this.updateCalculatedValue(index, 'lineStyle', lineStyle)}
+                        onChange={lineStyle =>
+                          this.updateCalculatedValue(index, 'lineStyle', lineStyle)
+                        }
                       >
                         {LINE_STYLES.map(style => (
                           <Option key={style.value} value={style.value}>
@@ -996,14 +1394,22 @@ export default class GraphDialog extends React.Component {
                       </Dropdown>
                     </div>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      borderTop: '1px solid #e3e3e3',
+                    }}
+                  >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <Label text="Stroke Width" />
                     </div>
                     <div>
                       <Dropdown
                         value={calc.strokeWidth || 2}
-                        onChange={strokeWidth => this.updateCalculatedValue(index, 'strokeWidth', strokeWidth)}
+                        onChange={strokeWidth =>
+                          this.updateCalculatedValue(index, 'strokeWidth', strokeWidth)
+                        }
                       >
                         {STROKE_WIDTHS.map(sw => (
                           <Option key={sw.value} value={sw.value}>
@@ -1016,7 +1422,13 @@ export default class GraphDialog extends React.Component {
                 </>
               )}
               {effectiveType === 'bar' && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderTop: '1px solid #e3e3e3' }}>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    borderTop: '1px solid #e3e3e3',
+                  }}
+                >
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Label text="Bar Style" />
                   </div>
@@ -1035,10 +1447,18 @@ export default class GraphDialog extends React.Component {
                 </div>
               )}
               {hasCircular && (
-                <div style={{ borderTop: '1px solid #e3e3e3', padding: '12px', background: '#fff3cd', color: '#856404' }}>
+                <div
+                  style={{
+                    borderTop: '1px solid #e3e3e3',
+                    padding: '12px',
+                    background: '#fff3cd',
+                    color: '#856404',
+                  }}
+                >
                   <strong>Circular Reference Detected</strong>
                   <p style={{ margin: '4px 0 0 0', fontSize: '12px' }}>
-                    This calculated value references another calculated value that references it back, creating a circular dependency. This will result in null values.
+                    This calculated value references another calculated value that references it
+                    back, creating a circular dependency. This will result in null values.
                   </p>
                 </div>
               )}
@@ -1057,67 +1477,111 @@ export default class GraphDialog extends React.Component {
 
     return (
       <>
-        <Field label={<Label text="X-Axis" />} input={
-          <Dropdown
-            value={this.state.xColumn}
-            onChange={xColumn => {
-              if (this.isObjectColumn(xColumn)) {
-                this.setState({ objectPathInput: { field: xColumn, onConfirm: fullPath => this.setState({ xColumn: fullPath }) } });
-                return;
-              }
-              this.setState({ xColumn });
-            }}
-            placeHolder="Select field"
-          >
-            {(chartType === 'scatter' ? numericColumns : allColumns).map(col => (
-              <Option key={col} value={col}>
-                {this.isObjectColumn(col) ? `${col} [object]` : col}
-              </Option>
-            ))}
-            {this.state.xColumn && this.isObjectDotPath(this.state.xColumn) && !(chartType === 'scatter' ? numericColumns : allColumns).includes(this.state.xColumn) && (
-              <Option key={this.state.xColumn} value={this.state.xColumn}>
-                {this.state.xColumn}
-              </Option>
-            )}
-          </Dropdown>
-        } />
-        {chartType === 'scatter' && (
-          <Field label={<Label text="Y-Axis" />} input={
+        <Field
+          label={<Label text="X-Axis" />}
+          input={
             <Dropdown
-              value={this.state.yColumn}
-              onChange={yColumn => {
-                if (this.isObjectColumn(yColumn)) {
-                  this.setState({ objectPathInput: { field: yColumn, onConfirm: fullPath => this.setState({ yColumn: fullPath }) } });
+              value={this.state.xColumn}
+              onChange={xColumn => {
+                if (this.isObjectColumn(xColumn)) {
+                  this.setState({
+                    objectPathInput: {
+                      field: xColumn,
+                      onConfirm: fullPath => this.setState({ xColumn: fullPath }),
+                    },
+                  });
                   return;
                 }
-                this.setState({ yColumn });
+                this.setState({ xColumn });
               }}
               placeHolder="Select field"
             >
-              {numericColumns.map(col => (
+              {(chartType === 'scatter' ? numericColumns : allColumns).map(col => (
                 <Option key={col} value={col}>
                   {this.isObjectColumn(col) ? `${col} [object]` : col}
                 </Option>
               ))}
-              {this.state.yColumn && this.isObjectDotPath(this.state.yColumn) && !numericColumns.includes(this.state.yColumn) && (
-                <Option key={this.state.yColumn} value={this.state.yColumn}>
-                  {this.state.yColumn}
-                </Option>
-              )}
+              {this.state.xColumn &&
+                this.isObjectDotPath(this.state.xColumn) &&
+                !(chartType === 'scatter' ? numericColumns : allColumns).includes(
+                  this.state.xColumn
+                ) && (
+                  <Option key={this.state.xColumn} value={this.state.xColumn}>
+                    {this.state.xColumn}
+                  </Option>
+                )}
             </Dropdown>
-          } />
+          }
+        />
+        {chartType === 'scatter' && (
+          <Field
+            label={<Label text="Y-Axis" />}
+            input={
+              <Dropdown
+                value={this.state.yColumn}
+                onChange={yColumn => {
+                  if (this.isObjectColumn(yColumn)) {
+                    this.setState({
+                      objectPathInput: {
+                        field: yColumn,
+                        onConfirm: fullPath => this.setState({ yColumn: fullPath }),
+                      },
+                    });
+                    return;
+                  }
+                  this.setState({ yColumn });
+                }}
+                placeHolder="Select field"
+              >
+                {numericColumns.map(col => (
+                  <Option key={col} value={col}>
+                    {this.isObjectColumn(col) ? `${col} [object]` : col}
+                  </Option>
+                ))}
+                {this.state.yColumn &&
+                  this.isObjectDotPath(this.state.yColumn) &&
+                  !numericColumns.includes(this.state.yColumn) && (
+                    <Option key={this.state.yColumn} value={this.state.yColumn}>
+                      {this.state.yColumn}
+                    </Option>
+                  )}
+              </Dropdown>
+            }
+          />
         )}
 
-        {(chartType === 'bar' || chartType === 'line' || chartType === 'pie' || chartType === 'doughnut' || chartType === 'radar') && (
+        {(chartType === 'bar' ||
+          chartType === 'line' ||
+          chartType === 'pie' ||
+          chartType === 'doughnut' ||
+          chartType === 'radar') && (
           <>
             {/* Render series boxes */}
             {this.state.series.map((s, index) => this.renderSeriesBox(s, index))}
 
             {/* Render calculated value boxes */}
-            {this.state.calculatedValues.map((calc, index) => this.renderCalculatedValueBox(calc, index))}
+            {this.state.calculatedValues.map((calc, index) =>
+              this.renderCalculatedValueBox(calc, index)
+            )}
 
             {/* Add buttons */}
-            <div style={{ borderTop: (this.state.series.length === 0 && this.state.calculatedValues.length === 0) ? '1px solid #e3e3e3' : 'none', borderLeft: '1px solid #e3e3e3', borderRight: '1px solid #e3e3e3', borderBottom: '1px solid #e3e3e3', minHeight: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', background: '#f6fafb' }}>
+            <div
+              style={{
+                borderTop:
+                  this.state.series.length === 0 && this.state.calculatedValues.length === 0
+                    ? '1px solid #e3e3e3'
+                    : 'none',
+                borderLeft: '1px solid #e3e3e3',
+                borderRight: '1px solid #e3e3e3',
+                borderBottom: '1px solid #e3e3e3',
+                minHeight: '80px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '16px',
+                background: '#f6fafb',
+              }}
+            >
               <Button value="+ Add Series" onClick={this.addSeries} />
               <Button value="+ Add Calculated Value" onClick={this.addCalculatedValue} />
             </div>
@@ -1125,32 +1589,50 @@ export default class GraphDialog extends React.Component {
         )}
 
         {stringAndPointerColumns.length > 0 && (
-          <Field label={<Label text="Group By" description="Optional"/>} input={
-            <MultiSelect
-              value={this.state.groupByColumn}
-              onChange={groupByColumn => {
-                const added = groupByColumn.find(f => !this.state.groupByColumn.includes(f));
-                if (added && this.isObjectColumn(added)) {
-                  this.setState({ objectPathInput: { field: added, onConfirm: fullPath => this.setState({ groupByColumn: [...this.state.groupByColumn, fullPath].sort(stringCompare) }) } });
-                  return;
+          <Field
+            label={<Label text="Group By" description="Optional" />}
+            input={
+              <MultiSelect
+                value={this.state.groupByColumn}
+                onChange={groupByColumn => {
+                  const added = groupByColumn.find(f => !this.state.groupByColumn.includes(f));
+                  if (added && this.isObjectColumn(added)) {
+                    this.setState({
+                      objectPathInput: {
+                        field: added,
+                        onConfirm: fullPath =>
+                          this.setState({
+                            groupByColumn: [...this.state.groupByColumn, fullPath].sort(
+                              stringCompare
+                            ),
+                          }),
+                      },
+                    });
+                    return;
+                  }
+                  this.setState({ groupByColumn });
+                }}
+                placeHolder="Select field(s)"
+                formatSelection={selection =>
+                  selection.length === 1 ? selection[0] : `${selection.length} fields`
                 }
-                this.setState({ groupByColumn });
-              }}
-              placeHolder="Select field(s)"
-              formatSelection={selection => selection.length === 1 ? selection[0] : `${selection.length} fields`}
-            >
-              {stringAndPointerColumns.map(col => (
-                <MultiSelectOption key={col} value={col}>
-                  {this.isObjectColumn(col) ? `${col} [object]` : col}
-                </MultiSelectOption>
-              ))}
-              {this.getObjectDotPathOptions(this.state.groupByColumn, stringAndPointerColumns).map(f => (
-                <MultiSelectOption key={f} value={f}>
-                  {f}
-                </MultiSelectOption>
-              ))}
-            </MultiSelect>
-          } />
+              >
+                {stringAndPointerColumns.map(col => (
+                  <MultiSelectOption key={col} value={col}>
+                    {this.isObjectColumn(col) ? `${col} [object]` : col}
+                  </MultiSelectOption>
+                ))}
+                {this.getObjectDotPathOptions(
+                  this.state.groupByColumn,
+                  stringAndPointerColumns
+                ).map(f => (
+                  <MultiSelectOption key={f} value={f}>
+                    {f}
+                  </MultiSelectOption>
+                ))}
+              </MultiSelect>
+            }
+          />
         )}
       </>
     );
@@ -1158,124 +1640,120 @@ export default class GraphDialog extends React.Component {
 
   renderTitleSection() {
     return (
-      <Field label={<Label text="Chart Title" description="Optional"/>} input={
-        <TextInput
-          value={this.state.title}
-          onChange={title => this.setState({ title })}
-          placeholder="Chart title"
-        />
-      } />
+      <Field
+        label={<Label text="Chart Title" description="Optional" />}
+        input={
+          <TextInput
+            value={this.state.title}
+            onChange={title => this.setState({ title })}
+            placeholder="Chart title"
+          />
+        }
+      />
     );
   }
 
   renderOptionsSection() {
     return (
       <>
-        <Field label={
-          <Label
-            text="Show Legend"
-            description="Display chart legend"
-          />
-        } input={
-          <Toggle
-            type={Toggle.Types.YES_NO}
-            value={this.state.showLegend}
-            onChange={showLegend => this.setState({ showLegend })}
-          />
-        } />
-
-        <Field label={
-          <Label
-            text="Show Grid"
-            description="Display grid lines"
-          />
-        } input={
-          <Toggle
-            type={Toggle.Types.YES_NO}
-            value={this.state.showGrid}
-            onChange={showGrid => this.setState({ showGrid })}
-          />
-        } />
-
-        <Field label={
-          <Label
-            text="Show Axis Labels"
-            description="Display axis labels"
-          />
-        } input={
-          <Toggle
-            type={Toggle.Types.YES_NO}
-            value={this.state.showAxisLabels !== false}
-            onChange={showAxisLabels => this.setState({ showAxisLabels })}
-          />
-        } />
-
-        {(this.state.chartType === 'bar' || this.state.chartType === 'line') && (
-          <Field label={
-            <Label
-              text="Stacked"
-              description="Stack multiple series"
-            />
-          } input={
+        <Field
+          label={<Label text="Show Legend" description="Display chart legend" />}
+          input={
             <Toggle
               type={Toggle.Types.YES_NO}
-              value={this.state.isStacked}
-              onChange={isStacked => this.setState({ isStacked })}
+              value={this.state.showLegend}
+              onChange={showLegend => this.setState({ showLegend })}
             />
-          } />
+          }
+        />
+
+        <Field
+          label={<Label text="Show Grid" description="Display grid lines" />}
+          input={
+            <Toggle
+              type={Toggle.Types.YES_NO}
+              value={this.state.showGrid}
+              onChange={showGrid => this.setState({ showGrid })}
+            />
+          }
+        />
+
+        <Field
+          label={<Label text="Show Axis Labels" description="Display axis labels" />}
+          input={
+            <Toggle
+              type={Toggle.Types.YES_NO}
+              value={this.state.showAxisLabels !== false}
+              onChange={showAxisLabels => this.setState({ showAxisLabels })}
+            />
+          }
+        />
+
+        {(this.state.chartType === 'bar' || this.state.chartType === 'line') && (
+          <Field
+            label={<Label text="Stacked" description="Stack multiple series" />}
+            input={
+              <Toggle
+                type={Toggle.Types.YES_NO}
+                value={this.state.isStacked}
+                onChange={isStacked => this.setState({ isStacked })}
+              />
+            }
+          />
         )}
 
-        {(this.state.chartType === 'bar' || this.state.chartType === 'line' || this.state.chartType === 'scatter' || this.state.chartType === 'radar') && (
-          <Field label={
-            <Label
-              text="Y-Axis Title (Primary)"
-              description="Optional label for left axis"
-            />
-          } input={
-            <TextInput
-              value={this.state.yAxisTitlePrimary}
-              onChange={yAxisTitlePrimary => this.setState({ yAxisTitlePrimary })}
-              placeholder="Primary Y-axis title"
-            />
-          } />
+        {(this.state.chartType === 'bar' ||
+          this.state.chartType === 'line' ||
+          this.state.chartType === 'scatter' ||
+          this.state.chartType === 'radar') && (
+          <Field
+            label={
+              <Label text="Y-Axis Title (Primary)" description="Optional label for left axis" />
+            }
+            input={
+              <TextInput
+                value={this.state.yAxisTitlePrimary}
+                onChange={yAxisTitlePrimary => this.setState({ yAxisTitlePrimary })}
+                placeholder="Primary Y-axis title"
+              />
+            }
+          />
         )}
 
         {(this.state.chartType === 'bar' || this.state.chartType === 'line') && (
-          <Field label={
-            <Label
-              text="Y-Axis Title (Secondary)"
-              description="Optional label for right axis"
-            />
-          } input={
-            <TextInput
-              value={this.state.yAxisTitleSecondary}
-              onChange={yAxisTitleSecondary => this.setState({ yAxisTitleSecondary })}
-              placeholder="Secondary Y-axis title"
-            />
-          } />
+          <Field
+            label={
+              <Label text="Y-Axis Title (Secondary)" description="Optional label for right axis" />
+            }
+            input={
+              <TextInput
+                value={this.state.yAxisTitleSecondary}
+                onChange={yAxisTitleSecondary => this.setState({ yAxisTitleSecondary })}
+                placeholder="Secondary Y-axis title"
+              />
+            }
+          />
         )}
 
-        <Field label={
-          <Label
-            text="Max Data Points"
-            description="Limit data points for performance"
-          />
-        } input={
-          <TextInput
-            value={this.state.maxDataPointsInput ?? this.state.maxDataPoints.toString()}
-            onChange={value => {
-              this.setState({ maxDataPointsInput: value });
-              const num = parseInt(value, 10);
-              if (!isNaN(num) && num > 0) {
-                this.setState({ maxDataPoints: num, maxDataPointsInput: null });
-              }
-            }}
-            onBlur={() => {
-              this.setState({ maxDataPointsInput: null });
-            }}
-            placeholder="1000"
-          />
-        } />
+        <Field
+          label={<Label text="Max Data Points" description="Limit data points for performance" />}
+          input={
+            <TextInput
+              value={this.state.maxDataPointsInput ?? this.state.maxDataPoints.toString()}
+              onChange={value => {
+                this.setState({ maxDataPointsInput: value });
+                const num = parseInt(value, 10);
+                if (!isNaN(num) && num > 0) {
+                  this.setState({ maxDataPoints: num, maxDataPointsInput: null });
+                }
+              }}
+              onBlur={() => {
+                this.setState({ maxDataPointsInput: null });
+              }}
+              placeholder="1000"
+            />
+          }
+        />
       </>
     );
   }
@@ -1286,12 +1764,7 @@ export default class GraphDialog extends React.Component {
     const customFooter = this.state.showDeleteConfirmation ? (
       <div style={{ textAlign: 'center' }} className={styles.footer}>
         <Button value="Cancel" onClick={this.cancelDelete} />
-        <Button
-          primary={true}
-          value="Confirm Delete"
-          color="red"
-          onClick={this.confirmDelete}
-        />
+        <Button primary={true} value="Confirm Delete" color="red" onClick={this.confirmDelete} />
       </div>
     ) : (
       <div style={{ textAlign: 'center' }} className={styles.footer}>
@@ -1316,15 +1789,21 @@ export default class GraphDialog extends React.Component {
           icon="analytics-outline"
           iconSize={40}
           title={isEditing ? 'Edit Graph' : 'Create Graph'}
-          subtitle={isEditing ? 'Modify your data visualization settings' : 'Configure your data visualization'}
+          subtitle={
+            isEditing
+              ? 'Modify your data visualization settings'
+              : 'Configure your data visualization'
+          }
           customFooter={customFooter}
         >
-          <div style={{
-            maxHeight: 'calc(100vh - 260px)',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            border: 'none'
-          }}>
+          <div
+            style={{
+              maxHeight: 'calc(100vh - 260px)',
+              overflowY: 'auto',
+              overflowX: 'hidden',
+              border: 'none',
+            }}
+          >
             {this.renderTitleSection()}
             {this.renderChartTypeSection()}
             {this.renderColumnSelectionSection()}
@@ -1342,16 +1821,23 @@ export default class GraphDialog extends React.Component {
             onCancel={() => this.setState({ objectPathInput: null })}
             disabled={!this.state.objectPathInput.path || !this.state.objectPathInput.path.trim()}
           >
-            <Field label={<Label text="Path" />} input={
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{ paddingLeft: '10px', color: '#666', whiteSpace: 'nowrap' }}>{this.state.objectPathInput.field}.</span>
-                <TextInput
-                  value={this.state.objectPathInput.path || ''}
-                  onChange={path => this.setState({ objectPathInput: { ...this.state.objectPathInput, path } })}
-                  placeholder="e.g. views.count"
-                />
-              </div>
-            } />
+            <Field
+              label={<Label text="Path" />}
+              input={
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{ paddingLeft: '10px', color: '#666', whiteSpace: 'nowrap' }}>
+                    {this.state.objectPathInput.field}.
+                  </span>
+                  <TextInput
+                    value={this.state.objectPathInput.path || ''}
+                    onChange={path =>
+                      this.setState({ objectPathInput: { ...this.state.objectPathInput, path } })
+                    }
+                    placeholder="e.g. views.count"
+                  />
+                </div>
+              }
+            />
           </Modal>
         )}
       </>

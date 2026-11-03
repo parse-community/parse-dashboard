@@ -11,7 +11,13 @@ import React from 'react';
 import styles from 'dashboard/Data/Migration/MigrationStep.scss';
 import { AsyncStatus } from 'lib/Constants';
 
-const MigrationStep = ({ title, description, descriptionWidth = '100%', percentComplete = 0, status }) => {
+const MigrationStep = ({
+  title,
+  description,
+  descriptionWidth = '100%',
+  percentComplete = 0,
+  status,
+}) => {
   if (isNaN(percentComplete) || percentComplete < 0 || percentComplete > 100) {
     percentComplete = 0;
   }

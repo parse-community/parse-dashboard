@@ -249,10 +249,10 @@ describe('FormulaEvaluator', () => {
     });
 
     it('should validate complex formulas', () => {
-      const result = validateFormula(
-        'round((revenue - cost) / revenue * 100, 2)',
-        ['revenue', 'cost']
-      );
+      const result = validateFormula('round((revenue - cost) / revenue * 100, 2)', [
+        'revenue',
+        'cost',
+      ]);
       expect(result.isValid).toBe(true);
     });
 

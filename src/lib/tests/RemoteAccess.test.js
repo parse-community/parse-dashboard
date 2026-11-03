@@ -29,9 +29,9 @@ function makeRequest(port, { method = 'GET', path = '/', body = null, headers = 
       options.headers['Content-Length'] = Buffer.byteLength(bodyStr);
     }
 
-    const req = http.request(options, (res) => {
+    const req = http.request(options, res => {
       let data = '';
-      res.on('data', (chunk) => (data += chunk));
+      res.on('data', chunk => (data += chunk));
       res.on('end', () => {
         let json = null;
         try {
@@ -85,7 +85,7 @@ function noUserConfig(overrides = {}) {
  * middleware integration both do.
  */
 function startDashboard(config, options = {}, peerAddress) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const parseDashboard = require('../../../Parse-Dashboard/app.js');
     const parentApp = express();
     if (peerAddress !== undefined) {
@@ -98,17 +98,14 @@ function startDashboard(config, options = {}, peerAddress) {
         next();
       });
     }
-    parentApp.use(
-      '/',
-      parseDashboard(config, { cookieSessionSecret: SESSION_SECRET, ...options })
-    );
+    parentApp.use('/', parseDashboard(config, { cookieSessionSecret: SESSION_SECRET, ...options }));
 
     const server = parentApp.listen(0, () => resolve({ server, port: server.address().port }));
   });
 }
 
 function stopDashboard(server) {
-  return new Promise((resolve) => (server ? server.close(resolve) : resolve()));
+  return new Promise(resolve => (server ? server.close(resolve) : resolve()));
 }
 
 describe('Config endpoint locality — requests forwarded by a same-host proxy', () => {

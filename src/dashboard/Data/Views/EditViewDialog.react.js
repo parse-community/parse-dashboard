@@ -114,10 +114,7 @@ export default class EditViewDialog extends React.Component {
         isValidJSON(this.state.query)
       );
     } else {
-      return (
-        this.state.name.length > 0 &&
-        this.state.cloudFunction.trim() !== ''
-      );
+      return this.state.name.length > 0 && this.state.cloudFunction.trim() !== '';
     }
   }
 
@@ -127,10 +124,13 @@ export default class EditViewDialog extends React.Component {
       name: this.state.name,
       className: this.state.dataSourceType === 'query' ? this.state.className : null,
       query: this.state.dataSourceType === 'query' ? JSON.parse(this.state.query) : null,
-      cloudFunction: this.state.dataSourceType === 'cloudFunction' ? this.state.cloudFunction : null,
+      cloudFunction:
+        this.state.dataSourceType === 'cloudFunction' ? this.state.cloudFunction : null,
       showCounter: this.state.showCounter,
-      requireTextInput: this.state.dataSourceType === 'cloudFunction' ? this.state.requireTextInput : false,
-      requireFileUpload: this.state.dataSourceType === 'cloudFunction' ? this.state.requireFileUpload : false,
+      requireTextInput:
+        this.state.dataSourceType === 'cloudFunction' ? this.state.requireTextInput : false,
+      requireFileUpload:
+        this.state.dataSourceType === 'cloudFunction' ? this.state.requireFileUpload : false,
     });
   }
 
@@ -139,7 +139,14 @@ export default class EditViewDialog extends React.Component {
     const isQuery = this.state.dataSourceType === 'query';
 
     const customFooter = (
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '17px 28px' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '17px 28px',
+        }}
+      >
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
           {isQuery && (
             <>
@@ -153,7 +160,9 @@ export default class EditViewDialog extends React.Component {
                 onClick={this.compactValue.bind(this)}
                 disabled={!this.canFormatValue()}
               />
-              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+              <label
+                style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+              >
                 <Toggle
                   type={Toggle.Types.HIDE_LABELS}
                   value={this.state.wordWrap}
@@ -197,12 +206,7 @@ export default class EditViewDialog extends React.Component {
       >
         <Field
           label={<Label text="Name" />}
-          input={
-            <TextInput
-              value={this.state.name}
-              onChange={name => this.setState({ name })}
-            />
-          }
+          input={<TextInput value={this.state.name} onChange={name => this.setState({ name })} />}
         />
         <Field
           label={<Label text="Data Source" />}
@@ -273,7 +277,12 @@ export default class EditViewDialog extends React.Component {
         {this.state.dataSourceType === 'cloudFunction' && (
           <>
             <Field
-              label={<Label text="Require text input" description="When checked, users will be prompted to enter text when opening this view." />}
+              label={
+                <Label
+                  text="Require text input"
+                  description="When checked, users will be prompted to enter text when opening this view."
+                />
+              }
               input={
                 <Checkbox
                   checked={this.state.requireTextInput}
@@ -282,7 +291,12 @@ export default class EditViewDialog extends React.Component {
               }
             />
             <Field
-              label={<Label text="Require file upload" description="When checked, users will be prompted to upload a file when opening this view." />}
+              label={
+                <Label
+                  text="Require file upload"
+                  description="When checked, users will be prompted to upload a file when opening this view."
+                />
+              }
               input={
                 <Checkbox
                   checked={this.state.requireFileUpload}

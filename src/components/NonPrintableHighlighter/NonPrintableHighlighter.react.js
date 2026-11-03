@@ -130,7 +130,6 @@ const NON_PRINTABLE_REGEX = new RegExp(
 // Regex for non-alphanumeric characters (anything not a-z, A-Z, 0-9)
 const NON_ALPHANUMERIC_REGEX = /[^a-zA-Z0-9]/g;
 
-
 /**
  * Check if a string contains non-printable characters
  */
@@ -151,7 +150,10 @@ function stripQuotes(str) {
     return str;
   }
   // Check for matching single or double quotes (minimum length 2 for valid quoted string)
-  if (str.length >= 2 && ((str.startsWith('"') && str.endsWith('"')) || (str.startsWith('\'') && str.endsWith('\'')))) {
+  if (
+    str.length >= 2 &&
+    ((str.startsWith('"') && str.endsWith('"')) || (str.startsWith("'") && str.endsWith("'")))
+  ) {
     return str.slice(1, -1);
   }
   return str;
@@ -337,7 +339,9 @@ export function getNonPrintableChars(str) {
 
   const chars = [];
   for (const [char, positions] of positionMap) {
-    const label = NON_PRINTABLE_CHARS[char] || `U+${char.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}`;
+    const label =
+      NON_PRINTABLE_CHARS[char] ||
+      `U+${char.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}`;
     chars.push({
       char,
       label,
@@ -535,38 +539,41 @@ export default class NonPrintableHighlighter extends React.Component {
   }
 
   render() {
-    const { value, children, isJson, detectNonPrintable, detectNonAlphanumeric, detectRegex } = this.props;
+    const { value, children, isJson, detectNonPrintable, detectNonAlphanumeric, detectRegex } =
+      this.props;
     const { totalCount, chars } = detectNonPrintable
-      ? (isJson ? getNonPrintableCharsFromJson(value) : getNonPrintableChars(value))
+      ? isJson
+        ? getNonPrintableCharsFromJson(value)
+        : getNonPrintableChars(value)
       : { totalCount: 0, chars: [] };
     const hasNonPrintable = totalCount > 0;
 
     // Get non-alphanumeric characters if detection is enabled
     const nonAlphanumericResult = detectNonAlphanumeric
-      ? (isJson ? getNonAlphanumericCharsFromJson(value) : getNonAlphanumericChars(value))
+      ? isJson
+        ? getNonAlphanumericCharsFromJson(value)
+        : getNonAlphanumericChars(value)
       : { totalCount: 0, chars: [] };
     const hasNonAlphanumeric = nonAlphanumericResult.totalCount > 0;
 
     // Get regex validation if detection is enabled
     const regexResult = detectRegex
-      ? (isJson
+      ? isJson
         ? getRegexValidationFromJson(value)
-        : (value && typeof value === 'string'
+        : value && typeof value === 'string'
           ? { results: [{ path: null, value, ...getRegexValidation(value) }] }
-          : { results: [] }))
+          : { results: [] }
       : { results: [] };
     const hasRegexResults = regexResult.results.length > 0;
     const requiredFlags = hasRegexResults
-      ? [...new Set(regexResult.results
-        .filter(r => r.isValid && r.requiredFlag)
-        .map(r => r.requiredFlag))]
+      ? [
+          ...new Set(
+            regexResult.results.filter(r => r.isValid && r.requiredFlag).map(r => r.requiredFlag)
+          ),
+        ]
       : [];
-    const invalidCount = hasRegexResults
-      ? regexResult.results.filter(r => !r.isValid).length
-      : 0;
-    const regexNotes = [
-      ...(requiredFlags.length > 0 ? [`${requiredFlags.join(', ')}`] : []),
-    ];
+    const invalidCount = hasRegexResults ? regexResult.results.filter(r => !r.isValid).length : 0;
+    const regexNotes = [...(requiredFlags.length > 0 ? [`${requiredFlags.join(', ')}`] : [])];
 
     return (
       <div className={styles.container}>
@@ -593,12 +600,18 @@ export default class NonPrintableHighlighter extends React.Component {
                       {count > 1 && <span className={styles.charCount}>×{count}</span>}
                       {positions && (
                         <span className={styles.charPositions}>
-                          @ {positions.length <= 5 ? positions.join(', ') : `${positions.slice(0, 5).join(', ')}...`}
+                          @{' '}
+                          {positions.length <= 5
+                            ? positions.join(', ')
+                            : `${positions.slice(0, 5).join(', ')}...`}
                         </span>
                       )}
                       {locations && (
                         <span className={styles.charPositions}>
-                          in {locations.length <= 3 ? locations.join(', ') : `${locations.slice(0, 3).join(', ')}...`}
+                          in{' '}
+                          {locations.length <= 3
+                            ? locations.join(', ')
+                            : `${locations.slice(0, 3).join(', ')}...`}
                         </span>
                       )}
                     </div>
@@ -612,34 +625,47 @@ export default class NonPrintableHighlighter extends React.Component {
           <div className={styles.infoContainer}>
             <div
               className={`${styles.infoBadge} ${this.state.showNonAlphanumericDetails ? styles.expanded : ''}`}
-              onClick={() => this.setState({ showNonAlphanumericDetails: !this.state.showNonAlphanumericDetails })}
+              onClick={() =>
+                this.setState({
+                  showNonAlphanumericDetails: !this.state.showNonAlphanumericDetails,
+                })
+              }
               title="Click for details"
             >
               <span className={styles.infoIcon}>ℹ</span>
               <span className={styles.infoText}>
-                {nonAlphanumericResult.totalCount} non-alphanumeric character{nonAlphanumericResult.totalCount > 1 ? 's' : ''}
+                {nonAlphanumericResult.totalCount} non-alphanumeric character
+                {nonAlphanumericResult.totalCount > 1 ? 's' : ''}
               </span>
             </div>
             {this.state.showNonAlphanumericDetails && (
               <div className={styles.infoDetailsPanel}>
                 <div className={styles.charList}>
-                  {nonAlphanumericResult.chars.map(({ label, code, count, positions, locations }, i) => (
-                    <div key={i} className={styles.charItem}>
-                      <span className={styles.charLabelInfo}>{label}</span>
-                      <span className={styles.charCode}>{code}</span>
-                      {count > 1 && <span className={styles.charCount}>×{count}</span>}
-                      {positions && (
-                        <span className={styles.charPositions}>
-                          @ {positions.length <= 5 ? positions.join(', ') : `${positions.slice(0, 5).join(', ')}...`}
-                        </span>
-                      )}
-                      {locations && (
-                        <span className={styles.charPositions}>
-                          in {locations.length <= 3 ? locations.join(', ') : `${locations.slice(0, 3).join(', ')}...`}
-                        </span>
-                      )}
-                    </div>
-                  ))}
+                  {nonAlphanumericResult.chars.map(
+                    ({ label, code, count, positions, locations }, i) => (
+                      <div key={i} className={styles.charItem}>
+                        <span className={styles.charLabelInfo}>{label}</span>
+                        <span className={styles.charCode}>{code}</span>
+                        {count > 1 && <span className={styles.charCount}>×{count}</span>}
+                        {positions && (
+                          <span className={styles.charPositions}>
+                            @{' '}
+                            {positions.length <= 5
+                              ? positions.join(', ')
+                              : `${positions.slice(0, 5).join(', ')}...`}
+                          </span>
+                        )}
+                        {locations && (
+                          <span className={styles.charPositions}>
+                            in{' '}
+                            {locations.length <= 3
+                              ? locations.join(', ')
+                              : `${locations.slice(0, 3).join(', ')}...`}
+                          </span>
+                        )}
+                      </div>
+                    )
+                  )}
                 </div>
               </div>
             )}
@@ -657,8 +683,9 @@ export default class NonPrintableHighlighter extends React.Component {
                 <span className={invalidCount > 0 ? styles.regexSummaryInvalid : undefined}>
                   {isJson
                     ? `${regexResult.results.filter(r => r.isValid).length}/${regexResult.results.length} valid regex pattern${regexResult.results.length > 1 ? 's' : ''}`
-                    : (regexResult.results[0].isValid ? 'Valid regex pattern' : 'Invalid regex pattern')
-                  }
+                    : regexResult.results[0].isValid
+                      ? 'Valid regex pattern'
+                      : 'Invalid regex pattern'}
                 </span>
                 {regexNotes.length > 0 && ` (${regexNotes.join(', ')})`}
               </span>
@@ -675,9 +702,7 @@ export default class NonPrintableHighlighter extends React.Component {
                       {isValid && requiredFlag && (
                         <span className={styles.charPositions}>{requiredFlag}</span>
                       )}
-                      {!isValid && error && (
-                        <span className={styles.charPositions}>{error}</span>
-                      )}
+                      {!isValid && error && <span className={styles.charPositions}>{error}</span>}
                     </div>
                   ))}
                 </div>

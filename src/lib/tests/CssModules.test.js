@@ -18,7 +18,14 @@ function runWebpack(config) {
         return reject(err);
       }
       if (stats.hasErrors()) {
-        return reject(new Error(stats.toJson().errors.map(e => e.message).join('\n')));
+        return reject(
+          new Error(
+            stats
+              .toJson()
+              .errors.map(e => e.message)
+              .join('\n')
+          )
+        );
       }
       resolve(stats);
     });
@@ -36,10 +43,7 @@ describe('CSS modules', () => {
       '.test_underscore_class { color: red; }\n.testCamelCase { color: blue; }\n'
     );
 
-    fs.writeFileSync(
-      path.join(tmpDir, 'entry.js'),
-      'const styles = require("./test.scss");\n'
-    );
+    fs.writeFileSync(path.join(tmpDir, 'entry.js'), 'const styles = require("./test.scss");\n');
   });
 
   afterAll(() => {

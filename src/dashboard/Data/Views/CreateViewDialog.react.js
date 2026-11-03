@@ -15,7 +15,7 @@ import React from 'react';
  */
 const DataSourceTypes = {
   query: 'query',
-  cloudFunction: 'cloudFunction'
+  cloudFunction: 'cloudFunction',
 };
 
 function isValidJSON(value) {
@@ -52,10 +52,7 @@ export default class CreateViewDialog extends React.Component {
         isValidJSON(this.state.query)
       );
     } else {
-      return (
-        this.state.name.length > 0 &&
-        this.state.cloudFunction.trim() !== ''
-      );
+      return this.state.name.length > 0 && this.state.cloudFunction.trim() !== '';
     }
   }
 
@@ -75,23 +72,31 @@ export default class CreateViewDialog extends React.Component {
         onConfirm={() =>
           onConfirm({
             name: this.state.name,
-            className: this.state.dataSourceType === DataSourceTypes.query ? this.state.className : null,
-            query: this.state.dataSourceType === DataSourceTypes.query ? JSON.parse(this.state.query) : null,
-            cloudFunction: this.state.dataSourceType === DataSourceTypes.cloudFunction ? this.state.cloudFunction : null,
+            className:
+              this.state.dataSourceType === DataSourceTypes.query ? this.state.className : null,
+            query:
+              this.state.dataSourceType === DataSourceTypes.query
+                ? JSON.parse(this.state.query)
+                : null,
+            cloudFunction:
+              this.state.dataSourceType === DataSourceTypes.cloudFunction
+                ? this.state.cloudFunction
+                : null,
             showCounter: this.state.showCounter,
-            requireTextInput: this.state.dataSourceType === DataSourceTypes.cloudFunction ? this.state.requireTextInput : false,
-            requireFileUpload: this.state.dataSourceType === DataSourceTypes.cloudFunction ? this.state.requireFileUpload : false,
+            requireTextInput:
+              this.state.dataSourceType === DataSourceTypes.cloudFunction
+                ? this.state.requireTextInput
+                : false,
+            requireFileUpload:
+              this.state.dataSourceType === DataSourceTypes.cloudFunction
+                ? this.state.requireFileUpload
+                : false,
           })
         }
       >
         <Field
           label={<Label text="Name" />}
-          input={
-            <TextInput
-              value={this.state.name}
-              onChange={name => this.setState({ name })}
-            />
-          }
+          input={<TextInput value={this.state.name} onChange={name => this.setState({ name })} />}
         />
         <Field
           label={<Label text="Data Source" />}
@@ -125,7 +130,9 @@ export default class CreateViewDialog extends React.Component {
         <Field
           label={
             <Label
-              text={this.state.dataSourceType === DataSourceTypes.query ? 'Query' : 'Cloud Function'}
+              text={
+                this.state.dataSourceType === DataSourceTypes.query ? 'Query' : 'Cloud Function'
+              }
               description={
                 this.state.dataSourceType === DataSourceTypes.query
                   ? 'An aggregation pipeline that returns an array of items.'
@@ -136,7 +143,11 @@ export default class CreateViewDialog extends React.Component {
           input={
             <TextInput
               multiline={this.state.dataSourceType === DataSourceTypes.query}
-              value={this.state.dataSourceType === DataSourceTypes.query ? this.state.query : this.state.cloudFunction}
+              value={
+                this.state.dataSourceType === DataSourceTypes.query
+                  ? this.state.query
+                  : this.state.cloudFunction
+              }
               onChange={value =>
                 this.setState(
                   this.state.dataSourceType === DataSourceTypes.query
@@ -159,7 +170,12 @@ export default class CreateViewDialog extends React.Component {
         {this.state.dataSourceType === DataSourceTypes.cloudFunction && (
           <>
             <Field
-              label={<Label text="Require text input" description="When checked, users will be prompted to enter text when opening this view." />}
+              label={
+                <Label
+                  text="Require text input"
+                  description="When checked, users will be prompted to enter text when opening this view."
+                />
+              }
               input={
                 <Checkbox
                   checked={this.state.requireTextInput}
@@ -168,7 +184,12 @@ export default class CreateViewDialog extends React.Component {
               }
             />
             <Field
-              label={<Label text="Require file upload" description="When checked, users will be prompted to upload a file when opening this view." />}
+              label={
+                <Label
+                  text="Require file upload"
+                  description="When checked, users will be prompted to upload a file when opening this view."
+                />
+              }
               input={
                 <Checkbox
                   checked={this.state.requireFileUpload}

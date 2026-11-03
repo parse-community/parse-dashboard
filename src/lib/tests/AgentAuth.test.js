@@ -16,7 +16,10 @@ const cookieSignature = require('express-session/node_modules/cookie-signature')
 /**
  * Helper to make HTTP requests to the test server.
  */
-function makeRequest(port, { method = 'GET', path = '/', body = null, cookie = null, headers = {} }) {
+function makeRequest(
+  port,
+  { method = 'GET', path = '/', body = null, cookie = null, headers = {} }
+) {
   return new Promise((resolve, reject) => {
     const options = {
       hostname: '127.0.0.1',
@@ -36,9 +39,9 @@ function makeRequest(port, { method = 'GET', path = '/', body = null, cookie = n
       options.headers['Cookie'] = cookie;
     }
 
-    const req = http.request(options, (res) => {
+    const req = http.request(options, res => {
       let data = '';
-      res.on('data', (chunk) => (data += chunk));
+      res.on('data', chunk => (data += chunk));
       res.on('end', () => {
         let json = null;
         try {
@@ -201,7 +204,7 @@ describe('Agent endpoint security', () => {
   const appreadonlyCookie = buildSessionCookie('appreadonly-session', SESSION_SECRET);
   const appadminCookie = buildSessionCookie('appadmin-session', SESSION_SECRET);
 
-  beforeAll((done) => {
+  beforeAll(done => {
     const parseDashboard = require('../../../Parse-Dashboard/app.js');
     const dashboardApp = parseDashboard(dashboardConfig, {
       cookieSessionSecret: SESSION_SECRET,
@@ -218,7 +221,7 @@ describe('Agent endpoint security', () => {
     });
   });
 
-  afterAll((done) => {
+  afterAll(done => {
     if (server) {
       server.close(done);
     } else {
@@ -404,7 +407,7 @@ describe('Agent endpoint no-user mode', () => {
     },
   };
 
-  beforeAll((done) => {
+  beforeAll(done => {
     const parseDashboard = require('../../../Parse-Dashboard/app.js');
     // dev: false to enable the remote access guard
     const dashboardApp = parseDashboard(noUserConfig, {
@@ -420,7 +423,7 @@ describe('Agent endpoint no-user mode', () => {
     });
   });
 
-  afterAll((done) => {
+  afterAll(done => {
     if (server) {
       server.close(done);
     } else {
@@ -465,7 +468,7 @@ describe('Agent endpoint no-user mode — remote requests', () => {
     },
   };
 
-  beforeAll((done) => {
+  beforeAll(done => {
     const parseDashboard = require('../../../Parse-Dashboard/app.js');
     const dashboardApp = parseDashboard(noUserConfig, {
       cookieSessionSecret: SESSION_SECRET,
@@ -489,7 +492,7 @@ describe('Agent endpoint no-user mode — remote requests', () => {
     });
   });
 
-  afterAll((done) => {
+  afterAll(done => {
     if (server) {
       server.close(done);
     } else {
@@ -533,7 +536,7 @@ describe('Agent endpoint no-user mode — remote requests with allowInsecureHTTP
     },
   };
 
-  beforeAll((done) => {
+  beforeAll(done => {
     const parseDashboard = require('../../../Parse-Dashboard/app.js');
     const dashboardApp = parseDashboard(noUserConfig, {
       cookieSessionSecret: SESSION_SECRET,
@@ -558,7 +561,7 @@ describe('Agent endpoint no-user mode — remote requests with allowInsecureHTTP
     });
   });
 
-  afterAll((done) => {
+  afterAll(done => {
     if (server) {
       server.close(done);
     } else {

@@ -71,7 +71,8 @@ export default class FormModal extends React.Component {
             .catch(({ message, error, notice, errors = [] }) => {
               if (this._isMounted) {
                 this.setState({
-                  errorMessage: errors.join(' ') || message || error || notice || 'An error occurred',
+                  errorMessage:
+                    errors.join(' ') || message || error || notice || 'An error occurred',
                   inProgress: false,
                 });
               }

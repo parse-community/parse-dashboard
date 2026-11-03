@@ -1,11 +1,10 @@
 const MOUNT_PATH = window.PARSE_DASHBOARD_PATH;
 
 export default function generatePath(currentApp, path, prependMountPath = false) {
-
   const urlObj = new URL(path, window.location.origin);
   const params = new URLSearchParams(urlObj.search);
 
-  const filters = JSON.parse(params.get('filters'))
+  const filters = JSON.parse(params.get('filters'));
 
   if (filters) {
     for (let i = 0; i < filters.length; i++) {
@@ -16,7 +15,7 @@ export default function generatePath(currentApp, path, prependMountPath = false)
         filter.compareTo = {
           __type: 'Date',
           iso: date.toISOString(),
-        }
+        };
         filters[i] = filter;
       }
     }

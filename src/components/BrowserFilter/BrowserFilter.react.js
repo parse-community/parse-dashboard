@@ -199,8 +199,8 @@ export default class BrowserFilter extends React.Component {
         let hasRelativeDates = false;
         try {
           const filterData = JSON.parse(savedFilter.filter);
-          hasRelativeDates = filterData.some(filter =>
-            filter.compareTo && filter.compareTo.__type === 'RelativeDate'
+          hasRelativeDates = filterData.some(
+            filter => filter.compareTo && filter.compareTo.__type === 'RelativeDate'
           );
         } catch (error) {
           // Log parsing errors for debugging
@@ -212,7 +212,7 @@ export default class BrowserFilter extends React.Component {
           id: savedFilter.id,
           name: savedFilter.name,
           isApplied: true,
-          hasRelativeDates: hasRelativeDates
+          hasRelativeDates: hasRelativeDates,
         };
       }
     }
@@ -230,7 +230,7 @@ export default class BrowserFilter extends React.Component {
           name: '',
           isApplied: false,
           hasRelativeDates: false,
-          isLegacy: false
+          isLegacy: false,
         };
       }
 
@@ -267,8 +267,8 @@ export default class BrowserFilter extends React.Component {
         let hasRelativeDates = false;
         try {
           const filterData = JSON.parse(matchingFilter.filter);
-          hasRelativeDates = filterData.some(filter =>
-            filter.compareTo && filter.compareTo.__type === 'RelativeDate'
+          hasRelativeDates = filterData.some(
+            filter => filter.compareTo && filter.compareTo.__type === 'RelativeDate'
           );
         } catch (error) {
           console.warn('Failed to parse saved filter:', error);
@@ -280,7 +280,7 @@ export default class BrowserFilter extends React.Component {
           name: matchingFilter.name,
           isApplied: true,
           hasRelativeDates: hasRelativeDates,
-          isLegacy: !matchingFilter.id // Mark as legacy if no id
+          isLegacy: !matchingFilter.id, // Mark as legacy if no id
         };
       }
     }
@@ -290,7 +290,7 @@ export default class BrowserFilter extends React.Component {
       name: '',
       isApplied: false,
       hasRelativeDates: false,
-      isLegacy: false
+      isLegacy: false,
     };
   }
 
@@ -310,10 +310,12 @@ export default class BrowserFilter extends React.Component {
       if (savedFilter) {
         try {
           const filterData = JSON.parse(savedFilter.filter);
-          return new List(filterData.map(filter => {
-            const processedFilter = { ...filter, class: filter.class || urlClassName };
-            return new ImmutableMap(processedFilter);
-          }));
+          return new List(
+            filterData.map(filter => {
+              const processedFilter = { ...filter, class: filter.class || urlClassName };
+              return new ImmutableMap(processedFilter);
+            })
+          );
         } catch (error) {
           console.warn('Failed to parse saved filter:', error);
         }
@@ -324,10 +326,12 @@ export default class BrowserFilter extends React.Component {
     if (filtersParam) {
       try {
         const queryFilters = JSON.parse(filtersParam);
-        return new List(queryFilters.map(filter => {
-          const processedFilter = { ...filter, class: filter.class || urlClassName };
-          return new ImmutableMap(processedFilter);
-        }));
+        return new List(
+          queryFilters.map(filter => {
+            const processedFilter = { ...filter, class: filter.class || urlClassName };
+            return new ImmutableMap(processedFilter);
+          })
+        );
       } catch (error) {
         console.warn('Failed to parse URL filters:', error);
       }
@@ -458,10 +462,12 @@ export default class BrowserFilter extends React.Component {
       const originalCompareTo = originalFilter.get('compareTo');
 
       // Check all properties for equality
-      if (currentClass !== originalClass ||
-          currentField !== originalField ||
-          currentConstraint !== originalConstraint ||
-          currentCompareTo !== originalCompareTo) {
+      if (
+        currentClass !== originalClass ||
+        currentField !== originalField ||
+        currentConstraint !== originalConstraint ||
+        currentCompareTo !== originalCompareTo
+      ) {
         return true;
       }
     }
@@ -504,7 +510,7 @@ export default class BrowserFilter extends React.Component {
       return filter;
     });
     return result;
-  }  // Helper method to convert RelativeDate objects to Parse Date format for saving
+  } // Helper method to convert RelativeDate objects to Parse Date format for saving
   convertRelativeDatesToParseFormat(filters) {
     return filters.map(filter => {
       const compareTo = filter.get('compareTo');
@@ -597,7 +603,7 @@ export default class BrowserFilter extends React.Component {
     // Clear the filter name so user can enter a new name
     this.setState({
       name: '',
-      originalFilterName: ''
+      originalFilterName: '',
     });
   }
 
@@ -702,7 +708,7 @@ export default class BrowserFilter extends React.Component {
           const timeDiff = compareTo.getTime() - now.getTime();
           const relativeDate = {
             __type: 'RelativeDate',
-            value: Math.round(timeDiff / 1000) // Convert milliseconds to seconds
+            value: Math.round(timeDiff / 1000), // Convert milliseconds to seconds
           };
           return filter.set('compareTo', relativeDate);
         } else if (compareTo && compareTo.__type === 'Date') {
@@ -712,7 +718,7 @@ export default class BrowserFilter extends React.Component {
           const timeDiff = parseDateObj.getTime() - now.getTime();
           const relativeDate = {
             __type: 'RelativeDate',
-            value: Math.round(timeDiff / 1000) // Convert milliseconds to seconds
+            value: Math.round(timeDiff / 1000), // Convert milliseconds to seconds
           };
           return filter.set('compareTo', relativeDate);
         }
@@ -730,7 +736,12 @@ export default class BrowserFilter extends React.Component {
       filterId = `legacy:${currentFilterInfo.name}`;
     }
 
-    const savedFilterId = await this.props.onSaveFilter(formatted, this.state.name, this.state.relativeDates, filterId);
+    const savedFilterId = await this.props.onSaveFilter(
+      formatted,
+      this.state.name,
+      this.state.relativeDates,
+      filterId
+    );
 
     // Only close the dialog if we're not in edit mode (showMore)
     if (!this.state.showMore) {
@@ -782,7 +793,12 @@ export default class BrowserFilter extends React.Component {
 
       const hasDateState = this.state.filters.some(filter => {
         const compareTo = filter.get('compareTo');
-        return compareTo && (compareTo instanceof Date || compareTo.__type === 'Date' || compareTo.__type === 'RelativeDate');
+        return (
+          compareTo &&
+          (compareTo instanceof Date ||
+            compareTo.__type === 'Date' ||
+            compareTo.__type === 'RelativeDate')
+        );
       });
 
       popover = (
@@ -877,16 +893,8 @@ export default class BrowserFilter extends React.Component {
                 <div className={styles.footer}>
                   {this.state.showMore && (
                     <div className={styles.btnFlex}>
-                      <span
-                        className={styles.iconButton}
-                        onClick={() => this.toggleMore()}
-                      >
-                        <Icon
-                          name="up-solid"
-                          width={20}
-                          height={20}
-                          fill="white"
-                        />
+                      <span className={styles.iconButton} onClick={() => this.toggleMore()}>
+                        <Icon name="up-solid" width={20} height={20} fill="white" />
                       </span>
                       <div
                         style={{
@@ -894,13 +902,25 @@ export default class BrowserFilter extends React.Component {
                           height: '20px',
                           backgroundColor: '#ffffff',
                           opacity: 0.3,
-                          alignSelf: 'center'
+                          alignSelf: 'center',
                         }}
                       />
                       <span
-                        className={this.state.name && (this.state.name !== this.state.originalFilterName || this.hasFilterContentChanged()) && !this.isFilterNameExists(this.state.name) ? styles.iconButton : styles.iconButtonDisabled}
+                        className={
+                          this.state.name &&
+                          (this.state.name !== this.state.originalFilterName ||
+                            this.hasFilterContentChanged()) &&
+                          !this.isFilterNameExists(this.state.name)
+                            ? styles.iconButton
+                            : styles.iconButtonDisabled
+                        }
                         onClick={() => {
-                          if (this.state.name && (this.state.name !== this.state.originalFilterName || this.hasFilterContentChanged()) && !this.isFilterNameExists(this.state.name)) {
+                          if (
+                            this.state.name &&
+                            (this.state.name !== this.state.originalFilterName ||
+                              this.hasFilterContentChanged()) &&
+                            !this.isFilterNameExists(this.state.name)
+                          ) {
                             this.save();
                           }
                         }}
@@ -909,7 +929,14 @@ export default class BrowserFilter extends React.Component {
                           name="check"
                           width={20}
                           height={20}
-                          fill={this.state.name && (this.state.name !== this.state.originalFilterName || this.hasFilterContentChanged()) && !this.isFilterNameExists(this.state.name) ? '#00db7c' : 'white'}
+                          fill={
+                            this.state.name &&
+                            (this.state.name !== this.state.originalFilterName ||
+                              this.hasFilterContentChanged()) &&
+                            !this.isFilterNameExists(this.state.name)
+                              ? '#00db7c'
+                              : 'white'
+                          }
                         />
                       </span>
                       {this.isCurrentFilterSaved() && (
@@ -918,23 +945,13 @@ export default class BrowserFilter extends React.Component {
                             className={styles.iconButton}
                             onClick={() => this.copyCurrentFilter()}
                           >
-                            <Icon
-                              name="clone-icon"
-                              width={20}
-                              height={20}
-                              fill="white"
-                            />
+                            <Icon name="clone-icon" width={20} height={20} fill="white" />
                           </span>
                           <span
                             className={styles.iconButton}
                             onClick={() => this.setState({ confirmDelete: true })}
                           >
-                            <Icon
-                              name="trash-solid"
-                              width={20}
-                              height={20}
-                              fill="white"
-                            />
+                            <Icon name="trash-solid" width={20} height={20} fill="white" />
                           </span>
                         </>
                       )}
@@ -943,16 +960,8 @@ export default class BrowserFilter extends React.Component {
                   <div className={styles.btnFlex}>
                     {!this.state.showMore && (
                       <>
-                        <span
-                          className={styles.iconButton}
-                          onClick={() => this.toggleMore()}
-                        >
-                          <Icon
-                            name="down-solid"
-                            width={20}
-                            height={20}
-                            fill="white"
-                          />
+                        <span className={styles.iconButton} onClick={() => this.toggleMore()}>
+                          <Icon name="down-solid" width={20} height={20} fill="white" />
                         </span>
                         <Button
                           color="white"

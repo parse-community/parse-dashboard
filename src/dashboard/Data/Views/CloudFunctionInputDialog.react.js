@@ -14,7 +14,7 @@ export default class CloudFunctionInputDialog extends React.Component {
     };
   }
 
-  handleFileChange = (file) => {
+  handleFileChange = file => {
     this.setState({ uploadedFile: file });
   };
 
@@ -85,12 +85,7 @@ export default class CloudFunctionInputDialog extends React.Component {
         {requireFileUpload && (
           <Field
             label={<Label text="File Upload" />}
-            input={
-              <FileInput
-                value={this.state.uploadedFile}
-                onChange={this.handleFileChange}
-              />
-            }
+            input={<FileInput value={this.state.uploadedFile} onChange={this.handleFileChange} />}
           />
         )}
       </Modal>

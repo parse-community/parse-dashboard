@@ -25,9 +25,7 @@ describe('SessionStore Integration', () => {
     auth.initialize(app, {});
 
     // Find the call that sets up express-session
-    const sessionCall = useSpy.mock.calls.find(call =>
-      call[0] && call[0].name === 'session'
-    );
+    const sessionCall = useSpy.mock.calls.find(call => call[0] && call[0].name === 'session');
 
     expect(sessionCall).toBeDefined();
     // When no store is provided, express-session uses MemoryStore by default
@@ -68,9 +66,7 @@ describe('SessionStore Integration', () => {
     expect(useSpy).toHaveBeenCalled();
 
     // Find the call that sets up express-session
-    const sessionCall = useSpy.mock.calls.find(call =>
-      call[0] && call[0].name === 'session'
-    );
+    const sessionCall = useSpy.mock.calls.find(call => call[0] && call[0].name === 'session');
 
     expect(sessionCall).toBeDefined();
   });

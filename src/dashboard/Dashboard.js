@@ -153,8 +153,7 @@ export default class Dashboard extends React.Component {
                   if (serverVersion && serverVersion !== 'unknown' && supportedVersion) {
                     const cleanedVersion = semver.valid(semver.coerce(serverVersion));
                     if (cleanedVersion && !semver.satisfies(cleanedVersion, supportedVersion)) {
-                      app.serverInfo.versionWarning =
-                        `Parse Server ${serverVersion} is not officially supported by this version of Parse Dashboard. You may encounter issues or reduced functionality. Supported Parse Server versions are ${supportedVersion}. Either upgrade Parse Server, or downgrade Parse Dashboard to a compatible version.`;
+                      app.serverInfo.versionWarning = `Parse Server ${serverVersion} is not officially supported by this version of Parse Dashboard. You may encounter issues or reduced functionality. Supported Parse Server versions are ${supportedVersion}. Either upgrade Parse Server, or downgrade Parse Dashboard to a compatible version.`;
                     }
                   }
 

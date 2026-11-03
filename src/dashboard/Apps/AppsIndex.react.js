@@ -104,9 +104,7 @@ const AppCard = ({ app, icon }) => {
         </CountsSection>
       </div>
       {!app.serverInfo.error && app.serverInfo.versionWarning && (
-        <div className={styles.versionWarning}>
-          ⚠️ {app.serverInfo.versionWarning}
-        </div>
+        <div className={styles.versionWarning}>⚠️ {app.serverInfo.versionWarning}</div>
       )}
     </li>
   );

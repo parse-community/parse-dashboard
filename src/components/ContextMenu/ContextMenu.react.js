@@ -104,18 +104,18 @@ const MenuSection = ({ level, items, path, setPath, hide, hoveredItemOffset }) =
 
   const style = position
     ? {
-      transform: `translate(${position.x}px, ${position.y}px)`,
-      maxHeight: '80vh',
-      overflowY: 'auto',
-      opacity: 1,
-      position: 'absolute',
-    }
+        transform: `translate(${position.x}px, ${position.y}px)`,
+        maxHeight: '80vh',
+        overflowY: 'auto',
+        opacity: 1,
+        position: 'absolute',
+      }
     : {};
 
   return (
     <ul ref={sectionRef} className={styles.category} style={style}>
       {items.map((item, index) => {
-        const handleHover = (event) => {
+        const handleHover = event => {
           const newPath = path.slice(0, level + 1);
           newPath.push(index);
           // Get the actual pixel offset of the hovered item relative to its parent
@@ -126,12 +126,7 @@ const MenuSection = ({ level, items, path, setPath, hide, hoveredItemOffset }) =
 
         // Handle separator items
         if (item.type === 'separator') {
-          return (
-            <li
-              key={`menu-section-${level}-${index}`}
-              className={styles.separator}
-            />
-          );
+          return <li key={`menu-section-${level}-${index}`} className={styles.separator} />;
         }
 
         return (
@@ -208,11 +203,7 @@ const ContextMenu = ({ x, y, items, onHide }) => {
   };
 
   return (
-    <div
-      className={styles.menu}
-      ref={menuRef}
-      style={{ left: x, top: y, position: 'absolute' }}
-    >
+    <div className={styles.menu} ref={menuRef} style={{ left: x, top: y, position: 'absolute' }}>
       {path.map((_, level) => {
         const itemsForLevel = getItemsFromLevel(level);
 
@@ -235,7 +226,9 @@ const ContextMenu = ({ x, y, items, onHide }) => {
 ContextMenu.propTypes = {
   x: PropTypes.number.isRequired.describe('X context menu position.'),
   y: PropTypes.number.isRequired.describe('Y context menu position.'),
-  items: PropTypes.array.isRequired.describe('Array with tree representation of context menu items.'),
+  items: PropTypes.array.isRequired.describe(
+    'Array with tree representation of context menu items.'
+  ),
   onHide: PropTypes.func.describe('Callback when context menu is hidden.'),
 };
 

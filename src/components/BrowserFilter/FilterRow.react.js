@@ -36,7 +36,7 @@ const RegexOptionsButton = ({ modifiers, onChangeModifiers }) => {
   const hasX = modifiersArray.includes('x');
   const hasS = modifiersArray.includes('s');
 
-  const toggleModifier = (modifier) => {
+  const toggleModifier = modifier => {
     let newModifiers = [...modifiersArray];
     if (newModifiers.includes(modifier)) {
       newModifiers = newModifiers.filter(m => m !== modifier);
@@ -47,7 +47,7 @@ const RegexOptionsButton = ({ modifiers, onChangeModifiers }) => {
   };
 
   React.useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = event => {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target) &&
@@ -82,10 +82,17 @@ const RegexOptionsButton = ({ modifiers, onChangeModifiers }) => {
           minWidth: '150px',
           color: 'white',
           fontSize: '14px',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
         }}
       >
-        <div style={{ marginBottom: '4px', fontWeight: 'bold', paddingBottom: '4px', borderBottom: '1px solid rgba(255,255,255,0.2)' }}>
+        <div
+          style={{
+            marginBottom: '4px',
+            fontWeight: 'bold',
+            paddingBottom: '4px',
+            borderBottom: '1px solid rgba(255,255,255,0.2)',
+          }}
+        >
           Regex Options
         </div>
         <label

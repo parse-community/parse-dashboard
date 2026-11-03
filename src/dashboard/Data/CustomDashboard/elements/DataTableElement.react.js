@@ -10,7 +10,7 @@ import Icon from 'components/Icon/Icon.react';
 import ExpandModal from './ExpandModal.react';
 import styles from './DataTableElement.scss';
 
-const formatValue = (value) => {
+const formatValue = value => {
   if (value === null || value === undefined) {
     return '-';
   }
@@ -32,14 +32,7 @@ const formatValue = (value) => {
   return String(value);
 };
 
-const DataTableElement = ({
-  config,
-  data,
-  columns,
-  isLoading,
-  error,
-  onRefresh,
-}) => {
+const DataTableElement = ({ config, data, columns, isLoading, error, onRefresh }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (!config || !config.className) {
@@ -84,8 +77,7 @@ const DataTableElement = ({
   }
 
   const displayColumns = (
-    config.columns ||
-    (columns ? Object.keys(columns) : Object.keys(data[0]))
+    config.columns || (columns ? Object.keys(columns) : Object.keys(data[0]))
   ).filter(k => k !== 'ACL');
 
   const title = config.title || config.className;
@@ -132,14 +124,10 @@ const DataTableElement = ({
           </button>
         )}
       </div>
-      <div className={styles.tableContainer}>
-        {renderTable()}
-      </div>
+      <div className={styles.tableContainer}>{renderTable()}</div>
       {isExpanded && (
         <ExpandModal title={title} onClose={() => setIsExpanded(false)}>
-          <div className={styles.expandedTableContainer}>
-            {renderTable()}
-          </div>
+          <div className={styles.expandedTableContainer}>{renderTable()}</div>
         </ExpandModal>
       )}
     </div>

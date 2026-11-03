@@ -22,15 +22,7 @@ export default function ViewValueDialog({ value, onClose }) {
     >
       <Field
         label={<Label text="Value" />}
-        input={
-          <TextInput
-            value={stringValue}
-            multiline
-            monospace
-            disabled
-            onChange={() => {}}
-          />
-        }
+        input={<TextInput value={stringValue} multiline monospace disabled onChange={() => {}} />}
       />
     </Modal>
   );

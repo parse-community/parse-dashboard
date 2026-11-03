@@ -565,17 +565,17 @@ export default class PermissionsDialog extends React.Component {
 
       // The double check is necessary because the permissions object seems to be empty when accessing the CLP section
       // if the class was recently created.
-      (pointerPermsSubset.get = (permissions.get && permissions.get.pointerFields) || []),
-      (pointerPermsSubset.find = (permissions.find && permissions.find.pointerFields) || []),
-      (pointerPermsSubset.count = (permissions.count && permissions.count.pointerFields) || []),
-      (pointerPermsSubset.create =
+      ((pointerPermsSubset.get = (permissions.get && permissions.get.pointerFields) || []),
+        (pointerPermsSubset.find = (permissions.find && permissions.find.pointerFields) || []),
+        (pointerPermsSubset.count = (permissions.count && permissions.count.pointerFields) || []),
+        (pointerPermsSubset.create =
           (permissions.create && permissions.create.pointerFields) || []),
-      (pointerPermsSubset.update =
+        (pointerPermsSubset.update =
           (permissions.update && permissions.update.pointerFields) || []),
-      (pointerPermsSubset.delete =
+        (pointerPermsSubset.delete =
           (permissions.delete && permissions.delete.pointerFields) || []),
-      (pointerPermsSubset.addField =
-          (permissions.addField && permissions.addField.pointerFields) || []);
+        (pointerPermsSubset.addField =
+          (permissions.addField && permissions.addField.pointerFields) || []));
     }
 
     const pointerPerms = {};

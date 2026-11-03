@@ -38,7 +38,7 @@ export default class AgentService {
     try {
       const requestBody = {
         message: message,
-        modelName: name
+        modelName: name,
       };
 
       // Include conversation ID if provided
@@ -59,7 +59,7 @@ export default class AgentService {
 
       return {
         response: response.response,
-        conversationId: response.conversationId
+        conversationId: response.conversationId,
       };
     } catch (error) {
       // Handle specific error types
@@ -73,7 +73,9 @@ export default class AgentService {
 
       // Handle network errors and other fetch-related errors
       if (error.message && error.message.includes('fetch')) {
-        throw new Error('Network error: Unable to connect to agent service. Please check your internet connection.');
+        throw new Error(
+          'Network error: Unable to connect to agent service. Please check your internet connection.'
+        );
       }
 
       // Re-throw the original error if it's not a recognized type
@@ -111,5 +113,4 @@ export default class AgentService {
 
     return true;
   }
-
 }

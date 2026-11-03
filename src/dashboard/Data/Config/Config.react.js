@@ -109,8 +109,10 @@ class Config extends TableView {
       );
       if (settings) {
         const updates = {
-          detectNonPrintable: settings.detectNonPrintable !== undefined ? !!settings.detectNonPrintable : true,
-          detectNonAlphanumeric: settings.detectNonAlphanumeric !== undefined ? !!settings.detectNonAlphanumeric : true,
+          detectNonPrintable:
+            settings.detectNonPrintable !== undefined ? !!settings.detectNonPrintable : true,
+          detectNonAlphanumeric:
+            settings.detectNonAlphanumeric !== undefined ? !!settings.detectNonAlphanumeric : true,
           detectRegex: settings.detectRegex !== undefined ? !!settings.detectRegex : true,
         };
         if (settings.historyLimit !== undefined) {
@@ -253,9 +255,7 @@ class Config extends TableView {
       extras = (
         <AddArrayEntryDialog
           onCancel={this.closeAddEntryDialog.bind(this)}
-          onConfirm={value =>
-            this.addArrayEntry(this.state.addEntryParam, value)
-          }
+          onConfirm={value => this.addArrayEntry(this.state.addEntryParam, value)}
           lastType={this.state.addEntryLastType}
           param={this.state.addEntryParam}
         />
@@ -360,10 +360,7 @@ class Config extends TableView {
       });
 
       // Fetch config data and history in parallel
-      const [, history] = await Promise.all([
-        this.loadData(),
-        this.loadConfigHistory(data.param),
-      ]);
+      const [, history] = await Promise.all([this.loadData(), this.loadConfigHistory(data.param)]);
 
       // Get latest param values
       const fetchedParams = this.props.config.data.get('params');
@@ -564,10 +561,9 @@ class Config extends TableView {
 
     // Delete history from server
     if (prefersServerStorage(this.context.applicationId) && this.serverStorage) {
-      this.serverStorage.deleteConfig(
-        `config.history.parameters.${name}`,
-        this.context.applicationId
-      ).catch(() => {});
+      this.serverStorage
+        .deleteConfig(`config.history.parameters.${name}`, this.context.applicationId)
+        .catch(() => {});
     }
 
     // Delete history from localStorage
@@ -729,7 +725,10 @@ class Config extends TableView {
         });
 
         if (objectsToRemove.length === 0) {
-          this.showNote(`No matching entries found for ${keyPath} = ${JSON.stringify(value)}`, true);
+          this.showNote(
+            `No matching entries found for ${keyPath} = ${JSON.stringify(value)}`,
+            true
+          );
           this.closeRemoveEntryDialog();
           return;
         }
@@ -755,9 +754,10 @@ class Config extends TableView {
       this.addToConfigHistory(param, this.props.config.data.get('params').get(param));
 
       const removedCount = objectsToRemove.length;
-      const message = removedCount === 1
-        ? `Entry removed from ${param}`
-        : `${removedCount} entries removed from ${param}`;
+      const message =
+        removedCount === 1
+          ? `Entry removed from ${param}`
+          : `${removedCount} entries removed from ${param}`;
       this.showNote(message);
     } catch (e) {
       this.showNote(`Failed to remove entry: ${e.message}`, true);

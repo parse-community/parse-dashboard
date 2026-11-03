@@ -78,7 +78,15 @@ export function isFormResponse(response) {
  * @param {Function} onRefreshObjects - Callback to refresh specific objects by IDs
  * @param {Function} onFormResponse - Callback when response contains a form definition
  */
-export async function executeScript(script, className, objectId, showNote, onRefresh, onRefreshObjects, onFormResponse) {
+export async function executeScript(
+  script,
+  className,
+  objectId,
+  showNote,
+  onRefresh,
+  onRefreshObjects,
+  onFormResponse
+) {
   try {
     const object = Parse.Object.extend(className).createWithoutData(objectId);
     const response = await Parse.Cloud.run(
@@ -121,11 +129,18 @@ export async function executeScript(script, className, objectId, showNote, onRef
  * @param {Function} onRefresh - Callback to refresh all data
  * @param {Function} onRefreshObjects - Callback to refresh specific objects by IDs
  */
-export async function executeScriptCallback(cloudCodeFunction, className, objectIds, payload, formData, showNote, onRefresh, onRefreshObjects) {
+export async function executeScriptCallback(
+  cloudCodeFunction,
+  className,
+  objectIds,
+  payload,
+  formData,
+  showNote,
+  onRefresh,
+  onRefreshObjects
+) {
   try {
-    const objects = objectIds.map(id =>
-      Parse.Object.extend(className).createWithoutData(id)
-    );
+    const objects = objectIds.map(id => Parse.Object.extend(className).createWithoutData(id));
 
     const results = await Promise.all(
       objects.map(object =>

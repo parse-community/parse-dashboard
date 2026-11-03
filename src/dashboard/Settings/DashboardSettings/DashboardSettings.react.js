@@ -80,7 +80,9 @@ export default class DashboardSettings extends DashboardView {
 
   loadStoragePreference() {
     if (this.viewPreferencesManager) {
-      const preference = this.viewPreferencesManager.getStoragePreference(this.context.applicationId);
+      const preference = this.viewPreferencesManager.getStoragePreference(
+        this.context.applicationId
+      );
       this.setState({ storagePreference: preference });
     }
   }
@@ -91,7 +93,9 @@ export default class DashboardSettings extends DashboardView {
       this.setState({ storagePreference: preference });
 
       // Show a notification about the change
-      this.showNote(`Storage preference changed to ${preference === 'server' ? 'server' : 'browser'}`);
+      this.showNote(
+        `Storage preference changed to ${preference === 'server' ? 'server' : 'browser'}`
+      );
     }
 
     // Filters use the same storage preference as views
@@ -117,7 +121,9 @@ export default class DashboardSettings extends DashboardView {
     }
 
     if (!this.viewPreferencesManager.isServerConfigEnabled()) {
-      this.showNote('Server configuration is not enabled for this app. Please add a "config" section to your app configuration.');
+      this.showNote(
+        'Server configuration is not enabled for this app. Please add a "config" section to your app configuration.'
+      );
       return;
     }
 
@@ -125,13 +131,22 @@ export default class DashboardSettings extends DashboardView {
 
     try {
       // Migrate views
-      const viewsResult = await this.viewPreferencesManager.migrateToServer(this.context.applicationId, overwriteConflicts);
+      const viewsResult = await this.viewPreferencesManager.migrateToServer(
+        this.context.applicationId,
+        overwriteConflicts
+      );
 
       // Migrate filters
-      const filtersResult = await this.filterPreferencesManager.migrateToServer(this.context.applicationId, overwriteConflicts);
+      const filtersResult = await this.filterPreferencesManager.migrateToServer(
+        this.context.applicationId,
+        overwriteConflicts
+      );
 
       // Migrate scripts
-      const scriptsResult = await this.scriptManager.migrateToServer(this.context.applicationId, overwriteConflicts);
+      const scriptsResult = await this.scriptManager.migrateToServer(
+        this.context.applicationId,
+        overwriteConflicts
+      );
 
       // Migrate Cloud Config history
       const configHistoryResult = await this.migrateConfigHistoryToServer();
@@ -140,7 +155,7 @@ export default class DashboardSettings extends DashboardView {
       const allConflicts = [
         ...(viewsResult.conflicts || []),
         ...(filtersResult.conflicts || []),
-        ...(scriptsResult.conflicts || [])
+        ...(scriptsResult.conflicts || []),
       ];
 
       if (allConflicts.length > 0 && !overwriteConflicts) {
@@ -149,7 +164,11 @@ export default class DashboardSettings extends DashboardView {
         return;
       }
 
-      const totalItems = viewsResult.viewCount + filtersResult.filterCount + scriptsResult.scriptCount + configHistoryResult.paramCount;
+      const totalItems =
+        viewsResult.viewCount +
+        filtersResult.filterCount +
+        scriptsResult.scriptCount +
+        configHistoryResult.paramCount;
 
       if (viewsResult.success && filtersResult.success && scriptsResult.success) {
         if (totalItems > 0) {
@@ -182,7 +201,7 @@ export default class DashboardSettings extends DashboardView {
     this.setState({
       migrationLoading: false,
       showConflictModal: true,
-      migrationConflicts: conflicts
+      migrationConflicts: conflicts,
     });
   }
 
@@ -230,7 +249,11 @@ export default class DashboardSettings extends DashboardView {
   }
 
   async deleteFromBrowser() {
-    if (!window.confirm('Are you sure you want to delete all dashboard settings from browser storage? This action cannot be undone.')) {
+    if (
+      !window.confirm(
+        'Are you sure you want to delete all dashboard settings from browser storage? This action cannot be undone.'
+      )
+    ) {
       return;
     }
 
@@ -250,7 +273,9 @@ export default class DashboardSettings extends DashboardView {
     }
 
     const viewsSuccess = this.viewPreferencesManager.deleteFromBrowser(this.context.applicationId);
-    const filtersSuccess = this.filterPreferencesManager.deleteFromBrowser(this.context.applicationId);
+    const filtersSuccess = this.filterPreferencesManager.deleteFromBrowser(
+      this.context.applicationId
+    );
     const scriptsSuccess = this.scriptManager.deleteFromBrowser(this.context.applicationId);
     localStorage.removeItem(`${this.context.applicationId}_configHistory`);
 
@@ -591,64 +616,77 @@ export default class DashboardSettings extends DashboardView {
             }
           />
         </Fieldset>
-        {this.viewPreferencesManager && this.scriptManager && this.viewPreferencesManager.isServerConfigEnabled() && (
-          <Fieldset legend="Settings Storage">
-            <div style={{ marginBottom: '20px', color: '#666', fontSize: '14px', textAlign: 'center' }}>
-              Storing dashboard settings on the server rather than locally in the browser storage makes the settings available across devices and browsers. It also prevents them from getting lost when resetting the browser website data. Settings that can be stored on the server are currently Data Browser Filters, Data Browser Graphs, Views, Keyboard Shortcuts, JS Console scripts, and Cloud Config history.
-            </div>
-            <Field
-              label={
-                <Label
-                  text="Storage Location"
-                  description="Choose where your dashboard settings are stored and loaded from."
-                />
-              }
-              input={
-                <Toggle
-                  value={this.state.storagePreference}
-                  type={Toggle.Types.CUSTOM}
-                  optionLeft="local"
-                  optionRight="server"
-                  labelLeft="Browser"
-                  labelRight="Server"
-                  colored={true}
-                  onChange={(preference) => this.handleStoragePreferenceChange(preference)}
-                />
-              }
-            />
-            <Field
-              label={
-                <Label
-                  text="Migrate Settings to Server"
-                  description="Migrates browser-stored settings to the server. If conflicts are detected, you'll be asked whether to overwrite or abort."
-                />
-              }
-              input={
-                <FormButton
-                  color="blue"
-                  value={this.state.migrationLoading ? 'Migrating...' : 'Migrate to Server'}
-                  disabled={this.state.migrationLoading}
-                  onClick={() => this.migrateToServer()}
-                />
-              }
-            />
-            <Field
-              label={
-                <Label
-                  text="Delete Settings from Browser"
-                  description="Removes settings from browser storage. ⚠️ Migrate your settings to the server and test them first."
-                />
-              }
-              input={
-                <FormButton
-                  color="red"
-                  value="Delete from Browser"
-                  onClick={() => this.deleteFromBrowser()}
-                />
-              }
-            />
-          </Fieldset>
-        )}
+        {this.viewPreferencesManager &&
+          this.scriptManager &&
+          this.viewPreferencesManager.isServerConfigEnabled() && (
+            <Fieldset legend="Settings Storage">
+              <div
+                style={{
+                  marginBottom: '20px',
+                  color: '#666',
+                  fontSize: '14px',
+                  textAlign: 'center',
+                }}
+              >
+                Storing dashboard settings on the server rather than locally in the browser storage
+                makes the settings available across devices and browsers. It also prevents them from
+                getting lost when resetting the browser website data. Settings that can be stored on
+                the server are currently Data Browser Filters, Data Browser Graphs, Views, Keyboard
+                Shortcuts, JS Console scripts, and Cloud Config history.
+              </div>
+              <Field
+                label={
+                  <Label
+                    text="Storage Location"
+                    description="Choose where your dashboard settings are stored and loaded from."
+                  />
+                }
+                input={
+                  <Toggle
+                    value={this.state.storagePreference}
+                    type={Toggle.Types.CUSTOM}
+                    optionLeft="local"
+                    optionRight="server"
+                    labelLeft="Browser"
+                    labelRight="Server"
+                    colored={true}
+                    onChange={preference => this.handleStoragePreferenceChange(preference)}
+                  />
+                }
+              />
+              <Field
+                label={
+                  <Label
+                    text="Migrate Settings to Server"
+                    description="Migrates browser-stored settings to the server. If conflicts are detected, you'll be asked whether to overwrite or abort."
+                  />
+                }
+                input={
+                  <FormButton
+                    color="blue"
+                    value={this.state.migrationLoading ? 'Migrating...' : 'Migrate to Server'}
+                    disabled={this.state.migrationLoading}
+                    onClick={() => this.migrateToServer()}
+                  />
+                }
+              />
+              <Field
+                label={
+                  <Label
+                    text="Delete Settings from Browser"
+                    description="Removes settings from browser storage. ⚠️ Migrate your settings to the server and test them first."
+                  />
+                }
+                input={
+                  <FormButton
+                    color="red"
+                    value="Delete from Browser"
+                    onClick={() => this.deleteFromBrowser()}
+                  />
+                }
+              />
+            </Fieldset>
+          )}
         {this.state.copyData.show && copyData}
         {this.state.createUserInput && createUserInput}
         {this.state.newUser.show && userData}
@@ -669,20 +707,25 @@ export default class DashboardSettings extends DashboardView {
 
     const conflictList = (
       <div style={{ padding: '20px', fontSize: '14px' }}>
-        <p style={{ marginBottom: '15px' }}>
-          The following settings already exist on the server:
-        </p>
+        <p style={{ marginBottom: '15px' }}>The following settings already exist on the server:</p>
 
-        <div style={{
-          maxHeight: '300px',
-          overflowY: 'auto',
-          marginBottom: '15px',
-          border: '1px solid #e0e0e0',
-          borderRadius: '4px',
-          padding: '10px'
-        }}>
+        <div
+          style={{
+            maxHeight: '300px',
+            overflowY: 'auto',
+            marginBottom: '15px',
+            border: '1px solid #e0e0e0',
+            borderRadius: '4px',
+            padding: '10px',
+          }}
+        >
           {viewConflicts.length > 0 && (
-            <div style={{ marginBottom: (filterConflicts.length > 0 || scriptConflicts.length > 0) ? '15px' : '0' }}>
+            <div
+              style={{
+                marginBottom:
+                  filterConflicts.length > 0 || scriptConflicts.length > 0 ? '15px' : '0',
+              }}
+            >
               <strong>Views ({viewConflicts.length}):</strong>
               <ul style={{ marginTop: '5px', marginBottom: '0', paddingLeft: '20px' }}>
                 {viewConflicts.map(conflict => {
@@ -690,7 +733,14 @@ export default class DashboardSettings extends DashboardView {
                   return (
                     <li key={conflict.id}>
                       {viewName || 'Unnamed view'}
-                      <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#666', marginLeft: '8px' }}>
+                      <span
+                        style={{
+                          fontFamily: 'monospace',
+                          fontSize: '12px',
+                          color: '#666',
+                          marginLeft: '8px',
+                        }}
+                      >
                         [{conflict.id}]
                       </span>
                     </li>
@@ -707,13 +757,18 @@ export default class DashboardSettings extends DashboardView {
                 {filterConflicts.map(conflict => {
                   const filterName = conflict.local?.name || conflict.server?.name || '';
                   const className = conflict.className || 'Unknown class';
-                  const displayText = filterName
-                    ? `${filterName} (${className})`
-                    : className;
+                  const displayText = filterName ? `${filterName} (${className})` : className;
                   return (
                     <li key={conflict.id}>
                       {displayText}
-                      <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#666', marginLeft: '8px' }}>
+                      <span
+                        style={{
+                          fontFamily: 'monospace',
+                          fontSize: '12px',
+                          color: '#666',
+                          marginLeft: '8px',
+                        }}
+                      >
                         [{conflict.id}]
                       </span>
                     </li>
@@ -732,7 +787,14 @@ export default class DashboardSettings extends DashboardView {
                   return (
                     <li key={conflict.id}>
                       {scriptName || 'Unnamed script'}
-                      <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#666', marginLeft: '8px' }}>
+                      <span
+                        style={{
+                          fontFamily: 'monospace',
+                          fontSize: '12px',
+                          color: '#666',
+                          marginLeft: '8px',
+                        }}
+                      >
                         [{conflict.id}]
                       </span>
                     </li>

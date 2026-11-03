@@ -30,7 +30,9 @@ export default class DeleteViewDialog extends React.Component {
         onConfirm={this.props.onConfirm}
       >
         <Field
-          label={<Label text="Confirm this action" description="Enter the view name to continue." />}
+          label={
+            <Label text="Confirm this action" description="Enter the view name to continue." />
+          }
           input={
             <TextInput
               placeholder="View name"

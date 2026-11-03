@@ -47,7 +47,7 @@ const domains = [
 ];
 
 const domainMap = {};
-for (let i = domains.length; i--;) {
+for (let i = domains.length; i--; ) {
   const levels = domains[i].split('.');
   const secondLevel = levels.shift();
   const tld = levels.join('.');
@@ -119,7 +119,7 @@ export function suggestion(email, checkTLD) {
   const secondLevelDomains = Object.keys(domainMap);
   let i;
   let d;
-  for (i = secondLevelDomains.length; i--;) {
+  for (i = secondLevelDomains.length; i--; ) {
     d = dist(emailSecondLevel, secondLevelDomains[i]);
     if (d < closestDistance && d < secondLevelDomains[i].length - 1) {
       closestDistance = d;
@@ -136,7 +136,7 @@ export function suggestion(email, checkTLD) {
   closestDistance = Infinity;
 
   const tlds = domainMap[selectedDomain];
-  for (i = tlds.length; i--;) {
+  for (i = tlds.length; i--; ) {
     const joined = selectedDomain + '.' + tlds[i];
     d = dist(emailDomain, joined);
     if (d < closestDistance) {

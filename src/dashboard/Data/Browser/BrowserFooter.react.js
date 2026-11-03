@@ -74,7 +74,9 @@ class BrowserFooter extends React.Component {
 
     return (
       <div className={styles.footer}>
-        <span><strong>{count?.toLocaleString() || 0}</strong> objects</span>
+        <span>
+          <strong>{count?.toLocaleString() || 0}</strong> objects
+        </span>
         <span style={{ color: 'lightgray' }}>|</span>
         <select value={limit} onChange={this.handleLimitChange}>
           {[10, 20, 50, 100, 200, 500, 1000].map(size => (
@@ -85,11 +87,16 @@ class BrowserFooter extends React.Component {
         </select>
         <span>per page</span>
         <span style={{ color: 'lightgray' }}>|</span>
-        <span>Objects {(skip + 1).toLocaleString()} to {Math.min(count ?? limit, skip + limit).toLocaleString()}</span>
+        <span>
+          Objects {(skip + 1).toLocaleString()} to{' '}
+          {Math.min(count ?? limit, skip + limit).toLocaleString()}
+        </span>
         {selectedCellsCount > 0 && (
           <>
             <span style={{ color: 'lightgray' }}>|</span>
-            <span><strong>{selectedCellsCount.toLocaleString()}</strong> cells selected</span>
+            <span>
+              <strong>{selectedCellsCount.toLocaleString()}</strong> cells selected
+            </span>
           </>
         )}
         {selectedData?.length > 0 && (

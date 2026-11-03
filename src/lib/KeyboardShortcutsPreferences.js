@@ -14,8 +14,20 @@ import ServerConfigStorage from './ServerConfigStorage';
 export const DEFAULT_SHORTCUTS = {
   dataBrowserReloadData: { key: 'r', ctrl: false, shift: false, alt: false, meta: false },
   dataBrowserToggleInfoPanels: { key: 'p', ctrl: false, shift: false, alt: false, meta: false },
-  dataBrowserRunScriptOnSelectedRows: { key: 's', ctrl: false, shift: false, alt: false, meta: false },
-  dataBrowserScrollInfoPanelsToTop: { key: 'u', ctrl: false, shift: false, alt: false, meta: false },
+  dataBrowserRunScriptOnSelectedRows: {
+    key: 's',
+    ctrl: false,
+    shift: false,
+    alt: false,
+    meta: false,
+  },
+  dataBrowserScrollInfoPanelsToTop: {
+    key: 'u',
+    ctrl: false,
+    shift: false,
+    alt: false,
+    meta: false,
+  },
 };
 
 /**
@@ -38,7 +50,10 @@ export default class KeyboardShortcutsManager {
     }
 
     try {
-      const configs = await this.serverStorage.getConfigsByPrefix('settings.keyboard.binding', appId);
+      const configs = await this.serverStorage.getConfigsByPrefix(
+        'settings.keyboard.binding',
+        appId
+      );
 
       if (!configs || Object.keys(configs).length === 0) {
         return DEFAULT_SHORTCUTS;
@@ -97,7 +112,9 @@ export default class KeyboardShortcutsManager {
         const defaultValue = DEFAULT_SHORTCUTS[shortcutName];
 
         // Check if the value matches the default (compare key and modifiers)
-        const isDefault = defaultValue && value &&
+        const isDefault =
+          defaultValue &&
+          value &&
           value.key?.toLowerCase() === defaultValue.key?.toLowerCase() &&
           !!value.ctrl === !!defaultValue.ctrl &&
           !!value.shift === !!defaultValue.shift &&
