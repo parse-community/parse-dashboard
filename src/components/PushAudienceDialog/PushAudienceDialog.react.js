@@ -47,8 +47,8 @@ const filterFormatter = (filters, schema) => {
 
 export default class PushAudienceDialog extends React.Component {
   static contextType = CurrentApp;
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.xhrHandle = null;
     this.state = {
       platforms: [],
@@ -58,7 +58,7 @@ export default class PushAudienceDialog extends React.Component {
       audienceName: '',
       audienceSize: undefined,
       approximate: false,
-      errorMessage: undefined,
+      errorMessage: props.errorMessage,
     };
   }
 
@@ -72,7 +72,9 @@ export default class PushAudienceDialog extends React.Component {
         stateSettings.platforms = deviceType.$in || [];
       }
       if (audienceInfo.filters) {
-        stateSettings.filters = audienceInfo.filters;
+        stateSettings.filters = audienceInfo.filters.map(filter =>
+          filter.get('class') ? filter : filter.set('class', '_Installation')
+        );
       }
       if (audienceInfo.name) {
         stateSettings.audienceName = audienceInfo.name;
@@ -84,6 +86,15 @@ export default class PushAudienceDialog extends React.Component {
   componentWillUnmount() {
     if (this.xhrHandle) {
       this.xhrHandle.abort();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.errorMessage !== this.props.errorMessage &&
+      this.state.errorMessage !== this.props.errorMessage
+    ) {
+      this.setState({ errorMessage: this.props.errorMessage });
     }
   }
 
@@ -100,10 +111,22 @@ export default class PushAudienceDialog extends React.Component {
       return;
     }
     const available = Filters.availableFilters(this.props.schema, this.state.filters);
-    const field = Object.keys(available)[0];
+
+    const keys = Object.keys(available);
+    if (keys.length === 0) {
+      this.setState({
+        errorMessage: 'No condition available.',
+      });
+      return;
+    }
+
+    const field = keys[0];
     this.setState(
       ({ filters }) => ({
-        filters: filters.push(new Map({ field: field, constraint: available[field][0] })),
+        filters: filters.push(
+          new Map({ class: '_Installation', field: field, constraint: available[field][0] })
+        ),
+        errorMessage: undefined,
       }),
       this.fetchAudienceSize.bind(this)
     );
@@ -284,11 +307,19 @@ export default class PushAudienceDialog extends React.Component {
         />
         <div className={styles.filter}>
           <Filter
-            schema={this.props.schema}
+            className="_Installation"
+            schema={{ _Installation: this.props.schema }}
+            allClasses={{ _Installation: this.props.schema }}
             filters={this.state.filters}
             onChange={filters => {
-              this.setState({ filters }, this.fetchAudienceSize.bind(this));
+              this.setState(
+                { filters, errorMessage: undefined },
+                this.fetchAudienceSize.bind(this)
+              );
             }}
+            onSearch={() =>
+              this.setState({ errorMessage: undefined }, this.fetchAudienceSize.bind(this))
+            }
             renderRow={props => <InstallationCondition {...props} />}
           />
         </div>
@@ -305,13 +336,10 @@ export default class PushAudienceDialog extends React.Component {
         </div>
         {futureUseSegment}
         <FormNote
-          show={Boolean(
-            (this.props.errorMessage && this.props.errorMessage.length > 0) ||
-              (this.state.errorMessage && this.state.errorMessage.length > 0)
-          )}
+          show={Boolean(this.state.errorMessage && this.state.errorMessage.length > 0)}
           color="red"
         >
-          {this.props.errorMessage || this.state.errorMessage}
+          {this.state.errorMessage}
         </FormNote>
       </Modal>
     );
@@ -338,4 +366,5 @@ PushAudienceDialog.propTypes = {
   availableDevices: PropTypes.arrayOf(PropTypes.string).describe(
     'List of all availableDevices devices for push notifications.'
   ),
+  errorMessage: PropTypes.string.describe('Error message to display in the dialog.'),
 };
