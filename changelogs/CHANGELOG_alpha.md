@@ -1,3 +1,10 @@
+# [9.3.0-alpha.16](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.15...9.3.0-alpha.16) (2026-11-04)
+
+
+### Features
+
+* Add support for Node.js 26 ([#3525](https://github.com/parse-community/parse-dashboard/issues/3525)) ([bdc5d62](https://github.com/parse-community/parse-dashboard/commit/bdc5d62523482c6541051957cc5be91578516aec))
+
 # [9.3.0-alpha.15](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.14...9.3.0-alpha.15) (2026-11-02)
 
 
