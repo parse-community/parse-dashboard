@@ -226,6 +226,7 @@ export default class DataBrowser extends React.Component {
     this.handleCallCloudFunction = this.handleCallCloudFunction.bind(this);
     this.setContextMenu = this.setContextMenu.bind(this);
     this.freezeColumns = this.freezeColumns.bind(this);
+    this.hideColumn = this.hideColumn.bind(this);
     this.unfreezeColumns = this.unfreezeColumns.bind(this);
     this.setShowRowNumber = this.setShowRowNumber.bind(this);
     this.toggleScrollToTop = this.toggleScrollToTop.bind(this);
@@ -1498,6 +1499,32 @@ export default class DataBrowser extends React.Component {
 
   unfreezeColumns() {
     this.setState({ frozenColumnIndex: -1 });
+  }
+
+  hideColumn(index) {
+    const { order, freezeIndex } = ColumnPreferences.hideColumn(
+      this.state.order,
+      index,
+      this.state.frozenColumnIndex
+    );
+    // Clear selection and editing so nothing points at the hidden column.
+    this.setState(
+      {
+        order,
+        frozenColumnIndex: freezeIndex,
+        current: null,
+        // Restored selection must land on a visible column, not the hidden one.
+        lastSelectedCol: Math.max(0, order.findIndex(c => c.visible)),
+        editing: false,
+        selectedCells: { list: new Set(), rowStart: -1, rowEnd: -1, colStart: -1, colEnd: -1 },
+        firstSelectedCell: null,
+        selectedData: [],
+      },
+      () => {
+        this.props.onCellSelectionChange?.(0, []);
+        this.updatePreferences(order);
+      }
+    );
   }
 
   setShowRowNumber(show) {
@@ -2778,6 +2805,7 @@ export default class DataBrowser extends React.Component {
             freezeIndex={this.state.frozenColumnIndex}
             freezeColumns={this.freezeColumns}
             unfreezeColumns={this.unfreezeColumns}
+            hideColumn={this.hideColumn}
             onFilterChange={this.props.onFilterChange}
             onFilterSave={this.props.onFilterSave}
             selectedCells={this.state.selectedCells}

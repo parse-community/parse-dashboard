@@ -19,11 +19,13 @@ export default class DataBrowserHeaderBar extends React.Component {
       freezeIndex,
       freezeColumns,
       unfreezeColumns,
+      hideColumn,
       setContextMenu,
       showRowNumber,
       setShowRowNumber,
     } = this.props;
     const items = [
+      { text: 'Hide column', callback: () => hideColumn(index) },
       {
         text: showRowNumber ? 'Hide row number' : 'Display row number',
         callback: () => setShowRowNumber(!showRowNumber),
