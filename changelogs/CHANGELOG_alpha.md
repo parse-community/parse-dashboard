@@ -1,3 +1,15 @@
+# [10.0.0-alpha.1](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.16...10.0.0-alpha.1) (2026-11-04)
+
+
+### Features
+
+* Remove Node 20 support and increase minimum required Node 22 version to `22.13.0` ([#3527](https://github.com/parse-community/parse-dashboard/issues/3527)) ([2ff9098](https://github.com/parse-community/parse-dashboard/commit/2ff909878ecaa009b09edb194e42e65a5c4168a0))
+
+
+### BREAKING CHANGES
+
+* Removes support for Node 20 and increases the minimum required Node 22 version to `22.13.0`. ([2ff9098](2ff9098))
+
 # [9.3.0-alpha.16](https://github.com/parse-community/parse-dashboard/compare/9.3.0-alpha.15...9.3.0-alpha.16) (2026-11-04)
 
 
