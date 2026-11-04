@@ -152,7 +152,11 @@ export default class AccountOverview extends React.Component {
                     },
                     {
                       key: 'Expires',
-                      value: dateStringUTC(new Date(key.expiresAt)),
+                      value: (
+                        <span title={new Date(key.expiresAt).toLocaleString()}>
+                          {dateStringUTC(new Date(key.expiresAt))}
+                        </span>
+                      ),
                     },
                   ],
                 }))}

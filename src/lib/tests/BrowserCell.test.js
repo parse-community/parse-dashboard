@@ -43,4 +43,14 @@ describe('BrowserCell', () => {
       expect(component.props.className).toContain('required');
     });
   });
+
+  describe('Date', () => {
+    it('should show local time on hover', () => {
+      const date = new Date('2026-10-25T16:15:00.000Z');
+      const component = renderComponent(<BrowserCell type="Date" value={date} />).toJSON();
+      const inner = component.children[0];
+      expect(inner.props.title).toBe(date.toLocaleString());
+      expect(inner.children[0]).toContain('UTC');
+    });
+  });
 });
