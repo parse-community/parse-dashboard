@@ -6,7 +6,7 @@
 [![Build Status](https://github.com/parse-community/parse-dashboard/workflows/ci/badge.svg?branch=release)](https://github.com/parse-community/parse-dashboard/actions?query=workflow%3Aci+branch%3Arelease)
 [![Snyk Badge](https://snyk.io/test/github/parse-community/parse-dashboard/badge.svg)](https://snyk.io/test/github/parse-community/parse-dashboard)
 
-[![Node Version](https://img.shields.io/badge/nodejs-20,_22,_24-green.svg?logo=node.js&style=flat)](https://nodejs.org/)
+[![Node Version](https://img.shields.io/badge/nodejs-20,_22,_24,_26-green.svg?logo=node.js&style=flat)](https://nodejs.org/)
 [![auto-release](https://img.shields.io/badge/%F0%9F%9A%80-auto--release-9e34eb.svg)](https://github.com/parse-community/parse-dashboard/releases)
 
 [![npm latest version](https://img.shields.io/npm/v/parse-dashboard/latest.svg)](https://www.npmjs.com/package/parse-dashboard)
@@ -171,6 +171,7 @@ Parse Dashboard is continuously tested with the most recent releases of Node.js 
 | Node.js 20 | 20.18.0        | April 2026  | ✅ Yes      |
 | Node.js 22 | 22.9.0         | April 2027  | ✅ Yes      |
 | Node.js 24 | 24.0.0         | April 2028  | ✅ Yes      |
+| Node.js 26 | 26.13.0        | April 2029  | ✅ Yes      |
 
 ## Configuring Parse Dashboard
 

@@ -64,7 +64,7 @@
     "node-fetch": "3.3.2",
     "otpauth": "9.5.2",
     "package-json": "7.0.0",
-    "parse": "8.6.2",
+    "parse": "8.7.0",
     "passport": "0.7.0",
     "passport-local": "1.0.0",
     "prismjs": "1.30.0",
@@ -128,7 +128,7 @@
     "jest-environment-node": "30.0.4",
     "madge": "8.0.0",
     "marked": "17.0.5",
-    "parse-server": "9.10.1",
+    "parse-server": "9.11.0",
     "prettier": "3.8.1",
     "puppeteer": "25.16.0",
     "react-test-renderer": "19.2.7",
@@ -166,7 +166,7 @@
     "parse-dashboard": "./bin/parse-dashboard"
   },
   "engines": {
-    "node": ">=20.19.0 <21.0.0 || >=22.12.0 <23.0.0 || >=24.1.0 <25.0.0"
+    "node": ">=20.19.0 <21.0.0 || >=22.12.0 <23.0.0 || >=24.1.0 <25.0.0 || >=26.13.0 <27.0.0"
   },
   "main": "Parse-Dashboard/app.js",
   "jest": {
