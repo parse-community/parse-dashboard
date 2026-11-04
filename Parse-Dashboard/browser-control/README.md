@@ -11,7 +11,7 @@ The Browser Control API is a development-time tool that allows AI agents to inte
 ### Prerequisites
 
 **Requirements:**
-- Node.js 22.13.0 or higher
+- A Node.js version that Parse Dashboard supports, see [Node.js](../../README.md#nodejs)
 
 **Note:** MongoDB is automatically started when you run `npm run browser-control` - no manual setup needed!
 
