@@ -1,7 +1,7 @@
 jest.dontMock('../../dashboard/Data/Config/ConfigConflictDiff.react');
 
 import React from 'react';
-import renderer from 'react-test-renderer';
+import { renderComponent } from './renderWithAct';
 const ConfigConflictDiff = require('../../dashboard/Data/Config/ConfigConflictDiff.react').default;
 
 // Mock the diff library
@@ -29,7 +29,7 @@ jest.mock('diff', () => ({
 
 describe('ConfigConflictDiff', () => {
   it('renders a diff for changed string values', () => {
-    const component = renderer.create(
+    const component = renderComponent(
       <ConfigConflictDiff
         serverValue="hello"
         userValue="world"
@@ -43,7 +43,7 @@ describe('ConfigConflictDiff', () => {
   });
 
   it('renders a diff for changed object values', () => {
-    const component = renderer.create(
+    const component = renderComponent(
       <ConfigConflictDiff
         serverValue={{ key: 'old' }}
         userValue='{"key": "new"}'
@@ -55,7 +55,7 @@ describe('ConfigConflictDiff', () => {
   });
 
   it('renders empty state when values are identical', () => {
-    const component = renderer.create(
+    const component = renderComponent(
       <ConfigConflictDiff
         serverValue=""
         userValue=""
@@ -68,7 +68,7 @@ describe('ConfigConflictDiff', () => {
   });
 
   it('renders a diff for boolean values', () => {
-    const component = renderer.create(
+    const component = renderComponent(
       <ConfigConflictDiff
         serverValue={true}
         userValue={false}
@@ -80,7 +80,7 @@ describe('ConfigConflictDiff', () => {
   });
 
   it('renders a diff for number values', () => {
-    const component = renderer.create(
+    const component = renderComponent(
       <ConfigConflictDiff
         serverValue={42}
         userValue={99}

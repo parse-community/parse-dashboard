@@ -62,7 +62,14 @@ export default class Popover extends React.Component {
       this._popoverLayer.setAttribute('data-popover-type', this.props['data-popover-type']);
     }
 
-    document.body.addEventListener('click', this._checkExternalClick);
+    // Register the external-click listener on the next tick. Under React's
+    // root-level event delegation (React 17+/createRoot), the click that opens
+    // this popover is still bubbling to document.body when this component mounts,
+    // so registering synchronously would let that same click trigger
+    // onExternalClick and close the popover immediately (menus never open).
+    this._externalClickTimer = setTimeout(() => {
+      document.body.addEventListener('click', this._checkExternalClick);
+    }, 0);
   }
 
   setPosition(position) {
@@ -72,11 +79,63 @@ export default class Popover extends React.Component {
   }
 
   componentWillUnmount() {
-    document.body.removeChild(this._popoverWrapper);
+    clearTimeout(this._externalClickTimer);
+    // Remove via parentNode (not document.body) so this can't throw if the
+    // wrapper was moved/detached, and null the reference so a reused instance
+    // (StrictMode / Activity remount) re-creates and re-appends the wrapper in
+    // componentDidMount instead of skipping it via the `!this._popoverWrapper`
+    // guard and rendering into a detached node.
+    if (this._popoverWrapper && this._popoverWrapper.parentNode) {
+      this._popoverWrapper.parentNode.removeChild(this._popoverWrapper);
+    }
+    this._popoverWrapper = null;
     document.body.removeEventListener('click', this._checkExternalClick);
   }
 
   _checkExternalClick(e) {
+    // A click whose target detached from the DOM during this same click — React
+    // 19 flushes discrete updates synchronously, so an element that swaps/removes
+    // itself on click (e.g. an icon that toggles) is already gone by the time
+    // this document-level listener runs — breaks the hasAncestor() walk below:
+    // its ancestor chain no longer reaches the popover. Decide inside-vs-outside
+    // from composedPath() instead, which preserves the event's dispatch-time path
+    // even after the target detaches.
+    if (!e.target.isConnected) {
+      // composedPath() is only populated during dispatch; this native listener
+      // runs in the click's bubble phase, so it is valid here. It preserves the
+      // event's dispatch-time ancestors even after the target detaches, so apply
+      // the same inside-vs-outside criteria as the connected branch below (this
+      // popover's wrapper/portal layer, a nested parentContentId, an inner
+      // popover, or a chrome dropdown) against the captured path. Checking only
+      // this popover's own layer would wrongly close it when the detached target
+      // came from a nested popover (e.g. an Autocomplete suggestion), which lives
+      // in its own portal layer.
+      const path = typeof e.composedPath === 'function' ? e.composedPath() : [];
+      if (path.length === 0) {
+        // composedPath unavailable/empty — fall back to the prior "don't close".
+        return;
+      }
+      const { contentId } = this.props;
+      const wrapper = contentId ? document.getElementById(contentId) : this._popoverLayer;
+      const clickedInside = path.some(
+        node =>
+          node === wrapper ||
+          (node instanceof Element &&
+            ((contentId && node.dataset.parentContentId === contentId) ||
+              node.getAttribute('data-popover-type') === 'inner' ||
+              node.classList.contains('chromeDropdown')))
+      );
+      if (clickedInside) {
+        return;
+      }
+      // A genuine outside click whose target merely happened to detach: close.
+      // Returning here also avoids the parentNode/closest reads below, which
+      // would throw on a fully detached node.
+      if (this.props.onExternalClick) {
+        this.props.onExternalClick(e);
+      }
+      return;
+    }
     const { contentId } = this.props;
     const popoverWrapper = contentId ? document.getElementById(contentId) : this._popoverLayer;
     const isChromeDropdown = e.target.parentNode.classList.contains('chromeDropdown');

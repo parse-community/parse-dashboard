@@ -6,7 +6,7 @@
  * the root directory of this source tree.
  */
 import * as ComponentsMap from 'parse-interface-guide/ComponentsMap';
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router';
 import Icon from 'components/Icon/Icon.react';
 import PropsTable from 'parse-interface-guide/PropsTable.react';
 import React from 'react';

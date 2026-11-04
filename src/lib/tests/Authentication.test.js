@@ -160,3 +160,119 @@ describe('Authentication', () => {
     ).toEqual(createAuthenticationResult(true, 'parse.readonly.apps', readOnlyApps, false));
   });
 });
+
+describe('Authentication with MFA', () => {
+  // Secrets and expected one-time passwords are the test vectors of RFC 6238 Appendix B,
+  // with the ASCII seeds encoded as base32.
+  const sha1Secret = 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ';
+  const sha256Secret = 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZA====';
+  const sha512Secret =
+    'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNA=';
+  const mfaUsers = [
+    {
+      user: 'parse.mfa',
+      pass: 'abc123',
+      mfa: sha1Secret,
+    },
+    {
+      user: 'parse.mfa.lowercase',
+      pass: 'abc123',
+      mfa: sha1Secret.toLowerCase(),
+    },
+    {
+      user: 'parse.mfa.digits',
+      pass: 'abc123',
+      mfa: sha1Secret,
+      mfaDigits: 8,
+    },
+    {
+      user: 'parse.mfa.sha256',
+      pass: 'abc123',
+      mfa: sha256Secret,
+      mfaAlgorithm: 'SHA256',
+      mfaDigits: 8,
+    },
+    {
+      user: 'parse.mfa.sha512',
+      pass: 'abc123',
+      mfa: sha512Secret,
+      mfaAlgorithm: 'SHA512',
+      mfaDigits: 8,
+    },
+  ];
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  function authenticateAt(timestamp, name, otpCode) {
+    jest.useFakeTimers();
+    jest.setSystemTime(timestamp);
+    const authentication = new Authentication(mfaUsers, false);
+    return authentication.authenticate({ name, pass: 'abc123', otpCode });
+  }
+
+  it('requires one-time password if none is provided', () => {
+    const authentication = new Authentication(mfaUsers, false);
+    expect(authentication.authenticate({ name: 'parse.mfa', pass: 'abc123' })).toEqual(
+      expect.objectContaining({ otpMissingLength: 6, otpValid: true })
+    );
+    expect(authentication.authenticate({ name: 'parse.mfa.digits', pass: 'abc123' })).toEqual(
+      expect.objectContaining({ otpMissingLength: 8, otpValid: true })
+    );
+  });
+
+  it('accepts valid one-time password with default algorithm and digits', () => {
+    expect(authenticateAt(59 * 1000, 'parse.mfa', '287082')).toEqual(
+      createAuthenticationResult(true, 'parse.mfa', null)
+    );
+  });
+
+  it('accepts valid one-time password with lowercase secret', () => {
+    expect(authenticateAt(59 * 1000, 'parse.mfa.lowercase', '287082')).toEqual(
+      createAuthenticationResult(true, 'parse.mfa.lowercase', null)
+    );
+  });
+
+  it('accepts valid one-time password with custom digits', () => {
+    expect(authenticateAt(1111111109 * 1000, 'parse.mfa.digits', '07081804')).toEqual(
+      createAuthenticationResult(true, 'parse.mfa.digits', null)
+    );
+  });
+
+  it('accepts valid one-time password with SHA256 and padded secret', () => {
+    expect(authenticateAt(1111111109 * 1000, 'parse.mfa.sha256', '68084774')).toEqual(
+      createAuthenticationResult(true, 'parse.mfa.sha256', null)
+    );
+  });
+
+  it('accepts valid one-time password with SHA512 and padded secret', () => {
+    expect(authenticateAt(1111111109 * 1000, 'parse.mfa.sha512', '25091201')).toEqual(
+      createAuthenticationResult(true, 'parse.mfa.sha512', null)
+    );
+  });
+
+  it('accepts one-time password of adjacent time step', () => {
+    expect(authenticateAt(59 * 1000, 'parse.mfa', '755224')).toEqual(
+      expect.objectContaining({ otpMissingLength: false, otpValid: true })
+    );
+    expect(authenticateAt(59 * 1000, 'parse.mfa', '359152')).toEqual(
+      expect.objectContaining({ otpMissingLength: false, otpValid: true })
+    );
+  });
+
+  it('rejects one-time password outside of validation window', () => {
+    expect(authenticateAt(59 * 1000, 'parse.mfa', '969429')).toEqual(
+      expect.objectContaining({ otpMissingLength: 6, otpValid: false })
+    );
+  });
+
+  it('rejects invalid one-time password', () => {
+    expect(authenticateAt(59 * 1000, 'parse.mfa', '000000')).toEqual(
+      expect.objectContaining({ otpMissingLength: 6, otpValid: false })
+    );
+    expect(authenticateAt(1111111109 * 1000, 'parse.mfa.sha256', '00000000')).toEqual(
+      expect.objectContaining({ otpMissingLength: 8, otpValid: false })
+    );
+  });
+});

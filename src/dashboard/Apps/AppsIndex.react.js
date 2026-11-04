@@ -17,7 +17,7 @@ import styles from 'dashboard/Apps/AppsIndex.scss';
 import baseStyles from 'stylesheets/base.scss';
 import AppBadge from 'components/AppBadge/AppBadge.react';
 import { withRouter } from 'lib/withRouter';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 function dash(value, content) {
   if (value === undefined) {

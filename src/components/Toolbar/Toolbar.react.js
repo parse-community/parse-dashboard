@@ -9,7 +9,7 @@ import PropTypes from 'lib/PropTypes';
 import React from 'react';
 import Icon from 'components/Icon/Icon.react';
 import styles from 'components/Toolbar/Toolbar.scss';
-import { useNavigate, useNavigationType, NavigationType } from 'react-router-dom';
+import { useNavigate, useNavigationType, NavigationType } from 'react-router';
 
 const Toolbar = props => {
   const action = useNavigationType();

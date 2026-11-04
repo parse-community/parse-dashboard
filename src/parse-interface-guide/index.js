@@ -5,10 +5,11 @@
  * This source code is licensed under the license found in the LICENSE file in
  * the root directory of this source tree.
  */
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
-import Routes from './routes';
+import routes from './routes';
 
 // App entry point
 
-ReactDOM.render(Routes, document.getElementById('browser_mount'));
+const root = createRoot(document.getElementById('browser_mount'));
+root.render(routes);

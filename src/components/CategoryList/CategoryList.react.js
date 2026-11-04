@@ -11,7 +11,7 @@ import { CurrentApp } from 'context/currentApp';
 import generatePath from 'lib/generatePath';
 import PropTypes from 'lib/PropTypes';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 export default class CategoryList extends React.Component {
   static contextType = CurrentApp;

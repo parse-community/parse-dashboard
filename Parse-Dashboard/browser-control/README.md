@@ -11,7 +11,7 @@ The Browser Control API is a development-time tool that allows AI agents to inte
 ### Prerequisites
 
 **Requirements:**
-- Node.js 20.19.0 or higher
+- A Node.js version that Parse Dashboard supports, see [Node.js](../../README.md#nodejs)
 
 **Note:** MongoDB is automatically started when you run `npm run browser-control` - no manual setup needed!
 
@@ -790,7 +790,7 @@ The Browser Control API uses a **two-layer security model** to prevent accidenta
 - `BROWSER_SLOW_MO=100` - Slow down browser operations by N milliseconds
 
 ### MongoDB Auto-Start (when browser-control is enabled)
-MongoDB is automatically started when browser-control mode is enabled using `mongodb-runner`.
+MongoDB is automatically started when browser-control mode is enabled using `@mongodb-js/mongodb-runner`.
 
 - `MONGO_PORT=27017` - MongoDB port (default: 27017)
 - `MONGO_VERSION=8.0.4` - MongoDB version (default: 8.0.4)
