@@ -1,3 +1,35 @@
+# [10.0.0](https://github.com/parse-community/parse-dashboard/compare/9.2.0...10.0.0) (2026-11-04)
+
+
+### Bug Fixes
+
+* Add Cancel and Add buttons to the add-row modal ([#1995](https://github.com/parse-community/parse-dashboard/issues/1995)) ([#3383](https://github.com/parse-community/parse-dashboard/issues/3383)) ([2d1b739](https://github.com/parse-community/parse-dashboard/commit/2d1b739dad3b39a5c42dfa56afa96b2b76ba26b2))
+* Advertise localhost instead of 0.0.0.0 in the dashboard startup message ([#3410](https://github.com/parse-community/parse-dashboard/issues/3410)) ([33ce7b8](https://github.com/parse-community/parse-dashboard/commit/33ce7b8d283855f8398f6111d8f557081d11d018))
+* Bump body-parser from 2.2.2 to 2.3.0 ([#3465](https://github.com/parse-community/parse-dashboard/issues/3465)) ([662899b](https://github.com/parse-community/parse-dashboard/commit/662899bac924e7875981768a549ff80f0596500b))
+* Bump body-parser from 2.3.0 to 2.4.0 ([#3508](https://github.com/parse-community/parse-dashboard/issues/3508)) ([cb9caf8](https://github.com/parse-community/parse-dashboard/commit/cb9caf81a055843a18c9e06ec29f2445a65903f1))
+* Bump brace-expansion from 1.1.13 to 1.1.21 ([#3454](https://github.com/parse-community/parse-dashboard/issues/3454)) ([937fe17](https://github.com/parse-community/parse-dashboard/commit/937fe17044173066ba222a6c19cc8e27bbb43f08))
+* Bump glob from 10.4.5 to 10.5.0 and minimatch from 9.0.1 to 9.0.9 ([#3467](https://github.com/parse-community/parse-dashboard/issues/3467)) ([f31ada5](https://github.com/parse-community/parse-dashboard/commit/f31ada5ab64349efbf0f3760cd45b4678ccf09a1))
+* Bump immutable from 5.1.5 to 5.1.9 ([#3457](https://github.com/parse-community/parse-dashboard/issues/3457)) ([5097c04](https://github.com/parse-community/parse-dashboard/commit/5097c04ea4756ba5ce592c28eb9e4ff1c4e33545))
+* Bump markdown-it from 14.3.0 to 14.3.3 ([#3494](https://github.com/parse-community/parse-dashboard/issues/3494)) ([12d7cc0](https://github.com/parse-community/parse-dashboard/commit/12d7cc035353795de8745c1fb252cac30b14c465))
+* Bump parse from 8.5.0 to 8.6.2 ([#3468](https://github.com/parse-community/parse-dashboard/issues/3468)) ([8a4c12b](https://github.com/parse-community/parse-dashboard/commit/8a4c12b0fc709a59372e839b36643310a64376c8))
+* Bump proxy-addr from 2.0.7 to 2.0.8 ([#3490](https://github.com/parse-community/parse-dashboard/issues/3490)) ([e017c62](https://github.com/parse-community/parse-dashboard/commit/e017c62ee572ece241a1911f0df70f19e843aeb2))
+* Bump qs from 6.15.3 to 6.16.0 ([#3458](https://github.com/parse-community/parse-dashboard/issues/3458)) ([04f5acb](https://github.com/parse-community/parse-dashboard/commit/04f5acb83a8e5c532364a51b7b0da0566d48073f))
+* Info panel data not loaded when opened over an existing selection ([#3384](https://github.com/parse-community/parse-dashboard/issues/3384)) ([4879959](https://github.com/parse-community/parse-dashboard/commit/4879959f08286cb2e55515027f8b40e90ab392c1))
+* Prevent Config table crash when a parameter value is null ([#3424](https://github.com/parse-community/parse-dashboard/issues/3424)) ([7150acf](https://github.com/parse-community/parse-dashboard/commit/7150acfb43a7ca60345e746d4cb9f4d38cb540aa))
+* Remote access restrictions not enforced when running behind a reverse proxy ([#3436](https://github.com/parse-community/parse-dashboard/issues/3436)) ([60cb379](https://github.com/parse-community/parse-dashboard/commit/60cb3791bd95325ee04d5e354c034d54817c89ac))
+* Security upgrade Docker image from Node.js 20 to 24 ([#3518](https://github.com/parse-community/parse-dashboard/issues/3518)) ([9dc2c30](https://github.com/parse-community/parse-dashboard/commit/9dc2c30ca0deb477a24dc072e9daeff8053b987d))
+
+### Features
+
+* Add support for Node.js 26 ([#3525](https://github.com/parse-community/parse-dashboard/issues/3525)) ([bdc5d62](https://github.com/parse-community/parse-dashboard/commit/bdc5d62523482c6541051957cc5be91578516aec))
+* React 19 + react-router 7 + GraphiQL 5 coordinated upgrade ([#3409](https://github.com/parse-community/parse-dashboard/issues/3409)) ([c3e16c2](https://github.com/parse-community/parse-dashboard/commit/c3e16c27d5c98e1981d1d7b06b33d3d9e355b183))
+* Remove Node 20 support and increase minimum required Node 22 version to `22.13.0` ([#3527](https://github.com/parse-community/parse-dashboard/issues/3527)) ([2ff9098](https://github.com/parse-community/parse-dashboard/commit/2ff909878ecaa009b09edb194e42e65a5c4168a0))
+
+
+### BREAKING CHANGES
+
+* Removes support for Node 20 and increases the minimum required Node 22 version to `22.13.0`. ([2ff9098](2ff9098))
+
 # [9.2.0](https://github.com/parse-community/parse-dashboard/compare/9.1.1...9.2.0) (2026-07-13)
 
 
