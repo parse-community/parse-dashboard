@@ -20,9 +20,7 @@ export default class FileEditor extends React.Component {
 
     this.checkExternalClick = this.checkExternalClick.bind(this);
     this.handleKey = this.handleKey.bind(this);
-    this.removeFile = this.removeFile.bind(this);
     this.inputRef = React.createRef();
-    this.fileInputRef = React.createRef();
   }
 
   componentDidMount() {
@@ -62,11 +60,6 @@ export default class FileEditor extends React.Component {
     });
   }
 
-  removeFile() {
-    this.fileInputRef.current.value = '';
-    this.props.onCommit(undefined);
-  }
-
   async handleChange(e) {
     const file = e.target.files[0];
     if (file) {
@@ -84,12 +77,7 @@ export default class FileEditor extends React.Component {
         className={styles.editor}
       >
         <a className={styles.upload}>
-          <input
-            ref={this.fileInputRef}
-            id="fileInput"
-            type="file"
-            onChange={this.handleChange.bind(this)}
-          />
+          <input id="fileInput" type="file" onChange={this.handleChange.bind(this)} />
           <span>{file ? 'Replace file' : 'Upload file'}</span>
         </a>
       </div>
