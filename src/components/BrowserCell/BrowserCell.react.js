@@ -148,12 +148,13 @@ export default class BrowserCell extends Component {
         this.copyableValue = content = JSON.stringify(this.props.value);
       }
     } else if (this.props.type === 'Date') {
-      if (typeof value === 'object' && this.props.value.__type) {
-        this.props.value = new Date(this.props.value.iso);
-      } else if (typeof value === 'string') {
-        this.props.value = new Date(this.props.value);
+      let dateValue = this.props.value;
+      if (typeof dateValue === 'object' && dateValue.__type) {
+        dateValue = new Date(dateValue.iso);
+      } else if (typeof dateValue === 'string') {
+        dateValue = new Date(dateValue);
       }
-      this.copyableValue = content = dateStringUTC(this.props.value);
+      this.copyableValue = content = dateStringUTC(dateValue);
     } else if (this.props.type === 'Boolean') {
       this.copyableValue = content = this.props.value ? 'True' : 'False';
     } else if (this.props.type === 'Object' || this.props.type === 'Bytes') {
@@ -206,6 +207,8 @@ export default class BrowserCell extends Component {
         'Relation'
       );
       this.copyableValue = undefined;
+    } else if (this.props.value instanceof Date) {
+      this.copyableValue = content = dateStringUTC(this.props.value);
     }
     this.onContextMenu = this.onContextMenu.bind(this);
 
