@@ -337,9 +337,13 @@ module.exports = function(config, options) {
           return res.status(400).json({ error: 'Please replace the placeholder API key with your actual API key' });
         }
 
-        // Only support OpenAI for now
-        if (provider.toLowerCase() !== 'openai') {
-          return res.status(400).json({ error: `Provider "${provider}" is not supported yet` });
+        // Resolve the chat completions endpoint. OpenAI is supported out of the box;
+        // any other provider must expose an OpenAI-compatible API via `baseURL`.
+        let endpoint;
+        try {
+          endpoint = resolveAgentEndpoint(provider, modelConfig.baseURL);
+        } catch (endpointError) {
+          return res.status(400).json({ error: endpointError.message });
         }
 
         // Get or create conversation history
@@ -357,8 +361,8 @@ module.exports = function(config, options) {
         // preventing privilege escalation via self-authorized permissions in the request body
         const effectivePermissions = isReadOnly ? {} : (permissions || {});
 
-        // Make request to OpenAI API with app context and conversation history
-        const response = await makeOpenAIRequest(message, model, apiKey, appContext, conversationHistory, operationLog, effectivePermissions);
+        // Make request to the provider's chat completions API with app context and conversation history
+        const response = await makeOpenAIRequest(message, model, apiKey, endpoint, appContext, conversationHistory, operationLog, effectivePermissions);
 
         // Update conversation history with user message and AI response
         conversationHistory.push(
@@ -912,12 +916,42 @@ module.exports = function(config, options) {
     }
 
     /**
-     * Make a request to OpenAI API
+     * Resolves the chat completions endpoint and the display name of an agent model's provider.
+     *
+     * `openai` uses the OpenAI API unless a `baseURL` is set. Any other provider
+     * requires a `baseURL` pointing to an OpenAI-compatible API, e.g.
+     * `https://api.deepseek.com/v1`; `/chat/completions` is appended to it.
      */
-    async function makeOpenAIRequest(userMessage, model, apiKey, appContext = null, conversationHistory = [], operationLog = [], permissions = {}) {
+    function resolveAgentEndpoint(provider, baseURL) {
+      const isOpenAI = provider.toLowerCase() === 'openai';
+      if (baseURL === undefined || baseURL === null || baseURL === '') {
+        if (!isOpenAI) {
+          throw new Error(`Provider "${provider}" is not supported. Set "baseURL" to use an OpenAI-compatible provider.`);
+        }
+        return { url: 'https://api.openai.com/v1/chat/completions', name: 'OpenAI' };
+      }
+
+      let parsedURL;
+      try {
+        parsedURL = typeof baseURL === 'string' ? new URL(baseURL) : null;
+      } catch {
+        parsedURL = null;
+      }
+      if (!parsedURL || (parsedURL.protocol !== 'http:' && parsedURL.protocol !== 'https:')) {
+        throw new Error(`Invalid "baseURL" for provider "${provider}". It must be an http(s) URL.`);
+      }
+      // Append the path to the URL's pathname so that a query string (e.g. an API version) is preserved
+      parsedURL.pathname = `${parsedURL.pathname.replace(/\/+$/, '')}/chat/completions`;
+      return { url: parsedURL.toString(), name: isOpenAI ? 'OpenAI' : provider };
+    }
+
+    /**
+     * Make a request to an OpenAI-compatible chat completions API
+     */
+    async function makeOpenAIRequest(userMessage, model, apiKey, endpoint, appContext = null, conversationHistory = [], operationLog = [], permissions = {}) {
       const fetch = (await import('node-fetch')).default;
 
-      const url = 'https://api.openai.com/v1/chat/completions';
+      const { url, name: providerName } = endpoint;
 
       const appInfo = appContext ?
         `\n\nContext: You are currently helping with the Parse Server app "${appContext.appName}" (ID: ${appContext.appId}) at ${appContext.serverURL}.` :
@@ -1045,26 +1079,26 @@ You have direct access to the Parse database through function calls, so you can 
 
       if (!response.ok) {
         if (response.status === 401) {
-          throw new Error('Invalid API key. Please check your OpenAI API key configuration.');
+          throw new Error(`Invalid API key. Please check your ${providerName} API key configuration.`);
         } else if (response.status === 429) {
           throw new Error('Rate limit exceeded. Please try again in a moment.');
         } else if (response.status === 403) {
           throw new Error('Access forbidden. Please check your API key permissions.');
         } else if (response.status >= 500) {
-          throw new Error('OpenAI service is temporarily unavailable. Please try again later.');
+          throw new Error(`${providerName} service is temporarily unavailable. Please try again later.`);
         }
 
         const errorData = await response.json().catch(() => ({}));
         const errorMessage = (errorData && typeof errorData === 'object' && 'error' in errorData && errorData.error && typeof errorData.error === 'object' && 'message' in errorData.error)
           ? errorData.error.message
           : `HTTP ${response.status}: ${response.statusText}`;
-        throw new Error(`OpenAI API error: ${errorMessage}`);
+        throw new Error(`${providerName} API error: ${errorMessage}`);
       }
 
       const data = await response.json();
 
       if (!data || typeof data !== 'object' || !('choices' in data) || !Array.isArray(data.choices) || data.choices.length === 0) {
-        throw new Error('No response received from OpenAI API');
+        throw new Error(`No response received from ${providerName} API`);
       }
 
       const choice = data.choices[0];
@@ -1140,19 +1174,19 @@ You have direct access to the Parse database through function calls, so you can 
         const followUpData = await followUpResponse.json();
 
         if (!followUpData || typeof followUpData !== 'object' || !('choices' in followUpData) || !Array.isArray(followUpData.choices) || followUpData.choices.length === 0) {
-          throw new Error('No follow-up response received from OpenAI API');
+          throw new Error(`No follow-up response received from ${providerName} API`);
         }
 
         const followUpContent = followUpData.choices[0].message.content;
         if (!followUpContent) {
-          console.warn('OpenAI returned null content in follow-up response, using fallback message');
+          console.warn(`${providerName} returned null content in follow-up response, using fallback message`);
         }
         return followUpContent || 'Done.';
       }
 
       const content = responseMessage.content;
       if (!content) {
-        console.warn('OpenAI returned null content in initial response, using fallback message');
+        console.warn(`${providerName} returned null content in initial response, using fallback message`);
       }
       return content || 'Done.';
     }

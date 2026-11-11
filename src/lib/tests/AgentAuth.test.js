@@ -7,6 +7,8 @@
  */
 jest.dontMock('../../../Parse-Dashboard/Authentication.js');
 jest.dontMock('../../../Parse-Dashboard/app.js');
+// node-fetch is ESM-only and cannot be loaded by Jest; the agent's outgoing LLM requests are mocked
+jest.mock('node-fetch', () => ({ __esModule: true, default: jest.fn() }));
 
 const express = require('express');
 const http = require('http');
@@ -574,5 +576,125 @@ describe('Agent endpoint no-user mode — remote requests with allowInsecureHTTP
     });
     expect(res.status).toBe(401);
     expect(res.body.error).toBe('Configure a user to access Parse Dashboard remotely');
+  });
+});
+
+// ---------------------------------------------------------------
+// OpenAI-compatible providers via `baseURL`
+// ---------------------------------------------------------------
+
+describe('Agent endpoint OpenAI-compatible providers', () => {
+  let server;
+  let port;
+  const fetchMock = require('node-fetch').default;
+  let llmStatus;
+
+  const mockStore = new MockSessionStore({
+    'admin-session': buildSessionData('admin'),
+  });
+  const adminCookie = buildSessionCookie('admin-session', SESSION_SECRET);
+
+  const send = (modelName) =>
+    makeRequest(port, {
+      method: 'POST',
+      path: '/apps/TestApp/agent',
+      body: agentBody({ modelName }),
+      cookie: adminCookie,
+      headers: { 'X-CSRF-Token': CSRF_TOKEN },
+    });
+
+  beforeAll(async () => {
+    const parseDashboard = require('../../../Parse-Dashboard/app.js');
+    const dashboardApp = parseDashboard(
+      {
+        apps: [
+          {
+            serverURL: 'http://localhost:1337/parse',
+            appId: 'testAppId',
+            masterKey: 'testMasterKey',
+            appName: 'TestApp',
+          },
+        ],
+        users: [{ user: 'admin', pass: 'password123' }],
+        agent: {
+          models: [
+            { name: 'compat', provider: 'deepseek', model: 'deepseek-chat', apiKey: 'compat-key', baseURL: 'https://llm.example.com/v1/' },
+            { name: 'openai-proxy', provider: 'openai', model: 'gpt-4', apiKey: 'proxy-key', baseURL: 'https://proxy.example.com/proxy?api-version=1' },
+            { name: 'no-base-url', provider: 'deepseek', model: 'deepseek-chat', apiKey: 'compat-key' },
+            { name: 'bad-base-url', provider: 'deepseek', model: 'deepseek-chat', apiKey: 'compat-key', baseURL: 'not a url' },
+            { name: 'bad-protocol', provider: 'deepseek', model: 'deepseek-chat', apiKey: 'compat-key', baseURL: 'ftp://example.com/v1' },
+          ],
+        },
+      },
+      { cookieSessionSecret: SESSION_SECRET, cookieSessionStore: mockStore, dev: true }
+    );
+
+    const parentApp = express();
+    parentApp.use('/', dashboardApp);
+    await new Promise(resolve => {
+      server = parentApp.listen(0, () => {
+        port = server.address().port;
+        resolve();
+      });
+    });
+  });
+
+  afterAll(async () => {
+    await new Promise(resolve => (server ? server.close(resolve) : resolve()));
+  });
+
+  beforeEach(() => {
+    llmStatus = 200;
+    fetchMock.mockReset();
+    fetchMock.mockImplementation(async () => ({
+      ok: llmStatus === 200,
+      status: llmStatus,
+      statusText: 'status',
+      json: async () =>
+        llmStatus === 200
+          ? { choices: [{ message: { role: 'assistant', content: 'Hello from the compatible provider' } }] }
+          : { error: { message: 'model overloaded' } },
+    }));
+  });
+
+  it('sends requests to the chat completions endpoint of the configured baseURL', async () => {
+    const res = await send('compat');
+    expect(res.status).toBe(200);
+    expect(res.body.response).toBe('Hello from the compatible provider');
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe('https://llm.example.com/v1/chat/completions');
+    expect(init.headers.Authorization).toBe('Bearer compat-key');
+    expect(JSON.parse(init.body).model).toBe('deepseek-chat');
+  });
+
+  it('allows overriding the baseURL of the openai provider', async () => {
+    const res = await send('openai-proxy');
+    expect(res.status).toBe(200);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock.mock.calls[0][0]).toBe('https://proxy.example.com/proxy/chat/completions?api-version=1');
+  });
+
+  it('uses the provider name in error messages of compatible providers', async () => {
+    llmStatus = 503;
+    const res = await send('compat');
+    expect(res.status).toBe(500);
+    expect(res.body.error).toBe('Error: deepseek service is temporarily unavailable. Please try again later.');
+  });
+
+  it('rejects a non-OpenAI provider without baseURL', async () => {
+    const res = await send('no-base-url');
+    expect(res.status).toBe(400);
+    expect(res.body.error).toContain('Set "baseURL"');
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('rejects a baseURL that is not an http(s) URL', async () => {
+    for (const name of ['bad-base-url', 'bad-protocol']) {
+      const res = await send(name);
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain('Invalid "baseURL"');
+    }
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

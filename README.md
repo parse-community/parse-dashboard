@@ -112,6 +112,7 @@ Parse Dashboard is a standalone dashboard for managing your [Parse Server](https
     - [Configuration](#configuration-1)
     - [Providers](#providers)
       - [OpenAI](#openai)
+      - [OpenAI-compatible providers](#openai-compatible-providers)
   - [Views](#views)
     - [Data Sources](#data-sources)
       - [Aggregation Pipeline](#aggregation-pipeline)
@@ -1801,16 +1802,17 @@ To configure the AI agent for your dashboard, you need to add the `agent` config
 | `agent`                    | Object | Yes      | The AI agent configuration object.  When using the environment variable, provide the complete agent configuration as a JSON string. |
 | `agent.models`             | Array  | Yes      | Array of AI model configurations available to the agent.                                                                            |
 | `agent.models[*].name`     | String | Yes      | The display name for the model (e.g., `ChatGPT 4.1`).                                                                               |
-| `agent.models[*].provider` | String | Yes      | The AI provider identifier (e.g., "openai").                                                                                        |
+| `agent.models[*].provider` | String | Yes      | The AI provider identifier. Use `openai` for OpenAI, or any name of your choice for an OpenAI-compatible provider (requires `baseURL`). |
 | `agent.models[*].model`    | String | Yes      | The specific model name from the provider (e.g., `gpt-4.1`).                                                                        |
 | `agent.models[*].apiKey`   | String | Yes      | The API key for authenticating with the AI provider.                                                                                |
+| `agent.models[*].baseURL`  | String | No       | The base URL of an OpenAI-compatible API, e.g. `https://api.deepseek.com/v1`. Requests are sent to `<baseURL>/chat/completions`. Required for any provider other than `openai`. |
 
 The agent will use the configured models to process natural language commands and perform database operations using the master key from your app configuration.
 
 ### Providers
 
 > [!Note]
-> Currently, only OpenAI models are supported. Support for additional providers may be added in future releases.
+> OpenAI is supported out of the box. Other providers are supported if they offer an OpenAI-compatible chat completions API, see [OpenAI-compatible providers](#openai-compatible-providers).
 
 #### OpenAI
 
@@ -1840,6 +1842,28 @@ To get an OpenAI API key for use with the AI agent:
 6. **Set up billing**: Make sure you have a valid payment method added to your OpenAI account, as API usage incurs charges.
 
 7. **Configure the dashboard**: Add the API key to your Parse Dashboard configuration as shown in the example above.
+
+#### OpenAI-compatible providers
+
+Providers that implement the OpenAI chat completions API (e.g. DeepSeek, Zhipu AI, or a self-hosted gateway) can be used by setting `baseURL` to the base URL of their API. The dashboard sends requests to `<baseURL>/chat/completions` with the configured `apiKey` as bearer token. The provider needs to support tool (function) calling, which the agent uses to access the database.
+
+```json
+{
+  "agent": {
+    "models": [
+      {
+        "name": "DeepSeek Chat",
+        "provider": "deepseek",
+        "model": "deepseek-chat",
+        "apiKey": "YOUR_DEEPSEEK_API_KEY",
+        "baseURL": "https://api.deepseek.com/v1"
+      }
+    ]
+  }
+}
+```
+
+For any provider other than `openai`, the `provider` value is only used as a label in error messages. The `baseURL` can also be set for `openai` to route requests through a proxy.
 
 > [!Important]
 > Keep your API key secure and never commit it to version control. Consider using environment variables or secure configuration management for production deployments.
