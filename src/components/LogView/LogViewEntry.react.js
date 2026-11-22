@@ -22,6 +22,9 @@ const TIMESTAMP_REGEX = [
 
 const isError = str => str[0] === 'E';
 
+const normalizeText = value =>
+  typeof value === 'string' ? value : JSON.stringify(value) || '';
+
 const getLogEntryInfo = str => {
   const re = getTimestampRegex();
   const timeStampStr = str.match(re) ? str.match(re)[0] : '';
@@ -36,7 +39,7 @@ const getLogEntryInfo = str => {
 const getTimestampRegex = () => new RegExp(TIMESTAMP_REGEX, ['i']);
 
 const LogViewEntry = ({ text = '', timestamp }) => {
-  const logEntryInfo = getLogEntryInfo(text);
+  const logEntryInfo = getLogEntryInfo(normalizeText(text));
   const classes = [styles.entry, logEntryInfo.error ? styles.error : ''];
   return (
     <li className={classes.join(' ')}>
