@@ -22,18 +22,26 @@
     display: flex;
     gap: 10px;
     align-items: center;
+}
 
-    .copyIcon {
-        display: none;
-        cursor: pointer;
-        margin-left: 4px;
-        color: inherit;
-        opacity: 0.6;
-    }
+.textElement {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-    &:hover .copyIcon {
-        display: inline-block;
-    }
+.copyIcon {
+    display: none;
+    cursor: pointer;
+    margin-left: 4px;
+    color: inherit;
+    opacity: 0.6;
+}
+
+.keyValue:hover .copyIcon,
+.textElement:hover .copyIcon,
+.tableCell:hover .copyIcon {
+    display: inline-block;
 }
 
 .video {
