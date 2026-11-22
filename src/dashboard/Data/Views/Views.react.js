@@ -447,10 +447,9 @@ class Views extends TableView {
               url.match(/<script/i)
             ) {
               url = '#';
-            } else {
-              url = value.isRelativeUrl
-                ? `apps/${this.context.slug}/${url}${value.urlQuery ? `?${new URLSearchParams(value.urlQuery).toString()}` : ''}`
-                : url;
+            } else if (value.isRelativeUrl) {
+              const query = value.urlQuery ? `?${new URLSearchParams(value.urlQuery).toString()}` : '';
+              url = generatePath(this.context, `${url}${query}`, true);
             }
             // Sanitize text
             let text = value.text;
