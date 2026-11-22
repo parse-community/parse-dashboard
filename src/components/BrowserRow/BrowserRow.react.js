@@ -67,13 +67,15 @@ export default class BrowserRow extends Component {
       return acc;
     }, requiredCols);
     // for dynamically changing required field on _User class
-    if (
-      obj.className === '_User' &&
-      (obj.get('username') !== undefined || obj.get('password') !== undefined)
-    ) {
-      requiredCols = ['username', 'password'];
-    } else if (obj.className === '_User' && obj.get('authData') !== undefined) {
-      requiredCols = ['authData'];
+    if (!isUnique) {
+      if (
+        obj.className === '_User' &&
+        (obj.get('username') !== undefined || obj.get('password') !== undefined)
+      ) {
+        requiredCols = ['username', 'password'];
+      } else if (obj.className === '_User' && obj.get('authData') !== undefined) {
+        requiredCols = ['authData'];
+      }
     }
     const highlightColor = '#eef4fb';
     const stickyHighlightColor = '#d6e4f0';
