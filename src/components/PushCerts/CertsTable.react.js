@@ -11,7 +11,7 @@ import { dateStringUTC } from 'lib/DateUtils';
 
 const MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30;
 
-const CertsTable = ({ certs, onDelete, uploadPending }) => {
+const CertsTable = ({ certs, onDelete, uploadPending, useLocalTime }) => {
   const tableData = certs.map(c => {
     let color = '';
     let expiresKeyColor = '';
@@ -36,7 +36,7 @@ const CertsTable = ({ certs, onDelete, uploadPending }) => {
         {
           key: isExpired ? 'Expired' : 'Expires',
           keyColor: expiresKeyColor,
-          value: dateStringUTC(new Date(c.expiration)),
+          value: dateStringUTC(new Date(c.expiration), useLocalTime),
         },
       ],
     };

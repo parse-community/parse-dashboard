@@ -102,7 +102,7 @@ export function monthsFrom(date, delta) {
   );
 }
 
-export function dateStringUTC(date) {
+export function dateStringUTC(date, useLocalTime = false) {
   // Use locale 'en-GB' to maintain the current date time format of "dd MMM yyyy, HH:mm:ss";
   // when supporting multiple locales in the future, this forced locale should be removed
   return date.toLocaleDateString('en-GB', {
@@ -113,9 +113,37 @@ export function dateStringUTC(date) {
     minute: 'numeric',
     second: 'numeric',
     hour12: false,
-    timeZone: 'UTC',
+    timeZone: useLocalTime ? undefined : 'UTC',
     timeZoneName: 'short',
   });
+}
+
+export function dateInputString(date, useLocalTime = false) {
+  if (!useLocalTime) {
+    return date.toISOString();
+  }
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, -1);
+}
+
+export function parseDateInput(text, useLocalTime = false) {
+  const date = new Date(text);
+  if (isNaN(date.getTime())) {
+    return null;
+  }
+  if (useLocalTime || /(z|utc)$/i.test(text.trim())) {
+    return date;
+  }
+  return new Date(
+    Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds(),
+      date.getMilliseconds()
+    )
+  );
 }
 
 export function monthDayStringUTC(date) {

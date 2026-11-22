@@ -16,7 +16,7 @@ import decode from 'parse/lib/browser/decode';
 import React from 'react';
 import StringEditor from 'components/StringEditor/StringEditor.react';
 
-const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit, onCancel, setContextMenu, arrayConfigParams, onAddToArrayConfig, getRelatedRecordsMenuItem }) => {
+const Editor = ({ top, left, type, targetClass, value, readonly, width, useLocalTime, onCommit, onCancel, setContextMenu, arrayConfigParams, onAddToArrayConfig, getRelatedRecordsMenuItem }) => {
   let content = null;
   if (type === 'String') {
     content = (
@@ -116,7 +116,7 @@ const Editor = ({ top, left, type, targetClass, value, readonly, width, onCommit
         />
       );
     } else {
-      content = <DateTimeEditor value={value || new Date()} width={width} onCommit={onCommit} onCancel={onCancel} />;
+      content = <DateTimeEditor value={value || new Date()} local={useLocalTime} width={width} onCommit={onCommit} onCancel={onCancel} />;
     }
   } else if (type === 'Boolean') {
     content = <BooleanEditor value={value} width={width} onCommit={onCommit} />;

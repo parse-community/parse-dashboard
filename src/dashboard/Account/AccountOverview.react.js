@@ -24,11 +24,14 @@ import styles from 'dashboard/Settings/Settings.scss';
 import TextInput from 'components/TextInput/TextInput.react';
 import Toolbar from 'components/Toolbar/Toolbar.react';
 import { dateStringUTC } from 'lib/DateUtils';
+import { CurrentApp } from 'context/currentApp';
 
 const DEFAULT_LABEL_WIDTH = 56;
 const XHR_KEY = 'AccountOverview';
 
 export default class AccountOverview extends React.Component {
+  static contextType = CurrentApp;
+
   constructor() {
     super();
     this.state = {
@@ -152,7 +155,7 @@ export default class AccountOverview extends React.Component {
                     },
                     {
                       key: 'Expires',
-                      value: dateStringUTC(new Date(key.expiresAt)),
+                      value: dateStringUTC(new Date(key.expiresAt), this.context?.useLocalTime),
                     },
                   ],
                 }))}

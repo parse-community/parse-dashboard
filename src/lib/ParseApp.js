@@ -46,6 +46,7 @@ export default class ParseApp {
     supportedPushLocales,
     preventSchemaEdits,
     preventDataExport,
+    useLocalTime,
     graphQLServerURL,
     columnPreference,
     scripts,
@@ -79,6 +80,7 @@ export default class ParseApp {
     this.supportedPushLocales = supportedPushLocales ? supportedPushLocales : [];
     this.preventSchemaEdits = preventSchemaEdits || false;
     this.preventDataExport = preventDataExport || false;
+    this.useLocalTime = useLocalTime || false;
     this.graphQLServerURL = graphQLServerURL;
     this.columnPreference = columnPreference;
     this.scripts = scripts;
