@@ -3019,8 +3019,8 @@ class Browser extends DashboardView {
   }
 
   handleShowAcl(row, col) {
-    this.dataBrowserRef.current.setEditing(true);
     this.dataBrowserRef.current.setCurrent({ row, col });
+    this.dataBrowserRef.current.setEditing(true);
   }
 
   // skips key controls handling when dialog is opened

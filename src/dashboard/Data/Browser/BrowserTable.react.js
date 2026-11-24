@@ -96,6 +96,10 @@ export default class BrowserTable extends React.Component {
   };
 
   render() {
+    // The cell being edited is the one where editing started (see `editingCell`
+    // in DataBrowser), not necessarily the currently selected cell
+    const editingCell = this.props.editingCell || this.props.current;
+    const editingRow = editingCell ? editingCell.row : undefined;
     let ordering = {};
     if (this.props.ordering) {
       if (this.props.ordering[0] === '-') {
@@ -159,7 +163,7 @@ export default class BrowserTable extends React.Component {
                   ? this.props.current.col
                   : undefined;
               const isEditingRow =
-                this.props.current && this.props.current.row === index && !!this.props.editing;
+                !!this.props.editing && editingRow === index;
               return (
                 <div key={index} style={{ borderBottom: '1px solid #169CEE' }}>
                   <BrowserRow
@@ -351,7 +355,7 @@ export default class BrowserTable extends React.Component {
         // Needed in order to force BrowserRow to update and re-render (and possibly update columns values),
         // since the "obj" instance will only be updated when the update request is done.
         const isEditingRow =
-          this.props.current && this.props.current.row === i && !!this.props.editing;
+          !!this.props.editing && editingRow === i;
         rows[index] = (
           <BrowserRow
             appId={this.props.appId}
@@ -414,15 +418,15 @@ export default class BrowserTable extends React.Component {
 
       if (this.props.editing) {
         let visible = false;
-        if (this.props.current) {
-          if (this.props.current.row < 0 && this.state.offset === 0) {
+        if (editingCell) {
+          if (editingCell.row < 0 && this.state.offset === 0) {
             visible = true;
-          } else if (this.props.current.row >= this.state.offset && this.props.current.row < end) {
+          } else if (editingCell.row >= this.state.offset && editingCell.row < end) {
             visible = true;
           }
         }
         if (visible) {
-          const { name, width } = this.props.order[this.props.current.col];
+          const { name, width } = this.props.order[editingCell.col];
           const { type, targetClass } = this.props.columns[name];
           let readonly = this.props.isUnique || READ_ONLY.indexOf(name) > -1;
           if (name === 'sessionToken') {
@@ -434,14 +438,14 @@ export default class BrowserTable extends React.Component {
             readonly = true;
           }
           let obj =
-            this.props.current.row < 0
+            editingCell.row < 0
               ? this.props.newObject
-              : this.props.data[this.props.current.row];
+              : this.props.data[editingCell.row];
           let value = obj;
-          if (!obj && this.props.current.row < -1) {
+          if (!obj && editingCell.row < -1) {
             obj =
               this.props.editCloneRows[
-                this.props.current.row + this.props.editCloneRows.length + 1
+                editingCell.row + this.props.editCloneRows.length + 1
               ];
           }
           if (!this.props.isUnique) {
@@ -467,22 +471,22 @@ export default class BrowserTable extends React.Component {
           } else if (name === 'password' && this.props.className === '_User') {
             value = '';
           }
-          let wrapTop = Math.max(0, this.props.current.row * ROW_HEIGHT);
-          if (this.props.current.row < -1 && this.props.editCloneRows) {
+          let wrapTop = Math.max(0, editingCell.row * ROW_HEIGHT);
+          if (editingCell.row < -1 && this.props.editCloneRows) {
             //for edit clone rows
             wrapTop =
-              2 * ROW_HEIGHT * (this.props.current.row + (this.props.editCloneRows.length + 1));
+              2 * ROW_HEIGHT * (editingCell.row + (this.props.editCloneRows.length + 1));
           }
-          if (this.props.current.row > -1 && this.props.newObject) {
+          if (editingCell.row > -1 && this.props.newObject) {
             //for data rows when there's new row
             wrapTop += 60;
           }
-          if (this.props.current.row >= -1 && this.props.editCloneRows) {
+          if (editingCell.row >= -1 && this.props.editCloneRows) {
             //for data rows & new row when there are edit clone rows
             wrapTop += 2 * ROW_HEIGHT * this.props.editCloneRows.length;
           }
           let wrapLeft = 30 + rowNumberWidth;
-          for (let i = 0; i < this.props.current.col; i++) {
+          for (let i = 0; i < editingCell.col; i++) {
             const column = this.props.order[i];
             wrapLeft += column.visible ? column.width : 0;
           }
@@ -498,7 +502,7 @@ export default class BrowserTable extends React.Component {
                 width={width}
                 onCommit={newValue => {
                   if (newValue !== value) {
-                    this.props.updateRow(this.props.current.row, name, newValue);
+                    this.props.updateRow(editingCell.row, name, newValue);
                   }
                   this.props.setEditing(false);
                 }}

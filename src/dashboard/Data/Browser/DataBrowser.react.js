@@ -142,6 +142,8 @@ export default class DataBrowser extends React.Component {
       current: null,
       lastSelectedCol: 0,
       editing: false,
+      // The cell being edited, kept while `current` moves to another cell
+      editingCell: null,
       copyableValue: undefined,
       selectedObjectId: undefined,
       simplifiedSchema: this.getSimplifiedSchema(props.schema, props.className),
@@ -1230,7 +1232,10 @@ export default class DataBrowser extends React.Component {
   setEditing(editing) {
     if (this.props.updateRow) {
       if (this.state.editing !== editing) {
-        this.setState({ editing: editing });
+        // Remember the cell when editing starts, so that a click on another cell,
+        // which changes `current` before the editor commits, does not redirect the
+        // committed value to the clicked cell
+        this.setState(state => ({ editing, editingCell: editing ? state.current : null }));
       }
     }
   }
@@ -2758,6 +2763,7 @@ export default class DataBrowser extends React.Component {
             order={this.state.order}
             current={this.state.current}
             editing={this.state.editing}
+            editingCell={this.state.editingCell}
             simplifiedSchema={this.state.simplifiedSchema}
             className={className}
             editCloneRows={editCloneRows}
